@@ -9,15 +9,15 @@ import styles from "./LanguageMenu.module.css";
 const loadMenu = () => import("./LanguageMenu");
 const LanguageMenu = dynamic(loadMenu, { ssr: false });
 
-type Props = { locale: Locale; label: string; className?: string };
+type Props = { locale: Locale; label: string; className?: string; path?: string };
 
 /** Renders the language button statically and upgrades to the Radix menu on hover, focus or tap,
  *  so the dropdown code never sits on the critical path. */
-export default function LanguageSwitch({ locale, label, className }: Props) {
+export default function LanguageSwitch({ locale, label, className, path = "" }: Props) {
   const [live, setLive] = useState<false | "hover" | "focus">(false);
   const [open, setOpen] = useState(false);
 
-  if (live) return <LanguageMenu locale={locale} label={label} className={className} open={open} onOpenChange={setOpen} autoFocus={live === "focus"} />;
+  if (live) return <LanguageMenu locale={locale} label={label} className={className} path={path} open={open} onOpenChange={setOpen} autoFocus={live === "focus"} />;
 
   const upgrade = (how: "hover" | "focus") => () => void loadMenu().then(() => setLive(how));
   return (

@@ -1,12 +1,12 @@
-import { contact, siteUrl, social } from "@/lib/site";
+import { contact, productPaths, siteUrl, social } from "@/lib/site";
 import { defaultLocale, getDictionary, localeMeta, locales, type Dictionary, type Locale } from "@/lib/i18n";
 
-export const pageUrl = (locale: Locale) => `${siteUrl}/${locale}`;
+export const pageUrl = (locale: Locale, path = "") => `${siteUrl}/${locale}${path}`;
 
 /** hreflang map shared by <head> and the sitemap; x-default points at the Persian home. */
-export const languageAlternates = () => ({
-  ...Object.fromEntries(locales.map((l) => [l, pageUrl(l)])),
-  "x-default": pageUrl(defaultLocale),
+export const languageAlternates = (path = "") => ({
+  ...Object.fromEntries(locales.map((l) => [l, pageUrl(l, path)])),
+  "x-default": pageUrl(defaultLocale, path),
 });
 
 const productImages = ["/images/product-tube.webp", "/images/product-effervescent.webp"];
@@ -95,6 +95,7 @@ export function llmsText(full: boolean) {
     "",
     "## Pages",
     ...locales.map((l) => `- [${getDictionary(l).meta.title}](${pageUrl(l)}): ${localeMeta[l].label} home page`),
+    ...locales.map((l) => `- [${getDictionary(l).productTube.meta.title}](${pageUrl(l, productPaths.tube)}): ${getDictionary(l).productTube.meta.description}`),
     "",
     "## Contact",
     `- Email: ${contact.email}`,
@@ -131,9 +132,50 @@ export function llmsText(full: boolean) {
       `### ${t.insights.eyebrow}`,
       ...t.insights.articles.map((a) => `- ${a.title}: ${a.text}`),
       "",
+      `### ${t.productTube.title.join(" ")} (${pageUrl(l, productPaths.tube)})`,
+      t.productTube.lead,
+      ...t.productTube.features.map((f) => `- ${f}`),
+      `${t.productTube.layers.title}: ${t.productTube.layers.items.map((x) => `${x.name} (${x.text})`).join("; ")}`,
+      `${t.productTube.calculator.title}: V(ml) = π × (d/2)² × L / 1000 (d, L in mm; d = 19–60 mm, L = 50–300 mm). ${t.productTube.calculator.note}`,
+      `${t.productTube.variants}: ${Object.values(t.productTube.shapes).join(", ")}. ${t.productTube.closures}: ${t.productTube.closureNames.join(", ")}.`,
+      "",
       `### ${t.cta.title.join(" ")}`,
       t.cta.lead,
     );
   }
   return lines.join("\n") + "\n";
+}
+
+/** Product detail page: the product itself plus its breadcrumb trail. */
+export function productTubeJsonLd(t: Dictionary, locale: Locale, path: string) {
+  const url = pageUrl(locale, path);
+  const p = t.productTube;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Product",
+        "@id": `${url}#product`,
+        name: p.title.join(" "),
+        description: p.lead,
+        url,
+        image: [`${siteUrl}/images/product-tube.webp`, `${siteUrl}/images/cta-tube.webp`],
+        brand: { "@id": `${siteUrl}/#organization` },
+        manufacturer: { "@id": `${siteUrl}/#organization` },
+        material: "PE / EVOH multi-layer",
+        additionalProperty: [
+          { "@type": "PropertyValue", name: p.calculator.diameter, value: "19–60" },
+          ...p.layers.items.map((l, i) => ({ "@type": "PropertyValue", name: `${p.layers.title} ${i + 1}`, value: `${l.name} — ${l.text}` })),
+        ],
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: t.common.brand, item: pageUrl(locale) },
+          { "@type": "ListItem", position: 2, name: p.breadcrumb, item: `${pageUrl(locale)}#products` },
+          { "@type": "ListItem", position: 3, name: p.title.join(" "), item: url },
+        ],
+      },
+    ],
+  };
 }

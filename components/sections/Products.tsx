@@ -13,8 +13,11 @@ const visuals = [
 type CardProps = { n: string; img: string; href: string; dark: boolean; title: string[]; text: string; label: string };
 
 function ProductCard({ n, img, href, dark, title, text, label }: CardProps) {
+  // Cards with a detail page are clickable anywhere; the others keep just the enquiry arrow.
+  const page = !href.startsWith("#");
   return (
-    <article className={`${styles.card} ${dark ? styles.dark : ""}`} data-drift-host="10">
+    <article className={`${styles.card} ${dark ? styles.dark : ""} ${page ? styles.linked : ""}`} data-drift-host="10">
+      {page && <a href={href} className={styles.cover} aria-hidden="true" tabIndex={-1} />}
       <div className={styles.media} data-reveal-media>
         <div className={styles.mediaInner}>
           <div className={styles.drift} data-drift>
@@ -25,9 +28,15 @@ function ProductCard({ n, img, href, dark, title, text, label }: CardProps) {
       <div className={styles.content}>
         <span className={styles.num}>{n}</span>
         <h3 className={styles.title}>
-          {title.map((line) => (
-            <span key={line}>{line} </span>
-          ))}
+          {page ? (
+            <a href={href} className={styles.titleLink}>
+              {title.map((line) => (
+                <span key={line}>{line} </span>
+              ))}
+            </a>
+          ) : (
+            title.map((line) => <span key={line}>{line} </span>)
+          )}
         </h3>
         <p className={styles.text}>{text}</p>
         <a href={href} className={`circle-link ${styles.arrow}`} aria-label={label}>
@@ -38,7 +47,7 @@ function ProductCard({ n, img, href, dark, title, text, label }: CardProps) {
   );
 }
 
-export default function Products({ t }: SectionProps) {
+export default function Products({ t, locale }: SectionProps) {
   const p = t.products;
   return (
     <section id="products" className={styles.section} aria-labelledby="products-title">
@@ -72,11 +81,11 @@ export default function Products({ t }: SectionProps) {
                 <ProductCard
                   n={v.n}
                   img={v.img}
-                  href={v.href}
+                  href={v.href.startsWith("/") ? `/${locale}${v.href}` : v.href}
                   dark={v.tone === "dark"}
                   title={card.title}
                   text={card.text}
-                  label={`${p.enquire} ${card.title.join(" ")}`}
+                  label={`${v.href.startsWith("/") ? p.view : p.enquire} ${card.title.join(" ")}`}
                 />
               </div>
             );

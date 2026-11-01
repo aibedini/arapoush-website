@@ -1,16 +1,18 @@
 import Image from "next/image";
 import RollText from "@/components/ui/RollText";
-import { contact, links, social } from "@/lib/site";
+import { contact, links, productPaths, social } from "@/lib/site";
 import type { Dictionary } from "@/lib/i18n";
 import MaybeLink from "@/components/ui/MaybeLink";
 import { Call, Instagram, LinkedIn, Location, Mail, PaperDownload } from "@/components/ui/icons";
 import BackToTop from "./BackToTop";
 import styles from "./Footer.module.css";
 
-const productHrefs = ["#products", "#products"];
 const exploreHrefs = ["#applications", "/about", "#insights", "#certifications"];
 
-export default function Footer({ t }: { t: Dictionary }) {
+export default function Footer({ t, locale }: { t: Dictionary; locale: string }) {
+  const home = `/${locale}`;
+  // Absolute links so the footer is identical (and correct) on every page.
+  const productHrefs = [`${home}${productPaths.tube}`, `${home}#products`];
   const f = t.footer;
 
   return (
@@ -39,7 +41,7 @@ export default function Footer({ t }: { t: Dictionary }) {
         <ul>
           {f.productLinks.map((label, i) => (
             <li key={label}>
-              <a href={productHrefs[i] ?? "#products"}>
+              <a href={productHrefs[i] ?? `${home}#products`}>
                 <RollText text={label} />
               </a>
             </li>
@@ -54,7 +56,7 @@ export default function Footer({ t }: { t: Dictionary }) {
         <ul>
           {f.exploreLinks.map((label, i) => (
             <li key={label}>
-              <a href={exploreHrefs[i] ?? "#top"}>
+              <a href={(exploreHrefs[i] ?? "").startsWith("#") ? `${home}${exploreHrefs[i]}` : (exploreHrefs[i] ?? home)}>
                 <RollText text={label} />
               </a>
             </li>

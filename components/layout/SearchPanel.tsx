@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Dialog } from "@animate-ui/react/primitives/radix-ui";
 import type { Dictionary } from "@/lib/i18n";
+import { productPaths } from "@/lib/site";
 import { Search, ArrowRight } from "@/components/ui/icons";
 import styles from "./SearchDialog.module.css";
 
@@ -18,7 +19,7 @@ function buildIndex(t: Dictionary): Entry[] {
     { group: "section", title: t.partners.eyebrow, text: t.partners.lead.join(" "), href: "#partners" },
     { group: "section", title: t.certifications.eyebrow, text: t.certifications.lead, href: "#certifications" },
     { group: "section", title: t.cta.contact, text: t.cta.lead, href: "#contact" },
-    ...t.products.cards.map((c) => ({ group: "product" as const, title: c.title.join(" "), text: c.text, href: "#products" })),
+    ...t.products.cards.map((c, i) => ({ group: "product" as const, title: c.title.join(" "), text: c.text, href: i === 0 ? productPaths.tube : "#products" })),
     ...t.applications.items.map((a) => ({ group: "application" as const, title: a.title, text: a.text, href: "#applications" })),
     ...t.insights.articles.map((a) => ({ group: "article" as const, title: a.title, text: a.text, href: "#insights" })),
     ...t.certifications.items.map((c, i) => ({ group: "certificate" as const, title: `${CERT_CODES[i]} — ${c.name}`, text: c.text, href: "#certifications" })),
@@ -47,7 +48,12 @@ export default function SearchPanel({ t, open, onOpenChange, returnFocus }: Prop
     setOpen(false);
     // Let the dialog release scroll lock before jumping.
     window.setTimeout(() => {
-      document.querySelector(href)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const target = href.startsWith("#") ? document.querySelector(href) : null;
+      if (!target) {
+        window.location.href = `/${document.documentElement.lang}${href}`;
+        return;
+      }
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
       history.replaceState(null, "", href);
     }, 220);
   };

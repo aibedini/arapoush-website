@@ -8,6 +8,7 @@ import { Highlight, HighlightItem } from "@animate-ui/react/primitives/effects/h
 import { Shine } from "@animate-ui/react/primitives/effects/shine";
 import { gsap, ease, registerGsap, prefersReducedMotion } from "@/lib/animations/motion";
 import { locales, localeMeta, type Dictionary, type Locale } from "@/lib/i18n";
+import { homeHref } from "@/lib/site";
 import { ArrowRight, ArrowRightCircle } from "@/components/ui/icons";
 import LanguageSwitch from "./LanguageSwitch";
 import SearchDialog from "./SearchDialog";
@@ -16,7 +17,13 @@ import styles from "./Header.module.css";
 
 const glide = { type: "spring" as const, stiffness: 380, damping: 34 };
 
-export default function Header({ t, locale }: { t: Dictionary; locale: Locale }) {
+type Props = { t: Dictionary; locale: Locale; /** current path after the locale, e.g. "/products/multi-layer-tube"; "" on home */ path?: string };
+
+export default function Header({ t, locale, path = "" }: Props) {
+  const onHome = path === "";
+  const to = (href: string) => homeHref(locale, href, onHome);
+  // Home marks "Home" as current; product pages mark "Products".
+  const current = onHome ? "#top" : "#products";
   const panel = useRef<HTMLDivElement>(null);
   const toggle = useRef<HTMLButtonElement>(null);
   const [scrolled, setScrolled] = useState(false);
@@ -101,7 +108,7 @@ export default function Header({ t, locale }: { t: Dictionary; locale: Locale })
     <>
       <header className={`${styles.header} ${scrolled ? styles.scrolled : ""} ${hidden && !open ? styles.hidden : ""}`} data-header>
         <div className={styles.bar}>
-          <a href="#top" className={styles.logo} aria-label={t.common.brand} data-intro="nav">
+          <a href={onHome ? "#top" : `/${locale}`} className={styles.logo} aria-label={t.common.brand} data-intro="nav">
             <Image src="/images/logo.png" alt="" width={266} height={96} priority data-critical data-no-mirror sizes="(max-width: 1099px) 160px, 14vw" />
           </a>
 
@@ -111,7 +118,7 @@ export default function Header({ t, locale }: { t: Dictionary; locale: Locale })
               <Highlight controlledItems hover className={styles.navPill} transition={glide}>
                 {t.nav.items.map((item, i) => (
                   <HighlightItem key={item.href} as="li" value={item.href} data-intro="nav">
-                    <a className="u-link" href={item.href} aria-current={i === 0 ? "page" : undefined}>
+                    <a className="u-link" href={to(item.href)} aria-current={item.href === current ? "page" : undefined}>
                       <RollText text={item.label} />
                     </a>
                   </HighlightItem>
@@ -125,7 +132,7 @@ export default function Header({ t, locale }: { t: Dictionary; locale: Locale })
               <SearchDialog t={t} triggerClassName={styles.iconBtn} iconClassName={styles.icon24} />
             </span>
             <span data-intro="nav" className={styles.desktopOnly}>
-              <LanguageSwitch locale={locale} label={t.nav.language} />
+              <LanguageSwitch locale={locale} label={t.nav.language} path={path} />
             </span>
             <Shine asChild enableOnHover color="#ffffff" opacity={0.25}>
               <a href="#contact" className={`btn ${styles.quote}`} data-intro="nav">
@@ -160,7 +167,7 @@ export default function Header({ t, locale }: { t: Dictionary; locale: Locale })
             <Highlight controlledItems hover className={styles.menuPill} transition={glide}>
               {t.nav.items.map((item, i) => (
                 <HighlightItem key={item.href} as="li" value={item.href} data-menu-item>
-                  <a href={item.href} onClick={close} tabIndex={tab} className={styles.menuLink}>
+                  <a href={to(item.href)} onClick={close} tabIndex={tab} className={styles.menuLink}>
                     <span className={styles.menuIndex} aria-hidden="true">
                       {String(i + 1).padStart(2, "0")}
                     </span>
@@ -179,7 +186,7 @@ export default function Header({ t, locale }: { t: Dictionary; locale: Locale })
             <ul className={styles.langs} aria-label={t.nav.language}>
               {locales.map((l) => (
                 <li key={l}>
-                  <Link href={`/${l}`} hrefLang={l} lang={l} tabIndex={tab} aria-current={l === locale ? "true" : undefined}>
+                  <Link href={`/${l}${path}`} hrefLang={l} lang={l} tabIndex={tab} aria-current={l === locale ? "true" : undefined}>
                     {localeMeta[l].label}
                   </Link>
                 </li>

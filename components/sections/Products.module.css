@@ -261,3 +261,32 @@
     transform: translateX(3px);
   }
 }
+
+/* Cards with a detail page: the whole card opens it (the cover link sits under the copy). */
+.linked {
+  cursor: pointer;
+}
+.cover {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+.linked .content {
+  z-index: 2;
+  pointer-events: none;
+}
+.linked .content a {
+  pointer-events: auto;
+}
+.titleLink {
+  color: inherit;
+}
+.titleLink span {
+  display: block;
+}
+.titleLink:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+  border-radius: 4px;
+}

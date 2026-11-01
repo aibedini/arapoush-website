@@ -1,15 +1,23 @@
 import type { MetadataRoute } from "next";
 import { locales } from "@/lib/i18n";
 import { languageAlternates, pageUrl } from "@/lib/seo";
-import { siteUrl } from "@/lib/site";
+import { productPaths, siteUrl } from "@/lib/site";
+
+// Every public page, once per locale, with its hreflang alternates and key images.
+const pages = [
+  { path: "", priority: 1, images: ["/images/hero-products.webp", "/images/product-tube.webp", "/images/product-effervescent.webp"] },
+  { path: productPaths.tube, priority: 0.9, images: ["/images/product-tube.webp", "/images/cta-tube.webp"] },
+];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return locales.map((l) => ({
-    url: pageUrl(l),
-    lastModified: new Date(),
-    changeFrequency: "monthly",
-    priority: l === "fa" ? 1 : 0.9,
-    alternates: { languages: languageAlternates() },
-    images: ["/images/hero-products.webp", "/images/product-tube.webp", "/images/product-effervescent.webp"].map((p) => `${siteUrl}${p}`),
-  }));
+  return pages.flatMap((p) =>
+    locales.map((l) => ({
+      url: pageUrl(l, p.path),
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: l === "fa" ? p.priority : p.priority - 0.1,
+      alternates: { languages: languageAlternates(p.path) },
+      images: p.images.map((i) => `${siteUrl}${i}`),
+    })),
+  );
 }

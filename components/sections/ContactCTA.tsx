@@ -8,7 +8,7 @@ import { ArrowRightCircle } from "@/components/ui/icons";
 import styles from "./ContactCTA.module.css";
 
 /** Closing composition: CTA and footer share one blue material backdrop (Figma y 6313–7166). */
-export default function ContactCTA({ t }: SectionProps) {
+export default function ContactCTA({ t, locale }: SectionProps) {
   const c = t.cta;
   return (
     <div className={styles.closing}>
@@ -68,7 +68,7 @@ export default function ContactCTA({ t }: SectionProps) {
         </div>
       </section>
 
-      <Footer t={t} />
+      <Footer t={t} locale={locale} />
     </div>
   );
 }
