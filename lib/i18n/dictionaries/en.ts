@@ -1,0 +1,161 @@
+// Source copy from the Figma "Version 2" frame (obvious typos corrected).
+// Every locale file mirrors this shape; see Dictionary below.
+
+const en = {
+  meta: {
+    title: "Arapoush Gostar — Packaging, reimagined.",
+    description:
+      "High-quality multi-layer plastic tubes and effervescent tablet tubes for cosmetic, pharmaceutical, hygienic and food applications.",
+  },
+  common: {
+    skip: "Skip to content",
+    brand: "Arapoush Gostar",
+    loading: "Loading",
+    progress: "Reading progress",
+  },
+  nav: {
+    items: [
+      { label: "Home", href: "#top" },
+      { label: "Products", href: "#products" },
+      { label: "Applications", href: "#applications" },
+      { label: "Printing", href: "/printing" },
+      { label: "Media", href: "/media" },
+      { label: "About", href: "/about" },
+      { label: "Contact", href: "#contact" },
+    ],
+    quote: "Request a quote",
+    search: "Search",
+    language: "Language",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
+    main: "Main",
+    mobile: "Mobile",
+  },
+  search: {
+    title: "Search the site",
+    placeholder: "Products, applications, articles…",
+    empty: "No results. Try another word.",
+    hint: "Type to search products, applications, articles and certificates.",
+    close: "Close search",
+    groups: { section: "Section", product: "Product", application: "Application", article: "Article", certificate: "Certificate" },
+  },
+  hero: {
+    label: "Featured",
+    slides: [
+      {
+        title: ["Packaging,", "reimagined."],
+        lead: "High-quality packaging for cosmetic, pharmaceutical, hygienic and food applications.",
+        productsAlt: "Arapoush plastic tube and effervescent tablet tube splashing in water",
+      },
+      {
+        title: ["Multi-layered", "seamless tubes."],
+        lead: "High-performance, customizable tubes engineered to protect what matters inside.",
+        productsAlt: "Multi-layer Arapoush tube showing its protective layers",
+      },
+      {
+        title: ["Packaging excellence", "for leading brands."],
+        lead: "From innovative concepts to reliable mass production, built on trust.",
+        productsAlt: "",
+      },
+    ],
+    quote: "Request a quote",
+    story: "Watch our story",
+    prev: "Previous slide",
+    next: "Next slide",
+    goTo: "Go to slide",
+    slideOf: "Slide {n} of {total}",
+  },
+  products: {
+    eyebrow: "Our products",
+    title: ["Two forms.", "Endless", "possibilities"],
+    lead: "High-quality packaging for cosmetic, pharmaceutical, hygienic and food applications.",
+    cards: [
+      { title: ["Multi-Layered", "Seamless", "Plastic Tube"], text: "High-performance, customizable tubes for various industries." },
+      { title: ["Effervescent", "Tablets Tube"], text: "Reliable and functional packaging for effervescent products." },
+    ],
+    enquire: "Enquire about",
+  },
+  applications: {
+    eyebrow: "Applications",
+    title: ["Packaging for", "every possibility"],
+    lead: "Our packaging solutions are used across a wide range of industries, helping brands deliver quality, safety and better experiences.",
+    explore: "Explore",
+    items: [
+      { title: "Cosmetics", text: "Premium packaging for beauty and personal care brands." },
+      { title: "Pharmaceutical", text: "Safe, reliable packaging for a healthier tomorrow." },
+      { title: "Hygienic", text: "Trusted solutions for daily care and well-being." },
+      { title: "Food & Beverage", text: "Practical and durable packaging for everyday products." },
+    ],
+  },
+  insights: {
+    eyebrow: "Insights & journal",
+    title: ["Ideas Today", "for a better", "tomorrow"],
+    lead: "Industry trends, innovations and perspectives on packaging, sustainability and more.",
+    viewAll: "View all articles",
+    listLabel: "Articles",
+    prev: "Previous articles",
+    next: "Next articles",
+    articles: [
+      { category: "Sustainability", tag: "sustainability", title: "The Future of Sustainable Packaging in Pharma", text: "High-performance, customizable tubes for various industries." },
+      { category: "Innovation", tag: "technology", title: "Understanding Multi-Layer Tube Technology", text: "Explore how multi-layer structures enhance product protection, performance and shelf life." },
+      { category: "Industry trends", tag: "industry trends", title: "Multi-Layered Protection for a Longer Shelf Life", text: "Discover how advanced materials and design create safer, more effective packaging for today's demanding markets." },
+    ],
+  },
+  partners: {
+    eyebrow: "Trusted partner",
+    title: ["Packaging Excellence", "for Leading Brands"],
+    lead: ["From innovative concepts to reliable mass production,", "we partner with global and regional brands to deliver high-quality packaging solutions, built on trust."],
+    stats: [
+      { label: "Years of Expertise", sub: "in packaging solutions" },
+      { label: "Brands Supported", sub: "across global markets" },
+      { label: "Units Produced", sub: "annually" },
+      { label: "On-Time Delivery", sub: "trusted supply chain" },
+    ],
+    brands: "Partner brands",
+    prev: "Previous partner logos",
+    next: "Next partner logos",
+  },
+  certifications: {
+    eyebrow: "Certifications",
+    title: ["Quality You Can", "Always Trust"],
+    lead: "Our packaging solutions are developed under internationally recognized standards, ensuring safety, quality and consistency across every stage.",
+    items: [
+      { name: "Good Manufacturing Practice", text: "Consistent quality through controlled and certified processes." },
+      { name: "Quality Management System", text: "Structured processes for reliable and consistent excellence." },
+      { name: "Safety, Quality & Compliance", text: "Supporting product safety, quality standards and regulatory compliance." },
+      { name: "Quality, Safety & Reliability", text: "Promoting consistent quality and compliance with national standards." },
+    ],
+    learnMore: "Learn more",
+    seal: "certification seal",
+    features: [
+      { title: "Certified processes", text: "From materials to finished packaging" },
+      { title: "Safer for people & planet", text: "Quality with responsibility" },
+      { title: "Global standards", text: "Trusted by leading brands" },
+    ],
+  },
+  cta: {
+    title: ["Let’s Create Your Next", "Packaging Solution"],
+    lead: "Get in touch with our team for expert advice, customized solutions and a competitive quote.",
+    quote: "Request a quote",
+    contact: "Contact us",
+  },
+  footer: {
+    tagline: ["Precision packaging,", "built for your brand."],
+    products: "Products",
+    productLinks: ["Multi-Layered Seamless Plastic Tube", "Effervescent Tablets Tube"],
+    explore: "Explore",
+    exploreLinks: ["Applications", "About us", "Insights & Journals", "Certificates"],
+    contact: "Contact & business inquiries",
+    office: "Tehran Office",
+    address: ["No. 3, Gooyabadi St., Zafar Ave.,", "Tehran, Iran"],
+    brochure: "Download company brochure",
+    rights: "All rights reserved.",
+    company: "Arapoush Gostar.",
+    backToTop: "Back to top",
+  },
+};
+
+type Widen<T> = T extends string ? string : T extends readonly (infer U)[] ? Widen<U>[] : { [K in keyof T]: Widen<T[K]> };
+export type Dictionary = Widen<typeof en>;
+
+export default en as Dictionary;

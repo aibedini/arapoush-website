@@ -1,0 +1,69 @@
+.loader {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  background: var(--cream);
+  clip-path: inset(0% 0% 0% 0%);
+  will-change: clip-path;
+}
+
+:global(.js) .loader {
+  display: flex;
+  /* Failsafe: if scripts never finish, the loader still gets out of the way. */
+  animation: loaderFailsafe 0.6s ease 7s forwards;
+}
+
+:global(.no-loader) .loader {
+  display: none;
+}
+
+@keyframes loaderFailsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+.logo {
+  width: 190px;
+  height: auto;
+}
+
+.meter {
+  position: relative;
+  width: 168px;
+  height: 1px;
+  background: rgba(3, 29, 47, 0.12);
+  overflow: hidden;
+}
+
+.bar {
+  position: absolute;
+  inset: 0;
+  background: var(--navy);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.pct {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  font: 400 12px/1 var(--font-ui);
+  letter-spacing: 0.08em;
+  color: rgba(3, 29, 47, 0.55);
+  font-variant-numeric: tabular-nums;
+}
+.pctSign {
+  opacity: 0.6;
+}

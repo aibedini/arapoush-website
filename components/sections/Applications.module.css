@@ -1,0 +1,270 @@
+/* Figma y 2115–3130: header 69:4882, cards 69:4891 / 4905 / 4919 / 4933 */
+.section {
+  position: relative;
+  overflow: clip;
+  /* Off-screen: skip style/layout/paint until near the viewport (it already clips its overflow). */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1000px;
+}
+
+.head {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: calc(32 * var(--u));
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: calc(35 * var(--u));
+}
+.title {
+  flex: 0 0 calc(481 * var(--u));
+  white-space: nowrap;
+}
+.divider {
+  flex: none;
+  width: 1px;
+  height: calc(118 * var(--u));
+  background: rgba(30, 30, 30, 0.25);
+}
+.lead {
+  flex: 0 0 calc(481 * var(--u));
+}
+
+.grid {
+  display: contents;
+}
+.slot {
+  z-index: 1;
+  height: calc(545 * var(--u));
+}
+
+.card {
+  position: relative;
+  display: block;
+  height: 100%;
+  border-radius: calc(24 * var(--u));
+  background: #ffffff;
+  overflow: hidden;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.media {
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+  width: 100%;
+  height: calc(var(--ih) * var(--u));
+  overflow: hidden;
+  border-radius: calc(32 * var(--u)) calc(32 * var(--u)) 0 0;
+}
+.mediaInner {
+  position: absolute;
+  inset: 0;
+}
+.mediaInner img {
+  object-fit: cover;
+  object-position: top center;
+  transform-origin: 50% 40%;
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Figma "02 / White Fade": transparent until 43%, white by the bottom */
+.fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 43%,
+    rgba(255, 255, 255, 0.09) 58%,
+    rgba(255, 255, 255, 0.67) 72%,
+    rgba(255, 255, 255, 0.96) 86%,
+    #ffffff 100%
+  );
+  pointer-events: none;
+}
+
+.content {
+  position: absolute;
+  inset-inline-start: calc(39 * var(--u));
+  top: calc(397 * var(--u));
+  width: calc(279 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.cardTitle {
+  font: 400 max(24px, calc(32 * var(--u))) / 1.1 var(--font-sans);
+  color: #000;
+  white-space: nowrap;
+}
+.text {
+  max-width: 218px;
+  min-height: calc(42 * var(--u));
+  font: 300 14px/1.5 var(--font-ui);
+  color: rgba(0, 0, 0, 0.8);
+  margin-bottom: calc(26 * var(--u));
+}
+.explore {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font: 500 14px/1 var(--font-sans);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #939496;
+  transition: color 0.3s ease;
+}
+.circle {
+  width: 37px;
+  height: 37px;
+}
+
+.card:hover,
+.card:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 60px -40px rgba(110, 82, 56, 0.35);
+}
+.card:hover .mediaInner img,
+.card:focus-visible .mediaInner img {
+  transform: scale(1.045);
+}
+.card:hover .explore {
+  color: #302b28;
+}
+.card:hover .circle {
+  background: rgba(217, 217, 217, 0.45);
+}
+.card:hover .circle :global(.chev) {
+  transform: translateX(2.5px);
+}
+
+@media (max-width: 1099px) {
+  .section :global(.canvas) {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding: 24px var(--gutter) 96px;
+  }
+  .head {
+    gap: 22px;
+  }
+  .row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .title,
+  .lead {
+    flex: none;
+    white-space: normal;
+    max-width: 620px;
+  }
+  .divider {
+    display: none;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .slot {
+    height: auto;
+    aspect-ratio: 356 / 545;
+  }
+  .media {
+    height: auto;
+    aspect-ratio: 356 / var(--ih);
+  }
+  .content {
+    inset-inline-start: 22px;
+    inset-inline-end: 22px;
+    top: auto;
+    bottom: 24px;
+    width: auto;
+  }
+  .text {
+    min-height: 0;
+    margin-bottom: 14px;
+  }
+}
+
+/* Phone (client mockup): 2×2 grid, photo on top, copy on white below. */
+@media (max-width: 767px) {
+  .section :global(.canvas) {
+    gap: 28px;
+    padding-top: 40px;
+    padding-bottom: 72px;
+  }
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .slot {
+    aspect-ratio: auto;
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 14px;
+    box-shadow: 0 1px 0 rgba(3, 29, 47, 0.04), 0 10px 24px -18px rgba(3, 29, 47, 0.25);
+  }
+  .media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: 14px 14px 0 0;
+  }
+  .mediaInner img {
+    object-position: center 30%;
+  }
+  .fade {
+    display: none;
+  }
+  .content {
+    position: static;
+    flex: 1;
+    padding: 12px 12px 14px;
+    gap: 4px;
+  }
+  .explore {
+    margin-top: auto;
+  }
+  .cardTitle {
+    font-size: 15px;
+    font-weight: 500;
+    white-space: normal;
+  }
+  .text {
+    font-size: 11.5px;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+  .explore {
+    font-size: 11px;
+  }
+  .circle {
+    width: 26px;
+    height: 26px;
+  }
+  .circle :global(.ring) {
+    stroke-width: 3;
+  }
+}
+
+/* Touch: press feedback mirrors the hover lift. */
+@media (hover: none) {
+  .card:active {
+    transform: translateY(-2px) scale(0.98);
+  }
+  .card:active .mediaInner img {
+    transform: scale(1.05);
+  }
+  .card:active .circle :global(.chev) {
+    transform: translateX(2.5px);
+  }
+}

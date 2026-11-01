@@ -1,0 +1,9 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        SITE_URL: ${SITE_URL:-http://localhost}
+    restart: unless-stopped
+    ports:
+      - "${PORT:-80}:3000"

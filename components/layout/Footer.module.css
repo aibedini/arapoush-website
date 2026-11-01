@@ -1,0 +1,248 @@
+/* Figma y 6835–7166 (relative to the closing block: 522–853) */
+/* Columns start at Figma x 46 / 450 / 1002 / 1554; rows grow with content. */
+.footer {
+  position: relative;
+  display: grid;
+  grid-template-columns: calc(404 * var(--u)) calc(552 * var(--u)) calc(552 * var(--u)) minmax(0, 1fr);
+  grid-template-rows: minmax(calc(244 * var(--u)), auto) auto;
+  align-items: start;
+  padding: 0 calc(46 * var(--u)) calc(30 * var(--u));
+}
+
+.brand {
+  width: calc(266 * var(--u));
+}
+.logo {
+  width: calc(266 * var(--u));
+  min-width: 180px;
+  height: auto;
+}
+.tagline {
+  margin-top: calc(32 * var(--u));
+  font: 400 max(15px, calc(18 * var(--u))) / 1.3 var(--font-sans);
+  color: var(--on-dark);
+}
+.social {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: calc(17 * var(--u));
+}
+.ig,
+.li {
+  display: grid;
+  place-items: center;
+}
+.ig svg {
+  width: 48px;
+  height: 48px;
+}
+.li svg {
+  width: 24px;
+  height: 24px;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-inline-start: 24px;
+  min-height: calc(183 * var(--u));
+  border-inline-start: 1px solid rgba(245, 244, 244, 0.35);
+}
+.col ul {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.col ul a {
+  font: 300 14px/1.3 var(--font-sans);
+  color: var(--on-dark);
+  white-space: nowrap;
+}
+
+.heading {
+  font: 500 max(13px, calc(18 * var(--u))) / 1.3 var(--font-sans);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--sky);
+}
+
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  font-style: normal;
+}
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font: 300 14px/1.3 var(--font-sans);
+  color: var(--on-dark);
+}
+.row strong {
+  display: block;
+  margin-bottom: 2px;
+  font: 700 14px/1.3 var(--font-ui);
+}
+.ico {
+  flex: none;
+  width: 24px;
+  height: 24px;
+}
+.row p {
+  padding-inline-start: 5px;
+}
+.brochure {
+  color: var(--sky);
+}
+.brochure span {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.bottom {
+  grid-column: 1 / -1;
+  margin-top: calc(13 * var(--u));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: calc(13 * var(--u));
+  border-top: 1.5px solid rgba(254, 254, 254, 0.2);
+}
+.copy {
+  font: 400 max(14px, calc(18 * var(--u))) / 1.3 var(--font-sans);
+  color: #fbfbfb;
+}
+.upper {
+  text-transform: uppercase;
+}
+.top {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding-inline-start: 10px;
+  border-inline-start: 1px solid rgba(245, 244, 244, 0.5);
+  font: 600 13px/1.05 var(--font-ui);
+  color: var(--on-dark);
+  text-transform: capitalize;
+}
+.topIcon {
+  width: 12px;
+  height: 15px;
+}
+.topIcon :global(.chev) {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.top:hover .topIcon :global(.chev) {
+  transform: translateY(-3px);
+}
+
+@media (max-width: 1099px) {
+  .footer {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 40px 24px;
+    padding: 48px var(--gutter) 28px;
+  }
+  .brand,
+  .col {
+    width: auto;
+    min-height: 0;
+  }
+  .brand {
+    grid-column: 1 / -1;
+  }
+  .colContact {
+    grid-column: 1 / -1;
+  }
+  .bottom {
+    grid-column: 1 / -1;
+    padding-top: 16px;
+    gap: 16px;
+  }
+}
+
+/* Phone (client mockup): compact footer — brand row, two link columns, contact, one bottom line. */
+@media (max-width: 767px) {
+  .footer {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 14px;
+    padding: 22px var(--gutter) 18px;
+    border-top: 1px solid rgba(254, 254, 254, 0.12);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    width: 104px;
+    min-width: 0;
+  }
+  .tagline {
+    display: none;
+  }
+  .social {
+    margin-top: 0;
+    gap: 12px;
+  }
+  .ig svg {
+    width: 28px;
+    height: 28px;
+  }
+  .li svg {
+    width: 16px;
+    height: 16px;
+  }
+  .col {
+    gap: 8px;
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+  .heading {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+  .col ul {
+    gap: 7px;
+  }
+  .col ul a {
+    font-size: 12px;
+    line-height: 1.45;
+    white-space: normal;
+  }
+  .contact {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 14px;
+  }
+  .contact > :first-child {
+    grid-column: 1 / -1;
+  }
+  .row {
+    font-size: 12px;
+    gap: 6px;
+    line-height: 1.45;
+  }
+  .row strong {
+    font-size: 12px;
+  }
+  .ico {
+    width: 16px;
+    height: 16px;
+  }
+  .bottom {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 0;
+    padding-top: 12px;
+  }
+  .copy {
+    font-size: 11px;
+  }
+  .top {
+    font-size: 11px;
+  }
+}

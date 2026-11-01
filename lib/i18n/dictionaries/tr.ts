@@ -1,0 +1,158 @@
+import type { Dictionary } from "./en";
+
+// Turkish. Mirrors en.ts.
+const tr: Dictionary = {
+  meta: {
+    title: "Arapoush Gostar — Ambalaj, yeniden tasarlandı.",
+    description:
+      "Kozmetik, ilaç, hijyen ve gıda uygulamaları için yüksek kaliteli çok katmanlı plastik tüpler ve efervesan tablet tüpleri.",
+  },
+  common: {
+    skip: "İçeriğe geç",
+    brand: "Arapoush Gostar",
+    loading: "Yükleniyor",
+    progress: "Okuma ilerlemesi",
+  },
+  nav: {
+    items: [
+      { label: "Ana Sayfa", href: "#top" },
+      { label: "Ürünler", href: "#products" },
+      { label: "Uygulamalar", href: "#applications" },
+      { label: "Baskı", href: "/printing" },
+      { label: "Medya", href: "/media" },
+      { label: "Hakkımızda", href: "/about" },
+      { label: "İletişim", href: "#contact" },
+    ],
+    quote: "Teklif isteyin",
+    search: "Ara",
+    language: "Dil",
+    openMenu: "Menüyü aç",
+    closeMenu: "Menüyü kapat",
+    main: "Ana menü",
+    mobile: "Mobil menü",
+  },
+  search: {
+    title: "Sitede ara",
+    placeholder: "Ürünler, uygulamalar, makaleler…",
+    empty: "Sonuç bulunamadı. Başka bir kelime deneyin.",
+    hint: "Ürün, uygulama, makale ve sertifikalarda aramak için yazın.",
+    close: "Aramayı kapat",
+    groups: { section: "Bölüm", product: "Ürün", application: "Uygulama", article: "Makale", certificate: "Sertifika" },
+  },
+  hero: {
+    label: "Öne çıkan",
+    slides: [
+      {
+        title: ["Ambalaj,", "yeniden tasarlandı."],
+        lead: "Kozmetik, ilaç, hijyen ve gıda uygulamaları için yüksek kaliteli ambalaj.",
+        productsAlt: "Suya sıçrayan Arapoush plastik tüp ve efervesan tablet tüpü",
+      },
+      {
+        title: ["Çok katmanlı", "dikişsiz tüpler."],
+        lead: "İçindekini korumak için tasarlanmış, yüksek performanslı ve özelleştirilebilir tüpler.",
+        productsAlt: "Koruyucu katmanlarını gösteren çok katmanlı Arapoush tüpü",
+      },
+      {
+        title: ["Öncü markalar için", "ambalajda mükemmellik."],
+        lead: "Yenilikçi fikirlerden güvenilir seri üretime, güven üzerine kurulu.",
+        productsAlt: "",
+      },
+    ],
+    quote: "Teklif isteyin",
+    story: "Hikâyemizi izleyin",
+    prev: "Önceki slayt",
+    next: "Sonraki slayt",
+    goTo: "Slayta git",
+    slideOf: "Slayt {n} / {total}",
+  },
+  products: {
+    eyebrow: "Ürünlerimiz",
+    title: ["İki form.", "Sonsuz", "olasılık."],
+    lead: "Kozmetik, ilaç, hijyen ve gıda uygulamaları için yüksek kaliteli ambalaj.",
+    cards: [
+      { title: ["Çok Katmanlı", "Dikişsiz", "Plastik Tüp"], text: "Farklı sektörler için yüksek performanslı, özelleştirilebilir tüpler." },
+      { title: ["Efervesan", "Tablet Tüpü"], text: "Efervesan ürünler için güvenilir ve işlevsel ambalaj." },
+    ],
+    enquire: "Bilgi alın:",
+  },
+  applications: {
+    eyebrow: "Uygulamalar",
+    title: ["Her olasılık", "için ambalaj"],
+    lead: "Ambalaj çözümlerimiz pek çok sektörde kullanılır ve markaların kalite, güvenlik ve daha iyi deneyim sunmasına yardımcı olur.",
+    explore: "Keşfet",
+    items: [
+      { title: "Kozmetik", text: "Güzellik ve kişisel bakım markaları için premium ambalaj." },
+      { title: "İlaç", text: "Daha sağlıklı bir yarın için güvenli, güvenilir ambalaj." },
+      { title: "Hijyen", text: "Günlük bakım ve sağlık için güvenilir çözümler." },
+      { title: "Gıda ve İçecek", text: "Günlük ürünler için pratik ve dayanıklı ambalaj." },
+    ],
+  },
+  insights: {
+    eyebrow: "Görüşler ve günlük",
+    title: ["Bugünün fikirleri,", "daha iyi bir", "yarın için"],
+    lead: "Ambalaj, sürdürülebilirlik ve daha fazlası üzerine sektör trendleri, yenilikler ve bakış açıları.",
+    viewAll: "Tüm makaleler",
+    listLabel: "Makaleler",
+    prev: "Önceki makaleler",
+    next: "Sonraki makaleler",
+    articles: [
+      { category: "Sürdürülebilirlik", tag: "sürdürülebilirlik", title: "İlaç Sektöründe Sürdürülebilir Ambalajın Geleceği", text: "Farklı sektörler için yüksek performanslı, özelleştirilebilir tüpler." },
+      { category: "İnovasyon", tag: "teknoloji", title: "Çok Katmanlı Tüp Teknolojisini Anlamak", text: "Çok katmanlı yapıların ürün korumasını, performansı ve raf ömrünü nasıl artırdığını keşfedin." },
+      { category: "Sektör trendleri", tag: "sektör trendleri", title: "Daha Uzun Raf Ömrü için Çok Katmanlı Koruma", text: "Gelişmiş malzeme ve tasarımın günümüz pazarları için nasıl daha güvenli ve etkili ambalaj yarattığını keşfedin." },
+    ],
+  },
+  partners: {
+    eyebrow: "Güvenilir iş ortağı",
+    title: ["Öncü markalar için", "ambalajda mükemmellik"],
+    lead: ["Yenilikçi fikirlerden güvenilir seri üretime,", "küresel ve bölgesel markalarla güvene dayalı, yüksek kaliteli ambalaj çözümleri sunuyoruz."],
+    stats: [
+      { label: "Yıllık Deneyim", sub: "ambalaj çözümlerinde" },
+      { label: "Desteklenen Marka", sub: "küresel pazarlarda" },
+      { label: "Üretilen Adet", sub: "her yıl" },
+      { label: "Zamanında Teslimat", sub: "güvenilir tedarik zinciri" },
+    ],
+    brands: "İş ortağı markalar",
+    prev: "Önceki logolar",
+    next: "Sonraki logolar",
+  },
+  certifications: {
+    eyebrow: "Sertifikalar",
+    title: ["Her zaman", "güvenebileceğiniz kalite"],
+    lead: "Ambalaj çözümlerimiz uluslararası kabul görmüş standartlara göre geliştirilir; her aşamada güvenlik, kalite ve tutarlılık sağlanır.",
+    items: [
+      { name: "İyi Üretim Uygulamaları", text: "Kontrollü ve sertifikalı süreçlerle tutarlı kalite." },
+      { name: "Kalite Yönetim Sistemi", text: "Güvenilir ve tutarlı mükemmellik için yapılandırılmış süreçler." },
+      { name: "Güvenlik, Kalite ve Uyum", text: "Ürün güvenliğini, kalite standartlarını ve mevzuata uyumu destekler." },
+      { name: "Kalite, Güvenlik ve Güvenilirlik", text: "Ulusal standartlara uyum ve tutarlı kaliteyi teşvik eder." },
+    ],
+    learnMore: "Daha fazla",
+    seal: "sertifika mührü",
+    features: [
+      { title: "Sertifikalı süreçler", text: "Hammaddeden bitmiş ambalaja" },
+      { title: "İnsan ve gezegen için daha güvenli", text: "Sorumlulukla kalite" },
+      { title: "Küresel standartlar", text: "Öncü markaların güveni" },
+    ],
+  },
+  cta: {
+    title: ["Bir sonraki ambalaj", "çözümünüzü birlikte yaratalım"],
+    lead: "Uzman tavsiyesi, özel çözümler ve rekabetçi bir teklif için ekibimizle iletişime geçin.",
+    quote: "Teklif isteyin",
+    contact: "Bize ulaşın",
+  },
+  footer: {
+    tagline: ["Hassas ambalaj,", "markanız için üretildi."],
+    products: "Ürünler",
+    productLinks: ["Çok Katmanlı Dikişsiz Plastik Tüp", "Efervesan Tablet Tüpü"],
+    explore: "Keşfet",
+    exploreLinks: ["Uygulamalar", "Hakkımızda", "Görüşler ve Günlük", "Sertifikalar"],
+    contact: "İletişim ve iş birliği",
+    office: "Tahran Ofisi",
+    address: ["No. 3, Gooyabadi Cd., Zafar Blv.,", "Tahran, İran"],
+    brochure: "Şirket broşürünü indir",
+    rights: "Tüm hakları saklıdır.",
+    company: "Arapoush Gostar.",
+    backToTop: "Başa dön",
+  },
+};
+
+export default tr;

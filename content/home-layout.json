@@ -1,0 +1,11 @@
+{
+  "$comment": "Home page composition. A CMS drag-and-drop editor only needs to reorder this array or toggle `enabled`. Valid `type` values are the keys of sectionRegistry in lib/sections.tsx. The closing CTA + footer always render last.",
+  "sections": [
+    { "id": "hero", "type": "hero", "enabled": true },
+    { "id": "products", "type": "products", "enabled": true },
+    { "id": "applications", "type": "applications", "enabled": true },
+    { "id": "insights", "type": "insights", "enabled": true },
+    { "id": "partners", "type": "partners", "enabled": true },
+    { "id": "certifications", "type": "certifications", "enabled": true }
+  ]
+}

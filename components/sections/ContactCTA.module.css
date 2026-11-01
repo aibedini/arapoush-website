@@ -1,0 +1,177 @@
+/* Figma: bg 65:4137 + 65:4154, tube 65:4228, copy 65:4151, buttons 65:4138 / 65:4143 */
+.closing {
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  background: #0a2747;
+  color: var(--on-dark);
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+.bgTop {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  top: calc(-30 * var(--u));
+  height: calc(682 * var(--u));
+}
+.bgBottom {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  top: calc(647 * var(--u));
+  bottom: 0;
+}
+.bg img {
+  object-fit: cover;
+}
+
+.cta {
+  position: relative;
+  height: calc(522 * var(--u));
+}
+
+.tube {
+  position: absolute;
+  z-index: 1;
+  inset-inline-start: calc(1098 * var(--u));
+  top: calc(-238 * var(--u));
+  width: calc(941 * var(--u));
+  pointer-events: none;
+}
+.tube img {
+  width: 100%;
+  height: auto;
+}
+
+.copy {
+  position: absolute;
+  z-index: 2;
+  inset-inline-start: calc(58 * var(--u));
+  top: calc(268 * var(--u));
+  width: calc(1003 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.title {
+  line-height: 1;
+  color: #f5f6f9;
+}
+.accent {
+  color: var(--sky);
+}
+.lead {
+  max-width: calc(720 * var(--u));
+  color: var(--on-dark-2);
+}
+
+.magnet {
+  display: inline-flex;
+}
+.actions {
+  /* Figma right edge 1822 */
+  position: absolute;
+  z-index: 2;
+  inset-inline-end: calc(98 * var(--u));
+  top: calc(386 * var(--u));
+  display: flex;
+  gap: calc(56 * var(--u));
+}
+
+@media (max-width: 1099px) {
+  .closing {
+    display: flex;
+    flex-direction: column;
+  }
+  .bgTop {
+    top: 0;
+    height: 70%;
+  }
+  .bgBottom {
+    top: 70%;
+  }
+  .cta {
+    position: relative;
+    height: auto;
+    padding: 240px var(--gutter) 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .tube {
+    inset-inline-start: auto;
+    inset-inline-end: -8vw;
+    top: -120px;
+    width: min(78vw, 560px);
+  }
+  .copy,
+  .actions {
+    position: relative;
+    inset-inline-start: auto;
+    inset-inline-end: auto;
+    top: auto;
+    width: auto;
+  }
+  .lead {
+    max-width: 34em;
+  }
+  .actions {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+}
+
+/* Phone (client mockup): tube rides the wave at the end edge, buttons side by side.
+   Backgrounds keep their own proportions instead of being blown up to cover a tall column. */
+@media (max-width: 767px) {
+  .closing {
+    background: linear-gradient(180deg, #0c2f55 0%, #0a2747 45%, #081e38 100%);
+  }
+  .bgTop {
+    top: 0;
+    left: 50%;
+    right: auto;
+    width: 250vw;
+    height: auto;
+    aspect-ratio: 3840 / 1304;
+    translate: -50% 0;
+  }
+  .bgTop::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(10, 39, 71, 0) 55%, #0c2f55 100%);
+  }
+  .bgBottom {
+    display: none;
+  }
+  .cta {
+    padding: 132px var(--gutter) 30px;
+    gap: 18px;
+  }
+  .tube {
+    inset-inline-end: -5vw;
+    top: -46px;
+    width: 64vw;
+  }
+  .copy {
+    gap: 10px;
+  }
+  .title {
+    font-size: clamp(24px, 6.8vw, 28px);
+    line-height: 1.15;
+  }
+  .lead {
+    font-size: 14px;
+  }
+  .actions {
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+}

@@ -1,0 +1,17 @@
+node_modules
+.next
+out
+next-env.d.ts
+*.tsbuildinfo
+.env*
+!.env.example
+
+# Design sources and original font files stay local (the site ships the WOFF2 subsets in app/fonts).
+_figma/
+font/
+
+# Lighthouse reports (the runner script is kept)
+.lighthouse/*
+!.lighthouse/run.sh
+
+.claude/

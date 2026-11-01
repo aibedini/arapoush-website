@@ -1,0 +1,583 @@
+/* ─────────────────────────────────────────────────────────────
+   ARAPOUSH — design tokens + layout system
+   Desktop (≥1100px) is a fluid copy of the 1920px Figma frame:
+   1 design px = var(--u). Below that, sections reflow.
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  --u: calc(min(100vw, 2400px) / 1920);
+
+  --navy: #031d2f;
+  --navy-2: #0e2b46;
+  --ink: #1e1e1e;
+  --black: #000000;
+  /* Figma #A3A6AA darkened to pass WCAG AA contrast on white and on the hero cream. */
+  --muted: #6f7379;
+  --slate: #6b7682; /* Figma #96A0AB darkened for WCAG AA contrast on white */
+  --steel: #3b5872;
+  --steel-2: #54677c;
+  --sky: #b2c7de;
+  --sky-deep: #92b6dd;
+  --line-soft: #bdc1c9;
+  --cream: #f3f0ed;
+  --paper: #fdfcfc;
+  --on-dark: #f5f4f4;
+  --on-dark-2: #b7c1ca;
+  --chip: #e7e9ee;
+
+  --font-sans: var(--font-helvetica), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-ui: var(--font-inter), var(--font-helvetica), Arial, sans-serif;
+  --font-mark: var(--font-jetbrains), ui-monospace, monospace;
+
+  --gutter: calc(48 * var(--u));
+  --header-h: max(72px, calc(96 * var(--u)));
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: auto;
+}
+
+body {
+  margin: 0;
+  background: #ffffff;
+  color: var(--black);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--sky-deep);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  inset-inline-start: 16px;
+  top: 16px;
+  z-index: 200;
+  padding: 12px 18px;
+  border-radius: 32px;
+  background: var(--navy);
+  color: #fff;
+  font: 600 14px/1 var(--font-ui);
+  transform: translateY(-160%);
+  transition: transform 0.24s ease;
+}
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* ── Canvas layout: absolute Figma coordinates on desktop ── */
+
+.canvas {
+  position: relative;
+  width: 100%;
+  height: calc(var(--h) * var(--u));
+}
+
+/* Logical inset: the same Figma x mirrors automatically in RTL. */
+.at {
+  position: absolute;
+  inset-inline-start: calc(var(--x) * var(--u));
+  top: calc(var(--y) * var(--u));
+  width: calc(var(--w) * var(--u));
+}
+
+/* ── Typography ── */
+
+.t-display {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: max(52px, calc(96 * var(--u)));
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.t-h2 {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: max(36px, calc(64 * var(--u)));
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+}
+
+.t-lead {
+  font-family: var(--font-sans);
+  font-size: max(16px, calc(24 * var(--u)));
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.t-muted {
+  color: var(--muted);
+}
+
+.line-mask {
+  display: block;
+  overflow: hidden;
+  /* room for descenders inside the mask */
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.line-mask > span {
+  display: block;
+  will-change: transform;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: calc(22 * var(--u));
+  font-family: var(--font-sans);
+  font-size: max(13px, calc(18 * var(--u)));
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.eyebrow::before {
+  content: "";
+  width: calc(143 * var(--u));
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+  transform-origin: left center;
+}
+
+/* ── Buttons ── */
+
+.btn {
+  --btn-bg: var(--navy);
+  --btn-fg: #ffffff;
+  --btn-border: transparent;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 56px;
+  min-width: 185px;
+  padding: 16px 24px;
+  border-radius: 32px;
+  border: 1px solid var(--btn-border);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font: 600 14px/1.22 var(--font-ui);
+  letter-spacing: -0.08em;
+  word-spacing: 0.12em;
+  text-transform: capitalize;
+  white-space: nowrap;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.28s ease,
+    border-color 0.28s ease,
+    color 0.28s ease;
+}
+.btn::before {
+  /* fill sweep */
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--btn-sweep, #0e2b46);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.btn:hover::before {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+/* Touch screens have no hover: the fill sweep and icon nudge play on press instead. */
+@media (hover: none) {
+  .btn:active::before {
+    transform: scaleX(1);
+    transform-origin: left center;
+    transition-duration: 0.22s;
+  }
+  [dir="rtl"] .btn:active::before {
+    transform-origin: right center;
+  }
+  .btn:active .icon .chev {
+    transform: translateX(2.5px);
+  }
+  a,
+  button,
+  [tabindex] {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+.btn .icon {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  overflow: hidden;
+}
+.btn .icon svg {
+  width: 100%;
+  height: 100%;
+}
+.btn .icon .chev {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.btn:hover .icon .chev {
+  transform: translateX(2.5px);
+}
+
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--navy);
+  --btn-sweep: rgba(3, 29, 47, 0.06);
+}
+.btn--light {
+  --btn-bg: #fbfbfb;
+  --btn-fg: var(--navy-2);
+  --btn-border: #a9acaf;
+  --btn-sweep: #ffffff;
+}
+.btn--outline-light {
+  --btn-bg: transparent;
+  --btn-fg: var(--on-dark);
+  --btn-border: #a9acaf;
+  --btn-sweep: rgba(255, 255, 255, 0.1);
+}
+
+/* Circle arrow link */
+.circle-link {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  border-radius: 50%;
+  background: rgba(217, 217, 217, 0.2);
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.circle-link svg {
+  width: 100%;
+  height: 100%;
+}
+.circle-link .chev {
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.circle-link .ring {
+  stroke-dasharray: 120;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Underline link */
+.u-link {
+  position: relative;
+  display: inline-block;
+}
+.u-link::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  bottom: -4px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.u-link:hover::after,
+.u-link[aria-current="page"]::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* Masked image hover zoom */
+.zoom-mask {
+  overflow: hidden;
+}
+.zoom-mask img {
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Soft colour glows (Figma: 499px ellipses, 300px layer blur) */
+.glow {
+  position: absolute;
+  width: calc(1100 * var(--u));
+  height: calc(1100 * var(--u));
+  margin-inline-start: calc(-300 * var(--u));
+  margin-top: calc(-300 * var(--u));
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--c) 0%, transparent 100%);
+  opacity: var(--o, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* JS-only initial states are applied by GSAP, never by CSS, so
+   content stays visible when scripts fail. */
+
+/* ── Persian (fa) ──────────────────────────────────────────────
+   Vazirmatn carries Persian glyphs, Helvetica Neue the Latin ones.
+   Persian needs zero tracking (tracking breaks letter joining), no case
+   transforms, a looser leading, and a slightly smaller display scale
+   because its x-height runs larger than Helvetica's. */
+:root:lang(fa) {
+  --font-sans: var(--font-vazir), var(--font-helvetica), Tahoma, sans-serif;
+  --font-ui: var(--font-vazir), var(--font-inter), Tahoma, sans-serif;
+}
+/* Element-level :lang so Latin islands (lang="en": wordmark, codes) keep their tracking. */
+body:lang(fa),
+body *:lang(fa) {
+  letter-spacing: 0 !important;
+  word-spacing: normal !important;
+  text-transform: none !important;
+}
+:lang(fa) .t-display {
+  font-size: max(44px, calc(80 * var(--u)));
+  line-height: 1.3;
+}
+:lang(fa) .t-h2 {
+  font-size: max(30px, calc(54 * var(--u)));
+  line-height: 1.45;
+}
+:lang(fa) .t-lead {
+  font-size: max(15px, calc(21 * var(--u)));
+  line-height: 1.85;
+}
+:lang(fa) .eyebrow {
+  font-size: max(13px, calc(16 * var(--u)));
+}
+:lang(fa) .line-mask {
+  padding-bottom: 0.2em;
+  margin-bottom: -0.2em;
+}
+
+/* RollText: label rolls up on hover (touch: on press). */
+.roll {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* bleed so descenders and Persian dots aren't clipped */
+  padding-block: 0.25em;
+  margin-block: -0.25em;
+}
+.roll-track {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.roll-track > span {
+  white-space: nowrap;
+}
+.roll-track > span + span {
+  /* copy waits below the clip; removing it from flow keeps the label one line tall */
+  position: absolute;
+  top: calc(100% + 0.6em);
+  inset-inline-start: 0;
+}
+.roll-track {
+  position: relative;
+}
+@media (hover: hover) {
+  :is(a, button):hover .roll-track {
+    transform: translateY(calc(-100% - 0.6em));
+  }
+}
+:is(a, button):focus-visible .roll-track,
+:is(a, button):active .roll-track {
+  transform: translateY(calc(-100% - 0.6em));
+}
+@media (prefers-reduced-motion: reduce) {
+  .roll-track {
+    transition: none;
+  }
+}
+
+/* The hero wordmark waits for its font and the intro (which fades it in): no swap shift. */
+.js [data-mark] {
+  opacity: 0;
+}
+
+/* Latin-only islands (wordmark, numbers, emails) keep their own direction. */
+.ltr {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* Persian layout: photos mirror with the page; logos and seals (data-no-mirror) stay readable.
+   `scale` composes with GSAP's transform, so image animations keep working. */
+[dir="rtl"] img:not([data-no-mirror]) {
+  scale: -1 1;
+}
+
+/* Directional glyphs (arrows, chevrons) point the reading way in RTL. */
+[dir="rtl"] [data-flip] {
+  transform: scaleX(-1);
+}
+/* Line reveals and sweeps grow from the reading start. */
+[dir="rtl"] .eyebrow::before {
+  transform-origin: right center;
+}
+[dir="rtl"] .btn::before {
+  transform-origin: left center;
+}
+[dir="rtl"] .btn:hover::before {
+  transform-origin: right center;
+}
+[dir="rtl"] .u-link::after {
+  transform-origin: left center;
+}
+[dir="rtl"] .u-link:hover::after,
+[dir="rtl"] .u-link[aria-current="page"]::after {
+  transform-origin: right center;
+}
+
+@media (max-width: 1099px) {
+  :root {
+    --gutter: 24px;
+  }
+  .canvas {
+    height: auto;
+  }
+  .at {
+    position: relative;
+    inset-inline-start: auto;
+    top: auto;
+    width: auto;
+  }
+  .eyebrow {
+    gap: 16px;
+  }
+  .eyebrow::before {
+    width: 64px;
+  }
+  .glow {
+    width: 520px;
+    height: 520px;
+    margin: -160px 0 0 -160px;
+  }
+}
+
+/* Phone scale (client mockup): tighter type, compact pills. */
+@media (max-width: 767px) {
+  :root {
+    --gutter: 20px;
+    --header-h: 68px;
+  }
+  .t-display {
+    font-size: clamp(38px, 11vw, 46px);
+    line-height: 1.04;
+  }
+  .t-h2 {
+    font-size: clamp(28px, 8.4vw, 34px);
+    line-height: 1.12;
+  }
+  .t-lead {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  :lang(fa) .t-display {
+    font-size: clamp(34px, 9.6vw, 40px);
+    line-height: 1.32;
+  }
+  :lang(fa) .t-h2 {
+    font-size: clamp(25px, 7.2vw, 30px);
+    line-height: 1.45;
+  }
+  :lang(fa) .t-lead {
+    font-size: 15px;
+    line-height: 1.85;
+  }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+  .eyebrow::before {
+    display: none;
+  }
+  .btn {
+    min-width: 0;
+    height: 44px;
+    padding: 10px 20px;
+    font-size: 13px;
+    letter-spacing: -0.02em;
+  }
+  .btn .icon {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

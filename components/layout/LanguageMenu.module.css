@@ -1,0 +1,71 @@
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 4px;
+  border-radius: 20px;
+  color: #141416;
+  font: 600 13px/1.22 var(--font-ui);
+  transition: background-color 0.24s ease;
+}
+.trigger:hover,
+.trigger[data-state="open"] {
+  background: rgba(3, 29, 47, 0.06);
+}
+.icon {
+  width: 24px;
+  height: 24px;
+}
+.short {
+  letter-spacing: 0.02em;
+}
+.chev :global(.chev) {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: center;
+  transform-box: fill-box;
+}
+.trigger[data-state="open"] .chev :global(.chev) {
+  transform: rotate(180deg);
+}
+
+.content {
+  z-index: 80;
+  min-width: 176px;
+  padding: 6px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.96);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 1px 0 rgba(3, 29, 47, 0.05),
+    0 18px 40px -18px rgba(3, 29, 47, 0.35);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  outline: none;
+  color: var(--navy);
+  font: 500 14px/1.4 var(--font-ui);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.item:lang(fa) {
+  font-family: var(--font-vazir), Tahoma, sans-serif;
+}
+.item[data-highlighted] {
+  background: rgba(3, 29, 47, 0.06);
+}
+.item[aria-current="true"] {
+  background: var(--navy);
+  color: #fff;
+}
+.code {
+  font: 600 11px/1 var(--font-inter);
+  letter-spacing: 0.06em;
+  opacity: 0.55;
+}

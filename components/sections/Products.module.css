@@ -1,0 +1,263 @@
+/* Figma y 1024–2115: title 65:3943, cards 65:3952 / 65:3964, tablets 65:3975 */
+.section {
+  position: relative;
+  overflow: clip;
+}
+
+.intro {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: calc(32 * var(--u));
+}
+.intro :global(.eyebrow) {
+  margin-bottom: calc(18 * var(--u));
+}
+
+.cards {
+  display: contents;
+}
+.slot {
+  z-index: 1;
+  height: calc(720 * var(--u));
+}
+
+.card {
+  position: relative;
+  height: 100%;
+  border-radius: calc(32 * var(--u));
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 0 0 rgba(3, 29, 47, 0);
+}
+.dark {
+  /* Figma: drop shadow 0 67 57.2 −65 #92B6DD */
+  box-shadow: 0 calc(67 * var(--u)) calc(57 * var(--u)) calc(-65 * var(--u)) #92b6dd;
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  /* Safari: keep radius while children transform */
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+.mediaInner,
+.drift {
+  position: absolute;
+  inset: 0;
+}
+.drift {
+  inset: -14px;
+  will-change: transform;
+}
+.drift img {
+  object-fit: cover;
+  transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.content {
+  position: absolute;
+  z-index: 1;
+  inset-inline-start: calc(48 * var(--u));
+  top: calc(48 * var(--u));
+  width: calc(338 * var(--u));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  color: #000;
+}
+.dark .content {
+  color: #f9fafc;
+}
+.num {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  font: 400 max(14px, calc(18 * var(--u))) / 1 var(--font-sans);
+  color: var(--navy);
+}
+.dark .num {
+  color: #f9fafc;
+}
+.num::after {
+  content: "";
+  width: 39px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+.title {
+  font: 400 max(24px, calc(32 * var(--u))) / 1.1 var(--font-sans);
+}
+.title span {
+  display: block;
+}
+
+.text {
+  max-width: calc(252 * var(--u));
+  min-width: 200px;
+  font: 300 max(14px, calc(18 * var(--u))) / 1.5 var(--font-ui);
+  opacity: 0.8;
+}
+
+.arrow {
+  width: 57px;
+  height: 57px;
+  margin-top: 0;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+}
+.card:not(.dark):hover {
+  box-shadow: 0 28px 60px -34px rgba(110, 82, 56, 0.45);
+}
+.dark:hover {
+  box-shadow: 0 calc(80 * var(--u)) calc(70 * var(--u)) calc(-62 * var(--u)) #92b6dd;
+}
+.card:hover .drift img {
+  transform: scale(1.03);
+}
+.card:hover .arrow {
+  background: rgba(217, 217, 217, 0.38);
+}
+.card:hover .arrow :global(.chev) {
+  transform: translateX(3px);
+}
+
+.tablets {
+  z-index: 2;
+  pointer-events: none;
+}
+.tablets img {
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 1099px) {
+  .section :global(.canvas) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    padding: 96px var(--gutter) 88px;
+  }
+  .intro {
+    grid-column: 1 / -1;
+    gap: 22px;
+    max-width: 620px;
+    margin-bottom: 24px;
+  }
+  .intro :global(.eyebrow) {
+    margin-bottom: 4px;
+  }
+  .slot {
+    height: auto;
+    aspect-ratio: 549 / 720;
+  }
+  .content {
+    inset-inline-start: 28px;
+    top: 28px;
+    width: calc(100% - 56px);
+  }
+  .text {
+    max-width: 260px;
+  }
+  .tablets {
+    position: absolute;
+    inset-inline-end: -24px;
+    top: 30px;
+    width: 140px;
+  }
+}
+
+@media (max-width: 767px) {
+  .section :global(.canvas) {
+    grid-template-columns: 1fr;
+    padding-top: 72px;
+    padding-bottom: 64px;
+  }
+  /* Phone (client mockup): landscape cards, copy left, product pushed right. */
+  .section :global(.canvas) {
+    gap: 14px;
+  }
+  .slot {
+    aspect-ratio: 335 / 254;
+  }
+  .card {
+    border-radius: 18px;
+  }
+  .drift {
+    /* enlarge and shift the portrait photo so the product sits in the right half */
+    inset: -4% -6% -4% 38%;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 34%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 34%);
+  }
+  :global([dir="rtl"]) .drift {
+    inset: -4% 38% -4% -6%;
+    -webkit-mask-image: linear-gradient(270deg, transparent 0%, #000 34%);
+    mask-image: linear-gradient(270deg, transparent 0%, #000 34%);
+  }
+  .tablets {
+    display: none;
+  }
+  .media {
+    background: linear-gradient(135deg, #f3e2cf 0%, #e3c3a2 100%);
+  }
+  .dark .media {
+    background: linear-gradient(135deg, #2a6fb6 0%, #134a86 100%);
+  }
+  .content {
+    inset-inline-start: 20px;
+    top: 20px;
+    width: 52%;
+    gap: 6px;
+  }
+  .num {
+    font-size: 11px;
+    gap: 12px;
+  }
+  .num::after {
+    width: 0;
+  }
+  .title {
+    font-size: 19px;
+    line-height: 1.12;
+  }
+  .text {
+    max-width: none;
+    min-width: 0;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .arrow {
+    width: 40px;
+    height: 40px;
+    margin-top: 6px;
+    background: #ffffff;
+  }
+  .dark .arrow {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px rgba(249, 250, 252, 0.7);
+  }
+  .arrow :global(.ring) {
+    display: none;
+  }
+}
+
+/* Touch: a press reads as the card lifting under the finger. */
+@media (hover: none) {
+  .card:active {
+    transform: translateY(-3px) scale(0.985);
+  }
+  .card:active .drift img {
+    transform: scale(1.04);
+  }
+  .card:active .arrow :global(.chev) {
+    transform: translateX(3px);
+  }
+}

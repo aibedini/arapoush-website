@@ -1,0 +1,396 @@
+/* Figma 65:3898 — 1920×96, white 10% + 4px background blur.
+   Positions use logical insets so the bar mirrors in RTL. */
+.header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  height: var(--header-h);
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  transition:
+    transform 0.55s cubic-bezier(0.7, 0, 0.2, 1),
+    background-color 0.45s ease,
+    box-shadow 0.45s ease;
+}
+:global([dir="rtl"]) .header {
+  --progress-origin: right;
+}
+
+.scrolled {
+  background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow: 0 1px 0 rgba(3, 29, 47, 0.06);
+}
+
+.hidden {
+  transform: translateY(-100%);
+}
+
+.bar {
+  position: relative;
+  height: 100%;
+}
+
+.logo {
+  position: absolute;
+  inset-inline-start: calc(52 * var(--u));
+  top: 0;
+  width: calc(266 * var(--u));
+  height: 100%;
+  display: block;
+}
+.logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.nav {
+  position: absolute;
+  inset-inline-start: calc(682 * var(--u));
+  top: 50%;
+  transform: translateY(-50%);
+}
+.nav ul {
+  display: flex;
+  gap: calc(34 * var(--u) - 20px);
+}
+.nav li {
+  position: relative;
+}
+.nav a {
+  position: relative;
+  z-index: 1;
+  display: block;
+  padding: 8px 10px;
+  font: 600 13px/1.05 var(--font-ui);
+  color: #252524;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+.nav a:lang(fa),
+:global(:lang(fa)) .nav a {
+  font-size: 14px;
+  font-weight: 500;
+}
+.nav a:global(.u-link)::after {
+  left: 10px;
+  right: 10px;
+  bottom: 2px;
+}
+/* Hover is carried by the gliding pill + rolling label; the underline marks the current page. */
+.nav a:global(.u-link):not([aria-current]):hover::after {
+  transform: scaleX(0);
+}
+.navPill {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: 20px;
+  background: rgba(3, 29, 47, 0.06);
+}
+
+.actions {
+  /* Figma: right edge at 1876 — anchored to the end because the button keeps its px size */
+  position: absolute;
+  inset-inline-end: calc(44 * var(--u));
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: calc(53 * var(--u));
+}
+
+.desktopOnly {
+  display: inline-flex;
+}
+
+.icon24 {
+  width: 24px;
+  height: 24px;
+}
+
+.iconBtn {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin: -6px;
+  color: #000;
+  border-radius: 50%;
+  transition: background-color 0.24s ease;
+}
+.iconBtn:hover,
+.iconBtn[data-state="open"] {
+  background: rgba(3, 29, 47, 0.06);
+}
+
+.quote {
+  min-width: 185px;
+}
+
+.burger {
+  display: none;
+}
+
+.panel {
+  display: none;
+}
+
+/* The menu row needs ~1360px at fixed 13px type; below that it collapses into the panel. */
+@media (max-width: 1359px) {
+  .nav,
+  .desktopOnly {
+    display: none;
+  }
+  .actions {
+    gap: 16px;
+  }
+
+  .burger {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--navy);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .burger:hover {
+    transform: scale(1.06);
+  }
+  .burger span {
+    position: absolute;
+    width: 18px;
+    height: 1.5px;
+    background: #fff;
+    transition:
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.25s ease;
+  }
+  .burger span:first-child {
+    transform: translateY(-5.5px);
+  }
+  .burger span:last-child {
+    transform: translateY(5.5px);
+  }
+  .burger:hover span:first-child {
+    transform: translateY(-6.5px) scaleX(0.8);
+  }
+  .burger:hover span:last-child {
+    transform: translateY(6.5px) scaleX(0.8);
+  }
+  .burgerOpen span:first-child,
+  .burgerOpen:hover span:first-child {
+    transform: rotate(45deg);
+  }
+  .burgerOpen span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0.4);
+  }
+  .burgerOpen span:last-child,
+  .burgerOpen:hover span:last-child {
+    transform: rotate(-45deg);
+  }
+
+  .panel {
+    position: fixed;
+    inset: 0;
+    z-index: 49;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 32px;
+    padding: calc(var(--header-h) + 24px) var(--gutter) 32px;
+    background: var(--cream);
+    clip-path: inset(0% 0% 100% 0%);
+    overflow-y: auto;
+  }
+  .panel ul {
+    display: flex;
+    flex-direction: column;
+  }
+  .panel li {
+    position: relative;
+  }
+  .menuPill {
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    background: rgba(3, 29, 47, 0.06);
+  }
+  .menuLink {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 8px 12px;
+    color: var(--navy);
+  }
+  .menuIndex {
+    min-width: 22px;
+    font: 500 11px/1 var(--font-inter);
+    color: var(--muted);
+    transition: color 0.3s ease;
+  }
+  .menuLabel {
+    font: 300 clamp(30px, 7.4vw, 44px) / 1.2 var(--font-sans);
+  }
+  .menuArrow {
+    align-self: center;
+    width: 26px;
+    height: 26px;
+    margin-inline-start: auto;
+    opacity: 0;
+    translate: -10px 0;
+    transition:
+      opacity 0.3s ease,
+      translate 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  :global([dir="rtl"]) .menuArrow {
+    translate: 10px 0;
+  }
+  .menuLink:hover .menuArrow,
+  .menuLink:focus-visible .menuArrow,
+  .menuLink:active .menuArrow {
+    opacity: 1;
+    translate: 0 0;
+  }
+  .menuLink {
+    transform-origin: var(--start, left) center;
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  :global([dir="rtl"]) .menuLink {
+    --start: right;
+  }
+  .menuLink:active {
+    transform: scale(0.97);
+  }
+  .langs a,
+  .panelSearch {
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .langs a:active,
+  .panelSearch:active {
+    transform: scale(0.92);
+  }
+  .menuLink:hover .menuIndex,
+  .menuLink:active .menuIndex {
+    color: var(--navy);
+  }
+
+  .panelFoot {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .panelTools {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .panelSearch {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--navy);
+    box-shadow: 0 2px 10px rgba(3, 29, 47, 0.08);
+  }
+  .langs {
+    flex-direction: row !important;
+    gap: 6px;
+    padding: 4px;
+    border-radius: 24px;
+    background: rgba(3, 29, 47, 0.05);
+  }
+  .langs a {
+    display: block;
+    padding: 9px 14px;
+    border-radius: 20px;
+    color: var(--navy);
+    font: 500 13px/1 var(--font-ui);
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+  .langs a:lang(fa) {
+    font-family: var(--font-vazir), Tahoma, sans-serif;
+  }
+  .langs a:hover {
+    background: rgba(3, 29, 47, 0.07);
+  }
+  .langs a[aria-current="true"] {
+    background: var(--navy);
+    color: #fff;
+  }
+  .panelFoot :global(.btn) {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 1099px) {
+  .logo {
+    inset-inline-start: var(--gutter);
+    width: 160px;
+  }
+  .actions {
+    inset-inline-end: var(--gutter);
+  }
+}
+
+/* Phone (client mockup): solid white bar, compact logo, plain three-line icon. */
+@media (max-width: 767px) {
+  .header {
+    background: rgba(255, 255, 255, 0.94);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+  .logo {
+    width: 116px;
+  }
+  .quote {
+    display: none;
+  }
+  .burger {
+    width: 44px;
+    height: 44px;
+    margin-inline-end: -10px;
+    background: transparent;
+  }
+  .burger span {
+    width: 22px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--navy);
+  }
+  .burger span:first-child {
+    transform: translateY(-7px);
+  }
+  .burger span:last-child {
+    transform: translateY(7px);
+  }
+  .burger:hover span:first-child {
+    transform: translateY(-7px) scaleX(0.75);
+  }
+  .burger:hover span:last-child {
+    transform: translateY(7px) scaleX(0.75);
+  }
+  .burgerOpen span:first-child,
+  .burgerOpen:hover span:first-child {
+    transform: rotate(45deg);
+  }
+  .burgerOpen span:last-child,
+  .burgerOpen:hover span:last-child {
+    transform: rotate(-45deg);
+  }
+  .menuArrow {
+    opacity: 0.35;
+    translate: 0 0;
+  }
+}

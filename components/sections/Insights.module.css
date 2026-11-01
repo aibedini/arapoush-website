@@ -1,0 +1,379 @@
+/* Figma y 3130–4061: title 74:5446, cards 74:5456 / 5474 / 5492, controls 74:5525 */
+.section {
+  position: relative;
+  overflow: clip;
+  /* Off-screen: skip style/layout/paint until near the viewport (it already clips its overflow). */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1000px;
+}
+
+.intro {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.intro :global(.eyebrow) {
+  margin-bottom: 16px;
+}
+.allBtn {
+  margin-top: 0;
+}
+
+.viewport {
+  position: absolute;
+  z-index: 1;
+  inset-inline-start: calc(561 * var(--u));
+  inset-inline-end: 0;
+  top: calc(62 * var(--u));
+}
+
+.track {
+  display: flex;
+  gap: calc(32 * var(--u));
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline-start: 0;
+  padding-block: 0 40px;
+  padding-inline: 0 calc(48 * var(--u));
+  margin-bottom: -40px; /* room for hover lift without clipping */
+  scrollbar-width: none;
+  cursor: grab;
+  -webkit-overflow-scrolling: touch;
+}
+.track::-webkit-scrollbar {
+  display: none;
+}
+.track:focus-visible {
+  outline-offset: -2px;
+}
+.dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  user-select: none;
+}
+
+.slide {
+  flex: 0 0 calc(467 * var(--u));
+  scroll-snap-align: start;
+}
+
+.card {
+  position: relative;
+  min-height: calc(677 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: 18px;
+  background: var(--paper);
+  overflow: hidden;
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.media {
+  position: relative;
+  flex: none;
+  height: calc(472 * var(--u));
+}
+.mediaInner {
+  position: absolute;
+  inset: 0;
+}
+.mediaInner img {
+  object-fit: cover;
+  pointer-events: none;
+}
+.media::after {
+  /* Figma: linear #000 → #fff at 20% opacity over the photo */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 26.7%, rgba(255, 255, 255, 0.2) 100%);
+  pointer-events: none;
+}
+
+.category {
+  position: absolute;
+  z-index: 1;
+  inset-inline-start: 18px;
+  top: calc(36 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font: 400 12px/1 var(--font-sans);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+.category::after {
+  content: "";
+  width: 36px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px 0 16px;
+  min-height: 27px;
+}
+.date {
+  font: 300 14px/1.3 var(--font-ui);
+  color: rgba(30, 30, 30, 0.3);
+}
+.tag {
+  padding: 3px 10px;
+  border-radius: 16px;
+  font: 400 14px/1.5 var(--font-ui);
+  letter-spacing: -0.03em;
+  color: #444f4c;
+  text-transform: lowercase;
+}
+
+.body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  /* Figma: copy runs 395px wide, arrow sits at x 415 */
+  padding: 0 calc(56 * var(--u)) 20px 16px;
+}
+.title {
+  font: 500 max(16px, calc(18 * var(--u))) / 1.3 var(--font-sans);
+  color: var(--ink);
+  max-width: 307px;
+}
+.titleLink {
+  color: inherit;
+}
+.text {
+  font: 300 max(15px, calc(18 * var(--u))) / 1.5 var(--font-ui);
+  color: rgba(0, 0, 0, 0.6);
+}
+.arrow {
+  position: absolute;
+  inset-inline-end: calc(28 * var(--u));
+  top: calc(64 * var(--u));
+  width: 24px;
+  height: 24px;
+}
+.arrow :global(.chev) {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 34px 60px -42px rgba(14, 43, 70, 0.4);
+}
+.card:hover .mediaInner img {
+  transform: scale(1.04);
+}
+.card:hover .arrow :global(.chev) {
+  transform: translateX(2.5px);
+}
+
+.controls {
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  height: 48px;
+}
+.ctrlLine {
+  width: calc(157 * var(--u));
+  height: 1px;
+  background: rgba(30, 30, 30, 0.3);
+  margin-inline-end: calc(15 * var(--u));
+}
+.ctrlText {
+  font: 400 max(15px, calc(18 * var(--u))) / 1.3 var(--font-sans);
+  color: rgba(30, 30, 30, 0.6);
+  white-space: nowrap;
+}
+.arrows {
+  display: flex;
+  gap: calc(26 * var(--u));
+  margin-inline-start: auto;
+}
+.nav {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--chip);
+  color: #000;
+  transition:
+    background-color 0.25s ease,
+    opacity 0.25s ease,
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav svg {
+  width: 48px;
+  height: 48px;
+}
+.nav :global(.chev) {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav:hover:not(:disabled) {
+  background: #dcdfe6;
+}
+.nav:first-child:hover:not(:disabled) :global(.chev) {
+  transform: translateX(-2px);
+}
+.nav:last-child:hover:not(:disabled) :global(.chev) {
+  transform: translateX(2px);
+}
+.nav:active:not(:disabled) {
+  transform: scale(0.94);
+}
+.nav:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+@media (max-width: 1099px) {
+  .section :global(.canvas) {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    padding: 24px 0 96px;
+  }
+  .intro {
+    padding: 0 var(--gutter);
+    max-width: 680px;
+  }
+  .viewport {
+    position: relative;
+    inset-inline-start: auto;
+    top: auto;
+  }
+  .track {
+    gap: 16px;
+    padding: 0 var(--gutter) 40px;
+    scroll-padding-inline-start: var(--gutter);
+  }
+  .slide {
+    flex-basis: min(46vw, 420px);
+  }
+  .card {
+    height: auto;
+  }
+  .media {
+    height: auto;
+    aspect-ratio: 467 / 472;
+  }
+  .body {
+    padding-inline-end: 56px;
+  }
+  .arrow {
+    top: 54px;
+    inset-inline-end: 16px;
+  }
+  .controls {
+    padding: 0 var(--gutter);
+  }
+  .ctrlLine {
+    width: 48px;
+    margin-inline-end: 14px;
+  }
+  .arrows {
+    gap: 12px;
+  }
+}
+
+/* Phone (client mockup): the three articles become a stacked list of
+   horizontal cards — photo left, title + date right, arrow bottom-right. */
+@media (max-width: 767px) {
+  .section :global(.canvas) {
+    gap: 26px;
+    padding-bottom: 72px;
+  }
+  .track {
+    flex-direction: column;
+    gap: 12px;
+    overflow: visible;
+    padding: 0 var(--gutter);
+    margin: 0;
+    cursor: auto;
+    scroll-snap-type: none;
+  }
+  .slide {
+    flex-basis: auto;
+  }
+  .card {
+    display: grid;
+    grid-template-columns: 46% 1fr;
+    grid-template-rows: 1fr auto auto;
+    column-gap: 14px;
+    min-height: 0;
+    padding-inline-end: 12px;
+    border-radius: 14px;
+    background: #fbfbfb;
+    box-shadow: 0 1px 0 rgba(3, 29, 47, 0.04), 0 10px 24px -20px rgba(3, 29, 47, 0.3);
+  }
+  .card:hover {
+    transform: none;
+  }
+  .media {
+    grid-row: 1 / 4;
+    aspect-ratio: 1.18;
+    border-radius: 14px 0 0 14px;
+    overflow: hidden;
+  }
+  .media::after,
+  .category,
+  .tag,
+  .text {
+    display: none;
+  }
+  .meta,
+  .body {
+    display: contents;
+  }
+  .title {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: end;
+    padding-top: 14px;
+    font-size: 14px;
+    line-height: 1.35;
+  }
+  .date {
+    grid-column: 2;
+    grid-row: 2;
+    margin-top: 8px;
+    font-size: 11px;
+    color: rgba(30, 30, 30, 0.45);
+  }
+  .arrow {
+    position: static;
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: end;
+    width: 30px;
+    height: 30px;
+    margin: 4px 0 12px;
+    padding: 5px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(3, 29, 47, 0.1);
+  }
+  .controls {
+    display: none;
+  }
+}
+
+/* Touch: press feedback mirrors the hover lift. */
+@media (hover: none) {
+  .card:active {
+    transform: translateY(-2px) scale(0.98);
+  }
+  .card:active .mediaInner img {
+    transform: scale(1.05);
+  }
+}

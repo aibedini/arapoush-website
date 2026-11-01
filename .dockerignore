@@ -1,0 +1,8 @@
+node_modules
+.next
+.git
+_figma
+font
+.lighthouse
+.claude
+*.tsbuildinfo
