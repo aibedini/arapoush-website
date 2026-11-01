@@ -1,32 +1,41 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useRef, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { Highlight, HighlightItem } from "@animate-ui/react/primitives/effects/highlight";
 import { SlidingNumber } from "@animate-ui/react/primitives/texts/sliding-number";
 import type { Dictionary } from "@/lib/i18n";
+import { DIAMETERS, LENGTH_RANGE, VOLUMES, nearestByVolume, sizesFor, sizesWithVolume, type TubeSize } from "@/lib/tubeSizes";
 import { CalcIcon, Flask, ShapeGlyph } from "./art";
 import styles from "./Product.module.css";
 
-const DIAMETERS = [19, 25, 30, 35, 40, 50, 60];
-const LENGTH = { min: 50, max: 300, step: 5 };
 const SHAPES = ["circular", "oval", "eyeNozzle"] as const;
 type Shape = (typeof SHAPES)[number];
+type Mode = "size" | "volume";
 
 const glide = { type: "spring" as const, stiffness: 420, damping: 36 };
-
-/** Inner volume of a circular-section tube: π · (d/2)² · L, mm³ → ml. */
-export const tubeVolumeMl = (d: number, l: number) => (Math.PI * (d / 2) ** 2 * l) / 1000;
+const sizeKey = (s: TubeSize) => `${s.d}x${s.l}`;
 
 type Props = { t: Dictionary["productTube"] };
 
 export default function VolumeCalculator({ t }: Props) {
   const c = t.calculator;
-  const [d, setD] = useState(30);
-  const [l, setL] = useState(120);
+  const [mode, setMode] = useState<Mode>("size");
+  const [size, setSize] = useState<TubeSize>(sizesFor(30)[3]!);
   const [shape, setShape] = useState<Shape>("circular");
   const id = useId();
-  const ml = Math.round(tubeVolumeMl(d, l) * 10) / 10;
+  const lengths = sizesFor(size.d);
+  const twins = sizesWithVolume(size.ml);
+  const others = twins.filter((s) => s.d !== size.d);
+  const vi = VOLUMES.indexOf(size.ml);
+
+  // Switching diameter keeps the volume as close as that diameter allows.
+  const pickDiameter = (d: number) => setSize(nearestByVolume(sizesFor(d), size.ml));
+  // Switching volume keeps the diameter when it comes in that volume.
+  const pickVolume = (ml: number) => {
+    const list = sizesWithVolume(ml);
+    setSize(list.find((s) => s.d === size.d) ?? list[0]!);
+  };
 
   return (
     <section className={styles.calcSection} aria-labelledby={`${id}-title`}>
@@ -54,85 +63,130 @@ export default function VolumeCalculator({ t }: Props) {
             </div>
           </header>
 
-          <p className={styles.fieldLabel} id={`${id}-d`}>
-            {c.diameter}
-          </p>
-          <div className={styles.chips} role="radiogroup" aria-labelledby={`${id}-d`}>
-            {/* animate-ui Highlight: the selection pill glides between diameters */}
-            <Highlight controlledItems value={String(d)} className={styles.chipPill} transition={glide}>
-              {DIAMETERS.map((v) => (
-                <HighlightItem key={v} value={String(v)}>
-                  <button
-                    type="button"
-                    role="radio"
-                    aria-checked={d === v}
-                    className={`${styles.chip} ${d === v ? styles.chipOn : ""}`}
-                    // capture phase: HighlightItem replaces the child's onClick with its own handler
-                    onClickCapture={() => setD(v)}
-                    onKeyDown={(e) => {
-                      const i = DIAMETERS.indexOf(d);
-                      const rtl = document.documentElement.dir === "rtl";
-                      const fwd = e.key === "ArrowDown" || e.key === (rtl ? "ArrowLeft" : "ArrowRight");
-                      const back = e.key === "ArrowUp" || e.key === (rtl ? "ArrowRight" : "ArrowLeft");
-                      if (!fwd && !back) return;
-                      e.preventDefault();
-                      const next = DIAMETERS[(i + (fwd ? 1 : -1) + DIAMETERS.length) % DIAMETERS.length]!;
-                      setD(next);
-                      (e.currentTarget.parentElement?.parentElement?.querySelector(`[data-d="${next}"]`) as HTMLElement | null)?.focus();
-                    }}
-                    tabIndex={d === v ? 0 : -1}
-                    data-d={v}
-                  >
-                    {v}
-                  </button>
-                </HighlightItem>
-              ))}
-            </Highlight>
-          </div>
-
-          <div className={styles.lengthRow}>
-            <label className={styles.fieldLabel} htmlFor={`${id}-l`}>
-              {c.length}: <span className="ltr">{l}</span> {c.mm}
-            </label>
-            <output className={styles.lengthValue} htmlFor={`${id}-l`}>
-              {l}
-            </output>
-          </div>
-          <input
-            id={`${id}-l`}
-            type="range"
-            min={LENGTH.min}
-            max={LENGTH.max}
-            step={LENGTH.step}
-            value={l}
-            onChange={(e) => setL(Number(e.target.value))}
-            className={styles.range}
-            style={{ "--fill": `${((l - LENGTH.min) / (LENGTH.max - LENGTH.min)) * 100}%` } as React.CSSProperties}
+          <ChipGroup
+            label={c.modeLabel}
+            className={styles.modes}
+            chipClass={styles.mode}
+            value={mode}
+            onChange={(m) => setMode(m as Mode)}
+            items={[
+              { key: "size", content: c.bySize },
+              { key: "volume", content: c.byVolume },
+            ]}
           />
-          <div className={styles.rangeEnds} aria-hidden="true">
-            <span>
-              {LENGTH.min} {c.mm}
-            </span>
-            <span>
-              {LENGTH.max} {c.mm}
-            </span>
-          </div>
+
+          {mode === "size" ? (
+            <>
+              <p className={styles.fieldLabel} id={`${id}-d`}>
+                {c.diameter}
+              </p>
+              <ChipGroup
+                labelledBy={`${id}-d`}
+                value={String(size.d)}
+                onChange={(v) => pickDiameter(Number(v))}
+                items={DIAMETERS.map((d) => ({ key: String(d), content: d }))}
+              />
+              <p className={styles.fieldLabel} id={`${id}-l`}>
+                {c.lengths}
+              </p>
+              <ChipGroup
+                labelledBy={`${id}-l`}
+                className={`${styles.chips} ${styles.lenChips}`}
+                chipClass={styles.lenChip}
+                pillClass={styles.lenPill}
+                value={sizeKey(size)}
+                onChange={(k) => setSize(lengths.find((s) => sizeKey(s) === k)!)}
+                items={lengths.map((s) => ({
+                  key: sizeKey(s),
+                  label: `${s.l} ${c.mm}, ${s.ml} ${c.ml}`,
+                  content: (
+                    <>
+                      <span className={styles.lenMm}>{s.l}</span>
+                      <span className={styles.lenMl}>
+                        {s.ml} {c.ml}
+                      </span>
+                    </>
+                  ),
+                }))}
+              />
+            </>
+          ) : (
+            <>
+              <div className={styles.lengthRow}>
+                <label className={styles.fieldLabel} htmlFor={`${id}-v`}>
+                  {c.volume}
+                </label>
+                <output className={styles.lengthValue} htmlFor={`${id}-v`}>
+                  <span className="ltr">{size.ml}</span> {c.ml}
+                </output>
+              </div>
+              <input
+                id={`${id}-v`}
+                type="range"
+                min={0}
+                max={VOLUMES.length - 1}
+                step={1}
+                value={vi}
+                aria-valuetext={`${size.ml} ${c.ml}`}
+                onChange={(e) => pickVolume(VOLUMES[Number(e.target.value)]!)}
+                className={styles.range}
+                style={{ "--fill": `${(vi / (VOLUMES.length - 1)) * 100}%` } as React.CSSProperties}
+              />
+              <div className={styles.rangeEnds} aria-hidden="true">
+                <span>
+                  {VOLUMES[0]} {c.ml}
+                </span>
+                <span>
+                  {VOLUMES.at(-1)} {c.ml}
+                </span>
+              </div>
+              <p className={`${styles.fieldLabel} ${styles.matchLabel}`} id={`${id}-m`}>
+                {c.matches}
+              </p>
+              <ChipGroup
+                labelledBy={`${id}-m`}
+                chipClass={styles.sizeChip}
+                value={sizeKey(size)}
+                onChange={(k) => setSize(twins.find((s) => sizeKey(s) === k)!)}
+                items={twins.map((s) => ({ key: sizeKey(s), label: `${s.d} × ${s.l} ${c.mm}`, content: <Dims s={s} /> }))}
+              />
+            </>
+          )}
           <p className={styles.calcNote}>{c.note}</p>
         </div>
 
-        <TubeDiagram d={d} l={l} shape={shape} label={c.diagram.replace("{d}", String(d)).replace("{l}", String(l))} />
+        <TubeDiagram d={size.d} l={size.l} shape={shape} label={c.diagram.replace("{d}", String(size.d)).replace("{l}", String(size.l))} />
 
         <div className={styles.result} aria-live="polite">
           <div className={styles.resultHead}>
             <span>{c.result}</span>
             <Flask className={styles.icon24} />
           </div>
-          <p className={styles.resultValue}>
-            <span className="ltr">
-              <SlidingNumber number={ml} decimalPlaces={1} />
-            </span>{" "}
-            <span className={styles.resultUnit}>{c.ml}</span>
-          </p>
+          <div>
+            <p className={styles.resultValue}>
+              <span className="ltr">
+                <SlidingNumber number={size.ml} />
+              </span>{" "}
+              <span className={styles.resultUnit}>{c.ml}</span>
+            </p>
+            <p className={styles.resultSpec}>
+              <span className="ltr">
+                Ø{size.d} × {size.l} mm
+              </span>
+            </p>
+          </div>
+          {others.length > 0 && (
+            <div className={styles.twins}>
+              <span>{c.alsoAs}</span>
+              <div>
+                {others.map((s) => (
+                  <button key={sizeKey(s)} type="button" className={styles.twin} onClick={() => setSize(s)} aria-label={`${s.d} × ${s.l} ${c.mm}`}>
+                    <Dims s={s} />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           <svg className={styles.resultWave} viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true">
             <path d="M0 70 C80 30 160 110 250 70 S360 40 400 60 V120 H0 Z" fill="rgba(255,255,255,.08)" />
             <path d="M0 90 C90 60 170 120 260 92 S370 70 400 84 V120 H0 Z" fill="rgba(255,255,255,.1)" />
@@ -143,6 +197,71 @@ export default function VolumeCalculator({ t }: Props) {
   );
 }
 
+const Dims = ({ s }: { s: TubeSize }) => (
+  <span className="ltr">
+    Ø{s.d} × {s.l}
+  </span>
+);
+
+type ChipItem = { key: string; content: ReactNode; label?: string };
+
+/** Single-choice chip row: animate-ui Highlight glides the pill, arrow keys rove (RTL-aware). */
+function ChipGroup({
+  items,
+  value,
+  onChange,
+  label,
+  labelledBy,
+  className = styles.chips,
+  chipClass,
+  pillClass = styles.chipPill,
+}: {
+  items: ChipItem[];
+  value: string;
+  onChange: (key: string) => void;
+  label?: string;
+  labelledBy?: string;
+  className?: string;
+  chipClass?: string;
+  pillClass?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const keys = items.map((i) => i.key);
+  return (
+    <div ref={ref} className={className} role="radiogroup" aria-label={label} aria-labelledby={labelledBy}>
+      <Highlight controlledItems value={value} className={pillClass} transition={glide}>
+        {items.map((item) => (
+          <HighlightItem key={item.key} value={item.key}>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={value === item.key}
+              aria-label={item.label}
+              className={`${styles.chip} ${chipClass ?? ""} ${value === item.key ? styles.chipOn : ""}`}
+              // capture phase: HighlightItem replaces the child's onClick with its own handler
+              onClickCapture={() => onChange(item.key)}
+              onKeyDown={(e) => {
+                const rtl = document.documentElement.dir === "rtl";
+                const fwd = e.key === "ArrowDown" || e.key === (rtl ? "ArrowLeft" : "ArrowRight");
+                const back = e.key === "ArrowUp" || e.key === (rtl ? "ArrowRight" : "ArrowLeft");
+                if (!fwd && !back) return;
+                e.preventDefault();
+                const next = keys[(keys.indexOf(value) + (fwd ? 1 : -1) + keys.length) % keys.length]!;
+                onChange(next);
+                ref.current?.querySelector<HTMLElement>(`[data-key="${next}"]`)?.focus();
+              }}
+              tabIndex={value === item.key ? 0 : -1}
+              data-key={item.key}
+            >
+              {item.content}
+            </button>
+          </HighlightItem>
+        ))}
+      </Highlight>
+    </div>
+  );
+}
+
 /** Upright tube drawn to the chosen size: width follows diameter, height follows length. */
 function TubeDiagram({ d, l, shape, label }: { d: number; l: number; shape: Shape; label: string }) {
   const reduce = useReducedMotion();
@@ -150,7 +269,7 @@ function TubeDiagram({ d, l, shape, label }: { d: number; l: number; shape: Shap
   const cx = 190;
   const bottom = 376;
   const w = (30 + ((d - 19) / (60 - 19)) * 80) * (shape === "oval" ? 1.22 : 1);
-  const h = 110 + ((l - 50) / (300 - 50)) * 170;
+  const h = 110 + ((l - LENGTH_RANGE.min) / (LENGTH_RANGE.max - LENGTH_RANGE.min)) * 170;
   const capH = shape === "eyeNozzle" ? 34 : 24;
   const top = bottom - capH - h;
   const capW = w * 0.82;

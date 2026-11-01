@@ -1,4 +1,5 @@
 import { contact, productPaths, siteUrl, social } from "@/lib/site";
+import { DIAMETERS, VOLUMES, sizesFor } from "@/lib/tubeSizes";
 import { defaultLocale, getDictionary, localeMeta, locales, type Dictionary, type Locale } from "@/lib/i18n";
 
 export const pageUrl = (locale: Locale, path = "") => `${siteUrl}/${locale}${path}`;
@@ -136,7 +137,8 @@ export function llmsText(full: boolean) {
       t.productTube.lead,
       ...t.productTube.features.map((f) => `- ${f}`),
       `${t.productTube.layers.title}: ${t.productTube.layers.items.map((x) => `${x.name} (${x.text})`).join("; ")}`,
-      `${t.productTube.calculator.title}: V(ml) = π × (d/2)² × L / 1000 (d, L in mm; d = 19–60 mm, L = 50–300 mm). ${t.productTube.calculator.note}`,
+      `${t.productTube.calculator.title} (${t.productTube.calculator.note}):`,
+      ...DIAMETERS.map((d) => `- Ø${d} mm: ${sizesFor(d).map((s) => `${s.l} mm = ${s.ml} ml`).join(", ")}`),
       `${t.productTube.variants}: ${Object.values(t.productTube.shapes).join(", ")}. ${t.productTube.closures}: ${t.productTube.closureNames.join(", ")}.`,
       "",
       `### ${t.cta.title.join(" ")}`,
@@ -164,7 +166,8 @@ export function productTubeJsonLd(t: Dictionary, locale: Locale, path: string) {
         manufacturer: { "@id": `${siteUrl}/#organization` },
         material: "PE / EVOH multi-layer",
         additionalProperty: [
-          { "@type": "PropertyValue", name: p.calculator.diameter, value: "19–60" },
+          { "@type": "PropertyValue", name: p.calculator.diameter, value: DIAMETERS.join(", ") },
+          { "@type": "PropertyValue", name: p.calculator.volume, value: `${VOLUMES[0]}–${VOLUMES.at(-1)} ml` },
           ...p.layers.items.map((l, i) => ({ "@type": "PropertyValue", name: `${p.layers.title} ${i + 1}`, value: `${l.name} — ${l.text}` })),
         ],
       },
