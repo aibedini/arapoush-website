@@ -3,7 +3,7 @@ import type { Dictionary } from "@/lib/i18n";
 import RollText from "@/components/ui/RollText";
 import MaybeLink from "@/components/ui/MaybeLink";
 import { ArrowRightCircle, Layers, Leaf, PlayCircle, ShieldCheck } from "@/components/ui/icons";
-import { ClosureArt, Recycle, VariantArt } from "./art";
+import { Recycle } from "./art";
 import styles from "./Product.module.css";
 
 type T = { t: Dictionary["productTube"] };
@@ -95,6 +95,8 @@ export function LayerStructure({ t }: T) {
 }
 
 const variantKeys = ["circular", "oval", "eyeNozzle"] as const;
+const variantImages = { circular: "tube-circular", oval: "tube-oval", eyeNozzle: "tube-eye-nozzle" } as const;
+const closureImages = ["cap-flip-top", "cap-screw", "cap-nozzle", "cap-stand-up"];
 
 export function Options({ t }: T) {
   return (
@@ -106,7 +108,7 @@ export function Options({ t }: T) {
         <ul className={styles.variantGrid} data-reveal-stagger>
           {variantKeys.map((k) => (
             <li key={k} className={styles.variant} data-reveal-item>
-              <VariantArt shape={k} className={styles.variantArt} />
+              <Image src={`/images/product/${variantImages[k]}.webp`} alt="" width={640} height={640} sizes="(max-width: 767px) 30vw, 12vw" className={styles.variantArt} />
               <span>{t.shapes[k]}</span>
             </li>
           ))}
@@ -119,7 +121,7 @@ export function Options({ t }: T) {
         <ul className={styles.closureGrid} data-reveal-stagger>
           {t.closureNames.map((name, i) => (
             <li key={name} className={styles.closure} data-reveal-item>
-              <ClosureArt index={i} className={styles.closureArt} />
+              <Image src={`/images/product/${closureImages[i]}.webp`} alt="" width={640} height={640} sizes="(max-width: 767px) 40vw, 8vw" className={styles.closureArt} />
               <span className={styles.closureName}>{name}</span>
             </li>
           ))}

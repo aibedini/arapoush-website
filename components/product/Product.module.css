@@ -640,6 +640,11 @@ a.videoLink:hover .playRing {
   translate: 0 -4px;
   box-shadow: 0 18px 30px -20px rgba(14, 43, 70, 0.45);
 }
+/* Studio shots on white: multiply drops the white into the card. */
+.variantArt,
+.closureArt {
+  mix-blend-mode: multiply;
+}
 .variantArt {
   width: 100%;
   height: auto;
@@ -649,7 +654,7 @@ a.videoLink:hover .playRing {
   transform: rotate(-4deg) scale(1.05);
 }
 .closureArt {
-  width: min(100%, 84px);
+  width: min(100%, 110px);
   height: auto;
   transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
