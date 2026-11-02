@@ -1,0 +1,982 @@
+/* Effervescent tube page. Same tokens and fluid unit (--u) as the rest of the site;
+   logical properties throughout so the page mirrors in Persian. One accent: --accent (orange). */
+
+.page {
+  --accent: #e8893a;
+  --ice: #eef3f8;
+  --ice-2: #e3ebf3;
+  --radius: max(18px, calc(28 * var(--u)));
+  --section-y: max(88px, calc(180 * var(--u)));
+  position: relative;
+  overflow-x: clip;
+  background: linear-gradient(180deg, #f4f7fa 0%, var(--ice) 40%, #f6f8fa 100%);
+  color: var(--ink);
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: max(12px, calc(20 * var(--u)));
+  max-width: calc(1000 * var(--u) + 200px);
+  margin-bottom: max(40px, calc(72 * var(--u)));
+}
+.head :global(.t-h2) {
+  color: var(--navy);
+}
+
+/* ── Stage: hero + story over one sticky 3D tube ── */
+.stage {
+  position: relative;
+}
+.sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background:
+    radial-gradient(42% 52% at var(--tube-x, 72%) 58%, rgba(178, 207, 236, 0.55), transparent 70%),
+    radial-gradient(70% 40% at 50% 100%, rgba(214, 228, 242, 0.9), transparent 70%);
+}
+:global([dir="rtl"]) .sticky {
+  --tube-x: 28%;
+}
+.layer {
+  position: absolute;
+  inset: 0;
+}
+.poster,
+.poster img,
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.poster img {
+  object-fit: cover;
+  transition: opacity 0.8s ease;
+}
+.canvas {
+  display: block;
+  opacity: 0;
+  cursor: grab;
+  transition: opacity 0.8s ease;
+}
+.canvas:active {
+  cursor: grabbing;
+}
+.canvas:focus-visible {
+  outline-offset: -6px;
+}
+.layer[data-ready] .canvas {
+  opacity: 1;
+}
+.layer[data-ready] .poster img {
+  opacity: 0;
+}
+.loader {
+  position: absolute;
+  inset-inline: 50% auto;
+  bottom: max(24px, calc(48 * var(--u)));
+  width: 120px;
+  height: 2px;
+  margin-inline-start: -60px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(14, 43, 70, 0.1);
+}
+.loader::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: var(--accent);
+  animation: load 1.1s ease-in-out infinite;
+}
+@keyframes load {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+/* Copy layers scroll over the sticky stage; only the copy itself takes the pointer. */
+.hero,
+.steps {
+  position: relative;
+  margin-top: -100vh;
+  margin-top: -100dvh;
+  pointer-events: none;
+}
+.steps {
+  margin-top: 0;
+}
+.hero {
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: calc(var(--header-h) + 24px) var(--gutter) max(40px, calc(80 * var(--u)));
+}
+.heroCopy {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: max(18px, calc(30 * var(--u)));
+  width: min(100%, calc(820 * var(--u) + 120px));
+  padding-inline-start: max(0px, calc(72 * var(--u)));
+}
+.heroTitle {
+  display: flex;
+  flex-direction: column;
+  font: 300 max(40px, calc(92 * var(--u))) / 1.05 var(--font-sans);
+  letter-spacing: -0.02em;
+  color: var(--navy);
+}
+:lang(fa) .heroTitle {
+  font-size: max(36px, calc(78 * var(--u)));
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+.accent {
+  color: var(--steel);
+}
+.heroLead {
+  max-width: 30em;
+  font: 300 max(16px, calc(23 * var(--u))) / 1.5 var(--font-sans);
+  color: #3a4048;
+}
+:lang(fa) .heroLead {
+  line-height: 1.85;
+}
+.heroCtas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: max(12px, calc(18 * var(--u)));
+}
+.dragHint {
+  position: absolute;
+  inset-inline-end: 21%;
+  bottom: max(28px, calc(64 * var(--u)));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font: 500 13px/1 var(--font-ui);
+  letter-spacing: 0;
+  color: var(--steel-2);
+  transition: opacity 0.5s ease;
+}
+.dragHint[data-hidden] {
+  opacity: 0;
+}
+.dragIcon {
+  width: 34px;
+  height: 18px;
+  border: 1.5px solid currentColor;
+  border-radius: 9px;
+  position: relative;
+}
+.dragIcon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 5px;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: nudge 2.4s ease-in-out infinite;
+}
+@keyframes nudge {
+  50% {
+    transform: translateX(14px);
+  }
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  min-height: 92vh;
+  min-height: 92dvh;
+  padding-inline: var(--gutter);
+}
+.step:last-child {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+.stepCopy {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: min(100%, calc(560 * var(--u) + 80px));
+  margin-inline-start: max(0px, calc(72 * var(--u)));
+  padding: max(22px, calc(36 * var(--u)));
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 30px 60px -44px rgba(14, 43, 70, 0.35);
+}
+.stepTitle {
+  font: 400 max(24px, calc(40 * var(--u))) / 1.2 var(--font-sans);
+  color: var(--navy);
+}
+:lang(fa) .stepTitle {
+  line-height: 1.5;
+}
+.stepTitle::before {
+  content: "";
+  display: block;
+  width: 28px;
+  height: 2px;
+  margin-bottom: 16px;
+  background: var(--accent);
+}
+.stepText {
+  font: 300 max(15px, calc(20 * var(--u))) / 1.6 var(--font-sans);
+  color: #3a4048;
+}
+:lang(fa) .stepText {
+  line-height: 1.9;
+}
+/* ── Sizes ── */
+.sizes,
+.caps {
+  padding: var(--section-y) var(--gutter) 0;
+  width: min(100%, calc(1824 * var(--u) + 2 * var(--gutter)));
+  margin-inline: auto;
+}
+.sizesGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, calc(440 * var(--u)));
+  align-items: end;
+  gap: max(28px, calc(72 * var(--u)));
+}
+.lineup {
+  --k: max(1.6px, calc(2.35 * var(--u)));
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: max(18px, calc(36 * var(--u)));
+  padding: 24px max(28px, calc(56 * var(--u))) 0;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, transparent 0 calc(100% - 64px), rgba(14, 43, 70, 0.06) calc(100% - 64px) calc(100% - 63px), transparent calc(100% - 63px));
+}
+.size {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 24px;
+  min-width: 44px;
+}
+/* Only the figure dims (labels keep AA contrast). */
+.figure {
+  position: relative;
+  display: block;
+  opacity: 0.45;
+  transition:
+    opacity 0.35s ease,
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  width: calc(var(--w) * var(--k));
+  height: calc(var(--hgt) * var(--k));
+}
+.figure img {
+  width: 100%;
+  height: 100%;
+}
+.size:hover .figure {
+  opacity: 0.75;
+}
+.size[aria-checked="true"] .figure {
+  opacity: 1;
+  transform: translateY(-8px);
+}
+@media (hover: none) {
+  .size:active .figure {
+    opacity: 0.75;
+  }
+}
+.dimH,
+.dimD {
+  position: absolute;
+  opacity: 0;
+  font: 600 12px/1 var(--font-ui);
+  letter-spacing: 0;
+  color: var(--accent);
+  transition: opacity 0.35s ease;
+}
+.size[aria-checked="true"] .dimH,
+.size[aria-checked="true"] .dimD {
+  opacity: 1;
+}
+/* Height: from the body's base to its mouth, beside the tube. */
+.dimH {
+  top: calc(var(--mouth) * 100%);
+  bottom: calc((1 - var(--base)) * 100%);
+  inset-inline-start: calc(100% + 10px);
+  border-inline-start: 1px solid currentColor;
+}
+.dimH::before,
+.dimH::after,
+.dimD::before,
+.dimD::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+}
+.dimH::before,
+.dimH::after {
+  inset-inline-start: -4px;
+  width: 7px;
+  height: 1px;
+}
+.dimH::before {
+  top: 0;
+}
+.dimH::after {
+  bottom: 0;
+}
+.dimH > span {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 6px;
+  transform: translateY(-50%);
+  padding: 3px 4px;
+  border-radius: 4px;
+  background: rgba(244, 247, 250, 0.9);
+}
+/* Diameter: under the body, across its width (the render is never mirrored, so physical left). */
+.dimD {
+  top: calc(var(--base) * 100% + 8px);
+  left: calc(var(--l) * 100%);
+  width: calc((var(--r) - var(--l)) * 100%);
+  border-top: 1px solid currentColor;
+}
+.dimD::before,
+.dimD::after {
+  top: -4px;
+  width: 1px;
+  height: 7px;
+}
+.dimD::before {
+  left: 0;
+}
+.dimD::after {
+  right: 0;
+}
+.dimD > span {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.sizeLabel {
+  margin-top: 18px;
+  font: 400 max(13px, calc(16 * var(--u))) / 1 var(--font-sans);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.size[aria-checked="true"] .sizeLabel {
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.detail {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: max(24px, calc(40 * var(--u)));
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid #fff;
+  box-shadow: 0 30px 70px -48px rgba(14, 43, 70, 0.35);
+}
+.detail :global(.btn) {
+  align-self: flex-start;
+}
+.detailDims {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 0;
+}
+.detailDims dt {
+  font: 400 14px/1.3 var(--font-sans);
+  color: var(--muted);
+}
+.detailDims dd {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 6px 0 0;
+  font: 300 max(44px, calc(72 * var(--u))) / 1 var(--font-sans);
+  letter-spacing: -0.02em;
+  color: var(--navy);
+}
+.detailDims small {
+  font: 400 14px/1 var(--font-sans);
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.detailNote {
+  font: 400 13px/1.55 var(--font-sans);
+  color: var(--slate);
+}
+
+/* ── Caps ── */
+.caps {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.caps .head {
+  align-items: center;
+  margin-bottom: max(28px, calc(44 * var(--u)));
+}
+.switch {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--ice-2);
+}
+.switch button {
+  min-height: 44px;
+  padding-inline: max(18px, calc(28 * var(--u)));
+  border-radius: 999px;
+  font: 500 max(14px, calc(16 * var(--u))) / 1 var(--font-sans);
+  color: var(--steel-2);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+.switch button[aria-pressed="true"] {
+  background: #fff;
+  color: var(--navy);
+  box-shadow: 0 6px 18px -10px rgba(14, 43, 70, 0.45);
+}
+.switch button:active {
+  transform: scale(0.98);
+}
+.capStage {
+  position: relative;
+  width: min(100%, calc(1100 * var(--u) + 120px));
+  margin: max(24px, calc(40 * var(--u))) 0 0;
+  padding: max(16px, calc(40 * var(--u))) max(12px, calc(64 * var(--u)));
+  border-radius: var(--radius);
+  background: radial-gradient(60% 80% at 50% 50%, #ffffff, #e9f0f6);
+}
+/* Both renders share one box and cross-fade; the wider the stage, the more it breathes. */
+.capPhoto {
+  position: relative;
+  width: min(100%, 300px);
+  margin-inline: auto;
+}
+.capPhoto img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 50% 100%;
+  opacity: 0;
+  transform: translateY(16px) scale(0.98);
+  transition:
+    opacity 0.45s ease,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.capPhoto img[data-on] {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .capPhoto img {
+    transition: none;
+  }
+}
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px max(24px, calc(48 * var(--u)));
+  margin-top: max(24px, calc(40 * var(--u)));
+  font: 400 max(14px, calc(18 * var(--u))) / 1.5 var(--font-sans);
+  color: var(--navy);
+}
+.facts li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.facts li::before {
+  content: "";
+  flex: none;
+  width: 16px;
+  height: 2px;
+  background: var(--accent);
+}
+
+/* ── Uses ── */
+.uses {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: center;
+  gap: max(32px, calc(96 * var(--u)));
+  width: min(100%, calc(1824 * var(--u) + 2 * var(--gutter)));
+  margin-inline: auto;
+  padding: var(--section-y) var(--gutter);
+}
+.usesPhoto {
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: radial-gradient(70% 70% at 55% 45%, #ffffff, #e2ebf3);
+}
+.usesPhoto img {
+  width: 100%;
+  height: auto;
+}
+.usesCopy {
+  display: flex;
+  flex-direction: column;
+  gap: max(16px, calc(24 * var(--u)));
+}
+.usesCopy :global(.t-h2) {
+  color: var(--navy);
+}
+.usesList {
+  margin-top: max(8px, calc(20 * var(--u)));
+  border-top: 1px solid rgba(14, 43, 70, 0.12);
+}
+.usesList li {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.8fr) 1.4fr;
+  gap: 16px;
+  padding-top: max(16px, calc(24 * var(--u)));
+}
+.usesList h3 {
+  font: 500 max(16px, calc(20 * var(--u))) / 1.4 var(--font-sans);
+  color: var(--navy);
+}
+.usesList p {
+  font: 300 max(15px, calc(18 * var(--u))) / 1.6 var(--font-sans);
+  color: #3a4048;
+}
+
+/* ── Manufacturing ── */
+.make {
+  background: radial-gradient(50% 60% at 85% 20%, rgba(178, 207, 236, 0.4), transparent 70%);
+  color: var(--navy);
+}
+.makeInner {
+  width: min(100%, calc(1824 * var(--u) + 2 * var(--gutter)));
+  margin-inline: auto;
+  padding: var(--section-y) var(--gutter);
+}
+.makeTitle {
+  max-width: 16em;
+  color: var(--navy);
+}
+.makeLead {
+  max-width: 38em;
+  margin-top: max(16px, calc(24 * var(--u)));
+  color: var(--muted);
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: max(24px, calc(48 * var(--u)));
+  margin: max(48px, calc(96 * var(--u))) 0 0;
+}
+.stats > div {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 14px;
+  padding-top: max(18px, calc(28 * var(--u)));
+  border-top: 1px solid rgba(14, 43, 70, 0.14);
+}
+.stats > div::before {
+  content: "";
+  order: 3;
+  width: 28px;
+  height: 2px;
+  background: var(--accent);
+}
+.stats dd {
+  margin: 0;
+  font: 300 max(44px, calc(112 * var(--u))) / 1 var(--font-sans);
+  letter-spacing: -0.03em;
+  color: var(--navy);
+  text-align: start;
+}
+.stats dt {
+  max-width: 18em;
+  font: 400 max(14px, calc(18 * var(--u))) / 1.5 var(--font-sans);
+  color: var(--muted);
+}
+.standards {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px max(24px, calc(40 * var(--u)));
+  margin-top: max(48px, calc(96 * var(--u)));
+  font: 400 max(14px, calc(17 * var(--u))) / 1.6 var(--font-sans);
+  color: var(--steel);
+}
+.standards ul {
+  display: flex;
+  gap: 14px;
+}
+.standards img {
+  width: max(56px, calc(72 * var(--u)));
+  height: auto;
+  border-radius: 50%;
+}
+
+/* ── Narrow layouts ── */
+@media (max-width: 1099px) {
+  .sizesGrid,
+  .uses {
+    grid-template-columns: 1fr;
+  }
+  .detail {
+    max-width: 520px;
+  }
+  .stats {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-aspect-ratio: 19/20) {
+  /* Portrait: the tube stands in the lower half under the hero copy, and above the story copy. */
+  .sticky {
+    background:
+      radial-gradient(70% 40% at 50% 70%, rgba(178, 207, 236, 0.55), transparent 70%),
+      radial-gradient(90% 40% at 50% 100%, rgba(214, 228, 242, 0.9), transparent 70%);
+  }
+  .hero {
+    align-items: flex-start;
+  }
+  .heroCopy {
+    padding-inline-start: 0;
+  }
+  .dragHint {
+    inset-inline: 0;
+    justify-content: center;
+    bottom: 20px;
+  }
+  .step {
+    align-items: flex-end;
+    padding-bottom: 28px;
+  }
+  .stepCopy {
+    width: 100%;
+    margin-inline-start: 0;
+  }
+}
+@media (max-width: 767px) {
+  .lineup {
+    --k: 1.7px;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter) 56px;
+    border-radius: 0;
+  }
+  .lineup::-webkit-scrollbar {
+    display: none;
+  }
+  .size {
+    flex: none;
+    scroll-snap-align: center;
+    padding-inline-end: 28px;
+  }
+  .detailDims dd {
+    font-size: 40px;
+  }
+  .usesList li {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .switch {
+    max-width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dragIcon::after,
+  .loader::after {
+    animation: none;
+  }
+  .size,
+  .veil,
+  .canvas,
+  .poster img {
+    transition: none;
+  }
+}
+
+/* ── Tablets: scatter control (same action as tapping them) ── */
+.scatter {
+  position: absolute;
+  inset-inline-end: 21%;
+  bottom: max(28px, calc(64 * var(--u)));
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 14px 30px -18px rgba(14, 43, 70, 0.5);
+  font: 500 14px/1 var(--font-ui);
+  letter-spacing: 0;
+  color: var(--navy);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition:
+    opacity 0.4s ease,
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.scatter[data-show] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.scatter:active {
+  transform: scale(0.97);
+}
+.tapDot {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.tapDot::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  animation: ping 1.8s ease-out infinite;
+}
+@keyframes ping {
+  from {
+    transform: scale(0.4);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+/* ── Quote sheet: unfolds from the button over the size card ── */
+.detailFace {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  transition:
+    opacity 0.3s ease,
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.detailFace :global(.btn) {
+  align-self: flex-start;
+}
+.detail[data-sheet] .detailFace {
+  opacity: 0;
+  transform: scale(0.97);
+}
+.sheet {
+  position: absolute;
+  z-index: 2;
+  inset-inline: 0;
+  bottom: 0;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: max(22px, calc(36 * var(--u)));
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: 0 40px 90px -40px rgba(14, 43, 70, 0.55);
+  clip-path: circle(0 at var(--ox, 50%) var(--oy, 90%));
+  visibility: hidden;
+  transition:
+    clip-path 0.55s cubic-bezier(0.65, 0, 0.35, 1),
+    visibility 0s linear 0.55s;
+}
+.sheet[data-open] {
+  clip-path: circle(150% at var(--ox, 50%) var(--oy, 90%));
+  visibility: visible;
+  transition:
+    clip-path 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s;
+}
+.sheetHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.sheetHead h3 {
+  font: 400 max(22px, calc(32 * var(--u))) / 1.2 var(--font-sans);
+  color: var(--navy);
+}
+.sheetSize {
+  margin-top: 6px;
+  font: 600 14px/1 var(--font-ui);
+  letter-spacing: 0;
+  color: var(--accent);
+}
+.sheetClose {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--ice);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sheetClose:hover {
+  transform: rotate(90deg);
+}
+.sheetClose svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--navy);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+.sheetLead {
+  font: 300 15px/1.6 var(--font-sans);
+  color: #3a4048;
+}
+.sheetForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 12px;
+}
+.sheetField {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sheetField.half {
+  grid-column: span 1;
+}
+.sheetField label {
+  font: 500 13px/1.3 var(--font-ui);
+  letter-spacing: 0;
+  color: var(--steel);
+}
+.sheetField input,
+.sheetField textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 14px;
+  border: 1px solid #c4cdd6;
+  border-radius: 12px;
+  background: #fbfcfd;
+  font: 400 15px/1.4 var(--font-sans);
+  color: var(--ink);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.sheetField textarea {
+  resize: vertical;
+}
+.sheetField input:focus-visible,
+.sheetField textarea:focus-visible {
+  outline: none;
+  border-color: var(--steel);
+  box-shadow: 0 0 0 3px rgba(84, 119, 160, 0.22);
+}
+.sheetField [aria-invalid="true"] {
+  border-color: #b3261e;
+}
+:global([dir="rtl"]) .sheetField input[dir="ltr"] {
+  text-align: right;
+}
+.sheetError {
+  font: 500 12px/1.3 var(--font-ui);
+  letter-spacing: 0;
+  color: #b3261e;
+}
+.sheetHelp {
+  font: 400 12px/1.5 var(--font-sans);
+  color: var(--slate);
+}
+.sheetActions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+.sheetActions :global(.btn) {
+  align-self: flex-start;
+}
+/* Fields rise in sequence once the sheet has opened. */
+.sheetHead,
+.sheetLead,
+.sheetField,
+.sheetActions {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.sheet[data-open] :is(.sheetHead, .sheetLead, .sheetField, .sheetActions) {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.45s ease,
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(0.18s + var(--i, 0) * 0.05s);
+}
+.sheet[data-open] .sheetLead {
+  --i: 0.5;
+}
+@media (max-width: 480px) {
+  .sheetField.half {
+    grid-column: 1 / -1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sheet,
+  .sheet[data-open],
+  .sheet[data-open] :is(.sheetHead, .sheetLead, .sheetField, .sheetActions),
+  .detailFace,
+  .scatter {
+    transition: none;
+  }
+  .tapDot::after {
+    animation: none;
+  }
+}
+@media (max-aspect-ratio: 19/20) {
+  .scatter {
+    inset-inline: 50% auto;
+    translate: 50% 0;
+    bottom: 24px;
+  }
+  :global([dir="ltr"]) .scatter {
+    translate: -50% 0;
+  }
+}

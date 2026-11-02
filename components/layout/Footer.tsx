@@ -12,7 +12,7 @@ const exploreHrefs = ["#applications", "/about", "#insights", "#certifications"]
 export default function Footer({ t, locale }: { t: Dictionary; locale: string }) {
   const home = `/${locale}`;
   // Absolute links so the footer is identical (and correct) on every page.
-  const productHrefs = [`${home}${productPaths.tube}`, `${home}#products`];
+  const productHrefs = [`${home}${productPaths.tube}`, `${home}${productPaths.effervescent}`];
   const f = t.footer;
 
   return (

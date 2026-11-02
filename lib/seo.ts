@@ -1,5 +1,5 @@
 import { contact, productPaths, siteUrl, social } from "@/lib/site";
-import { getTubeProduct } from "@/lib/products";
+import { getEffervescentProduct, getTubeProduct, type EffProduct } from "@/lib/products";
 import { diametersFor, loc, type TubeProduct } from "@/lib/configurator/model";
 import { defaultLocale, getDictionary, localeMeta, locales, type Dictionary, type Locale } from "@/lib/i18n";
 
@@ -98,6 +98,7 @@ export function llmsText(full: boolean) {
     "## Pages",
     ...locales.map((l) => `- [${getDictionary(l).meta.title}](${pageUrl(l)}): ${localeMeta[l].label} home page`),
     ...locales.map((l) => `- [${getDictionary(l).productTube.meta.title}](${pageUrl(l, productPaths.tube)}): ${getDictionary(l).productTube.meta.description}`),
+    ...locales.map((l) => `- [${getDictionary(l).productEff.meta.title}](${pageUrl(l, productPaths.effervescent)}): ${getDictionary(l).productEff.meta.description}`),
     "",
     "## Contact",
     `- Email: ${contact.email}`,
@@ -138,6 +139,8 @@ export function llmsText(full: boolean) {
       t.productTube.lead,
       ...t.productTube.features.map((f) => `- ${f}`),
       ...tubeFacts(t, getTubeProduct(), l),
+      "",
+      ...effFacts(t, getEffervescentProduct(), l),
       "",
       `### ${t.cta.title.join(" ")}`,
       t.cta.lead,
@@ -192,6 +195,64 @@ export function productTubeJsonLd(t: Dictionary, product: TubeProduct, locale: L
           { "@type": "ListItem", position: 1, name: t.common.brand, item: pageUrl(locale) },
           { "@type": "ListItem", position: 2, name: p.breadcrumb, item: `${pageUrl(locale)}#products` },
           { "@type": "ListItem", position: 3, name: p.title.join(" "), item: url },
+        ],
+      },
+    ],
+  };
+}
+
+/** Effervescent tube page as plain text: sizes, caps, uses and the published production figures. */
+function effFacts(t: Dictionary, p: EffProduct, l: Locale) {
+  const e = t.productEff;
+  const url = pageUrl(l, productPaths.effervescent);
+  return [
+    `### ${e.eyebrow} (${url})`,
+    `${e.title.join(" ")} ${e.lead}`,
+    `- ${e.sizes.title}: ${p.sizes.map((s) => `Ø${s.d} × ${s.h} mm`).join(", ")}. ${e.sizes.lead}`,
+    `- ${e.caps.title}: ${p.caps.variants.map((v) => v.name[l] ?? v.name.en).join(", ")}. ${e.caps.facts.join("; ")}.`,
+    ...e.story.map((s) => `- ${s.title}: ${s.text}`),
+    `- ${e.uses.title}: ${e.uses.lead} ${e.uses.items.map((i) => `${i.title} (${i.text})`).join("; ")}`,
+    `- ${e.make.title}: ${e.make.lead.replace("{since}", p.since[l] ?? p.since.en!)} ${p.dailyCapacity} ${e.make.perDay}. ${e.make.standards}`,
+  ];
+}
+
+/** Effervescent tube page: the product, its five standard sizes as variants, and the breadcrumb trail. */
+export function productEffJsonLd(t: Dictionary, product: EffProduct, locale: Locale, path: string) {
+  const url = pageUrl(locale, path);
+  const e = t.productEff;
+  const id = `${url}#product`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "ProductGroup",
+        "@id": id,
+        name: e.eyebrow,
+        description: `${e.lead} ${e.caps.lead}`,
+        url,
+        image: [product.images.uses.src, ...product.caps.variants.map((v) => v.image.src)].map((src) => `${siteUrl}${src}`),
+        brand: { "@id": `${siteUrl}/#organization` },
+        manufacturer: { "@id": `${siteUrl}/#organization` },
+        variesBy: ["https://schema.org/size"],
+        additionalProperty: [
+          { "@type": "PropertyValue", name: e.caps.label, value: product.caps.variants.map((v) => v.name[locale] ?? v.name.en).join(", ") },
+          ...e.caps.facts.map((f) => ({ "@type": "PropertyValue", name: e.caps.title, value: f })),
+        ],
+        hasVariant: product.sizes.map((s) => ({
+          "@type": "Product",
+          name: `${e.eyebrow} Ø${s.d} × ${s.h} mm`,
+          size: `Ø${s.d} × ${s.h} mm`,
+          width: { "@type": "QuantitativeValue", value: s.d, unitCode: "MMT" },
+          height: { "@type": "QuantitativeValue", value: s.h, unitCode: "MMT" },
+          image: `${siteUrl}${s.render.src}`,
+        })),
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: t.common.brand, item: pageUrl(locale) },
+          { "@type": "ListItem", position: 2, name: e.breadcrumb, item: `${pageUrl(locale)}#products` },
+          { "@type": "ListItem", position: 3, name: e.eyebrow, item: url },
         ],
       },
     ],

@@ -8,6 +8,7 @@ export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://arapoush.co
 // Product detail pages, relative to the locale root (/fa, /en, /tr).
 export const productPaths = {
   tube: "/products/multi-layer-tube",
+  effervescent: "/products/effervescent-tube",
 } as const;
 
 /** Section anchors work from any page: on a sub-page they point back to the localized home. */
@@ -15,7 +16,7 @@ export const homeHref = (locale: string, href: string, onHome: boolean) =>
   href.startsWith("#") && !onHome ? `/${locale}${href === "#top" ? "" : href}` : href;
 
 export const links = {
-  products: { tube: productPaths.tube as string, effervescent: "#contact" },
+  products: { tube: productPaths.tube as string, effervescent: productPaths.effervescent as string },
   applications: "#contact",
   articles: null as string | null,
   allArticles: null as string | null,

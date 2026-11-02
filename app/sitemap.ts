@@ -7,6 +7,7 @@ import { productPaths, siteUrl } from "@/lib/site";
 const pages = [
   { path: "", priority: 1, images: ["/images/hero-products.webp", "/images/product-tube.webp", "/images/product-effervescent.webp"] },
   { path: productPaths.tube, priority: 0.9, images: ["/images/product-tube.webp", "/images/cta-tube.webp"] },
+  { path: productPaths.effervescent, priority: 0.9, images: ["/images/eff/uses-tablets.webp", "/images/eff/cap-spiral.webp", "/images/eff/cap-plain.webp"] },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -1,0 +1,125 @@
+{
+  "$comment": "Admin-managed content for /products/effervescent-tube. Sizes, figures and copy facts come from arapoush.com/تیوب-قرص-جوشان; the cap's parts follow Arapoush's own product renders. Every image here is rendered from the parametric 3D model by scripts/render-effervescent.cjs (run it after changing sizes).",
+  "defaultSize": "27x175",
+  "renderPxPerMm": 6,
+  "dailyCapacity": 100000,
+  "since": {
+    "fa": "۱۳۸۷",
+    "en": "2008",
+    "tr": "2008"
+  },
+  "sizes": [
+    {
+      "id": "22x78",
+      "d": 22,
+      "h": 78,
+      "render": {
+        "src": "/images/eff/size-22x78.webp",
+        "width": 166,
+        "height": 545,
+        "base": 527,
+        "mouth": 62,
+        "left": 17,
+        "right": 149
+      }
+    },
+    {
+      "id": "27x86",
+      "d": 27,
+      "h": 86,
+      "render": {
+        "src": "/images/eff/size-27x86.webp",
+        "width": 200,
+        "height": 606,
+        "base": 587,
+        "mouth": 74,
+        "left": 19,
+        "right": 181
+      }
+    },
+    {
+      "id": "27x138",
+      "d": 27,
+      "h": 138,
+      "render": {
+        "src": "/images/eff/size-27x138.webp",
+        "width": 200,
+        "height": 918,
+        "base": 897,
+        "mouth": 75,
+        "left": 19,
+        "right": 181
+      }
+    },
+    {
+      "id": "27x175",
+      "d": 27,
+      "h": 175,
+      "render": {
+        "src": "/images/eff/size-27x175.webp",
+        "width": 200,
+        "height": 1140,
+        "base": 1119,
+        "mouth": 76,
+        "left": 19,
+        "right": 181
+      }
+    },
+    {
+      "id": "36x96",
+      "d": 36,
+      "h": 96,
+      "render": {
+        "src": "/images/eff/size-36x96.webp",
+        "width": 260,
+        "height": 690,
+        "base": 667,
+        "mouth": 96,
+        "left": 22,
+        "right": 238
+      }
+    }
+  ],
+  "caps": {
+    "variants": [
+      {
+        "id": "spiral",
+        "name": {
+          "fa": "با اسپیرال",
+          "en": "With spiral",
+          "tr": "Spiralli"
+        },
+        "image": {
+          "src": "/images/eff/cap-spiral.webp",
+          "width": 266,
+          "height": 825
+        }
+      },
+      {
+        "id": "plain",
+        "name": {
+          "fa": "بدون اسپیرال",
+          "en": "Without spiral",
+          "tr": "Spiralsiz"
+        },
+        "image": {
+          "src": "/images/eff/cap-plain.webp",
+          "width": 266,
+          "height": 825
+        }
+      }
+    ]
+  },
+  "images": {
+    "poster": {
+      "src": "/images/eff/hero-tube.webp",
+      "width": 1600,
+      "height": 1000
+    },
+    "uses": {
+      "src": "/images/eff/uses-tablets.webp",
+      "width": 1600,
+      "height": 1000
+    }
+  }
+}
