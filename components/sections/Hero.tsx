@@ -286,6 +286,7 @@ export default function Hero({ t }: SectionProps) {
                   data-critical={i === 0 ? "" : undefined}
                   sizes="(max-width: 1099px) 110vw, 56vw"
                   quality={70}
+                  data-no-mirror
                 />
               </AfterLoad>
             </div>

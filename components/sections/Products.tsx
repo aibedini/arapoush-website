@@ -5,10 +5,11 @@ import { CircleArrow } from "@/components/ui/icons";
 import Glow from "@/components/ui/Glow";
 import styles from "./Products.module.css";
 
-const visuals = [
-  { n: "01", img: "/images/product-tube.webp", href: links.products.tube, tone: "light", x: 634 },
-  { n: "02", img: "/images/product-effervescent.webp", href: links.products.effervescent, tone: "dark", x: 1243 },
-] as const;
+const visuals = (locale: string) =>
+  [
+    { n: "01", img: locale === "fa" ? "/images/fa/product-tube.webp" : "/images/product-tube.webp", href: links.products.tube, tone: "light" as const, x: 634 },
+    { n: "02", img: locale === "fa" ? "/images/fa/product-effervescent.webp" : "/images/product-effervescent.webp", href: links.products.effervescent, tone: "dark" as const, x: 1243 },
+  ] as const;
 
 type CardProps = { n: string; img: string; href: string; dark: boolean; title: string[]; text: string; label: string };
 
@@ -21,7 +22,7 @@ function ProductCard({ n, img, href, dark, title, text, label }: CardProps) {
       <div className={styles.media} data-reveal-media>
         <div className={styles.mediaInner}>
           <div className={styles.drift} data-drift>
-            <Image src={img} alt="" fill sizes="(max-width: 767px) 92vw, (max-width: 1099px) 46vw, 29vw" />
+            <Image src={img} alt="" fill sizes="(max-width: 767px) 92vw, (max-width: 1099px) 46vw, 29vw" data-no-mirror />
           </div>
         </div>
       </div>
@@ -73,7 +74,7 @@ export default function Products({ t, locale }: SectionProps) {
         </div>
 
         <div className={styles.cards} data-reveal-stagger>
-          {visuals.map((v, i) => {
+          {visuals(locale).map((v, i) => {
             const card = p.cards[i];
             if (!card) return null;
             return (

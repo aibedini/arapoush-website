@@ -24,7 +24,7 @@ export default function ContactCTA({ t, locale }: SectionProps) {
       <section id="contact" className={styles.cta} aria-labelledby="cta-title">
         <div className={styles.tube} aria-hidden="true">
           <div data-parallax="50">
-            <Image src="/images/cta-tube.webp" alt="" width={941} height={706} sizes="(max-width: 767px) 62vw, (max-width: 1099px) 70vw, 49vw" />
+            <Image src={locale === "fa" ? "/images/fa/cta-tube.webp" : "/images/cta-tube.webp"} alt="" width={941} height={706} sizes="(max-width: 767px) 62vw, (max-width: 1099px) 70vw, 49vw" data-no-mirror />
           </div>
         </div>
 

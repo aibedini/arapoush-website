@@ -38,7 +38,7 @@ export default function Samples({ t, locale, product, cfg, onApply }: Props) {
             return (
               <li key={s.id} className={styles.sample}>
                 <div className={styles.sampleImg}>
-                  <Image src={s.image} alt={loc(s.title, locale)} fill sizes="(max-width: 767px) 92vw, (max-width: 1279px) 46vw, 30vw" />
+                  <Image src={s.image} alt={loc(s.title, locale)} fill sizes="(max-width: 767px) 92vw, (max-width: 1279px) 46vw, 30vw" data-no-mirror />
                   <span className={`${styles.sampleBadge} ${exact ? styles.sampleExact : ""}`}>{exact ? t.samplesMatch : t.samplesSimilar}</span>
                 </div>
                 <div className={styles.sampleBody}>

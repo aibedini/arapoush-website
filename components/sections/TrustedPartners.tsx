@@ -27,7 +27,7 @@ const logos = [
   { src: "/images/logo-hydroderm.svg", alt: "Hydroderm", w: 189, h: 81 },
 ];
 
-export default function TrustedPartners({ t }: SectionProps) {
+export default function TrustedPartners({ t, locale }: SectionProps) {
   const p = t.partners;
   const track = useRef<HTMLUListElement>(null);
   const busy = useRef(false);
@@ -76,7 +76,7 @@ export default function TrustedPartners({ t }: SectionProps) {
     <section id="partners" className={styles.section} aria-labelledby="partners-title">
       <div className={styles.bg} aria-hidden="true">
         <div className={styles.bgInner} data-parallax="40">
-          <Image src="/images/partners-bg.webp" alt="" fill sizes="100vw" className={styles.bgImg} />
+          <Image src={locale === "fa" ? "/images/fa/partners-bg.webp" : "/images/partners-bg.webp"} alt="" fill sizes="100vw" className={styles.bgImg} data-no-mirror />
         </div>
       </div>
 

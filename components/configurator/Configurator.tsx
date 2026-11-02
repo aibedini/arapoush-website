@@ -297,7 +297,7 @@ function Field({ id, title, unit, children }: { id: string; title: string; unit?
 function Card({ checked, disabled, onSelect, img, name, note }: { checked: boolean; disabled?: boolean; onSelect: () => void; img: string; name: string; note?: string }) {
   return (
     <button type="button" aria-pressed={checked} disabled={disabled} className={styles.card} onClick={onSelect}>
-      <Image src={img} alt="" width={640} height={640} sizes="96px" className={styles.cardImg} />
+      <Image src={img} alt="" width={640} height={640} sizes="96px" className={styles.cardImg} data-no-mirror />
       <span className={styles.cardName}>{name}</span>
       {note && <span className={styles.cardNote}>{note}</span>}
     </button>
