@@ -1,0 +1,281 @@
+{
+  "$comment": "Everything the tube product page shows that the admin panel manages: images, tube shapes with their diameters/lengths/volumes, closures with compatibility, wall structures (each a list of layers, outside → inside; optional \"shapes\" limits which tube shapes offer it) and product samples. The backend can send this same shape (see lib/products.ts). Volume status: chart = Arapoush size chart (indicative until certified), estimate = inferred; compat status: chart = listed by Arapoush, confirm = offered, awaiting sign-off. 3D 'model' must be one of: shapes circular | oval | eyeNozzle; closures flipTop | screw | nozzle | standUp | plain. Samples: each is tagged with the shape (and optionally closure / diameter) it shows; the page ranks them against the visitor's selection. Current samples reuse existing photos — replace with real production samples.",
+  "version": 2,
+  "updated": "2026-11-02",
+  "images": {
+    "hero": {
+      "ltr": "/images/product/hero-ltr.webp",
+      "rtl": "/images/product/hero-rtl.webp",
+      "width": 1672,
+      "height": 941,
+      "alt": {
+        "fa": "تیوپ پلاستیکی چندلایه بدون درز آراپوش روی پس‌زمینه ابریشمی",
+        "en": "Arapoush multi-layered seamless plastic tube on a silk background",
+        "tr": "İpek zemin üzerinde Arapoush çok katmanlı dikişsiz plastik tüp"
+      }
+    },
+    "layers": {
+      "ltr": "/images/product/layers-ltr.webp",
+      "rtl": "/images/product/layers-rtl.webp",
+      "width": 1672,
+      "height": 941,
+      "alt": { "fa": "برش تیوپ چندلایه که لایه‌های داخلی را نشان می‌دهد", "en": "Cut-away of a multi-layer tube showing its inner layers", "tr": "İç katmanlarını gösteren çok katmanlı tüp kesiti" }
+    }
+  },
+  "shapes": [
+    {
+      "id": "circular",
+      "model": "circular",
+      "name": { "fa": "گرد", "en": "Circular", "tr": "Yuvarlak" },
+      "image": "/images/product/tube-circular.webp",
+      "sizes": {
+        "19": [
+          { "l": 50, "ml": 5, "status": "chart" },
+          { "l": 65, "ml": 10, "status": "chart" },
+          { "l": 84, "ml": 15, "status": "chart" },
+          { "l": 102, "ml": 20, "status": "chart" }
+        ],
+        "25": [
+          { "l": 65, "ml": 15, "status": "chart" },
+          { "l": 76, "ml": 20, "status": "chart" },
+          { "l": 85, "ml": 25, "status": "chart" },
+          { "l": 96, "ml": 30, "status": "chart" },
+          { "l": 105, "ml": 35, "status": "chart" },
+          { "l": 115, "ml": 40, "status": "chart" },
+          { "l": 135, "ml": 50, "status": "chart" }
+        ],
+        "30": [
+          { "l": 80, "ml": 30, "status": "chart" },
+          { "l": 85, "ml": 35, "status": "chart" },
+          { "l": 95, "ml": 40, "status": "chart" },
+          { "l": 110, "ml": 50, "status": "chart" },
+          { "l": 124, "ml": 60, "status": "chart" },
+          { "l": 142, "ml": 75, "status": "chart" },
+          { "l": 149, "ml": 80, "status": "chart" }
+        ],
+        "35": [
+          { "l": 82, "ml": 40, "status": "chart" },
+          { "l": 90, "ml": 50, "status": "chart" },
+          { "l": 100, "ml": 60, "status": "chart" },
+          { "l": 120, "ml": 75, "status": "chart" },
+          { "l": 125, "ml": 80, "status": "chart" },
+          { "l": 137, "ml": 90, "status": "chart" },
+          { "l": 147, "ml": 100, "status": "chart" }
+        ],
+        "40": [
+          { "l": 85, "ml": 60, "status": "chart" },
+          { "l": 98, "ml": 75, "status": "chart" },
+          { "l": 102, "ml": 80, "status": "chart" },
+          { "l": 110, "ml": 90, "status": "chart" },
+          { "l": 120, "ml": 100, "status": "chart" },
+          { "l": 136, "ml": 120, "status": "chart" },
+          { "l": 146, "ml": 130, "status": "chart" },
+          { "l": 154, "ml": 140, "status": "chart" },
+          { "l": 164, "ml": 150, "status": "chart" },
+          { "l": 184, "ml": 175, "status": "chart" }
+        ],
+        "50": [
+          { "l": 95, "ml": 100, "status": "chart" },
+          { "l": 105, "ml": 120, "status": "chart" },
+          { "l": 110, "ml": 130, "status": "estimate" },
+          { "l": 115, "ml": 140, "status": "estimate" },
+          { "l": 118, "ml": 150, "status": "estimate" },
+          { "l": 132, "ml": 175, "status": "estimate" },
+          { "l": 147, "ml": 200, "status": "chart" },
+          { "l": 160, "ml": 225, "status": "chart" },
+          { "l": 176, "ml": 250, "status": "chart" },
+          { "l": 186, "ml": 275, "status": "chart" },
+          { "l": 198, "ml": 300, "status": "chart" }
+        ],
+        "60": [
+          { "l": 140, "ml": 250, "status": "chart" },
+          { "l": 148, "ml": 275, "status": "chart" },
+          { "l": 155, "ml": 300, "status": "chart" },
+          { "l": 165, "ml": 325, "status": "chart" },
+          { "l": 175, "ml": 350, "status": "chart" },
+          { "l": 185, "ml": 375, "status": "chart" }
+        ]
+      }
+    },
+    {
+      "id": "oval",
+      "model": "oval",
+      "name": { "fa": "بیضی", "en": "Oval", "tr": "Oval" },
+      "image": "/images/product/tube-oval.webp",
+      "sizes": {
+        "30": [
+          { "l": 80 },
+          { "l": 85 },
+          { "l": 95 },
+          { "l": 110 },
+          { "l": 124 },
+          { "l": 142 },
+          { "l": 149 }
+        ],
+        "35": [
+          { "l": 82 },
+          { "l": 90 },
+          { "l": 100 },
+          { "l": 120 },
+          { "l": 125 },
+          { "l": 137 },
+          { "l": 147 }
+        ],
+        "40": [
+          { "l": 85 },
+          { "l": 98 },
+          { "l": 102 },
+          { "l": 110 },
+          { "l": 120 },
+          { "l": 136 },
+          { "l": 146 },
+          { "l": 154 },
+          { "l": 164 },
+          { "l": 184 }
+        ]
+      }
+    },
+    {
+      "id": "eyeNozzle",
+      "model": "eyeNozzle",
+      "name": { "fa": "نازل چشمی", "en": "Eye nozzle", "tr": "Göz nozul" },
+      "image": "/images/product/tube-eye-nozzle.webp",
+      "sizes": {
+        "19": [
+          { "l": 50 },
+          { "l": 65 },
+          { "l": 84 },
+          { "l": 102 }
+        ],
+        "25": [
+          { "l": 65 },
+          { "l": 76 },
+          { "l": 85 },
+          { "l": 96 },
+          { "l": 105 },
+          { "l": 115 },
+          { "l": 135 }
+        ]
+      }
+    }
+  ],
+  "closures": [
+    {
+      "id": "flipTop",
+      "model": "flipTop",
+      "name": { "fa": "درب فلیپ‌تاپ", "en": "Flip-top cap", "tr": "Flip-top kapak" },
+      "image": "/images/product/cap-flip-top.webp",
+      "compat": {
+        "circular": { "25": "chart", "30": "chart", "35": "chart", "40": "chart", "50": "chart", "60": "chart" },
+        "oval": { "30": "confirm", "35": "confirm", "40": "confirm" }
+      }
+    },
+    {
+      "id": "screw",
+      "model": "screw",
+      "name": { "fa": "درب پیچی", "en": "Screw cap", "tr": "Vidalı kapak" },
+      "image": "/images/product/cap-screw.webp",
+      "compat": {
+        "circular": { "19": "chart", "25": "chart", "30": "chart", "35": "chart" },
+        "oval": { "30": "confirm", "35": "confirm", "40": "confirm" }
+      }
+    },
+    {
+      "id": "nozzle",
+      "model": "nozzle",
+      "name": { "fa": "درب نازل‌دار", "en": "Nozzle cap", "tr": "Nozullu kapak" },
+      "image": "/images/product/cap-nozzle.webp",
+      "compat": {
+        "circular": { "19": "confirm", "25": "confirm", "30": "confirm", "35": "confirm", "40": "confirm", "50": "confirm", "60": "confirm" },
+        "eyeNozzle": { "19": "confirm", "25": "confirm" }
+      }
+    },
+    {
+      "id": "standUp",
+      "model": "standUp",
+      "name": { "fa": "درب ایستاده", "en": "Stand-up cap", "tr": "Ters duran kapak" },
+      "image": "/images/product/cap-stand-up.webp",
+      "compat": {
+        "circular": { "19": "confirm", "25": "confirm", "30": "confirm", "35": "confirm", "40": "confirm", "50": "confirm", "60": "confirm" }
+      }
+    }
+  ],
+  "structures": [
+    {
+      "id": "pe-evoh-5",
+      "name": { "fa": "پنج‌لایه PE / EVOH", "en": "5-layer PE / EVOH", "tr": "5 katmanlı PE / EVOH" },
+      "layers": [
+        {
+          "id": "pe-outer",
+          "color": "#2b4257",
+          "name": { "fa": "PE (لایه بیرونی)", "en": "PE (outer layer)", "tr": "PE (dış katman)" },
+          "text": { "fa": "دوام و کیفیت چاپ", "en": "Durability & print quality", "tr": "Dayanıklılık ve baskı kalitesi" }
+        },
+        {
+          "id": "adhesive-1",
+          "color": "#e08b45",
+          "name": { "fa": "چسب", "en": "Adhesive", "tr": "Yapıştırıcı" },
+          "text": { "fa": "اتصال محکم لایه‌ها", "en": "Strong layer bonding", "tr": "Güçlü katman bağı" }
+        },
+        {
+          "id": "evoh",
+          "color": "#a9c3d6",
+          "name": { "fa": "EVOH", "en": "EVOH", "tr": "EVOH" },
+          "text": { "fa": "سد بالا در برابر اکسیژن و رطوبت", "en": "High barrier to oxygen & moisture", "tr": "Oksijen ve neme karşı yüksek bariyer" }
+        },
+        {
+          "id": "adhesive-2",
+          "color": "#e8a46e",
+          "name": { "fa": "چسب", "en": "Adhesive", "tr": "Yapıştırıcı" },
+          "text": { "fa": "چسبندگی مطمئن بین لایه‌ها", "en": "Secure interlayer adhesion", "tr": "Güvenli katmanlar arası yapışma" }
+        },
+        {
+          "id": "pe-inner",
+          "color": "#e9eef1",
+          "name": { "fa": "PE (لایه درونی)", "en": "PE (inner layer)", "tr": "PE (iç katman)" },
+          "text": { "fa": "ایمنی محصول و مقاومت شیمیایی", "en": "Product safety & chemical resistance", "tr": "Ürün güvenliği ve kimyasal direnç" }
+        }
+      ]
+    }
+  ],
+  "samples": [
+    {
+      "id": "printed-flip-top",
+      "image": "/images/product/hero-ltr.webp",
+      "shape": "circular",
+      "closure": "flipTop",
+      "title": { "fa": "تیوپ چاپ‌شده با درب فلیپ‌تاپ", "en": "Printed tube with flip-top cap", "tr": "Flip-top kapaklı baskılı tüp" }
+    },
+    {
+      "id": "printed-crimp",
+      "image": "/images/product-tube.webp",
+      "shape": "circular",
+      "title": { "fa": "تیوپ چاپ‌شده با دوخت انتهایی", "en": "Printed tube with crimp seal", "tr": "Kıvrık kapamalı baskılı tüp" }
+    },
+    {
+      "id": "multilayer-wall",
+      "image": "/images/product/layers-ltr.webp",
+      "shape": "circular",
+      "title": { "fa": "بدنه چندلایه، نمای برش", "en": "Multi-layer wall, cut-away", "tr": "Çok katmanlı gövde, kesit" }
+    },
+    {
+      "id": "round-body",
+      "image": "/images/product/tube-circular.webp",
+      "shape": "circular",
+      "title": { "fa": "بدنه تیوپ گرد", "en": "Round tube body", "tr": "Yuvarlak tüp gövdesi" }
+    },
+    {
+      "id": "oval-body",
+      "image": "/images/product/tube-oval.webp",
+      "shape": "oval",
+      "title": { "fa": "بدنه تیوپ بیضی", "en": "Oval tube body", "tr": "Oval tüp gövdesi" }
+    },
+    {
+      "id": "eye-nozzle",
+      "image": "/images/product/tube-eye-nozzle.webp",
+      "shape": "eyeNozzle",
+      "closure": "nozzle",
+      "title": { "fa": "تیوپ نازل چشمی", "en": "Eye-nozzle tube", "tr": "Göz nozullu tüp" }
+    }
+  ]
+}

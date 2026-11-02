@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import type { Closure, TubeConfig } from "@/lib/configurator/model";
+import type { ClosureModel, ShapeModel } from "@/lib/configurator/model";
 
 /**
  * Parametric tube scene. 1 world unit = 10 mm, so a Ø30 × 110 tube is 3 × 11 units and
@@ -10,10 +10,12 @@ import type { Closure, TubeConfig } from "@/lib/configurator/model";
  */
 
 const OVAL = { x: 1.12, z: 0.74 };
-const LAYER_COLORS = ["#2b4257", "#e08b45", "#a9c3d6", "#e8a46e", "#e9eef1"];
 
+/** What the mesh is built from: catalogue ids are mapped to geometry families before they get here. */
+export type SceneSpec = { d: number; l: number; shape: ShapeModel; closure: ClosureModel };
 export type SceneLabels = {
-  layers: string[];
+  /** Wall layers of the selected structure, outside → inside. */
+  layers: { name: string; color: string }[];
   closure: string;
   notToScale: string;
 };
@@ -49,7 +51,8 @@ export class TubeScene {
   private controls: OrbitControls;
   private pivot = new THREE.Group();
   private built: Built | null = null;
-  private cfg: TubeConfig | null = null;
+  private cfg: SceneSpec | null = null;
+  private layersKey = "";
   private env: THREE.Texture;
   private shadow: THREE.Mesh;
   private ring: THREE.Mesh;
@@ -135,16 +138,18 @@ export class TubeScene {
     this.resize();
   }
 
-  setConfig(cfg: TubeConfig) {
+  setConfig(cfg: SceneSpec) {
     const c = this.cfg;
-    if (c && c.shape === cfg.shape && c.d === cfg.d && c.l === cfg.l && c.closure === cfg.closure) return this.invalidate();
+    const layersKey = this.o.labels.layers.map((x) => x.color).join();
+    if (c && c.shape === cfg.shape && c.d === cfg.d && c.l === cfg.l && c.closure === cfg.closure && layersKey === this.layersKey) return this.invalidate();
+    this.layersKey = layersKey;
     const prev = this.built;
     this.cfg = cfg;
     if (prev) {
       this.pivot.remove(prev.root);
       disposeTree(prev.root);
     }
-    const b = buildTube(cfg, this.o.font);
+    const b = buildTube(cfg, this.o.font, this.o.labels.layers.map((x) => x.color));
     this.built = b;
     this.pivot.add(b.root);
     this.applyExplode();
@@ -364,7 +369,7 @@ export class TubeScene {
       anchors.forEach((a, i) => {
         const y = colY + i * 24;
         out.push(
-          `<g class="callout"><polyline points="${a.x.toFixed(1)},${a.y.toFixed(1)} ${(colX - 8).toFixed(1)},${y}"/><circle cx="${a.x.toFixed(1)}" cy="${a.y.toFixed(1)}" r="3" fill="${LAYER_COLORS[i]}"/><text x="${colX}" y="${y + 4}">${escapeXml(this.o.labels.layers[i] ?? "")}</text></g>`,
+          `<g class="callout"><polyline points="${a.x.toFixed(1)},${a.y.toFixed(1)} ${(colX - 8).toFixed(1)},${y}"/><circle cx="${a.x.toFixed(1)}" cy="${a.y.toFixed(1)}" r="3" fill="${this.o.labels.layers[i]?.color ?? "#999"}"/><text x="${colX}" y="${y + 4}">${escapeXml(this.o.labels.layers[i]?.name ?? "")}</text></g>`,
         );
       });
       const cap = project(new THREE.Vector3(reach * 1.2, -b.capDrop + b.floor * 0.5, 0));
@@ -377,7 +382,7 @@ export class TubeScene {
 
 /* ───────────────────────── geometry ───────────────────────── */
 
-function buildTube(cfg: TubeConfig, font: string): Built {
+function buildTube(cfg: SceneSpec, font: string, layerColors: string[]): Built {
   const r = cfg.d / 20;
   const L = cfg.l / 10;
   const oval = cfg.shape === "oval";
@@ -481,9 +486,9 @@ function buildTube(cfg: TubeConfig, font: string): Built {
   }
   root.add(closure);
 
-  // Inspection: the five co-extruded layers, schematic thickness, fanned out beside the body.
+  // Inspection: the structure's co-extruded layers, schematic thickness, fanned out beside the body.
   const layers = new THREE.Group();
-  LAYER_COLORS.forEach((color, i) => {
+  layerColors.forEach((color, i) => {
     const m = new THREE.MeshStandardMaterial({
       color,
       roughness: 0.5,
@@ -513,11 +518,11 @@ function buildTube(cfg: TubeConfig, font: string): Built {
   };
 }
 
-function buildClosure(kind: Closure, r: number, neckR: number, plastic: THREE.Material, shadowed: THREE.Material) {
+function buildClosure(kind: ClosureModel, r: number, neckR: number, plastic: THREE.Material, shadowed: THREE.Material) {
   const group = new THREE.Group();
   let lid: THREE.Object3D | null = null;
   let floor = 0;
-  if (kind === "screw") {
+  if (kind === "screw" || kind === "plain") {
     const R = r * 0.86;
     const H = Math.max(1, R * 1.1);
     const g = lathe(
@@ -531,7 +536,7 @@ function buildClosure(kind: Closure, r: number, neckR: number, plastic: THREE.Ma
       ],
       192,
     );
-    ribs(g, R, -H + 0.12, -0.08, 60);
+    if (kind === "screw") ribs(g, R, -H + 0.12, -0.08, 60); // plain caps stay smooth
     group.add(new THREE.Mesh(g, plastic));
     floor = -H;
   } else if (kind === "flipTop") {
@@ -699,7 +704,7 @@ class Helix extends THREE.Curve<THREE.Vector3> {
 /* ───────────────────────── textures ───────────────────────── */
 
 /** Print artwork wrapped around the body; drawn at the tube's real aspect so it never stretches. */
-function artwork(cfg: TubeConfig, font: string) {
+function artwork(cfg: SceneSpec, font: string) {
   const circumference = Math.PI * cfg.d;
   const W = 1024;
   const H = THREE.MathUtils.clamp(Math.round((W * cfg.l) / circumference), 256, 2048);

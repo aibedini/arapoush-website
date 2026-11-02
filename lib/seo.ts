@@ -1,5 +1,6 @@
 import { contact, productPaths, siteUrl, social } from "@/lib/site";
-import { DIAMETERS, VOLUMES, sizesFor, tubeCatalogue } from "@/lib/tubeSizes";
+import { getTubeProduct } from "@/lib/products";
+import { diametersFor, loc, type TubeProduct } from "@/lib/configurator/model";
 import { defaultLocale, getDictionary, localeMeta, locales, type Dictionary, type Locale } from "@/lib/i18n";
 
 export const pageUrl = (locale: Locale, path = "") => `${siteUrl}/${locale}${path}`;
@@ -136,12 +137,7 @@ export function llmsText(full: boolean) {
       `### ${t.productTube.title.join(" ")} (${pageUrl(l, productPaths.tube)})`,
       t.productTube.lead,
       ...t.productTube.features.map((f) => `- ${f}`),
-      `${t.productTube.layers.title}: ${t.productTube.layers.items.map((x) => `${x.name} (${x.text})`).join("; ")}`,
-      `${t.productTube.calculator.title} (${t.productTube.calculator.note}):`,
-      ...DIAMETERS.map((d) => `- Ø${d} mm: ${sizesFor(d).map((s) => `${s.l} mm = ${s.ml} ml`).join(", ")}`),
-      `${t.productTube.variants}: ${Object.values(t.productTube.shapes).join(", ")}. ${t.productTube.closures}: ${t.productTube.closureNames.join(", ")}.`,
-      `${t.productTube.configurator.title} (${pageUrl(l, productPaths.tube)}#configurator): ${t.productTube.configurator.lead} ${t.productTube.configurator.disclaimer}`,
-      `${t.productTube.shapes.oval}: Ø${tubeCatalogue.shapes.oval.diameters.join("/")} mm; ${t.productTube.shapes.eyeNozzle}: Ø${tubeCatalogue.shapes.eyeNozzle.diameters.join("/")} mm — ${t.productTube.configurator.noVolume}.`,
+      ...tubeFacts(t, getTubeProduct(), l),
       "",
       `### ${t.cta.title.join(" ")}`,
       t.cta.lead,
@@ -150,8 +146,25 @@ export function llmsText(full: boolean) {
   return lines.join("\n") + "\n";
 }
 
+/** Every shape, size, volume, closure and structure from the admin-managed product content, as plain lines. */
+function tubeFacts(t: Dictionary, p: TubeProduct, l: Locale) {
+  const c = t.productTube.configurator;
+  return [
+    `${c.title} (${pageUrl(l, productPaths.tube)}#configurator): ${c.lead} ${c.disclaimer}`,
+    ...p.shapes.map(
+      (s) =>
+        `- ${c.shape}: ${loc(s.name, l)} — ` +
+        diametersFor(p, s.id)
+          .map((d) => `Ø${d} mm: ${s.sizes[String(d)]!.map((r) => (r.ml ? `${r.l} mm = ${r.ml} ml` : `${r.l} mm`)).join(", ")}`)
+          .join("; "),
+    ),
+    `- ${c.closure}: ${p.closures.map((k) => loc(k.name, l)).join(", ")}`,
+    ...p.structures.map((s) => `- ${c.specStructure}: ${loc(s.name, l)} — ${s.layers.map((x) => `${loc(x.name, l)} (${loc(x.text, l)})`).join("; ")}`),
+  ];
+}
+
 /** Product detail page: the product itself plus its breadcrumb trail. */
-export function productTubeJsonLd(t: Dictionary, locale: Locale, path: string) {
+export function productTubeJsonLd(t: Dictionary, product: TubeProduct, locale: Locale, path: string) {
   const url = pageUrl(locale, path);
   const p = t.productTube;
   return {
@@ -163,14 +176,14 @@ export function productTubeJsonLd(t: Dictionary, locale: Locale, path: string) {
         name: p.title.join(" "),
         description: p.lead,
         url,
-        image: [`${siteUrl}/images/product-tube.webp`, `${siteUrl}/images/cta-tube.webp`],
+        image: [product.images.hero.ltr, product.images.layers.ltr, ...product.shapes.map((s) => s.image)].map((src) => `${siteUrl}${src}`),
         brand: { "@id": `${siteUrl}/#organization` },
         manufacturer: { "@id": `${siteUrl}/#organization` },
-        material: "PE / EVOH multi-layer",
+        material: product.structures.map((s) => loc(s.name, "en")).join("; "),
         additionalProperty: [
-          { "@type": "PropertyValue", name: p.calculator.diameter, value: DIAMETERS.join(", ") },
-          { "@type": "PropertyValue", name: p.calculator.volume, value: `${VOLUMES[0]}–${VOLUMES.at(-1)} ml` },
-          ...p.layers.items.map((l, i) => ({ "@type": "PropertyValue", name: `${p.layers.title} ${i + 1}`, value: `${l.name} — ${l.text}` })),
+          ...product.shapes.map((s) => ({ "@type": "PropertyValue", name: `${p.configurator.shape}: ${loc(s.name, locale)}`, value: `Ø ${diametersFor(product, s.id).join(", ")} mm` })),
+          { "@type": "PropertyValue", name: p.configurator.closure, value: product.closures.map((k) => loc(k.name, locale)).join(", ") },
+          ...(product.structures[0]?.layers ?? []).map((l, i) => ({ "@type": "PropertyValue", name: `${p.layers.title} ${i + 1}`, value: `${loc(l.name, locale)} — ${loc(l.text, locale)}` })),
         ],
       },
       {

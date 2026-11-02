@@ -1,62 +1,88 @@
 /**
- * Tube configurator rules. Pure functions over the catalogue (content/tube-catalogue.json),
- * so the same validation runs on the server, in the browser and in `node --test`.
+ * Tube configurator rules. Pure functions over the product content (content/products/multi-layer-tube.json),
+ * so every shape, closure, size and sample the admin adds works without code changes, and the same
+ * validation runs on the server, in the browser and in `node --test`.
  * No imports on purpose: Node's type stripping runs this file directly in tests.
  */
 
-export const SHAPES = ["circular", "oval", "eyeNozzle"] as const;
-export const CLOSURES = ["flipTop", "screw", "nozzle", "standUp"] as const;
-export type Shape = (typeof SHAPES)[number];
-export type Closure = (typeof CLOSURES)[number];
+export type Localized = Record<string, string>;
+/** 3D geometry families the scene knows how to build. New ids map onto one of these. */
+export type ShapeModel = "circular" | "oval" | "eyeNozzle";
+export type ClosureModel = "flipTop" | "screw" | "nozzle" | "standUp" | "plain";
+/** chart = Arapoush size chart (indicative), estimate = inferred. */
+export type VolumeStatus = "chart" | "estimate";
+/** chart = listed by Arapoush, confirm = offered, awaiting sign-off. */
+export type CompatStatus = "chart" | "confirm";
 
-/** chart = Arapoush size chart (indicative), estimate = inferred, confirm = offered, awaiting sign-off. */
-export type Status = "chart" | "estimate" | "confirm";
+export type SizeRow = { l: number; ml?: number; status?: VolumeStatus };
+export type ShapeDef = { id: string; model: ShapeModel; name: Localized; image: string; sizes: Record<string, SizeRow[]> };
+export type ClosureDef = { id: string; model: ClosureModel; name: Localized; image: string; compat: Record<string, Record<string, CompatStatus>> };
+export type LayerDef = { id: string; color: string; name: Localized; text: Localized };
+/** A wall build-up, layers listed outside → inside. `shapes` limits it to some tube shapes. */
+export type StructureDef = { id: string; name: Localized; layers: LayerDef[]; shapes?: string[] };
+export type SampleDef = { id: string; image: string; shape: string; closure?: string; d?: number; title: Localized };
+export type ProductImage = { ltr: string; rtl: string; width: number; height: number; alt: Localized };
 
-export type Catalogue = {
+export type TubeProduct = {
   version: number;
   updated: string;
-  shapes: Record<Shape, { diameters: number[] }>;
-  lengths: Record<Shape, Record<string, number[]>>;
-  volumes: { shape: Shape; d: number; l: number; ml: number; status: Exclude<Status, "confirm"> }[];
-  closures: Record<Closure, Partial<Record<Shape, Record<string, Status>>>>;
+  images: { hero: ProductImage; layers: ProductImage };
+  shapes: ShapeDef[];
+  closures: ClosureDef[];
+  structures: StructureDef[];
+  samples: SampleDef[];
 };
 
-export type TubeConfig = { shape: Shape; d: number; l: number; closure: Closure };
-export type Capacity = { ml: number; status: Exclude<Status, "confirm"> };
+export type TubeConfig = { shape: string; d: number; l: number; closure: string; structure: string };
+export type Capacity = { ml: number; status: VolumeStatus };
 
-export const DEFAULT_CONFIG: TubeConfig = { shape: "circular", d: 30, l: 110, closure: "flipTop" };
+/** Preferred starting point; ignored piece by piece when the catalogue doesn't offer it. */
+export const DEFAULT_CONFIG: TubeConfig = { shape: "circular", d: 30, l: 110, closure: "flipTop", structure: "" };
 
-const isShape = (v: unknown): v is Shape => SHAPES.includes(v as Shape);
-const isClosure = (v: unknown): v is Closure => CLOSURES.includes(v as Closure);
+/** Localised text with an English, then any, fallback — admin entries may miss a language. */
+export const loc = (text: Localized | undefined, locale: string) => text?.[locale] || text?.en || Object.values(text ?? {})[0] || "";
 
 export const nearest = (list: number[], v: number) => list.reduce((best, x) => (Math.abs(x - v) < Math.abs(best - v) ? x : best), list[0]!);
 
-export const diametersFor = (cat: Catalogue, shape: Shape) => cat.shapes[shape].diameters;
+export const shapeOf = (cat: TubeProduct, id: string) => cat.shapes.find((s) => s.id === id);
+export const closureOf = (cat: TubeProduct, id: string) => cat.closures.find((c) => c.id === id);
+export const structureOf = (cat: TubeProduct, id: string) => cat.structures.find((s) => s.id === id);
+export const structuresFor = (cat: TubeProduct, shape: string) => cat.structures.filter((s) => !s.shapes?.length || s.shapes.includes(shape));
 
-export const lengthsFor = (cat: Catalogue, shape: Shape, d: number) => cat.lengths[shape][String(d)] ?? [];
+export const diametersFor = (cat: TubeProduct, shape: string) =>
+  Object.keys(shapeOf(cat, shape)?.sizes ?? {})
+    .map(Number)
+    .sort((a, b) => a - b);
+
+const rowsFor = (cat: TubeProduct, shape: string, d: number) => shapeOf(cat, shape)?.sizes[String(d)] ?? [];
+
+export const lengthsFor = (cat: TubeProduct, shape: string, d: number) => rowsFor(cat, shape, d).map((r) => r.l);
 
 /** null = this closure is not offered for that shape and diameter. */
-export const closureStatus = (cat: Catalogue, closure: Closure, shape: Shape, d: number): Status | null => cat.closures[closure][shape]?.[String(d)] ?? null;
+export const closureStatus = (cat: TubeProduct, closure: string, shape: string, d: number): CompatStatus | null =>
+  closureOf(cat, closure)?.compat[shape]?.[String(d)] ?? null;
 
-export const closuresFor = (cat: Catalogue, shape: Shape, d: number) =>
-  CLOSURES.map((closure) => ({ closure, status: closureStatus(cat, closure, shape, d) })).filter(
-    (c): c is { closure: Closure; status: Status } => c.status !== null,
-  );
+export const closuresFor = (cat: TubeProduct, shape: string, d: number) =>
+  cat.closures
+    .map((c) => ({ closure: c.id, status: closureStatus(cat, c.id, shape, d) }))
+    .filter((c): c is { closure: string; status: CompatStatus } => c.status !== null);
 
 /** Nominal fill volume from the catalogue; null means "ask Arapoush" — never a formula. */
-export const capacity = (cat: Catalogue, c: TubeConfig): Capacity | null => {
-  const row = cat.volumes.find((v) => v.shape === c.shape && v.d === c.d && v.l === c.l);
-  return row ? { ml: row.ml, status: row.status } : null;
+export const capacity = (cat: TubeProduct, c: TubeConfig): Capacity | null => {
+  const row = rowsFor(cat, c.shape, c.d).find((r) => r.l === c.l);
+  return row?.ml ? { ml: row.ml, status: row.status ?? "estimate" } : null;
 };
 
-/** Other catalogue sizes of the same shape and volume (different diameter). */
-export const sameVolume = (cat: Catalogue, c: TubeConfig) => {
+/** Other sizes of the same shape and volume (different diameter). */
+export const sameVolume = (cat: TubeProduct, c: TubeConfig) => {
   const cap = capacity(cat, c);
   if (!cap) return [];
-  return cat.volumes.filter((v) => v.shape === c.shape && v.ml === cap.ml && v.d !== c.d);
+  return diametersFor(cat, c.shape)
+    .filter((d) => d !== c.d)
+    .flatMap((d) => rowsFor(cat, c.shape, d).filter((r) => r.ml === cap.ml).map((r) => ({ d, l: r.l, ml: cap.ml })));
 };
 
-const preferred = (cat: Catalogue, shape: Shape, d: number, want: Closure) => {
+const preferred = (cat: TubeProduct, shape: string, d: number, want: string) => {
   const options = closuresFor(cat, shape, d);
   if (options.some((o) => o.closure === want)) return want;
   return (options.find((o) => o.status === "chart") ?? options[0])?.closure ?? null;
@@ -66,45 +92,65 @@ const preferred = (cat: Catalogue, shape: Shape, d: number, want: Closure) => {
  * Turns any input (URL, stale state, partial patch) into a producible configuration.
  * Unknown values snap to the nearest catalogue entry; closures fall back to a compatible one.
  */
-export function normalize(cat: Catalogue, input: Partial<Record<keyof TubeConfig, unknown>>): TubeConfig {
-  const shape = isShape(input.shape) ? input.shape : DEFAULT_CONFIG.shape;
-  const ds = diametersFor(cat, shape);
+export function normalize(cat: TubeProduct, input: Partial<Record<keyof TubeConfig, unknown>>): TubeConfig {
+  const usable = cat.shapes.filter((s) => diametersFor(cat, s.id).some((d) => closuresFor(cat, s.id, d).length));
+  if (!usable.length) throw new Error("Catalogue offers no producible tube");
+  const shape = usable.find((s) => s.id === input.shape)?.id ?? usable.find((s) => s.id === DEFAULT_CONFIG.shape)?.id ?? usable[0]!.id;
+  const ds = diametersFor(cat, shape).filter((d) => closuresFor(cat, shape, d).length);
   const dIn = Number(input.d);
-  const d = Number.isFinite(dIn) ? nearest(ds, dIn) : ds.includes(DEFAULT_CONFIG.d) ? DEFAULT_CONFIG.d : ds[0]!;
+  const d = Number.isFinite(dIn) && input.d !== "" && input.d != null ? nearest(ds, dIn) : nearest(ds, DEFAULT_CONFIG.d);
   const ls = lengthsFor(cat, shape, d);
   const lIn = Number(input.l);
-  const l = Number.isFinite(lIn) ? nearest(ls, lIn) : nearest(ls, DEFAULT_CONFIG.l);
-  const want = isClosure(input.closure) ? input.closure : DEFAULT_CONFIG.closure;
-  const closure = preferred(cat, shape, d, want);
-  if (!closure) throw new Error(`Catalogue offers no closure for ${shape} Ø${d}`);
-  return { shape, d, l, closure };
+  const l = Number.isFinite(lIn) && input.l !== "" && input.l != null ? nearest(ls, lIn) : nearest(ls, DEFAULT_CONFIG.l);
+  const want = typeof input.closure === "string" ? input.closure : DEFAULT_CONFIG.closure;
+  const closure = preferred(cat, shape, d, want)!;
+  const structures = structuresFor(cat, shape);
+  const structure = structures.find((s) => s.id === input.structure)?.id ?? structures[0]?.id ?? "";
+  return { shape, d, l, closure, structure };
 }
 
 /** Changing diameter keeps the volume as close as the new diameter allows (falls back to length). */
-export function withDiameter(cat: Catalogue, c: TubeConfig, d: number): TubeConfig {
+export function withDiameter(cat: TubeProduct, c: TubeConfig, d: number): TubeConfig {
   const cap = capacity(cat, c);
-  const ls = lengthsFor(cat, c.shape, d);
+  const rows = rowsFor(cat, c.shape, d);
   const byVolume = cap
-    ? cat.volumes
-        .filter((v) => v.shape === c.shape && v.d === d)
-        .reduce<(typeof cat.volumes)[number] | null>((best, v) => (!best || Math.abs(v.ml - cap.ml) < Math.abs(best.ml - cap.ml) ? v : best), null)
+    ? rows.filter((r) => r.ml).reduce<SizeRow | null>((best, r) => (!best || Math.abs(r.ml! - cap.ml) < Math.abs(best.ml! - cap.ml) ? r : best), null)
     : null;
-  return normalize(cat, { ...c, d, l: byVolume?.l ?? (ls.length ? nearest(ls, c.l) : c.l) });
+  return normalize(cat, { ...c, d, l: byVolume?.l ?? c.l });
 }
 
-export function withShape(cat: Catalogue, c: TubeConfig, shape: Shape): TubeConfig {
-  return normalize(cat, { ...c, shape, d: nearest(diametersFor(cat, shape), c.d) });
+export function withShape(cat: TubeProduct, c: TubeConfig, shape: string): TubeConfig {
+  const ds = diametersFor(cat, shape);
+  return normalize(cat, { ...c, shape, d: ds.length ? nearest(ds, c.d) : c.d });
+}
+
+/**
+ * Product samples ordered by how well they match the selection:
+ * shape first, then closure, then diameter. Samples of other shapes are dropped.
+ */
+export function rankSamples(cat: TubeProduct, c: TubeConfig) {
+  return cat.samples
+    .filter((s) => s.shape === c.shape)
+    .map((s) => {
+      const closure = s.closure === c.closure;
+      const diameter = s.d === c.d;
+      const score = (closure ? 4 : s.closure ? -1 : 0) + (diameter ? 2 : s.d != null ? -Math.min(2, Math.abs(s.d - c.d) / 10) : 0);
+      // "exact" needs the sample to actually show the chosen closure; untagged ones only share the shape.
+      return { sample: s, exact: closure && (s.d == null || diameter), score };
+    })
+    .sort((a, b) => b.score - a.score);
 }
 
 /** URL ⇄ config. Short keys keep shared links readable. */
-export const toSearch = (c: TubeConfig) => `shape=${c.shape}&d=${c.d}&l=${c.l}&cap=${c.closure}`;
+export const toSearch = (c: TubeConfig) =>
+  `shape=${encodeURIComponent(c.shape)}&d=${c.d}&l=${c.l}&cap=${encodeURIComponent(c.closure)}${c.structure ? `&st=${encodeURIComponent(c.structure)}` : ""}`;
 
-export const fromSearch = (cat: Catalogue, search: string | URLSearchParams) => {
+export const fromSearch = (cat: TubeProduct, search: string | URLSearchParams) => {
   const p = typeof search === "string" ? new URLSearchParams(search) : search;
-  return normalize(cat, { shape: p.get("shape") ?? undefined, d: p.get("d") ?? undefined, l: p.get("l") ?? undefined, closure: p.get("cap") ?? undefined });
+  return normalize(cat, { shape: p.get("shape") ?? undefined, d: p.get("d") ?? undefined, l: p.get("l") ?? undefined, closure: p.get("cap") ?? undefined, structure: p.get("st") ?? undefined });
 };
 
-export const isValid = (cat: Catalogue, c: TubeConfig) => {
+export const isValid = (cat: TubeProduct, c: TubeConfig) => {
   const n = normalize(cat, c);
-  return n.shape === c.shape && n.d === c.d && n.l === c.l && n.closure === c.closure;
+  return n.shape === c.shape && n.d === c.d && n.l === c.l && n.closure === c.closure && n.structure === c.structure;
 };

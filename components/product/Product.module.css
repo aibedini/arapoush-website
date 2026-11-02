@@ -28,18 +28,16 @@
   padding-top: calc(var(--header-h) + max(40px, calc(120 * var(--u))));
   isolation: isolate;
 }
+/* Full-bleed photo; each language gets art with its empty side under the copy (hero-ltr / hero-rtl). */
 .heroArt {
   position: absolute;
   z-index: -1;
   inset-block: 0;
-  inset-inline-end: calc(-1 * var(--gutter));
-  width: calc(58% + var(--gutter));
+  inset-inline: calc(-1 * var(--gutter));
   overflow: hidden;
-  /* the photo melts into the page on its copy side and at the bottom */
-  -webkit-mask-image: linear-gradient(to var(--fade-to, right), transparent 0%, #000 34%), linear-gradient(to top, transparent 0%, #000 22%);
-  mask-image: linear-gradient(to var(--fade-to, right), transparent 0%, #000 34%), linear-gradient(to top, transparent 0%, #000 22%);
-  -webkit-mask-composite: source-in;
-  mask-composite: intersect;
+  /* melts into the page at the bottom */
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 22%);
+  mask-image: linear-gradient(to top, transparent 0%, #000 22%);
 }
 :global([dir="rtl"]) .heroArt {
   --fade-to: left;
@@ -52,7 +50,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 60% 40%;
+  /* keep the tube in frame when the hero is narrower than the photo */
+  object-position: var(--tube-x, 85%) 50%;
+}
+:global([dir="rtl"]) .heroImg {
+  --tube-x: 15%;
 }
 .heroCopy {
   position: relative;
@@ -247,15 +249,19 @@ a.videoLink:hover .playRing {
 
 /* ── Structure + options ── */
 .lower {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 620px;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: max(16px, calc(32 * var(--u)));
   margin-top: max(16px, calc(32 * var(--u)));
 }
 .layers {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   align-items: center;
+  min-height: max(420px, calc(620 * var(--u)));
   overflow: hidden;
 }
 .layersCopy {
@@ -303,21 +309,20 @@ a.videoLink:hover .playRing {
   font-size: max(13px, calc(15 * var(--u)));
   color: var(--ink);
 }
+/* The photo (layers-ltr / layers-rtl) has its empty side under the copy. */
 .layersArt {
-  position: relative;
-  margin-block: calc(-1 * max(20px, calc(40 * var(--u))));
-  margin-inline-end: calc(-1 * max(20px, calc(40 * var(--u))));
-  align-self: stretch;
-  display: grid;
-  place-items: center;
+  position: absolute;
+  inset: 0;
 }
 .layersArt img {
-  width: 118%;
-  max-width: none;
-  height: auto;
-  margin-inline-start: -8%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--tube-x, 85%) 50%;
 }
-/* Studio shots on white: multiply drops the white into the card. */
+:global([dir="rtl"]) .layersArt img {
+  --tube-x: 15%;
+}
 
 @media (hover: none) {
   .layerList li:active {
@@ -332,9 +337,14 @@ a.videoLink:hover .playRing {
     padding-bottom: 24px;
   }
   .heroArt {
+    inset-inline-start: auto;
     width: 62%;
     inset-block-end: auto;
     height: min(100%, 720px);
+    -webkit-mask-image: linear-gradient(to var(--fade-to, right), transparent 0%, #000 34%), linear-gradient(to top, transparent 0%, #000 22%);
+    mask-image: linear-gradient(to var(--fade-to, right), transparent 0%, #000 34%), linear-gradient(to top, transparent 0%, #000 22%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
   }
   .heroCopy {
     width: 100%;
@@ -413,12 +423,14 @@ a.videoLink:hover .playRing {
   .layers {
     grid-template-columns: 1fr;
   }
-  .layersArt {
-    margin: 8px calc(-1 * max(20px, calc(40 * var(--u)))) calc(-1 * max(20px, calc(40 * var(--u))));
+  .layers {
+    min-height: 0;
   }
-  .layersArt img {
-    width: 100%;
-    margin: 0;
+  .layersArt {
+    position: relative;
+    inset: auto;
+    aspect-ratio: 4 / 3;
+    margin: 8px calc(-1 * max(20px, calc(40 * var(--u)))) calc(-1 * max(20px, calc(40 * var(--u))));
   }
 }
 

@@ -3,19 +3,22 @@ import type { Dictionary } from "@/lib/i18n";
 import RollText from "@/components/ui/RollText";
 import MaybeLink from "@/components/ui/MaybeLink";
 import { ArrowRightCircle, Layers, Leaf, PlayCircle, ShieldCheck } from "@/components/ui/icons";
+import { loc, type ProductImage, type StructureDef } from "@/lib/configurator/model";
 import { Recycle } from "./art";
 import styles from "./Product.module.css";
 
 type T = { t: Dictionary["productTube"] };
+/** Art direction per writing direction: the photo's empty side sits under the copy, so it is never mirrored. */
+type Art = { image: ProductImage; locale: string; dir: "ltr" | "rtl" };
 
 const featureIcons = [Layers, ShieldCheck, Leaf, Recycle];
 
-export function ProductHero({ t, video }: T & { video: string | null }) {
+export function ProductHero({ t, video, image, locale, dir }: T & Art & { video: string | null }) {
   return (
     <section id="top" className={styles.hero} aria-labelledby="product-title">
       <div className={styles.heroArt}>
         <div data-parallax="40">
-          <Image src="/images/product-tube.webp" alt={t.imageAlt} width={1095} height={1436} priority sizes="(max-width: 767px) 70vw, 52vw" className={styles.heroImg} />
+          <Image src={image[dir]} alt={loc(image.alt, locale)} width={image.width} height={image.height} priority sizes="(max-width: 767px) 80vw, (max-width: 1099px) 70vw, 100vw" className={styles.heroImg} data-no-mirror />
         </div>
       </div>
 
@@ -65,9 +68,7 @@ export function ProductHero({ t, video }: T & { video: string | null }) {
   );
 }
 
-const layerColors = ["#2b2f36", "#e8893a", "#8fa7bf", "#e8893a", "#c3c9d1"];
-
-export function LayerStructure({ t }: T) {
+export function LayerStructure({ t, structure, image, locale, dir }: T & Art & { structure: StructureDef | undefined }) {
   const s = t.layers;
   return (
     <section className={`${styles.panel} ${styles.layers}`} aria-labelledby="layers-title" data-reveal>
@@ -77,18 +78,16 @@ export function LayerStructure({ t }: T) {
         </h2>
         <p className={styles.panelLead}>{s.lead}</p>
         <ol className={styles.layerList}>
-          {s.items.map((item, i) => (
-            <li key={`${item.name}-${i}`} style={{ "--dot": layerColors[i] } as React.CSSProperties}>
-              <strong>{item.name}</strong>
-              <span>{item.text}</span>
+          {(structure?.layers ?? []).map((layer) => (
+            <li key={layer.id} style={{ "--dot": layer.color } as React.CSSProperties}>
+              <strong>{loc(layer.name, locale)}</strong>
+              <span>{loc(layer.text, locale)}</span>
             </li>
           ))}
         </ol>
       </div>
-      <div className={styles.layersArt} data-drift-host="12">
-        <div data-drift>
-          <Image src="/images/cta-tube.webp" alt={s.imageAlt} width={941} height={706} sizes="(max-width: 1099px) 80vw, 30vw" />
-        </div>
+      <div className={styles.layersArt}>
+        <Image src={image[dir]} alt={loc(image.alt, locale)} width={image.width} height={image.height} sizes="(max-width: 767px) 100vw, 96vw" data-no-mirror />
       </div>
     </section>
   );

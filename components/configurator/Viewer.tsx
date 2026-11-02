@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import type { TubeConfig } from "@/lib/configurator/model";
-import type { SceneLabels, TubeScene } from "./TubeScene";
+import type { SceneLabels, SceneSpec, TubeScene } from "./TubeScene";
 import styles from "./Configurator.module.css";
 
 type Props = {
-  cfg: TubeConfig;
+  cfg: SceneSpec;
   label: string;
   labels: SceneLabels;
   caption: string;

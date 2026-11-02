@@ -82,7 +82,7 @@ npm test             # configurator catalogue rules + quote flow (node --test)
 - Text for every language: `lib/i18n/dictionaries/`.
 - Contact details, social links, catalog PDF path: `lib/site.ts`. Put the catalog at `public/files/arapoush-catalog.pdf`.
 - SEO and AI indexing: `lib/seo.ts`, `app/sitemap.ts`, `app/robots.ts`, `/llms.txt`, `/llms-full.txt`.
-- Tube configurator data: `content/tube-catalogue.json` — diameters per shape, lengths, nominal volumes and closure compatibility, each with a status (`chart` / `estimate` / `confirm`). Replace it with the manufacturer-approved table; the page, URL validation and `/llms.txt` follow it. Rules: `lib/configurator/model.ts`. 3D scene: `components/configurator/TubeScene.ts` (Three.js, bundled, loaded on intent).
+- Tube product content (admin panel / backend): `content/products/multi-layer-tube.json` — hero and layer images per text direction, tube shapes with their diameters, lengths and nominal volumes, closures with compatibility, wall structures and their layers, and product samples. Add or remove any of them there (or serve the same shape from the backend in `lib/products.ts`); the configurator, samples, 3D model, URL validation, JSON-LD and `/llms.txt` all follow. Rules: `lib/configurator/model.ts`. 3D scene: `components/configurator/TubeScene.ts` (Three.js, bundled, loaded on intent).
 - Quality bar (Lighthouse, accessibility, motion and RTL rules): see `CLAUDE.md`.
 
 Fonts: Helvetica Neue (licensed, supplied by Arapoush), Vazirmatn, Inter and JetBrains Mono (SIL OFL).

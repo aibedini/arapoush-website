@@ -11,6 +11,7 @@ import styles from "@/components/product/Product.module.css";
 import { getDictionary, isLocale, localeMeta, locales } from "@/lib/i18n";
 import { languageAlternates, pageUrl, productTubeJsonLd } from "@/lib/seo";
 import { productPaths } from "@/lib/site";
+import { getTubeProduct } from "@/lib/products";
 
 const PATH = productPaths.tube;
 type Params = Promise<{ locale: string }>;
@@ -23,6 +24,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const m = getDictionary(locale).productTube.meta;
+  const hero = getTubeProduct().images.hero;
+  const og = hero[localeMeta[locale].dir];
   const url = pageUrl(locale, PATH);
   return {
     title: m.title,
@@ -34,9 +37,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       title: m.title,
       description: m.description,
       locale: localeMeta[locale].og,
-      images: [{ url: "/images/product-tube.webp", width: 1095, height: 1436, alt: m.title }],
+      images: [{ url: og, width: hero.width, height: hero.height, alt: m.title }],
     },
-    twitter: { card: "summary_large_image", title: m.title, description: m.description, images: ["/images/product-tube.webp"] },
+    twitter: { card: "summary_large_image", title: m.title, description: m.description, images: [og] },
   };
 }
 
@@ -44,21 +47,23 @@ export default async function MultiLayerTubePage({ params }: { params: Params })
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = getDictionary(locale);
+  const product = getTubeProduct();
+  const dir = localeMeta[locale].dir;
 
   return (
     <>
       <script
         type="application/ld+json"
         // `<` is escaped so dictionary text can never close the script tag.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productTubeJsonLd(t, locale, PATH)).replace(/</g, "\\u003c") }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productTubeJsonLd(t, product, locale, PATH)).replace(/</g, "\\u003c") }}
       />
       <Header t={t} locale={locale} path={PATH} />
       <main id="main" className={styles.page}>
         <div className={styles.wrap}>
-          <ProductHero t={t.productTube} video={null} />
-          <Configurator t={t.productTube} />
+          <ProductHero t={t.productTube} video={null} image={product.images.hero} locale={locale} dir={dir} />
+          <Configurator t={t.productTube} locale={locale} product={product} />
           <div className={styles.lower}>
-            <LayerStructure t={t.productTube} />
+            <LayerStructure t={t.productTube} structure={product.structures[0]} image={product.images.layers} locale={locale} dir={dir} />
           </div>
         </div>
       </main>
