@@ -1,0 +1,580 @@
+/* Tube configurator: inputs | 3D stage | result (concept ui_concept_01). Logical properties only. */
+
+.section {
+  margin-top: max(32px, calc(64 * var(--u)));
+  scroll-margin-top: calc(var(--header-h) + 16px);
+}
+.head {
+  max-width: 760px;
+  margin-bottom: max(20px, calc(36 * var(--u)));
+}
+.title {
+  margin-top: 10px;
+  font: 400 max(30px, calc(60 * var(--u))) / 1.08 var(--font-sans);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.lead {
+  margin-top: 12px;
+  font: 300 max(15px, calc(19 * var(--u))) / 1.55 var(--font-sans);
+  color: #5b6470;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.95fr) minmax(0, 1.45fr) minmax(300px, 0.9fr);
+  grid-template-areas: "controls viewer result";
+  align-items: start;
+  gap: max(16px, calc(28 * var(--u)));
+}
+
+/* ── Inputs ── */
+.controls {
+  grid-area: controls;
+  display: grid;
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  padding: max(16px, calc(28 * var(--u)));
+}
+.field + .field {
+  margin-top: max(16px, calc(22 * var(--u)));
+  padding-top: max(16px, calc(22 * var(--u)));
+  border-top: 1px solid rgba(14, 43, 70, 0.08);
+}
+.fieldTitle {
+  margin-bottom: 12px;
+  font: 500 max(15px, calc(18 * var(--u))) / 1.3 var(--font-sans);
+  color: var(--ink);
+}
+.fieldTitle span {
+  font-weight: 300;
+  color: #5b6470;
+}
+.field :global([role="radiogroup"]) {
+  margin: 0;
+}
+.lengths {
+  flex-wrap: wrap;
+}
+/* Seven diameters on one line: equal-width chips. */
+.diameters {
+  flex-wrap: nowrap;
+  gap: 5px;
+}
+.diameters > :global([data-slot="motion-highlight-item-container"]) {
+  flex: 1 1 0;
+}
+.diameters button {
+  min-width: 0;
+  width: 100%;
+  padding-inline: 0;
+}
+.cards {
+  display: grid;
+  gap: 8px;
+}
+.cards3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.cards4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.card {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 4px;
+  min-height: 44px;
+  padding: 8px 4px 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(14, 43, 70, 0.1);
+  /* white, like the studio shots, so the photos need no blend layer */
+  background: #fff;
+  font: 400 13px/1.2 var(--font-sans);
+  color: var(--ink);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    translate 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.card:hover:not(:disabled) {
+  translate: 0 -2px;
+  border-color: rgba(14, 43, 70, 0.3);
+}
+.card[aria-pressed="true"] {
+  border-color: var(--navy-2);
+  box-shadow:
+    inset 0 0 0 1px var(--navy-2),
+    0 12px 24px -18px rgba(14, 43, 70, 0.6);
+}
+.card:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.card:focus-visible {
+  outline: 2px solid var(--navy-2);
+  outline-offset: 2px;
+}
+.cardImg {
+  width: min(100%, 76px);
+  height: auto;
+}
+.cardName {
+  font-weight: 500;
+}
+.cardNote {
+  font-size: 11px;
+  color: #6b7682;
+}
+.card[aria-pressed="true"] .cardNote,
+.notice {
+  color: #9a5414;
+}
+.notice {
+  margin-top: 10px;
+  font: 400 13px/1.45 var(--font-sans);
+}
+
+/* ── 3D stage ── */
+.viewer {
+  grid-area: viewer;
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+.stage {
+  position: relative;
+  height: clamp(440px, 62vh, 720px);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: radial-gradient(55% 45% at 50% 42%, #ffffff 0%, rgba(255, 255, 255, 0.4) 60%, transparent 100%), linear-gradient(180deg, #edf1f5, #dde4eb);
+  cursor: grab;
+}
+.stage:active {
+  cursor: grabbing;
+}
+.stage:focus-visible {
+  outline: 2px solid var(--navy-2);
+  outline-offset: 3px;
+}
+.stage:fullscreen {
+  height: 100%;
+  border-radius: 0;
+}
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  font: 600 12px var(--font-ui);
+}
+.overlay :global(.dim) line {
+  stroke: #4f7894;
+  stroke-width: 1.2;
+  stroke-dasharray: 3 3;
+}
+.overlay :global(.tag) rect {
+  fill: rgba(255, 255, 255, 0.94);
+  stroke: rgba(14, 43, 70, 0.12);
+}
+.overlay :global(.tag) text {
+  fill: #19405f;
+}
+.overlay :global(.callout) polyline {
+  fill: none;
+  stroke: #6c8296;
+  stroke-width: 1;
+}
+.overlay :global(.callout) text {
+  fill: #1e2a36;
+  font-weight: 500;
+}
+.overlay :global(.note) {
+  fill: #6b7682;
+  font-weight: 400;
+}
+.stageNote {
+  position: absolute;
+  inset: auto 16px 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font: 400 14px/1.4 var(--font-sans);
+  color: #5b6470;
+  text-align: center;
+}
+.spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(14, 43, 70, 0.15);
+  border-top-color: var(--navy-2);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to {
+    rotate: 1turn;
+  }
+}
+.hint {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 14px;
+  text-align: center;
+  font: 400 12px/1 var(--font-sans);
+  color: #6b7682;
+  pointer-events: none;
+}
+.toolbar {
+  justify-self: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  padding: 5px;
+  border-radius: 999px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+}
+.tool {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: var(--navy-2);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    scale 0.15s ease;
+}
+.tool svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.tool:hover:not(:disabled) {
+  background: rgba(14, 43, 70, 0.07);
+}
+.tool:active:not(:disabled) {
+  scale: 0.92;
+}
+.tool[aria-pressed="true"] {
+  background: var(--navy-2);
+  color: #fff;
+}
+.tool:disabled {
+  opacity: 0.4;
+}
+.tool:focus-visible {
+  outline: 2px solid var(--navy-2);
+  outline-offset: 2px;
+}
+
+/* ── Result ── */
+.result {
+  grid-area: result;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+}
+.resultTop {
+  position: relative;
+  overflow: hidden;
+  padding: max(20px, calc(32 * var(--u))) max(20px, calc(32 * var(--u))) max(56px, calc(80 * var(--u)));
+  color: #fff;
+  background: radial-gradient(120% 80% at 100% 0%, rgba(146, 182, 221, 0.3), transparent 60%), linear-gradient(160deg, #2f5476 0%, #17385a 55%, #0e2b46 100%);
+}
+.resultLabel {
+  font: 400 max(15px, calc(18 * var(--u))) / 1.2 var(--font-sans);
+  color: rgba(255, 255, 255, 0.85);
+}
+.resultValue {
+  display: flex;
+  align-items: baseline;
+  gap: 0.2em;
+  margin-top: 10px;
+  font: 300 max(54px, calc(92 * var(--u))) / 1 var(--font-sans);
+  font-variant-numeric: tabular-nums;
+}
+.resultUnit {
+  font-size: 0.5em;
+}
+.noVolume {
+  margin-top: 12px;
+  font: 400 max(18px, calc(24 * var(--u))) / 1.3 var(--font-sans);
+}
+.resultSize {
+  margin-top: 8px;
+  font: 400 max(16px, calc(22 * var(--u))) / 1.2 var(--font-sans);
+  color: rgba(255, 255, 255, 0.88);
+}
+.badge {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  margin-top: 14px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font: 500 12px/1.2 var(--font-sans);
+}
+.badgeWarn {
+  background: rgba(232, 137, 58, 0.22);
+  border-color: rgba(232, 137, 58, 0.6);
+}
+.wave {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+}
+.specs {
+  display: grid;
+  padding: 6px max(18px, calc(28 * var(--u)));
+}
+.specs > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block: 12px;
+  border-bottom: 1px solid rgba(14, 43, 70, 0.08);
+  font: 400 14px/1.35 var(--font-sans);
+}
+.specs dt {
+  color: #5b6470;
+}
+.specs dd {
+  color: var(--ink);
+  font-weight: 500;
+  text-align: end;
+}
+.twins {
+  display: grid;
+  gap: 8px;
+  padding: 14px max(18px, calc(28 * var(--u))) 0;
+  font: 400 13px/1.3 var(--font-sans);
+  color: #5b6470;
+}
+.twins > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.twin {
+  min-height: 32px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(14, 43, 70, 0.15);
+  background: #fff;
+  font: 500 13px/1 var(--font-sans);
+  color: var(--navy-2);
+  font-variant-numeric: tabular-nums;
+}
+.twin:hover {
+  border-color: var(--navy-2);
+}
+.actions {
+  display: grid;
+  gap: 10px;
+  padding: 18px max(18px, calc(28 * var(--u))) 0;
+}
+.actions :global(.btn) {
+  justify-content: center;
+}
+.share {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  border-radius: 999px;
+  border: 1px solid #e8893a;
+  color: var(--navy-2);
+  font: 500 14px/1 var(--font-ui);
+  transition: background-color 0.2s ease;
+}
+.share:hover {
+  background: rgba(232, 137, 58, 0.08);
+}
+.share svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+.disclaimer {
+  padding: 14px max(18px, calc(28 * var(--u))) max(18px, calc(28 * var(--u)));
+  font: 300 12px/1.5 var(--font-sans);
+  color: #5f6a76;
+}
+
+/* ── Quote form ── */
+.quote {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: max(20px, calc(48 * var(--u)));
+  margin-top: max(16px, calc(32 * var(--u)));
+  padding: max(20px, calc(48 * var(--u)));
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  scroll-margin-top: calc(var(--header-h) + 16px);
+  /* below the fold: skip layout/paint until scrolled near */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 640px;
+}
+.quote .title {
+  margin-top: 0;
+  font-size: max(26px, calc(44 * var(--u)));
+}
+.quoteSpec {
+  margin-top: 22px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: rgba(14, 43, 70, 0.04);
+  border: 1px solid rgba(14, 43, 70, 0.08);
+}
+.quoteSpec ul {
+  display: grid;
+  gap: 6px;
+  list-style: none;
+  font: 400 14px/1.4 var(--font-sans);
+  color: var(--ink);
+}
+.form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 16px;
+  align-content: start;
+}
+.input {
+  display: grid;
+  gap: 6px;
+}
+.wide {
+  grid-column: 1 / -1;
+}
+.input label {
+  font: 500 14px/1.3 var(--font-sans);
+  color: var(--ink);
+}
+.input label span {
+  font-weight: 300;
+  color: #5b6470;
+}
+.input input,
+.input textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(14, 43, 70, 0.18);
+  background: #fff;
+  font: 400 15px/1.4 var(--font-sans);
+  color: var(--ink);
+  resize: vertical;
+}
+.input input:focus-visible,
+.input textarea:focus-visible {
+  outline: 2px solid var(--navy-2);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+.input [aria-invalid="true"] {
+  border-color: #b3261e;
+}
+.error {
+  font: 400 13px/1.3 var(--font-sans);
+  color: #b3261e;
+}
+.submitRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+  margin-top: 6px;
+}
+.submitHint {
+  font: 300 13px/1.45 var(--font-sans);
+  color: #5f6a76;
+}
+
+@media (hover: none) {
+  .card:active:not(:disabled) {
+    scale: 0.96;
+  }
+  .twin:active,
+  .share:active {
+    scale: 0.96;
+  }
+}
+
+@media (max-width: 1279px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "viewer viewer"
+      "controls result";
+  }
+}
+
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "viewer" "controls" "result";
+  }
+  .stage {
+    height: clamp(340px, 62vh, 460px);
+  }
+  .toolbar {
+    gap: 0;
+  }
+  .tool {
+    width: 38px;
+    height: 38px;
+  }
+  .cards4 .card {
+    font-size: 12px;
+  }
+  .quote,
+  .form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .tool,
+  .share {
+    transition: none;
+  }
+  .spinner {
+    animation-duration: 3s;
+  }
+}

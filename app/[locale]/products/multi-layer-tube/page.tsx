@@ -5,8 +5,8 @@ import ContactCTA from "@/components/sections/ContactCTA";
 import Reveals from "@/components/motion/Reveals";
 import TouchFeedback from "@/components/motion/TouchFeedback";
 import Drift from "@/components/motion/Drift";
-import VolumeCalculator from "@/components/product/VolumeCalculator";
-import { LayerStructure, Options, ProductHero } from "@/components/product/ProductSections";
+import Configurator from "@/components/configurator/Configurator";
+import { LayerStructure, ProductHero } from "@/components/product/ProductSections";
 import styles from "@/components/product/Product.module.css";
 import { getDictionary, isLocale, localeMeta, locales } from "@/lib/i18n";
 import { languageAlternates, pageUrl, productTubeJsonLd } from "@/lib/seo";
@@ -56,10 +56,9 @@ export default async function MultiLayerTubePage({ params }: { params: Params })
       <main id="main" className={styles.page}>
         <div className={styles.wrap}>
           <ProductHero t={t.productTube} video={null} />
-          <VolumeCalculator t={t.productTube} />
+          <Configurator t={t.productTube} />
           <div className={styles.lower}>
             <LayerStructure t={t.productTube} />
-            <Options t={t.productTube} />
           </div>
         </div>
       </main>

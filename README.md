@@ -75,12 +75,14 @@ curl -fsSL https://raw.githubusercontent.com/aibedini/arapoush-website/main/inst
 npm install
 npm run dev          # http://localhost:3000 → /fa
 npm run build && npm start
+npm test             # configurator catalogue rules + quote flow (node --test)
 ```
 
 - Section order of the home page: `content/home-layout.json` (backend drag-and-drop writes this list).
 - Text for every language: `lib/i18n/dictionaries/`.
 - Contact details, social links, catalog PDF path: `lib/site.ts`. Put the catalog at `public/files/arapoush-catalog.pdf`.
 - SEO and AI indexing: `lib/seo.ts`, `app/sitemap.ts`, `app/robots.ts`, `/llms.txt`, `/llms-full.txt`.
+- Tube configurator data: `content/tube-catalogue.json` — diameters per shape, lengths, nominal volumes and closure compatibility, each with a status (`chart` / `estimate` / `confirm`). Replace it with the manufacturer-approved table; the page, URL validation and `/llms.txt` follow it. Rules: `lib/configurator/model.ts`. 3D scene: `components/configurator/TubeScene.ts` (Three.js, bundled, loaded on intent).
 - Quality bar (Lighthouse, accessibility, motion and RTL rules): see `CLAUDE.md`.
 
 Fonts: Helvetica Neue (licensed, supplied by Arapoush), Vazirmatn, Inter and JetBrains Mono (SIL OFL).

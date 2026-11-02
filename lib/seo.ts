@@ -1,5 +1,5 @@
 import { contact, productPaths, siteUrl, social } from "@/lib/site";
-import { DIAMETERS, VOLUMES, sizesFor } from "@/lib/tubeSizes";
+import { DIAMETERS, VOLUMES, sizesFor, tubeCatalogue } from "@/lib/tubeSizes";
 import { defaultLocale, getDictionary, localeMeta, locales, type Dictionary, type Locale } from "@/lib/i18n";
 
 export const pageUrl = (locale: Locale, path = "") => `${siteUrl}/${locale}${path}`;
@@ -140,6 +140,8 @@ export function llmsText(full: boolean) {
       `${t.productTube.calculator.title} (${t.productTube.calculator.note}):`,
       ...DIAMETERS.map((d) => `- Ø${d} mm: ${sizesFor(d).map((s) => `${s.l} mm = ${s.ml} ml`).join(", ")}`),
       `${t.productTube.variants}: ${Object.values(t.productTube.shapes).join(", ")}. ${t.productTube.closures}: ${t.productTube.closureNames.join(", ")}.`,
+      `${t.productTube.configurator.title} (${pageUrl(l, productPaths.tube)}#configurator): ${t.productTube.configurator.lead} ${t.productTube.configurator.disclaimer}`,
+      `${t.productTube.shapes.oval}: Ø${tubeCatalogue.shapes.oval.diameters.join("/")} mm; ${t.productTube.shapes.eyeNozzle}: Ø${tubeCatalogue.shapes.eyeNozzle.diameters.join("/")} mm — ${t.productTube.configurator.noVolume}.`,
       "",
       `### ${t.cta.title.join(" ")}`,
       t.cta.lead,

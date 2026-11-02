@@ -1,0 +1,108 @@
+{
+  "$comment": "Single source of truth for the tube configurator. Replace with the manufacturer-approved table; status values: 'chart' = from Arapoush's size chart (indicative until certified), 'estimate' = inferred, 'confirm' = offered but not yet confirmed by Arapoush.",
+  "version": 1,
+  "updated": "2026-11-02",
+  "shapes": {
+    "circular": {
+      "diameters": [19, 25, 30, 35, 40, 50, 60]
+    },
+    "oval": {
+      "diameters": [30, 35, 40]
+    },
+    "eyeNozzle": {
+      "diameters": [19, 25]
+    }
+  },
+  "lengths": {
+    "circular": {
+      "19": [50, 65, 84, 102],
+      "25": [65, 76, 85, 96, 105, 115, 135],
+      "30": [80, 85, 95, 110, 124, 142, 149],
+      "35": [82, 90, 100, 120, 125, 137, 147],
+      "40": [85, 98, 102, 110, 120, 136, 146, 154, 164, 184],
+      "50": [95, 105, 110, 115, 118, 132, 147, 160, 176, 186, 198],
+      "60": [140, 148, 155, 165, 175, 185]
+    },
+    "oval": {
+      "30": [80, 85, 95, 110, 124, 142, 149],
+      "35": [82, 90, 100, 120, 125, 137, 147],
+      "40": [85, 98, 102, 110, 120, 136, 146, 154, 164, 184]
+    },
+    "eyeNozzle": {
+      "19": [50, 65, 84, 102],
+      "25": [65, 76, 85, 96, 105, 115, 135]
+    }
+  },
+  "volumes": [
+    { "shape": "circular", "d": 19, "l": 50, "ml": 5, "status": "chart" },
+    { "shape": "circular", "d": 19, "l": 65, "ml": 10, "status": "chart" },
+    { "shape": "circular", "d": 19, "l": 84, "ml": 15, "status": "chart" },
+    { "shape": "circular", "d": 19, "l": 102, "ml": 20, "status": "chart" },
+    { "shape": "circular", "d": 25, "l": 65, "ml": 15, "status": "chart" },
+    { "shape": "circular", "d": 25, "l": 76, "ml": 20, "status": "chart" },
+    { "shape": "circular", "d": 25, "l": 85, "ml": 25, "status": "chart" },
+    { "shape": "circular", "d": 25, "l": 96, "ml": 30, "status": "chart" },
+    { "shape": "circular", "d": 25, "l": 105, "ml": 35, "status": "chart" },
+    { "shape": "circular", "d": 25, "l": 115, "ml": 40, "status": "chart" },
+    { "shape": "circular", "d": 25, "l": 135, "ml": 50, "status": "chart" },
+    { "shape": "circular", "d": 30, "l": 80, "ml": 30, "status": "chart" },
+    { "shape": "circular", "d": 30, "l": 85, "ml": 35, "status": "chart" },
+    { "shape": "circular", "d": 30, "l": 95, "ml": 40, "status": "chart" },
+    { "shape": "circular", "d": 30, "l": 110, "ml": 50, "status": "chart" },
+    { "shape": "circular", "d": 30, "l": 124, "ml": 60, "status": "chart" },
+    { "shape": "circular", "d": 30, "l": 142, "ml": 75, "status": "chart" },
+    { "shape": "circular", "d": 30, "l": 149, "ml": 80, "status": "chart" },
+    { "shape": "circular", "d": 35, "l": 82, "ml": 40, "status": "chart" },
+    { "shape": "circular", "d": 35, "l": 90, "ml": 50, "status": "chart" },
+    { "shape": "circular", "d": 35, "l": 100, "ml": 60, "status": "chart" },
+    { "shape": "circular", "d": 35, "l": 120, "ml": 75, "status": "chart" },
+    { "shape": "circular", "d": 35, "l": 125, "ml": 80, "status": "chart" },
+    { "shape": "circular", "d": 35, "l": 137, "ml": 90, "status": "chart" },
+    { "shape": "circular", "d": 35, "l": 147, "ml": 100, "status": "chart" },
+    { "shape": "circular", "d": 40, "l": 85, "ml": 60, "status": "chart" },
+    { "shape": "circular", "d": 40, "l": 98, "ml": 75, "status": "chart" },
+    { "shape": "circular", "d": 40, "l": 102, "ml": 80, "status": "chart" },
+    { "shape": "circular", "d": 40, "l": 110, "ml": 90, "status": "chart" },
+    { "shape": "circular", "d": 40, "l": 120, "ml": 100, "status": "chart" },
+    { "shape": "circular", "d": 40, "l": 136, "ml": 120, "status": "chart" },
+    { "shape": "circular", "d": 40, "l": 146, "ml": 130, "status": "chart" },
+    { "shape": "circular", "d": 40, "l": 154, "ml": 140, "status": "chart" },
+    { "shape": "circular", "d": 40, "l": 164, "ml": 150, "status": "chart" },
+    { "shape": "circular", "d": 40, "l": 184, "ml": 175, "status": "chart" },
+    { "shape": "circular", "d": 50, "l": 95, "ml": 100, "status": "chart" },
+    { "shape": "circular", "d": 50, "l": 105, "ml": 120, "status": "chart" },
+    { "shape": "circular", "d": 50, "l": 110, "ml": 130, "status": "estimate" },
+    { "shape": "circular", "d": 50, "l": 115, "ml": 140, "status": "estimate" },
+    { "shape": "circular", "d": 50, "l": 118, "ml": 150, "status": "estimate" },
+    { "shape": "circular", "d": 50, "l": 132, "ml": 175, "status": "estimate" },
+    { "shape": "circular", "d": 50, "l": 147, "ml": 200, "status": "chart" },
+    { "shape": "circular", "d": 50, "l": 160, "ml": 225, "status": "chart" },
+    { "shape": "circular", "d": 50, "l": 176, "ml": 250, "status": "chart" },
+    { "shape": "circular", "d": 50, "l": 186, "ml": 275, "status": "chart" },
+    { "shape": "circular", "d": 50, "l": 198, "ml": 300, "status": "chart" },
+    { "shape": "circular", "d": 60, "l": 140, "ml": 250, "status": "chart" },
+    { "shape": "circular", "d": 60, "l": 148, "ml": 275, "status": "chart" },
+    { "shape": "circular", "d": 60, "l": 155, "ml": 300, "status": "chart" },
+    { "shape": "circular", "d": 60, "l": 165, "ml": 325, "status": "chart" },
+    { "shape": "circular", "d": 60, "l": 175, "ml": 350, "status": "chart" },
+    { "shape": "circular", "d": 60, "l": 185, "ml": 375, "status": "chart" }
+  ],
+  "closures": {
+    "$comment": "Screw/flip-top per diameter follow the manufacturer's diameter reference image; everything marked 'confirm' still needs Arapoush's sign-off.",
+    "screw": {
+      "circular": {"19": "chart", "25": "chart", "30": "chart", "35": "chart"},
+      "oval": {"30": "confirm", "35": "confirm", "40": "confirm"}
+    },
+    "flipTop": {
+      "circular": {"25": "chart", "30": "chart", "35": "chart", "40": "chart", "50": "chart", "60": "chart"},
+      "oval": {"30": "confirm", "35": "confirm", "40": "confirm"}
+    },
+    "nozzle": {
+      "circular": {"19": "confirm", "25": "confirm", "30": "confirm", "35": "confirm", "40": "confirm", "50": "confirm", "60": "confirm"},
+      "eyeNozzle": {"19": "confirm", "25": "confirm"}
+    },
+    "standUp": {
+      "circular": {"19": "confirm", "25": "confirm", "30": "confirm", "35": "confirm", "40": "confirm", "50": "confirm", "60": "confirm"}
+    }
+  }
+}
