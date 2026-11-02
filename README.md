@@ -15,14 +15,33 @@ With your domain and automatic HTTPS (point the domain's DNS `A` record to the s
 curl -fsSL https://raw.githubusercontent.com/aibedini/arapoush-website/main/install.sh | sudo DOMAIN=arapoush.com bash
 ```
 
-Run the same command again to **update** to the latest version.
+### Update to the latest release
+
+```bash
+sudo arapoush update
+```
+
+The installer adds an `arapoush` command. Updates reuse the settings of the first install (domain, port, …, saved in
+`/etc/arapoush.conf`). The new version is built next to the running one, so the site stays up while it builds.
+If the build fails or the new version doesn't start, the site keeps running, or goes back to the previous version.
+
+| Command | What it does |
+|---|---|
+| `sudo arapoush update` | Install the newest release (`v*` tag) |
+| `sudo arapoush update v1.1.0` | Install that release (also for going back) · `update main` = latest commit |
+| `arapoush check` | Is a newer release out? |
+| `arapoush version` | Running version, commit and build date |
+| `sudo arapoush rollback` | Switch back to the previous build instantly |
+| `arapoush logs` / `sudo arapoush restart` | Follow logs / restart |
+
+Automatic nightly updates: install once with `AUTO_UPDATE=1` (systemd).
 
 The installer works on Ubuntu, Debian, Rocky, AlmaLinux, CentOS Stream, Fedora, openSUSE, Arch and Alpine,
 on x86-64 and ARM servers. It:
 
 1. installs git and Node.js 22 LTS (official build, checksum-verified) if they are missing,
 2. adds a swap file on servers with less than 2 GB RAM so the build doesn't run out of memory,
-3. clones this repo to `/opt/arapoush`, builds the site and runs it as a service (systemd or OpenRC) that restarts on reboot or crash,
+3. downloads the newest release to `/opt/arapoush/releases/<version>`, builds the site and runs it as a service (systemd or OpenRC) that restarts on reboot or crash,
 4. with `DOMAIN`, puts [Caddy](https://caddyserver.com) in front for a free, auto-renewing HTTPS certificate,
 5. opens the needed ports in ufw/firewalld and checks the site is answering.
 
@@ -32,7 +51,10 @@ on x86-64 and ARM servers. It:
 | `WWW=1` | off | Also answer on `www.DOMAIN` and redirect it |
 | `PORT` | `80` | Public port when no `DOMAIN` is set |
 | `SITE_URL` | `https://DOMAIN` or `http://SERVER-IP` | Canonical URL used for SEO tags, sitemap and structured data |
-| `BRANCH` | `main` | Git branch to deploy |
+| `VERSION` | `latest` | `latest` = newest release, or a tag (`v1.0.0`) or branch (`main`) |
+| `AUTO_UPDATE=1` | off | Install new releases automatically every night |
+| `FORCE=1` | off | Rebuild even if that version is already running |
+| `BRANCH` | `main` | Branch used while there are no releases |
 | `APP_DIR` | `/opt/arapoush` | Install location |
 | `NODE_MIRROR` | `https://nodejs.org/dist` | Node.js download mirror |
 | `NPM_REGISTRY` | npmjs.org | npm registry mirror, for servers with slow access to npm |
@@ -41,7 +63,7 @@ on x86-64 and ARM servers. It:
 
 Example with options: `curl -fsSL …/install.sh | sudo DOMAIN=arapoush.com WWW=1 bash`
 
-Logs: `journalctl -u arapoush -f` · Restart: `systemctl restart arapoush`
+Logs: `arapoush logs` · Restart: `sudo arapoush restart`
 
 ### With Docker instead
 
@@ -64,7 +86,16 @@ curl -fsSL https://raw.githubusercontent.com/aibedini/arapoush-website/main/inst
 curl -fsSL https://raw.githubusercontent.com/aibedini/arapoush-website/main/install.sh | sudo DOMAIN=arapoush.com bash
 ```
 
-برای **به‌روزرسانی** همان دستور را دوباره اجرا کنید. اگر سرور به npm یا nodejs.org دسترسی کندی دارد،
+برای **به‌روزرسانی به آخرین نسخه**:
+
+```bash
+sudo arapoush update
+```
+
+تنظیمات نصب اول (دامنه، پورت و…) حفظ می‌شود. نسخه جدید کنار نسخه فعلی ساخته می‌شود و سایت در این مدت از دسترس خارج نمی‌شود.
+اگر ساخت خطا بدهد یا نسخه جدید بالا نیاید، سایت روی نسخه قبلی می‌ماند یا به آن برمی‌گردد.
+بررسی نسخه جدید: `arapoush check` · نسخه فعلی: `arapoush version` · بازگشت به نسخه قبل: `sudo arapoush rollback` ·
+نسخه مشخص: `sudo arapoush update v1.0.0` · به‌روزرسانی خودکار شبانه: یک بار با `AUTO_UPDATE=1` نصب کنید. اگر سرور به npm یا nodejs.org دسترسی کندی دارد،
 با `NPM_REGISTRY` و `NODE_MIRROR` یک میرور بدهید.
 
 ---

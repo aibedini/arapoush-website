@@ -6,12 +6,18 @@
 # With a domain (automatic HTTPS through Caddy):
 #   curl -fsSL https://raw.githubusercontent.com/aibedini/arapoush-website/main/install.sh | sudo DOMAIN=arapoush.com bash
 #
-# Run the same command again to update to the latest commit. Options (environment variables):
+# Update to the newest release (keeps DOMAIN, PORT, … from the first install):
+#   sudo arapoush update            # or: sudo arapoush update v1.2.0 / sudo arapoush update main
+#
+# Options (environment variables; saved in /etc/arapoush.conf and reused by updates):
 #   DOMAIN=example.com     serve on 80/443 with a free Let's Encrypt certificate (DNS must point here)
 #   WWW=1                  also answer on www.DOMAIN and redirect it to DOMAIN
 #   PORT=80                public port when no DOMAIN is set (default 80)
 #   SITE_URL=https://...   canonical URL for SEO (default https://DOMAIN, or http://SERVER-IP)
-#   BRANCH=main            git branch to deploy
+#   VERSION=latest         what to deploy: latest (newest v* release tag), a tag like v1.2.0, or a branch
+#   BRANCH=main            branch used while the repository has no releases yet
+#   AUTO_UPDATE=1          install new releases automatically every night (systemd only)
+#   FORCE=1                rebuild even when that version is already running
 #   APP_DIR=/opt/arapoush  install location
 #   NODE_MIRROR=...        Node.js download mirror (default https://nodejs.org/dist)
 #   NPM_REGISTRY=...       npm registry mirror (e.g. for servers with slow access to npmjs.org)
@@ -19,8 +25,19 @@
 #   UNINSTALL=1            remove the service, Caddy config and APP_DIR
 set -Eeuo pipefail
 
+# Settings from the first install; anything passed explicitly this time wins.
+CONF=/etc/arapoush.conf
+SAVED_KEYS="DOMAIN WWW PORT APP_PORT SITE_URL BRANCH APP_DIR NODE_MIRROR NPM_REGISTRY AUTO_UPDATE"
+if [ -f "$CONF" ] && [ "${UNINSTALL:-0}" != "1" ]; then
+  while IFS='=' read -r key value; do
+    case " $SAVED_KEYS " in *" $key "*) [ -n "${!key:-}" ] || printf -v "$key" '%s' "$value" ;; esac
+  done < "$CONF"
+fi
+
 REPO_URL="${REPO_URL:-https://github.com/aibedini/arapoush-website.git}"
 BRANCH="${BRANCH:-main}"
+VERSION="${VERSION:-latest}"
+AUTO_UPDATE="${AUTO_UPDATE:-0}"
 APP_DIR="${APP_DIR:-/opt/arapoush}"
 APP_USER="${APP_USER:-arapoush}"
 SERVICE="arapoush"
@@ -56,15 +73,16 @@ fi
 if [ "${UNINSTALL:-0}" = "1" ]; then
   log "Removing Arapoush"
   if [ "$INIT" = systemd ]; then
-    systemctl disable --now "$SERVICE" caddy-arapoush 2>/dev/null || true
-    rm -f "/etc/systemd/system/$SERVICE.service" /etc/systemd/system/caddy-arapoush.service
+    systemctl disable --now "$SERVICE" caddy-arapoush arapoush-update.timer 2>/dev/null || true
+    rm -f "/etc/systemd/system/$SERVICE.service" /etc/systemd/system/caddy-arapoush.service \
+      /etc/systemd/system/arapoush-update.service /etc/systemd/system/arapoush-update.timer
     systemctl daemon-reload
   elif [ "$INIT" = openrc ]; then
     rc-service "$SERVICE" stop 2>/dev/null || true; rc-update del "$SERVICE" 2>/dev/null || true
     rc-service caddy-arapoush stop 2>/dev/null || true; rc-update del caddy-arapoush 2>/dev/null || true
     rm -f "/etc/init.d/$SERVICE" /etc/init.d/caddy-arapoush
   fi
-  rm -rf "$APP_DIR" /etc/caddy/Caddyfile.arapoush "$NODE_HOME"
+  rm -rf "$APP_DIR" /etc/caddy/Caddyfile.arapoush "$NODE_HOME" "$CONF" /usr/local/bin/arapoush
   ok "Removed. (The '$APP_USER' user and Caddy binary were left in place.)"
   exit 0
 fi
@@ -157,16 +175,35 @@ if ! id "$APP_USER" >/dev/null 2>&1; then
   else adduser -S -D -H -h "$APP_DIR" "$APP_USER"; fi
 fi
 
-if [ -d "$APP_DIR/.git" ]; then
-  log "Updating $APP_DIR ($BRANCH)"
-  git -C "$APP_DIR" fetch --depth 1 origin "$BRANCH" -q
-  git -C "$APP_DIR" reset --hard "origin/$BRANCH" -q
+# Each version is built in its own folder under releases/ while the old one keeps serving;
+# "current" switches only after a successful build, and switches back if the new one won't start.
+RELEASES="$APP_DIR/releases"
+CURRENT="$APP_DIR/current"
+mkdir -p "$RELEASES"
+
+if [ "$VERSION" = latest ]; then
+  # numeric sort of vX.Y.Z (BusyBox has no sort -V)
+  REF="$(git ls-remote --tags --refs "$REPO_URL" 'v*' | awk -F/ '{print $NF}' | sort -t. -k1.2,1n -k2,2n -k3,3n | tail -n1)"
+  [ -n "$REF" ] || REF="$BRANCH"
 else
-  log "Cloning $REPO_URL → $APP_DIR"
-  rm -rf "$APP_DIR"
-  git clone --depth 1 --branch "$BRANCH" -q "$REPO_URL" "$APP_DIR"
+  REF="$VERSION"
 fi
-git config --global --add safe.directory "$APP_DIR" 2>/dev/null || true
+SHA="$(git ls-remote "$REPO_URL" "refs/tags/$REF" "refs/heads/$REF" | awk 'NR==1 {print substr($1,1,7)}')"
+[ -n "$SHA" ] || die "No release or branch called '$REF' in $REPO_URL"
+RELEASE="$RELEASES/$REF-$SHA"
+PREVIOUS=""
+[ ! -L "$CURRENT" ] || PREVIOUS="$(readlink -f "$CURRENT")"
+
+if [ "$PREVIOUS" = "$RELEASE" ] && [ "${FORCE:-0}" != "1" ] && [ -f "$RELEASE/.next/standalone/server.js" ]; then
+  ok "Already running $REF ($SHA) — refreshing the configuration only (FORCE=1 rebuilds)"
+  BUILD=0
+else
+  log "Fetching $REF ($SHA)"
+  rm -rf "$RELEASE"
+  git clone --depth 1 --branch "$REF" -q "$REPO_URL" "$RELEASE"
+  BUILD=1
+fi
+git config --global --add safe.directory "$RELEASE" 2>/dev/null || true
 
 # ── Ports and canonical URL ────────────────────────────────────────────────
 port_busy() { (have ss && ss -ltnH "sport = :$1" | grep -q .) || (have netstat && netstat -ltn 2>/dev/null | grep -q "[:.]$1 "); }
@@ -188,8 +225,10 @@ else
 fi
 
 # ── Build ──────────────────────────────────────────────────────────────────
+if [ "$BUILD" = 1 ]; then
+trap 'rm -rf "$RELEASE"; die "Build of $REF failed at line $LINENO — the running site was not touched"' ERR
 log "Installing dependencies"
-cd "$APP_DIR"
+cd "$RELEASE"
 export NEXT_TELEMETRY_DISABLED=1 npm_config_fund=false npm_config_audit=false npm_config_update_notifier=false
 [ -z "$NPM_REGISTRY" ] || export npm_config_registry="$NPM_REGISTRY"
 "$NODE_DIR/npm" ci --no-audit --no-fund --loglevel=error
@@ -200,9 +239,23 @@ NEXT_PUBLIC_SITE_URL="$SITE_URL" NODE_OPTIONS="--max-old-space-size=1536" "$NODE
 # The standalone server needs its static assets beside it.
 cp -r public .next/standalone/
 mkdir -p .next/standalone/.next && rm -rf .next/standalone/.next/static && cp -r .next/static .next/standalone/.next/
-chown -R "$APP_USER" "$APP_DIR"
+rm -rf node_modules .next/cache   # the standalone server carries its own dependencies
+printf 'version=%s\ncommit=%s\nbuilt=%s\n' "$REF" "$SHA" "$(date -u +%FT%TZ)" > "$RELEASE/.arapoush-release"
+trap 'die "Failed at line $LINENO: $BASH_COMMAND"' ERR
+fi
+chown -R "$APP_USER" "$RELEASE"
+ln -sfn "$RELEASE" "$CURRENT"
 
 # ── Service ────────────────────────────────────────────────────────────────
+restart_app() {
+  if [ "$INIT" = systemd ]; then systemctl restart "$SERVICE"
+  elif [ "$INIT" = openrc ]; then rc-service "$SERVICE" restart >/dev/null
+  else
+    pkill -f "$CURRENT/.next/standalone/server.js" 2>/dev/null || true
+    (cd "$CURRENT/.next/standalone" && NODE_ENV=production HOSTNAME=$BIND_HOST PORT=$BIND_PORT nohup "$NODE_BIN" server.js >"/var/log/$SERVICE.log" 2>&1 &)
+  fi
+}
+
 log "Starting the service ($BIND_HOST:$BIND_PORT)"
 if [ "$INIT" = systemd ]; then
   cat > "/etc/systemd/system/$SERVICE.service" <<EOF
@@ -213,7 +266,7 @@ Wants=network-online.target
 
 [Service]
 User=$APP_USER
-WorkingDirectory=$APP_DIR/.next/standalone
+WorkingDirectory=$CURRENT/.next/standalone
 Environment=NODE_ENV=production HOSTNAME=$BIND_HOST PORT=$BIND_PORT NEXT_TELEMETRY_DISABLED=1
 ExecStart=$NODE_BIN server.js
 Restart=always
@@ -236,7 +289,7 @@ description="Arapoush website (Next.js)"
 command="$NODE_BIN"
 command_args="server.js"
 command_user="$APP_USER"
-directory="$APP_DIR/.next/standalone"
+directory="$CURRENT/.next/standalone"
 command_background=true
 pidfile="/run/$SERVICE.pid"
 output_log="/var/log/$SERVICE.log"
@@ -252,8 +305,8 @@ EOF
   rc-service "$SERVICE" restart >/dev/null
 else
   warn "No systemd or OpenRC found: starting in the background (it won't survive a reboot)."
-  pkill -f "$APP_DIR/.next/standalone/server.js" 2>/dev/null || true
-  (cd "$APP_DIR/.next/standalone" && NODE_ENV=production HOSTNAME=$BIND_HOST PORT=$BIND_PORT nohup "$NODE_BIN" "$APP_DIR/.next/standalone/server.js" >/var/log/$SERVICE.log 2>&1 &)
+  pkill -f "$CURRENT/.next/standalone/server.js" 2>/dev/null || true
+  (cd "$CURRENT/.next/standalone" && NODE_ENV=production HOSTNAME=$BIND_HOST PORT=$BIND_PORT nohup "$NODE_BIN" "$CURRENT/.next/standalone/server.js" >/var/log/$SERVICE.log 2>&1 &)
 fi
 
 # ── HTTPS with Caddy (only when DOMAIN is set) ─────────────────────────────
@@ -334,12 +387,99 @@ for _ in $(seq 1 30); do
   [ "$code" = 200 ] && break
   sleep 1
 done
-[ "$code" = 200 ] || die "The site did not start (HTTP $code). Logs: journalctl -u $SERVICE -n 50"
+if [ "$code" != 200 ]; then
+  if [ -n "$PREVIOUS" ] && [ "$PREVIOUS" != "$RELEASE" ] && [ -d "$PREVIOUS" ]; then
+    warn "$REF did not start (HTTP $code) — rolling back to $(basename "$PREVIOUS")"
+    ln -sfn "$PREVIOUS" "$CURRENT"
+    restart_app
+  fi
+  die "The site did not start (HTTP $code). Logs: journalctl -u $SERVICE -n 50"
+fi
+
+# Keep the running release and the one before it; drop older builds and the old single-folder layout.
+# (ls -t rather than find -printf, which BusyBox lacks)
+ls -1dt "$RELEASES"/*/ | tail -n +3 | while read -r old; do [ "${old%/}" = "$RELEASE" ] || rm -rf "$old"; done
+if [ -d "$APP_DIR/.git" ]; then
+  find "$APP_DIR" -mindepth 1 -maxdepth 1 ! -name releases ! -name current -exec rm -rf {} +
+fi
+
+# ── Saved settings, helper command, nightly updates ────────────────────────
+for key in $SAVED_KEYS; do printf '%s=%s\n' "$key" "${!key:-}"; done > "$CONF"
+chmod 600 "$CONF"
+
+cat > /usr/local/bin/arapoush <<'HELPER'
+#!/usr/bin/env bash
+# Arapoush website helper, written by install.sh.
+set -euo pipefail
+REPO="https://github.com/aibedini/arapoush-website.git"
+INSTALLER="https://raw.githubusercontent.com/aibedini/arapoush-website/main/install.sh"
+APP_DIR="$(sed -n 's/^APP_DIR=//p' /etc/arapoush.conf 2>/dev/null || true)"
+APP_DIR="${APP_DIR:-/opt/arapoush}"
+as_root() { [ "$(id -u)" -eq 0 ] || exec sudo "$0" "$@"; }
+restart() { if command -v systemctl >/dev/null && [ -d /run/systemd/system ]; then systemctl restart arapoush; else rc-service arapoush restart; fi; }
+current() { sed -n 's/^version=//p' "$APP_DIR/current/.arapoush-release" 2>/dev/null; }
+case "${1:-help}" in
+  update)
+    as_root "$@"
+    curl -fsSL "$INSTALLER" | VERSION="${2:-latest}" bash ;;
+  check)
+    latest="$(git ls-remote --tags --refs "$REPO" 'v*' | awk -F/ '{print $NF}' | sort -t. -k1.2,1n -k2,2n -k3,3n | tail -n1)"
+    if [ -n "$latest" ] && [ "$latest" != "$(current)" ]; then echo "Update available: $(current) → $latest   (sudo arapoush update)"
+    else echo "Up to date: $(current)"; fi ;;
+  version)  cat "$APP_DIR/current/.arapoush-release" ;;
+  releases) ls -1t "$APP_DIR/releases" ;;
+  rollback)
+    as_root "$@"
+    now="$(readlink -f "$APP_DIR/current")"
+    prev="$(ls -1dt "$APP_DIR"/releases/*/ | sed 's#/$##' | grep -vxF "$now" | head -n1 || true)"
+    [ -n "$prev" ] || { echo "No previous release to go back to."; exit 1; }
+    ln -sfn "$prev" "$APP_DIR/current" && restart
+    echo "Rolled back to $(basename "$prev")" ;;
+  restart)  as_root "$@"; restart ;;
+  logs)     if command -v journalctl >/dev/null; then journalctl -u arapoush -f; else tail -f /var/log/arapoush.log; fi ;;
+  uninstall) as_root "$@"; curl -fsSL "$INSTALLER" | UNINSTALL=1 bash ;;
+  *) echo "Usage: arapoush update [latest|vX.Y.Z|branch] | check | version | releases | rollback | restart | logs | uninstall" ;;
+esac
+HELPER
+chmod 755 /usr/local/bin/arapoush
+
+if [ "$INIT" = systemd ]; then
+  if [ "$AUTO_UPDATE" = 1 ]; then
+    cat > /etc/systemd/system/arapoush-update.service <<'UNIT'
+[Unit]
+Description=Install the newest Arapoush website release
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/arapoush update latest
+UNIT
+    cat > /etc/systemd/system/arapoush-update.timer <<'UNIT'
+[Unit]
+Description=Nightly Arapoush website update
+
+[Timer]
+OnCalendar=*-*-* 03:30
+RandomizedDelaySec=30min
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+UNIT
+    systemctl daemon-reload
+    systemctl enable --now arapoush-update.timer -q
+  else
+    systemctl disable --now arapoush-update.timer -q 2>/dev/null || true
+  fi
+fi
 
 trap - ERR
 echo
 ok "Arapoush is live: $SITE_URL"
 echo "   Persian: $SITE_URL/fa   English: $SITE_URL/en   Turkish: $SITE_URL/tr"
 [ -z "$DOMAIN" ] || echo "   HTTPS certificate is issued automatically once $DOMAIN points to this server."
-echo "   Update:  re-run the same install command"
+echo "   Version: $REF ($SHA)"
+echo "   Update:  sudo arapoush update    ·  check: arapoush check  ·  undo: sudo arapoush rollback"
+[ "$AUTO_UPDATE" != 1 ] || echo "   New releases install automatically every night (AUTO_UPDATE=1)."
 if [ "$INIT" = systemd ]; then echo "   Logs:    journalctl -u $SERVICE -f"; fi
