@@ -1,0 +1,608 @@
+{
+  "$comment": "Printing technologies page. Facts come from Arapoush's five printing pages (flexo, dry offset, silk screen, hot stamp, combination). Edit text here; downloads stay disabled until `file` points at a real file under /public.",
+  "meta": {
+    "title": {
+      "fa": "فناوری‌های چاپ روی تیوب | فلکسو، افست خشک، سیلک، هات استمپ و چاپ ترکیبی | آراپوش گستر",
+      "en": "Tube Printing Technologies: Flexo, Dry Offset, Silk Screen, Hot Stamp | Arapoush",
+      "tr": "Tüp Baskı Teknolojileri: Flekso, Kuru Ofset, Serigrafi, Sıcak Baskı | Arapoush"
+    },
+    "description": {
+      "fa": "پنج روش چاپ آراپوش روی تیوب و ظرف قرص جوشان: فلکسو ۸ رنگ، افست خشک ۶ رنگ، سیلک اسکرین تا ۵ رنگ، هات استمپ طلایی و نقره‌ای و چاپ ترکیبی تا ۱۱ رنگ. راهنمای انتخاب، مقایسه و مشاوره.",
+      "en": "Arapoush's five ways to print tubes and effervescent containers: 8-colour flexo, 6-colour dry offset, silk screen up to 5 colours, gold and silver hot stamping, and combination printing up to 11 colours. Selection guide, comparison and advice.",
+      "tr": "Arapoush'un tüp ve efervesan kaplarına beş baskı yöntemi: 8 renk flekso, 6 renk kuru ofset, 5 renge kadar serigrafi, altın ve gümüş sıcak baskı ve 11 renge kadar kombine baskı. Seçim rehberi, karşılaştırma ve danışmanlık."
+    }
+  },
+  "hero": {
+    "eyebrow": { "fa": "Arapoush printing technologies", "en": "Printing technologies for tubes", "tr": "Tüpler için baskı teknolojileri" },
+    "title": { "fa": "فناوری‌های چاپ روی تیوب‌های آراپوش", "en": "ARAPOUSH Tube Printing Technologies", "tr": "ARAPOUSH Tüp Baskı Teknolojileri" },
+    "lead": {
+      "fa": "آراپوش گستر با پنج روش چاپ، یعنی فلکسو، افست خشک، سیلک اسکرین، هات استمپ و چاپ ترکیبی، تیوب‌ها و ظروف قرص جوشان برندهای آرایشی، بهداشتی، دارویی، غذایی و صنعتی را چاپ می‌کند؛ از چاپ تمام‌رنگ تا جلوه‌های فویل طلایی و نقره‌ای.",
+      "en": "Arapoush prints tubes and effervescent containers for cosmetic, hygienic, pharmaceutical, food and industrial brands with five methods: flexo, dry offset, silk screen, hot stamping and combination printing, from full-colour artwork to gold and silver foil.",
+      "tr": "Arapoush; kozmetik, hijyen, ilaç, gıda ve endüstriyel markaların tüp ve efervesan kaplarını beş yöntemle basar: flekso, kuru ofset, serigrafi, sıcak baskı ve kombine baskı; tam renkli tasarımlardan altın ve gümüş folyo efektlerine kadar."
+    },
+    "explore": { "fa": "مشاهده فناوری‌های چاپ", "en": "Explore printing technologies", "tr": "Baskı teknolojilerini keşfedin" },
+    "resources": { "fa": "راهنما و فایل‌های چاپ", "en": "Printing guide and files", "tr": "Baskı rehberi ve dosyalar" },
+    "tubesAlt": {
+      "fa": "دو تیوب آراپوش: یکی با چاپ رنگی و دیگری سفید با برگ‌های طلایی هات استمپ و نقش برجسته سفید",
+      "en": "Two Arapoush tubes: one with colourful print, one white with hot-stamped gold leaves and white relief",
+      "tr": "İki Arapoush tüpü: biri renkli baskılı, diğeri sıcak baskı altın yapraklı ve beyaz kabartmalı"
+    },
+    "features": [
+      { "icon": "layers", "text": { "fa": "پنج روش چاپ تخصصی", "en": "Five specialist methods", "tr": "Beş uzman yöntem" } },
+      { "icon": "palette", "text": { "fa": "تا ۱۱ رنگ در چاپ ترکیبی", "en": "Up to 11 colours combined", "tr": "Kombine baskıda 11 renge kadar" } },
+      { "icon": "shoulder", "text": { "fa": "چاپ تا روی شانه تیوب", "en": "Print up to the shoulder", "tr": "Tüp omzuna kadar baskı" } },
+      { "icon": "file", "text": { "fa": "همراهی در آماده‌سازی فایل چاپ", "en": "Help preparing print files", "tr": "Baskı dosyası hazırlığında destek" } }
+    ]
+  },
+  "tech": {
+    "eyebrow": { "fa": "Our printing technologies", "en": "Our printing technologies", "tr": "Baskı teknolojilerimiz" },
+    "title": { "fa": "فناوری‌های چاپ تیوب در آراپوش", "en": "Our Tube Printing Technologies", "tr": "Tüp Baskı Teknolojilerimiz" },
+    "lead": {
+      "fa": "هر روش را انتخاب کنید تا فرایند، قابلیت‌های فنی و کاربردهای آن را ببینید.",
+      "en": "Choose a method to see how it works, what it can do and where it fits.",
+      "tr": "Nasıl çalıştığını, neler yapabildiğini ve nerede kullanıldığını görmek için bir yöntem seçin."
+    },
+    "advantages": { "fa": "مزیت‌ها", "en": "Advantages", "tr": "Avantajlar" },
+    "process": { "fa": "فرایند چاپ", "en": "How it works", "tr": "Nasıl çalışır" },
+    "capabilities": { "fa": "قابلیت‌های فنی", "en": "Technical capabilities", "tr": "Teknik olanaklar" },
+    "uses": { "fa": "کاربرد مناسب", "en": "Best suited to", "tr": "En uygun kullanım" },
+    "samples": { "fa": "دیدن نمونه طرح", "en": "See a sample design", "tr": "Örnek tasarımı gör" },
+    "quote": { "fa": "مشاوره برای این روش", "en": "Ask about this method", "tr": "Bu yöntem için danışın" },
+    "items": [
+      {
+        "id": "flexo",
+        "card": { "src": "/images/printing/tex-flexo.webp", "width": 470, "height": 230 },
+        "macro": { "src": "/images/printing/macro-flexo.webp", "width": 800, "height": 420 },
+        "sample": "calcium",
+        "name": { "fa": "چاپ فلکسو", "en": "Flexographic printing", "tr": "Flekso baskı" },
+        "short": { "fa": "فلکسو", "en": "Flexo", "tr": "Flekso" },
+        "summary": {
+          "fa": "چاپ روی تیوب و ظرف قرص جوشان با دستگاه فلکسوی ۸ رنگ اروپایی، در رنگ‌های CMYK و پنتون.",
+          "en": "Printing on tubes and effervescent containers with an 8-colour European flexo press, in CMYK and Pantone.",
+          "tr": "Avrupa yapımı 8 renkli flekso makinesiyle tüp ve efervesan kaplara CMYK ve Pantone baskı."
+        },
+        "advantages": [
+          { "fa": "تا ۸ رنگ", "en": "Up to 8 colours", "tr": "8 renge kadar" },
+          { "fa": "رنگ‌های CMYK و پنتون", "en": "CMYK and Pantone colours", "tr": "CMYK ve Pantone renkler" },
+          { "fa": "۱۰ نوع غلتک آنیلوکس برای وضوح", "en": "10 anilox rollers to set sharpness", "tr": "Netlik için 10 anilox merdane" }
+        ],
+        "process": {
+          "fa": "در چاپ فلکسو مرکب مستقیماً از غلتک آنیلوکس به کلیشه طرح منتقل می‌شود. غلتک‌های آنیلوکس میزان رزولوشن و وضوح تصویر چاپی را تعیین می‌کنند و دستگاه آراپوش امکان تنظیم و استفاده از ۱۰ نوع غلتک آنیلوکس مختلف را دارد. سیستم پنتون (با ۲۱۶۱ رنگ پیش‌فرض) کمک می‌کند رنگ برند بدون اختلاف بازتولید شود.",
+          "en": "In flexo, ink is transferred directly from the anilox roller to the printing plate. The anilox rollers set the resolution and sharpness of the print, and Arapoush's press can be set up with 10 different anilox rollers. The Pantone system (2,161 standard colours) helps reproduce a brand's colours without drift.",
+          "tr": "Flekso baskıda mürekkep doğrudan anilox merdaneden baskı kalıbına aktarılır. Anilox merdaneler baskının çözünürlüğünü ve netliğini belirler; Arapoush'un makinesi 10 farklı anilox merdaneyle ayarlanabilir. Pantone sistemi (2.161 standart renk) marka renklerinin sapmadan üretilmesine yardım eder."
+        },
+        "capabilities": [
+          { "fa": "دستگاه چاپ فلکسوی ۸ رنگ ساخت یک شرکت اروپایی", "en": "8-colour flexo press made by a European manufacturer", "tr": "Avrupalı bir üreticinin 8 renkli flekso makinesi" },
+          { "fa": "تیوب با قطر ۱۹ تا ۶۰ میلی‌متر", "en": "Tubes from 19 to 60 mm in diameter", "tr": "19–60 mm çapında tüpler" },
+          { "fa": "ظرف قرص جوشان با ارتفاع ۵۰ تا ۲۳۰ میلی‌متر", "en": "Effervescent containers 50 to 230 mm tall", "tr": "50–230 mm yüksekliğinde efervesan kaplar" },
+          { "fa": "رنگ‌های CMYK و سیستم پنتون", "en": "CMYK and the Pantone system", "tr": "CMYK ve Pantone sistemi" }
+        ],
+        "uses": {
+          "fa": "تیوب‌ها و ظروف قرص جوشان؛ وقتی رنگ برند باید با پنتون دقیق بازتولید شود.",
+          "en": "Tubes and effervescent containers, especially when brand colours must match Pantone.",
+          "tr": "Tüpler ve efervesan kaplar; özellikle marka renkleri Pantone ile eşleşmeliyse."
+        }
+      },
+      {
+        "id": "offset",
+        "card": { "src": "/images/printing/tex-offset.webp", "width": 470, "height": 230 },
+        "macro": { "src": "/images/printing/macro-offset.webp", "width": 800, "height": 390 },
+        "sample": "vitamin-c",
+        "name": { "fa": "چاپ افست خشک", "en": "Dry offset printing", "tr": "Kuru ofset baskı" },
+        "short": { "fa": "افست خشک", "en": "Dry offset", "tr": "Kuru ofset" },
+        "summary": {
+          "fa": "چاپ ۶ رنگ روی تیوب‌های پلاستیکی چندلایه بدون درز و تیوب قرص جوشان؛ هر طرحی، حتی تا روی شانه تیوب.",
+          "en": "6-colour printing on seamless multi-layer plastic tubes and effervescent tubes: any design, even up onto the tube's shoulder.",
+          "tr": "Dikişsiz çok katmanlı plastik tüplere ve efervesan tüplere 6 renk baskı: her tasarım, tüpün omzuna kadar."
+        },
+        "advantages": [
+          { "fa": "۶ رنگ", "en": "6 colours", "tr": "6 renk" },
+          { "fa": "چاپ تا روی شانه تیوب", "en": "Prints up to the shoulder", "tr": "Omza kadar baskı" },
+          { "fa": "مقرون‌به‌صرفه برای صاحبان برند", "en": "Cost-effective for brand owners", "tr": "Marka sahipleri için ekonomik" }
+        ],
+        "process": {
+          "fa": "پلیت افست خشک با پلیت افست معمولی فرق دارد و دو لایه است: لایه آلومینیومی که بدنه اصلی پلیت را می‌سازد و لایه پلیمری که مرکب را جذب می‌کند. پلیت طرح را روی سطح چاپ و سپس روی بدنه تیوب منتقل می‌کند. ضخامت لایه رنگ در این روش ۴ تا ۵ میکرون است.",
+          "en": "A dry offset plate differs from a conventional offset plate and has two layers: an aluminium layer that forms its body and a polymer layer that takes up the ink. The plate transfers the image to the printing surface and then onto the tube body. The ink layer is 4 to 5 microns thick.",
+          "tr": "Kuru ofset kalıbı klasik ofset kalıbından farklıdır ve iki katmandır: gövdeyi oluşturan alüminyum katman ve mürekkebi tutan polimer katman. Kalıp görüntüyü önce baskı yüzeyine, sonra tüp gövdesine aktarır. Mürekkep katmanı 4–5 mikron kalınlığındadır."
+        },
+        "capabilities": [
+          { "fa": "چاپ ۶ رنگ", "en": "6-colour printing", "tr": "6 renk baskı" },
+          { "fa": "ضخامت رنگ ۴ تا ۵ میکرون", "en": "Ink layer 4–5 microns", "tr": "4–5 mikron mürekkep katmanı" },
+          { "fa": "تیوب پلاستیکی چندلایه بدون درز و تیوب قرص جوشان", "en": "Seamless multi-layer plastic tubes and effervescent tubes", "tr": "Dikişsiz çok katmanlı plastik tüpler ve efervesan tüpler" },
+          { "fa": "چاپ هر طرحی، حتی تا روی شانه تیوب", "en": "Any design, even up onto the shoulder", "tr": "Her tasarım, omza kadar" }
+        ],
+        "uses": {
+          "fa": "طرح‌های تمام‌رنگ روی تیوب‌های بدون درز؛ کارشناسان آراپوش در بررسی و آماده‌سازی فایل چاپ همراه شما هستند.",
+          "en": "Full-colour designs on seamless tubes; Arapoush's specialists help review and prepare the print file.",
+          "tr": "Dikişsiz tüplerde tam renkli tasarımlar; Arapoush uzmanları baskı dosyasının incelenmesi ve hazırlanmasında yardımcı olur."
+        }
+      },
+      {
+        "id": "silk",
+        "card": { "src": "/images/printing/tex-silk.webp", "width": 470, "height": 230 },
+        "macro": { "src": "/images/printing/macro-silk.webp", "width": 800, "height": 330 },
+        "sample": "gold",
+        "name": { "fa": "چاپ سیلک اسکرین", "en": "Silk screen printing", "tr": "Serigrafi baskı" },
+        "short": { "fa": "سیلک", "en": "Silk screen", "tr": "Serigrafi" },
+        "summary": {
+          "fa": "چاپ تا ۵ رنگ با لایه رنگ ضخیم تا ۲۰ میکرون؛ حتی روی تیوب‌های رنگی و سطوح هات استمپ‌شده.",
+          "en": "Up to 5 colours with a thick ink layer of up to 20 microns, even on coloured tubes and hot-stamped surfaces.",
+          "tr": "20 mikrona kadar kalın mürekkep katmanıyla 5 renge kadar baskı; renkli tüplerde ve sıcak baskılı yüzeylerde bile."
+        },
+        "advantages": [
+          { "fa": "رنگ پرحجم تا ۲۰ میکرون", "en": "Rich ink up to 20 microns", "tr": "20 mikrona kadar dolgun mürekkep" },
+          { "fa": "چاپ رنگ‌ها روی یکدیگر", "en": "Colours printed over one another", "tr": "Renkler üst üste basılabilir" },
+          { "fa": "مناسب سطوح مدور و غیرمسطح", "en": "Suited to round, non-flat surfaces", "tr": "Yuvarlak ve düz olmayan yüzeylere uygun" }
+        ],
+        "process": {
+          "fa": "طرح روی پارچه توری با سوراخ‌های بسیار ریز که در یک قاب (شابلون یا کلیشه) ثابت شده نقش می‌بندد و بخش‌هایی که نباید رنگ بگیرند با لاک مسدود می‌شوند. مرکب با فشار کاردک یا غلتک فقط از بخش‌های باز توری روی سطح تیوب منتقل می‌شود.",
+          "en": "The design is formed on a very fine mesh fixed in a frame (the stencil), and areas that must stay unprinted are blocked with lacquer. A squeegee or roller presses the ink through the open parts of the mesh onto the tube surface.",
+          "tr": "Tasarım, bir çerçeveye (şablon) gerilmiş çok ince bir elek üzerinde oluşturulur; boyanmayacak alanlar lakla kapatılır. Rakle veya merdane, mürekkebi yalnızca eleğin açık kısımlarından tüp yüzeyine iter."
+        },
+        "capabilities": [
+          { "fa": "تا ۵ رنگ؛ چاپ تصاویر چهار رنگ (CMYK)", "en": "Up to 5 colours; four-colour (CMYK) images", "tr": "5 renge kadar; dört renk (CMYK) görseller" },
+          { "fa": "ضخامت رنگ تا ۲۰ میکرون", "en": "Ink layer up to 20 microns", "tr": "20 mikrona kadar mürekkep katmanı" },
+          { "fa": "چاپ روی تیوب‌های رنگی با مستربچ", "en": "Prints on tubes coloured with masterbatch", "tr": "Masterbatch ile renklendirilmiş tüplere baskı" },
+          { "fa": "چاپ روی سطوح هات استمپ‌شده بدنه", "en": "Prints over hot-stamped areas of the body", "tr": "Gövdenin sıcak baskılı alanları üzerine baskı" },
+          { "fa": "ورنی موضعی و چاپ تا روی شانه تیوب", "en": "Spot varnish and printing up to the shoulder", "tr": "Lokal lak ve omza kadar baskı" }
+        ],
+        "uses": {
+          "fa": "تیوب‌های پلاستیکی بدون درز و قرص جوشان؛ آراپوش گستر خود را اولین ارائه‌دهنده این چاپ روی این تیوب‌ها در ایران معرفی می‌کند.",
+          "en": "Seamless plastic tubes and effervescent tubes; Arapoush introduces itself as the first in Iran to offer silk screen on these tubes.",
+          "tr": "Dikişsiz plastik tüpler ve efervesan tüpler; Arapoush, bu tüplerde serigrafi sunan İran'daki ilk firma olduğunu belirtir."
+        }
+      },
+      {
+        "id": "hotstamp",
+        "card": { "src": "/images/printing/tex-hotstamp.webp", "width": 470, "height": 230 },
+        "macro": { "src": "/images/printing/macro-hotstamp.webp", "width": 800, "height": 330 },
+        "sample": "gold",
+        "name": { "fa": "هات استمپ", "en": "Hot stamping", "tr": "Sıcak baskı (hot stamp)" },
+        "short": { "fa": "هات استمپ", "en": "Hot stamp", "tr": "Sıcak baskı" },
+        "summary": {
+          "fa": "جلوه فویل نقره‌ای آینه‌ای یا طلایی درخشان، روی بدنه و درب تیوب.",
+          "en": "A mirror-silver or shining gold foil effect, on the tube body and the cap.",
+          "tr": "Tüp gövdesinde ve kapağında ayna gibi gümüş veya parlak altın folyo efekti."
+        },
+        "advantages": [
+          { "fa": "جلوه متالیک نقره‌ای یا طلایی", "en": "Silver or gold metallic finish", "tr": "Gümüş veya altın metalik efekt" },
+          { "fa": "اجرا روی بدنه و درب تیوب", "en": "On the body and the cap", "tr": "Gövde ve kapakta" },
+          { "fa": "حس کالای لوکس و قابل اعتماد", "en": "A premium, trustworthy feel", "tr": "Lüks ve güvenilir bir his" }
+        ],
+        "process": {
+          "fa": "در هات استمپ (فویل استمپ) مرکب از پیش خشک‌شده یا فویل‌های رنگی براق، با حرارت بالا و به کمک کلیشه‌های سیلیکونی روی محصول منتقل می‌شوند.",
+          "en": "In hot stamping (foil stamping), pre-dried ink or glossy coloured foils are transferred onto the product under high heat, using silicone dies.",
+          "tr": "Sıcak baskıda (folyo baskı) önceden kurutulmuş mürekkep veya parlak renkli folyolar, silikon kalıplarla yüksek ısı altında ürüne aktarılır."
+        },
+        "capabilities": [
+          { "fa": "فویل نقره‌ای با خاصیت آینه‌ای", "en": "Mirror-finish silver foil", "tr": "Ayna parlaklığında gümüş folyo" },
+          { "fa": "فویل طلایی با درخشش خاص", "en": "Gold foil with a distinctive shine", "tr": "Özel parlaklıkta altın folyo" },
+          { "fa": "روی بدنه و درب تیوب", "en": "On the tube body and cap", "tr": "Tüp gövdesi ve kapağında" },
+          { "fa": "قابل ترکیب با چاپ سیلک روی سطح استمپ‌شده", "en": "Can be combined with silk screen over the stamped area", "tr": "Baskılı alan üzerine serigrafi ile birleştirilebilir" }
+        ],
+        "uses": {
+          "fa": "برندهای آرایشی، بهداشتی، دارویی، خوراکی و صنعتی؛ برای تأکید بر نقاط تمایز محصول، اگر به‌اندازه در طراحی به کار رود.",
+          "en": "Cosmetic, hygienic, pharmaceutical, food and industrial brands, to highlight what sets a product apart when used in measure.",
+          "tr": "Kozmetik, hijyen, ilaç, gıda ve endüstriyel markalar; ölçülü kullanıldığında ürünü farklı kılan noktaları vurgulamak için."
+        }
+      },
+      {
+        "id": "combination",
+        "card": { "src": "/images/printing/tex-combination.webp", "width": 560, "height": 380 },
+        "macro": { "src": "/images/printing/macro-combination.webp", "width": 800, "height": 600 },
+        "sample": "lavender",
+        "name": { "fa": "چاپ ترکیبی", "en": "Combination printing", "tr": "Kombine baskı" },
+        "short": { "fa": "ترکیبی", "en": "Combination", "tr": "Kombine" },
+        "summary": {
+          "fa": "تا ۱۱ رنگ: ۶ رنگ افست خشک و ۵ رنگ سیلک، همراه با هات استمپ و چاپ تا روی شانه.",
+          "en": "Up to 11 colours: 6 in dry offset and 5 in silk screen, with hot stamping and printing up to the shoulder.",
+          "tr": "11 renge kadar: 6 renk kuru ofset ve 5 renk serigrafi, sıcak baskı ve omza kadar baskı ile."
+        },
+        "advantages": [
+          { "fa": "تا ۱۱ رنگ", "en": "Up to 11 colours", "tr": "11 renge kadar" },
+          { "fa": "ترکیب افست، سیلک و هات استمپ", "en": "Offset, silk screen and hot stamp together", "tr": "Ofset, serigrafi ve sıcak baskı bir arada" },
+          { "fa": "طرح‌های متنوع و خاص", "en": "Varied, distinctive designs", "tr": "Çeşitli ve özgün tasarımlar" }
+        ],
+        "process": {
+          "fa": "بخشی از طرح با افست خشک چاپ می‌شود و سپس قسمت‌های تعیین‌شده در چاپ سیلک به آن اضافه می‌شوند؛ معمولاً پس‌زمینه با افست و تصاویر روی زمینه با سیلک چاپ می‌شوند. هات استمپ و چاپ تا روی شانه نیز به طرح افزوده می‌شود و در برخی موارد چند بار چاپ مکرر انجام می‌شود.",
+          "en": "Part of the design is printed in dry offset, then the chosen elements are added in silk screen; usually the background is offset and the foreground is silk screen. Hot stamping and shoulder printing can be added, and in some cases the tube goes through several passes.",
+          "tr": "Tasarımın bir kısmı kuru ofsetle basılır, ardından belirlenen öğeler serigrafiyle eklenir; genellikle zemin ofset, üstteki görseller serigrafidir. Sıcak baskı ve omza kadar baskı da eklenebilir; bazı durumlarda tüp birkaç kez baskıdan geçer."
+        },
+        "capabilities": [
+          { "fa": "۱۱ رنگ (۶ افست + ۵ سیلک)", "en": "11 colours (6 offset + 5 silk screen)", "tr": "11 renk (6 ofset + 5 serigrafi)" },
+          { "fa": "افست ۴ تا ۵ میکرون، سیلک تا ۲۰ میکرون", "en": "Offset 4–5 microns, silk screen up to 20 microns", "tr": "Ofset 4–5 mikron, serigrafi 20 mikrona kadar" },
+          { "fa": "افزودن هات استمپ و چاپ تا روی شانه", "en": "Hot stamping and shoulder printing added", "tr": "Sıcak baskı ve omza kadar baskı eklenir" },
+          { "fa": "طبق معرفی آراپوش، تنها ارائه‌دهنده چاپ ترکیبی ۱۱ رنگ در ایران", "en": "By Arapoush's account, the only 11-colour combination printer in Iran", "tr": "Arapoush'a göre İran'da 11 renk kombine baskı yapan tek firma" }
+        ],
+        "uses": {
+          "fa": "طرح‌هایی که از ویژگی‌های چند روش با هم بهره می‌برند؛ کارشناسان آراپوش در بهینه‌سازی فایل چاپ همکاری می‌کنند.",
+          "en": "Designs that draw on several methods at once; Arapoush's specialists help optimise the print file.",
+          "tr": "Birkaç yöntemin özelliklerinden aynı anda yararlanan tasarımlar; Arapoush uzmanları baskı dosyasının optimizasyonuna yardım eder."
+        }
+      }
+    ]
+  },
+  "guide": {
+    "eyebrow": { "fa": "Printing selection guide", "en": "Printing selection guide", "tr": "Baskı seçim rehberi" },
+    "title": { "fa": "راهنمای انتخاب روش چاپ مناسب", "en": "Find the Right Printing Technology", "tr": "Doğru Baskı Teknolojisini Bulun" },
+    "lead": {
+      "fa": "چند پرسش درباره طرح و تیوب خود پاسخ دهید تا روش‌های مناسب را با دلیل ببینید. نتیجه یک پیشنهاد اولیه است، نه توصیه نهایی مهندسی؛ برای تأیید با کارشناسان آراپوش مشورت کنید.",
+      "en": "Answer a few questions about your design and tube to see which methods fit and why. The result is a first suggestion, not a final engineering recommendation; confirm it with Arapoush's specialists.",
+      "tr": "Uygun yöntemleri gerekçeleriyle görmek için tasarımınız ve tüpünüz hakkında birkaç soruyu yanıtlayın. Sonuç ilk bir öneridir, kesin mühendislik tavsiyesi değildir; Arapoush uzmanlarıyla doğrulayın."
+    },
+    "steps": [
+      { "fa": "تعیین نیاز و هدف پروژه", "en": "Define the project's needs", "tr": "Proje ihtiyacını belirleyin" },
+      { "fa": "بررسی ویژگی‌های هر فناوری", "en": "Review each technology", "tr": "Her teknolojiyi inceleyin" },
+      { "fa": "مقایسه و انتخاب گزینه مناسب", "en": "Compare and choose", "tr": "Karşılaştırın ve seçin" },
+      { "fa": "دریافت مشاوره تخصصی", "en": "Get expert advice", "tr": "Uzman görüşü alın" }
+    ],
+    "result": { "fa": "پیشنهاد اولیه", "en": "First suggestion", "tr": "İlk öneri" },
+    "fits": { "fa": "مناسب", "en": "Good fit", "tr": "Uygun" },
+    "check": { "fa": "نیاز به بررسی", "en": "Check with us", "tr": "Bize danışın" },
+    "no": { "fa": "مناسب نیست", "en": "Not a fit", "tr": "Uygun değil" },
+    "reset": { "fa": "پاک کردن پاسخ‌ها", "en": "Clear answers", "tr": "Yanıtları temizle" },
+    "empty": {
+      "fa": "یک یا چند پرسش را پاسخ دهید تا روش‌ها مرتب شوند.",
+      "en": "Answer one or more questions to rank the methods.",
+      "tr": "Yöntemleri sıralamak için bir veya daha fazla soruyu yanıtlayın."
+    },
+    "ask": { "fa": "تأیید با کارشناس", "en": "Confirm with a specialist", "tr": "Bir uzmanla doğrulayın" },
+    "questions": [
+      {
+        "id": "look",
+        "label": { "fa": "چه جلوه‌ای برای طرح مهم‌تر است؟", "en": "What matters most in the look?", "tr": "Görünümde en önemli olan nedir?" },
+        "options": [
+          {
+            "id": "detail",
+            "label": { "fa": "جزئیات و تصویر تمام‌رنگ", "en": "Detail and full-colour images", "tr": "Detay ve tam renkli görseller" },
+            "effects": [
+              { "m": "flexo", "s": 2, "why": { "fa": "غلتک‌های آنیلوکس وضوح تصویر را تعیین می‌کنند؛ CMYK و پنتون", "en": "Anilox rollers set sharpness; CMYK and Pantone", "tr": "Anilox merdaneler netliği belirler; CMYK ve Pantone" } },
+              { "m": "offset", "s": 2, "why": { "fa": "چاپ ۶ رنگ هر طرحی، حتی تا روی شانه", "en": "6-colour printing of any design, even on the shoulder", "tr": "Her tasarıma 6 renk baskı, omza kadar" } },
+              { "m": "combination", "s": 1, "why": { "fa": "پس‌زمینه با افست، جزئیات روی زمینه با سیلک", "en": "Offset background, silk screen foreground", "tr": "Ofset zemin, serigrafi ön plan" } }
+            ]
+          },
+          {
+            "id": "bold",
+            "label": { "fa": "رنگ پرحجم و پوشاننده", "en": "Bold, opaque colour", "tr": "Dolgun, örtücü renk" },
+            "effects": [
+              { "m": "silk", "s": 2, "why": { "fa": "لایه رنگ تا ۲۰ میکرون و چاپ رنگ‌ها روی هم", "en": "Ink up to 20 microns, colours over one another", "tr": "20 mikrona kadar mürekkep, renkler üst üste" } },
+              { "m": "combination", "s": 1, "why": { "fa": "بخش‌های پرحجم با سیلک اضافه می‌شوند", "en": "Bold elements are added in silk screen", "tr": "Dolgun öğeler serigrafiyle eklenir" } }
+            ]
+          },
+          {
+            "id": "metallic",
+            "label": { "fa": "جلوه متالیک طلایی یا نقره‌ای", "en": "Gold or silver metallic", "tr": "Altın veya gümüş metalik" },
+            "effects": [
+              { "m": "hotstamp", "s": 3, "why": { "fa": "فویل نقره‌ای آینه‌ای یا طلایی درخشان", "en": "Mirror-silver or shining gold foil", "tr": "Ayna gümüş veya parlak altın folyo" } },
+              { "m": "combination", "s": 2, "why": { "fa": "هات استمپ در کنار چاپ رنگی", "en": "Hot stamping alongside colour print", "tr": "Renkli baskının yanında sıcak baskı" } }
+            ]
+          },
+          {
+            "id": "mixed",
+            "label": { "fa": "ترکیب چند جلوه در یک طرح", "en": "Several effects in one design", "tr": "Tek tasarımda birden çok efekt" },
+            "effects": [
+              { "m": "combination", "s": 3, "why": { "fa": "افست، سیلک، هات استمپ و چاپ تا روی شانه در یک تیوب", "en": "Offset, silk screen, hot stamp and shoulder print on one tube", "tr": "Tek tüpte ofset, serigrafi, sıcak baskı ve omuz baskısı" } }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "colours",
+        "label": { "fa": "طرح چند رنگ دارد؟", "en": "How many colours?", "tr": "Kaç renk?" },
+        "options": [
+          {
+            "id": "c5",
+            "label": { "fa": "تا ۵ رنگ", "en": "Up to 5", "tr": "5'e kadar" },
+            "effects": [
+              { "m": "silk", "s": 1, "why": { "fa": "سیلک تا ۵ رنگ چاپ می‌کند", "en": "Silk screen prints up to 5 colours", "tr": "Serigrafi 5 renge kadar basar" } },
+              { "m": "offset", "s": 1, "why": { "fa": "در محدوده ۶ رنگ افست", "en": "Within offset's 6 colours", "tr": "Ofsetin 6 rengi içinde" } },
+              { "m": "flexo", "s": 1, "why": { "fa": "در محدوده ۸ رنگ فلکسو", "en": "Within flexo's 8 colours", "tr": "Fleksonun 8 rengi içinde" } }
+            ]
+          },
+          {
+            "id": "c6",
+            "label": { "fa": "۶ رنگ", "en": "6", "tr": "6" },
+            "effects": [
+              { "m": "offset", "s": 2, "why": { "fa": "افست خشک ۶ رنگ است", "en": "Dry offset prints 6 colours", "tr": "Kuru ofset 6 renk basar" } },
+              { "m": "flexo", "s": 1, "why": { "fa": "در محدوده ۸ رنگ فلکسو", "en": "Within flexo's 8 colours", "tr": "Fleksonun 8 rengi içinde" } },
+              { "m": "combination", "s": 1, "why": { "fa": "در محدوده ۱۱ رنگ چاپ ترکیبی", "en": "Within combination's 11 colours", "tr": "Kombinenin 11 rengi içinde" } }
+            ],
+            "excludes": [{ "m": "silk", "why": { "fa": "سیلک تا ۵ رنگ است", "en": "Silk screen goes up to 5 colours", "tr": "Serigrafi en fazla 5 renk" } }]
+          },
+          {
+            "id": "c8",
+            "label": { "fa": "۷ یا ۸ رنگ", "en": "7 or 8", "tr": "7 veya 8" },
+            "effects": [
+              { "m": "flexo", "s": 2, "why": { "fa": "دستگاه فلکسوی ۸ رنگ", "en": "8-colour flexo press", "tr": "8 renkli flekso makinesi" } },
+              { "m": "combination", "s": 1, "why": { "fa": "در محدوده ۱۱ رنگ چاپ ترکیبی", "en": "Within combination's 11 colours", "tr": "Kombinenin 11 rengi içinde" } }
+            ],
+            "excludes": [
+              { "m": "offset", "why": { "fa": "افست خشک ۶ رنگ است", "en": "Dry offset prints 6 colours", "tr": "Kuru ofset 6 renk basar" } },
+              { "m": "silk", "why": { "fa": "سیلک تا ۵ رنگ است", "en": "Silk screen goes up to 5 colours", "tr": "Serigrafi en fazla 5 renk" } }
+            ]
+          },
+          {
+            "id": "c11",
+            "label": { "fa": "۹ تا ۱۱ رنگ", "en": "9 to 11", "tr": "9–11" },
+            "effects": [{ "m": "combination", "s": 3, "why": { "fa": "چاپ ترکیبی تا ۱۱ رنگ (۶ افست + ۵ سیلک)", "en": "Combination printing up to 11 colours (6 + 5)", "tr": "11 renge kadar kombine baskı (6 + 5)" } }],
+            "excludes": [
+              { "m": "flexo", "why": { "fa": "فلکسو ۸ رنگ است", "en": "Flexo prints 8 colours", "tr": "Flekso 8 renk basar" } },
+              { "m": "offset", "why": { "fa": "افست خشک ۶ رنگ است", "en": "Dry offset prints 6 colours", "tr": "Kuru ofset 6 renk basar" } },
+              { "m": "silk", "why": { "fa": "سیلک تا ۵ رنگ است", "en": "Silk screen goes up to 5 colours", "tr": "Serigrafi en fazla 5 renk" } }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "base",
+        "label": { "fa": "روی چه چیزی چاپ می‌شود؟", "en": "What is being printed?", "tr": "Neye baskı yapılacak?" },
+        "options": [
+          {
+            "id": "seamless",
+            "label": { "fa": "تیوب پلاستیکی بدون درز", "en": "Seamless plastic tube", "tr": "Dikişsiz plastik tüp" },
+            "effects": [
+              { "m": "offset", "s": 1, "why": { "fa": "برای تیوب‌های چندلایه بدون درز", "en": "Made for seamless multi-layer tubes", "tr": "Dikişsiz çok katmanlı tüpler için" } },
+              { "m": "silk", "s": 1, "why": { "fa": "روی تیوب‌های بدون درز", "en": "Prints seamless tubes", "tr": "Dikişsiz tüplere basar" } },
+              { "m": "combination", "s": 1, "why": { "fa": "روی تیوب‌های پلاستیکی", "en": "Prints plastic tubes", "tr": "Plastik tüplere basar" } },
+              { "m": "flexo", "s": 1, "why": { "fa": "تیوب با قطر ۱۹ تا ۶۰ میلی‌متر", "en": "Tubes 19–60 mm in diameter", "tr": "19–60 mm çaplı tüpler" } },
+              { "m": "hotstamp", "s": 1, "why": { "fa": "روی بدنه و درب تیوب", "en": "On the tube body and cap", "tr": "Tüp gövdesi ve kapağında" } }
+            ]
+          },
+          {
+            "id": "eff",
+            "label": { "fa": "ظرف قرص جوشان", "en": "Effervescent container", "tr": "Efervesan kap" },
+            "effects": [
+              { "m": "flexo", "s": 1, "why": { "fa": "ظرف قرص جوشان با ارتفاع ۵۰ تا ۲۳۰ میلی‌متر", "en": "Effervescent containers 50–230 mm tall", "tr": "50–230 mm efervesan kaplar" } },
+              { "m": "offset", "s": 1, "why": { "fa": "روی تیوب قرص جوشان", "en": "Prints effervescent tubes", "tr": "Efervesan tüplere basar" } },
+              { "m": "silk", "s": 1, "why": { "fa": "روی تیوب و ظرف قرص جوشان", "en": "Prints effervescent tubes and containers", "tr": "Efervesan tüp ve kaplara basar" } }
+            ],
+            "asks": [
+              { "m": "hotstamp", "why": { "fa": "برای ظرف قرص جوشان در منبع ذکر نشده است", "en": "Not stated for effervescent containers", "tr": "Efervesan kaplar için belirtilmemiş" } },
+              { "m": "combination", "why": { "fa": "برای ظرف قرص جوشان در منبع ذکر نشده است", "en": "Not stated for effervescent containers", "tr": "Efervesan kaplar için belirtilmemiş" } }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "extras",
+        "multi": true,
+        "label": { "fa": "نیازهای ویژه (در صورت وجود)", "en": "Special needs (if any)", "tr": "Özel ihtiyaçlar (varsa)" },
+        "options": [
+          {
+            "id": "shoulder",
+            "label": { "fa": "چاپ تا روی شانه", "en": "Print on the shoulder", "tr": "Omuz baskısı" },
+            "effects": [
+              { "m": "offset", "s": 1, "why": { "fa": "چاپ تا روی شانه تیوب", "en": "Prints up to the shoulder", "tr": "Omza kadar basar" } },
+              { "m": "silk", "s": 1, "why": { "fa": "چاپ تا روی شانه تیوب", "en": "Prints up to the shoulder", "tr": "Omza kadar basar" } },
+              { "m": "combination", "s": 1, "why": { "fa": "چاپ تا روی شانه در ترکیب", "en": "Shoulder print in the combination", "tr": "Kombinasyonda omuz baskısı" } }
+            ],
+            "asks": [
+              { "m": "flexo", "why": { "fa": "چاپ روی شانه برای فلکسو ذکر نشده است", "en": "Shoulder print not stated for flexo", "tr": "Flekso için omuz baskısı belirtilmemiş" } },
+              { "m": "hotstamp", "why": { "fa": "روی شانه ذکر نشده؛ روی بدنه و درب اجرا می‌شود", "en": "Shoulder not stated; done on body and cap", "tr": "Omuz belirtilmemiş; gövde ve kapakta yapılır" } }
+            ]
+          },
+          {
+            "id": "coloured",
+            "label": { "fa": "تیوب رنگی (مستربچ)", "en": "Coloured tube (masterbatch)", "tr": "Renkli tüp (masterbatch)" },
+            "effects": [{ "m": "silk", "s": 2, "why": { "fa": "چاپ روی تیوب‌های رنگی با مستربچ", "en": "Prints on masterbatch-coloured tubes", "tr": "Masterbatch renkli tüplere basar" } }],
+            "asks": [
+              { "m": "flexo", "why": { "fa": "برای تیوب رنگی ذکر نشده است", "en": "Not stated for coloured tubes", "tr": "Renkli tüpler için belirtilmemiş" } },
+              { "m": "offset", "why": { "fa": "برای تیوب رنگی ذکر نشده است", "en": "Not stated for coloured tubes", "tr": "Renkli tüpler için belirtilmemiş" } }
+            ]
+          },
+          {
+            "id": "cap",
+            "label": { "fa": "تزئین روی درب", "en": "Decoration on the cap", "tr": "Kapak süslemesi" },
+            "effects": [{ "m": "hotstamp", "s": 2, "why": { "fa": "هات استمپ روی درب تیوب", "en": "Hot stamping on the cap", "tr": "Kapakta sıcak baskı" } }],
+            "asks": [
+              { "m": "flexo", "why": { "fa": "چاپ روی درب ذکر نشده است", "en": "Cap printing not stated", "tr": "Kapak baskısı belirtilmemiş" } },
+              { "m": "offset", "why": { "fa": "چاپ روی درب ذکر نشده است", "en": "Cap printing not stated", "tr": "Kapak baskısı belirtilmemiş" } },
+              { "m": "silk", "why": { "fa": "چاپ روی درب ذکر نشده است", "en": "Cap printing not stated", "tr": "Kapak baskısı belirtilmemiş" } }
+            ]
+          },
+          {
+            "id": "pantone",
+            "label": { "fa": "تطبیق دقیق رنگ پنتون", "en": "Exact Pantone match", "tr": "Tam Pantone eşleşmesi" },
+            "effects": [{ "m": "flexo", "s": 2, "why": { "fa": "چاپ با سیستم پنتون برای بازتولید بدون اختلاف رنگ", "en": "Pantone printing to reproduce colours without drift", "tr": "Renkleri sapmadan üretmek için Pantone baskı" } }]
+          },
+          {
+            "id": "cost",
+            "label": { "fa": "هزینه مهم‌ترین معیار است", "en": "Cost matters most", "tr": "Maliyet en önemli kriter" },
+            "effects": [{ "m": "offset", "s": 2, "why": { "fa": "آراپوش افست خشک را برای صاحبان برند مقرون‌به‌صرفه معرفی می‌کند", "en": "Arapoush describes dry offset as cost-effective for brands", "tr": "Arapoush kuru ofseti markalar için ekonomik olarak tanımlar" } }],
+            "note": {
+              "fa": "هزینه نهایی به تیراژ، تعداد رنگ و طرح بستگی دارد؛ برای قیمت دقیق استعلام بگیرید.",
+              "en": "Final cost depends on run length, colours and artwork; ask for a quote.",
+              "tr": "Nihai maliyet tiraja, renk sayısına ve tasarıma bağlıdır; teklif isteyin."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "samples": {
+    "eyebrow": { "fa": "Sample designs", "en": "Sample designs", "tr": "Örnek tasarımlar" },
+    "title": { "fa": "نمونه طرح‌های چاپ تیوب", "en": "Tube Printing Design Samples", "tr": "Tüp Baskı Tasarım Örnekleri" },
+    "lead": {
+      "fa": "این تصاویر نمونه‌های طراحی برای نمایش هر روش چاپ هستند، نه پروژه‌های تحویل‌شده به مشتری. تصاویر پروژه‌های واقعی پس از تأیید منتشر می‌شوند.",
+      "en": "These are design samples that show what each method can do, not delivered customer projects. Photographs of real projects will be published once approved.",
+      "tr": "Bunlar her yöntemin neler yapabildiğini gösteren tasarım örnekleridir, teslim edilmiş müşteri projeleri değildir. Gerçek proje fotoğrafları onaylandıktan sonra yayınlanacaktır."
+    },
+    "badge": { "fa": "نمونه طراحی", "en": "Design sample", "tr": "Tasarım örneği" },
+    "method": { "fa": "روش پیشنهادی", "en": "Suggested method", "tr": "Önerilen yöntem" },
+    "view": { "fa": "نمایش بزرگ", "en": "View larger", "tr": "Büyük görüntüle" },
+    "prev": { "fa": "قبلی", "en": "Previous", "tr": "Önceki" },
+    "next": { "fa": "بعدی", "en": "Next", "tr": "Sonraki" },
+    "close": { "fa": "بستن", "en": "Close", "tr": "Kapat" },
+    "zoomIn": { "fa": "بزرگ‌نمایی", "en": "Zoom in", "tr": "Yakınlaştır" },
+    "zoomOut": { "fa": "کوچک‌نمایی", "en": "Zoom out", "tr": "Uzaklaştır" },
+    "of": { "fa": "{n} از {total}", "en": "{n} of {total}", "tr": "{n} / {total}" },
+    "items": [
+      {
+        "id": "lavender",
+        "method": "combination",
+        "image": { "src": "/images/printing/sample-lavender.webp", "width": 1448, "height": 1086 },
+        "title": { "fa": "تیوب کرم دست اسطوخودوس", "en": "Lavender hand cream tube", "tr": "Lavanta el kremi tüpü" },
+        "industry": { "fa": "آرایشی و بهداشتی", "en": "Cosmetics and hygiene", "tr": "Kozmetik ve hijyen" },
+        "text": {
+          "fa": "طرح نمونه با رنگ‌های لایه‌ای و جزئیات گل؛ نمایش کاری که از ترکیب افست و سیلک برمی‌آید.",
+          "en": "A sample with layered colour and floral detail, showing what offset and silk screen can do together.",
+          "tr": "Katmanlı renk ve çiçek detaylı örnek; ofset ve serigrafinin birlikte neler yapabildiğini gösterir."
+        }
+      },
+      {
+        "id": "vitamin-c",
+        "method": "offset",
+        "image": { "src": "/images/printing/sample-vitamin-c.webp", "width": 1448, "height": 1086 },
+        "title": { "fa": "تیوب شوینده صورت ویتامین C", "en": "Vitamin C face wash tube", "tr": "C vitaminli yüz yıkama tüpü" },
+        "industry": { "fa": "مراقبت از پوست", "en": "Skincare", "tr": "Cilt bakımı" },
+        "text": {
+          "fa": "طرح نمونه تمام‌رنگ با تصویر میوه؛ نمونه‌ای از چاپ چندرنگ روی بدنه تیوب.",
+          "en": "A full-colour sample with fruit imagery: an example of multi-colour printing on the tube body.",
+          "tr": "Meyve görselli tam renkli örnek; tüp gövdesine çok renkli baskı örneği."
+        }
+      },
+      {
+        "id": "calcium",
+        "method": "flexo",
+        "image": { "src": "/images/printing/sample-calcium.webp", "width": 1448, "height": 1086 },
+        "title": { "fa": "تیوب ژل مکمل کلسیم", "en": "Calcium gel tube", "tr": "Kalsiyum jel tüpü" },
+        "industry": { "fa": "دارویی و مکمل", "en": "Pharmaceutical and supplements", "tr": "İlaç ve takviye" },
+        "text": {
+          "fa": "طرح نمونه با رنگ آبی برند و شیب رنگی؛ جایی که تطبیق رنگ پنتون اهمیت دارد.",
+          "en": "A sample built on a brand blue and colour gradients, where Pantone matching matters.",
+          "tr": "Marka mavisi ve renk geçişleriyle örnek; Pantone eşleşmesinin önemli olduğu bir tasarım."
+        }
+      },
+      {
+        "id": "colour",
+        "method": "offset",
+        "image": { "src": "/images/printing/tube-colour.webp", "width": 1086, "height": 1448 },
+        "title": { "fa": "تیوب قرص جوشان با طرح رنگی", "en": "Effervescent tube with colour sweep", "tr": "Renkli desenli efervesan tüp" },
+        "industry": { "fa": "قرص جوشان", "en": "Effervescent tablets", "tr": "Efervesan tablet" },
+        "text": {
+          "fa": "طرح نمونه با موج‌های رنگی روی تیوب قرص جوشان.",
+          "en": "A sample with colour waves on an effervescent tube.",
+          "tr": "Efervesan tüp üzerinde renk dalgalarıyla örnek."
+        }
+      },
+      {
+        "id": "gold",
+        "method": "hotstamp",
+        "image": { "src": "/images/printing/tube-gold.webp", "width": 1086, "height": 1448 },
+        "title": { "fa": "تیوب سفید با برگ‌های طلایی", "en": "White tube with gold leaves", "tr": "Altın yapraklı beyaz tüp" },
+        "industry": { "fa": "محصولات لوکس", "en": "Premium products", "tr": "Lüks ürünler" },
+        "text": {
+          "fa": "طرح نمونه با فویل طلایی هات استمپ کنار نقش سفید؛ نمونه‌ای از ترکیب فویل و چاپ.",
+          "en": "A sample pairing hot-stamped gold foil with a white pattern: foil and print together.",
+          "tr": "Sıcak baskı altın folyo ile beyaz desen; folyo ve baskı bir arada."
+        }
+      }
+    ]
+  },
+  "downloads": {
+    "eyebrow": { "fa": "Downloads", "en": "Downloads", "tr": "İndirmeler" },
+    "title": { "fa": "راهنمای آماده‌سازی فایل‌های چاپ", "en": "Printing Resources & Downloads", "tr": "Baskı Kaynakları ve İndirmeler" },
+    "lead": {
+      "fa": "راهنماها و قالب‌های آماده‌سازی فایل چاپ. فایل‌هایی که هنوز منتشر نشده‌اند را می‌توانید با ایمیل درخواست کنید.",
+      "en": "Guides and templates for preparing print files. Files not yet published can be requested by email.",
+      "tr": "Baskı dosyası hazırlama rehberleri ve şablonları. Henüz yayınlanmamış dosyaları e-postayla isteyebilirsiniz."
+    },
+    "download": { "fa": "دانلود", "en": "Download", "tr": "İndir" },
+    "preview": { "fa": "پیش‌نمایش", "en": "Preview", "tr": "Önizle" },
+    "request": { "fa": "درخواست با ایمیل", "en": "Request by email", "tr": "E-postayla iste" },
+    "soon": { "fa": "به‌زودی", "en": "Coming soon", "tr": "Yakında" },
+    "requestSubject": { "fa": "درخواست فایل: {name}", "en": "File request: {name}", "tr": "Dosya talebi: {name}" },
+    "guideTitle": { "fa": "راهنمای آماده‌سازی چاپ", "en": "Print preparation guide", "tr": "Baskı hazırlık rehberi" },
+    "items": [
+      {
+        "id": "guide",
+        "format": "PDF",
+        "file": null,
+        "name": { "fa": "راهنمای آماده‌سازی فایل", "en": "Print preparation guide", "tr": "Baskı hazırlık rehberi" },
+        "text": { "fa": "نکات آماده‌سازی طرح برای چاپ روی تیوب", "en": "Preparing artwork for tube printing", "tr": "Tüp baskısı için tasarım hazırlığı" }
+      },
+      {
+        "id": "templates",
+        "format": "AI",
+        "file": null,
+        "name": { "fa": "قالب‌های طراحی", "en": "Artwork templates", "tr": "Tasarım şablonları" },
+        "text": { "fa": "قالب ابعاد بدنه تیوب برای طراحی", "en": "Tube body dielines for your designer", "tr": "Tasarımcınız için tüp gövdesi şablonları" }
+      },
+      {
+        "id": "specs",
+        "format": "PDF",
+        "file": null,
+        "name": { "fa": "مشخصات فنی", "en": "Technical specifications", "tr": "Teknik özellikler" },
+        "text": { "fa": "مشخصات روش‌های چاپ و تیوب‌ها", "en": "Printing methods and tube specifications", "tr": "Baskı yöntemleri ve tüp özellikleri" }
+      },
+      {
+        "id": "checklist",
+        "format": "PDF",
+        "file": null,
+        "name": { "fa": "چک‌لیست کنترل فایل", "en": "Print file checklist", "tr": "Baskı dosyası kontrol listesi" },
+        "text": { "fa": "بررسی فایل پیش از ارسال", "en": "Check your file before sending", "tr": "Göndermeden önce dosyanızı kontrol edin" }
+      }
+    ]
+  },
+  "compare": {
+    "eyebrow": { "fa": "Quick comparison", "en": "Quick comparison", "tr": "Hızlı karşılaştırma" },
+    "title": { "fa": "مقایسه سریع فناوری‌های چاپ", "en": "Compare Printing Technologies at a Glance", "tr": "Baskı Teknolojilerini Hızla Karşılaştırın" },
+    "lead": {
+      "fa": "خلاصه ویژگی‌های هر روش، بر اساس اطلاعات آراپوش. خانه‌های «—» در منبع ذکر نشده‌اند؛ برای جزئیات بپرسید.",
+      "en": "Each method at a glance, from Arapoush's own information. A dash means the source doesn't say; ask us for details.",
+      "tr": "Arapoush'un kendi bilgilerine göre her yöntemin özeti. Tire, kaynakta belirtilmediğini gösterir; ayrıntı için bize sorun."
+    },
+    "cta": { "fa": "درخواست مشاوره رایگان", "en": "Request a free consultation", "tr": "Ücretsiz danışmanlık isteyin" },
+    "method": { "fa": "روش چاپ", "en": "Method", "tr": "Yöntem" },
+    "columns": [
+      { "id": "colours", "label": { "fa": "رنگ‌ها", "en": "Colours", "tr": "Renkler" } },
+      { "id": "ink", "label": { "fa": "لایه رنگ", "en": "Ink layer", "tr": "Mürekkep katmanı" } },
+      { "id": "look", "label": { "fa": "جلوه بصری", "en": "Visual character", "tr": "Görsel karakter" } },
+      { "id": "where", "label": { "fa": "محل چاپ", "en": "Where it prints", "tr": "Baskı yeri" } }
+    ],
+    "rows": {
+      "flexo": {
+        "colours": { "fa": "تا ۸ رنگ؛ CMYK و پنتون", "en": "Up to 8; CMYK and Pantone", "tr": "8'e kadar; CMYK ve Pantone" },
+        "ink": null,
+        "look": { "fa": "وضوح تنظیم‌شده با ۱۰ نوع غلتک آنیلوکس", "en": "Sharpness set by 10 anilox options", "tr": "10 anilox seçeneğiyle ayarlanan netlik" },
+        "where": { "fa": "تیوب Ø۱۹–۶۰ میلی‌متر؛ ظرف قرص جوشان ۵۰–۲۳۰ میلی‌متر", "en": "Tubes Ø19–60 mm; effervescent containers 50–230 mm", "tr": "Ø19–60 mm tüpler; 50–230 mm efervesan kaplar" }
+      },
+      "offset": {
+        "colours": { "fa": "۶ رنگ", "en": "6", "tr": "6" },
+        "ink": { "fa": "۴ تا ۵ میکرون", "en": "4–5 microns", "tr": "4–5 mikron" },
+        "look": { "fa": "هر طرحی، تمام‌رنگ", "en": "Any design, full colour", "tr": "Her tasarım, tam renk" },
+        "where": { "fa": "تیوب چندلایه بدون درز و تیوب قرص جوشان؛ تا روی شانه", "en": "Seamless multi-layer and effervescent tubes; up to the shoulder", "tr": "Dikişsiz çok katmanlı ve efervesan tüpler; omza kadar" }
+      },
+      "silk": {
+        "colours": { "fa": "تا ۵ رنگ؛ تصاویر CMYK", "en": "Up to 5; CMYK images", "tr": "5'e kadar; CMYK görseller" },
+        "ink": { "fa": "تا ۲۰ میکرون", "en": "Up to 20 microns", "tr": "20 mikrona kadar" },
+        "look": { "fa": "پرحجم، رنگ‌ها روی هم، ورنی موضعی", "en": "Rich, overprinted colours, spot varnish", "tr": "Dolgun, üst üste renkler, lokal lak" },
+        "where": { "fa": "تیوب بدون درز و قرص جوشان، تیوب رنگی، سطح استمپ‌شده؛ تا روی شانه", "en": "Seamless and effervescent tubes, coloured tubes, stamped areas; up to the shoulder", "tr": "Dikişsiz ve efervesan tüpler, renkli tüpler, baskılı alanlar; omza kadar" }
+      },
+      "hotstamp": {
+        "colours": { "fa": "فویل نقره‌ای آینه‌ای یا طلایی", "en": "Mirror silver or gold foil", "tr": "Ayna gümüş veya altın folyo" },
+        "ink": { "fa": "فویل منتقل‌شده با حرارت", "en": "Foil transferred with heat", "tr": "Isıyla aktarılan folyo" },
+        "look": { "fa": "متالیک براق، حس لوکس", "en": "Glossy metallic, premium feel", "tr": "Parlak metalik, lüks his" },
+        "where": { "fa": "بدنه و درب تیوب", "en": "Tube body and cap", "tr": "Tüp gövdesi ve kapak" }
+      },
+      "combination": {
+        "colours": { "fa": "تا ۱۱ رنگ (۶ افست + ۵ سیلک)", "en": "Up to 11 (6 offset + 5 silk)", "tr": "11'e kadar (6 ofset + 5 serigrafi)" },
+        "ink": { "fa": "افست ۴–۵، سیلک تا ۲۰ میکرون", "en": "Offset 4–5, silk up to 20 microns", "tr": "Ofset 4–5, serigrafi 20 mikrona kadar" },
+        "look": { "fa": "پس‌زمینه افست، جزئیات سیلک، فویل", "en": "Offset background, silk detail, foil", "tr": "Ofset zemin, serigrafi detay, folyo" },
+        "where": { "fa": "تیوب پلاستیکی؛ تا روی شانه", "en": "Plastic tubes; up to the shoulder", "tr": "Plastik tüpler; omza kadar" }
+      }
+    }
+  },
+  "cta": {
+    "title": { "fa": "برای پروژه چاپ تیوب خود، مشاوره تخصصی دریافت کنید", "en": "Let's Find the Right Printing Solution for Your Brand", "tr": "Markanız İçin Doğru Baskı Çözümünü Bulalım" },
+    "lead": {
+      "fa": "کارشناسان آراپوش در انتخاب روش چاپ و آماده‌سازی فایل همراه شما هستند.",
+      "en": "Arapoush's specialists help you choose the printing method and prepare the file.",
+      "tr": "Arapoush uzmanları baskı yöntemini seçmenize ve dosyayı hazırlamanıza yardım eder."
+    },
+    "consult": { "fa": "درخواست مشاوره رایگان", "en": "Request a consultation", "tr": "Danışmanlık isteyin" },
+    "call": { "fa": "تماس با ما", "en": "Call us", "tr": "Bizi arayın" },
+    "subject": { "fa": "مشاوره چاپ تیوب", "en": "Tube printing consultation", "tr": "Tüp baskı danışmanlığı" },
+    "tubeAlt": { "fa": "تیوب سفید آراپوش با حلقه نارنجی", "en": "White Arapoush tube with an orange ring", "tr": "Turuncu halkalı beyaz Arapoush tüpü" }
+  }
+}

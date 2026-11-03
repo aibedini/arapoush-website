@@ -1,4 +1,5 @@
-import { contact, productPaths, siteUrl, social } from "@/lib/site";
+import { contact, printingPath, productPaths, siteUrl, social } from "@/lib/site";
+import { getPrinting, t as pt, type Printing } from "@/lib/printing";
 import { getEffervescentProduct, getTubeProduct, type EffProduct } from "@/lib/products";
 import { diametersFor, loc, type TubeProduct } from "@/lib/configurator/model";
 import { defaultLocale, getDictionary, localeMeta, locales, type Dictionary, type Locale } from "@/lib/i18n";
@@ -99,6 +100,7 @@ export function llmsText(full: boolean) {
     ...locales.map((l) => `- [${getDictionary(l).meta.title}](${pageUrl(l)}): ${localeMeta[l].label} home page`),
     ...locales.map((l) => `- [${getDictionary(l).productTube.meta.title}](${pageUrl(l, productPaths.tube)}): ${getDictionary(l).productTube.meta.description}`),
     ...locales.map((l) => `- [${getDictionary(l).productEff.meta.title}](${pageUrl(l, productPaths.effervescent)}): ${getDictionary(l).productEff.meta.description}`),
+    ...locales.map((l) => `- [${pt(getPrinting().meta.title, l)}](${pageUrl(l, printingPath)}): ${pt(getPrinting().meta.description, l)}`),
     "",
     "## Contact",
     `- Email: ${contact.email}`,
@@ -141,6 +143,8 @@ export function llmsText(full: boolean) {
       ...tubeFacts(t, getTubeProduct(), l),
       "",
       ...effFacts(t, getEffervescentProduct(), l),
+      "",
+      ...printingFacts(getPrinting(), l),
       "",
       `### ${t.cta.title.join(" ")}`,
       t.cta.lead,
@@ -257,4 +261,57 @@ export function productEffJsonLd(t: Dictionary, product: EffProduct, locale: Loc
       },
     ],
   };
+}
+
+/** Printing page: the five methods as services Arapoush offers, plus the breadcrumb trail. */
+export function printingJsonLd(t: Dictionary, p: Printing, locale: Locale, path: string) {
+  const url = pageUrl(locale, path);
+  const tx = (v: Record<string, string>) => pt(v, locale);
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${url}#page`,
+        url,
+        name: tx(p.meta.title),
+        description: tx(p.meta.description),
+        inLanguage: locale,
+        isPartOf: { "@id": `${siteUrl}/#website` },
+        primaryImageOfPage: `${siteUrl}/images/printing/tube-gold.webp`,
+        mainEntity: {
+          "@type": "ItemList",
+          itemListElement: p.tech.items.map((m, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            item: {
+              "@type": "Service",
+              "@id": `${url}#${m.id}`,
+              name: tx(m.name),
+              description: `${tx(m.summary)} ${tx(m.process)}`,
+              serviceType: tx(m.name),
+              provider: { "@id": `${siteUrl}/#organization` },
+              image: `${siteUrl}${m.macro.src}`,
+            },
+          })),
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: t.common.brand, item: pageUrl(locale) },
+          { "@type": "ListItem", position: 2, name: tx(p.hero.title), item: url },
+        ],
+      },
+    ],
+  };
+}
+
+/** Every printing method with its process and capabilities, as plain lines. */
+function printingFacts(p: Printing, l: Locale) {
+  return [
+    `### ${pt(p.hero.title, l)} (${pageUrl(l, printingPath)})`,
+    pt(p.hero.lead, l),
+    ...p.tech.items.flatMap((m) => [`- ${pt(m.name, l)}: ${pt(m.summary, l)} ${pt(m.process, l)}`, ...m.capabilities.map((c) => `  - ${pt(c, l)}`)]),
+  ];
 }

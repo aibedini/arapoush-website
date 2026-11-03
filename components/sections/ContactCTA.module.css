@@ -30,6 +30,14 @@
 .bg img {
   object-fit: cover;
 }
+/* Footer on its own (the page closes with its own call to action). */
+.footerOnly {
+  padding-top: max(40px, calc(72 * var(--u)));
+}
+.bgFooter {
+  position: absolute;
+  inset: 0;
+}
 /* After a navy section: wash the photo's light top in the same navy, easing into the wave. */
 .closing[data-blend="navy"] .bgTop::after {
   content: "";

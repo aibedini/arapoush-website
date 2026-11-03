@@ -8,9 +8,24 @@ import { ArrowRightCircle } from "@/components/ui/icons";
 import styles from "./ContactCTA.module.css";
 
 /** Closing composition: CTA and footer share one blue material backdrop (Figma y 6313–7166). */
-/** `blend="navy"`: the page above ends on navy, so the band's light top is washed navy to match. */
-export default function ContactCTA({ t, locale, blend }: SectionProps & { blend?: "navy" }) {
+/**
+ * `blend="navy"`: the page above ends on navy, so the band's light top is washed navy to match.
+ * `footerOnly`: the page has its own closing call to action; render just the shared footer on its
+ * navy wave.
+ */
+export default function ContactCTA({ t, locale, blend, footerOnly }: SectionProps & { blend?: "navy"; footerOnly?: boolean }) {
   const c = t.cta;
+  if (footerOnly)
+    return (
+      <div className={`${styles.closing} ${styles.footerOnly}`}>
+        <div className={styles.bg} aria-hidden="true">
+          <div className={styles.bgFooter}>
+            <Image src="/images/footer-bg.webp" alt="" fill sizes="100vw" />
+          </div>
+        </div>
+        <Footer t={t} locale={locale} />
+      </div>
+    );
   return (
     <div className={styles.closing} data-blend={blend}>
       <div className={styles.bg} aria-hidden="true">

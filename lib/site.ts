@@ -11,6 +11,9 @@ export const productPaths = {
   effervescent: "/products/effervescent-tube",
 } as const;
 
+/** Printing technologies landing page (the header's "Printing" item), relative to the locale root. */
+export const printingPath = "/printing";
+
 /** Section anchors work from any page: on a sub-page they point back to the localized home. */
 export const homeHref = (locale: string, href: string, onHome: boolean) =>
   href.startsWith("#") && !onHome ? `/${locale}${href === "#top" ? "" : href}` : href;
