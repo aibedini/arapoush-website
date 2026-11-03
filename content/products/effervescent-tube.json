@@ -93,7 +93,34 @@
           "src": "/images/eff/cap-spiral.webp",
           "width": 266,
           "height": 825
-        }
+        },
+        "photo": {
+          "src": "/images/eff/cap-spiral-photo.webp",
+          "width": 1122,
+          "height": 1402
+        },
+        "parts": [
+          {
+            "id": "cap",
+            "y": 0.16,
+            "x": 0.34
+          },
+          {
+            "id": "structure",
+            "y": 0.355,
+            "x": 0.38
+          },
+          {
+            "id": "chamber",
+            "y": 0.545,
+            "x": 0.39
+          },
+          {
+            "id": "mouth",
+            "y": 0.765,
+            "x": 0.37
+          }
+        ]
       },
       {
         "id": "plain",
@@ -106,9 +133,41 @@
           "src": "/images/eff/cap-plain.webp",
           "width": 266,
           "height": 825
-        }
+        },
+        "photo": {
+          "src": "/images/eff/cap-plain-photo.webp",
+          "width": 1122,
+          "height": 1402
+        },
+        "parts": [
+          {
+            "id": "cap",
+            "y": 0.17,
+            "x": 0.29
+          },
+          {
+            "id": "structure",
+            "y": 0.41,
+            "x": 0.31
+          },
+          {
+            "id": "chamber",
+            "y": 0.63,
+            "x": 0.32
+          },
+          {
+            "id": "mouth",
+            "y": 0.84,
+            "x": 0.28
+          }
+        ]
       }
-    ]
+    ],
+    "background": {
+      "src": "/images/eff/caps-bg.webp",
+      "width": 1672,
+      "height": 941
+    }
   },
   "images": {
     "poster": {
@@ -120,6 +179,16 @@
       "src": "/images/eff/uses-tablets.webp",
       "width": 1600,
       "height": 1000
+    },
+    "usesPhoto": {
+      "src": "/images/eff/uses-products.webp",
+      "width": 1586,
+      "height": 992
+    },
+    "usesBg": {
+      "src": "/images/eff/uses-bg.webp",
+      "width": 1672,
+      "height": 941
     }
   }
 }

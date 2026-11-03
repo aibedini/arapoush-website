@@ -230,7 +230,7 @@ export function productEffJsonLd(t: Dictionary, product: EffProduct, locale: Loc
         name: e.eyebrow,
         description: `${e.lead} ${e.caps.lead}`,
         url,
-        image: [product.images.uses.src, ...product.caps.variants.map((v) => v.image.src)].map((src) => `${siteUrl}${src}`),
+        image: [product.images.usesPhoto.src, product.images.uses.src, ...product.caps.variants.map((v) => v.image.src)].map((src) => `${siteUrl}${src}`),
         brand: { "@id": `${siteUrl}/#organization` },
         manufacturer: { "@id": `${siteUrl}/#organization` },
         variesBy: ["https://schema.org/size"],

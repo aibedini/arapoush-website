@@ -1,32 +1,51 @@
 import Image from "next/image";
 import type { Dictionary } from "@/lib/i18n";
-import type { EffProduct } from "@/lib/products";
+import type { EffProduct, Img } from "@/lib/products";
+import { ChocolateIcon, FizzIcon, PrintIcon } from "./CapIcons";
 import styles from "./Effervescent.module.css";
 
 const fill = (s: string, vars: Record<string, string | number>) => s.replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? ""));
 
-/** Applications: a render of the tube with its tablets poured out, beside the documented uses. */
-export function Uses({ t, image }: { t: Dictionary["productEff"]["uses"]; image: EffProduct["images"]["uses"] }) {
+const USE_ICONS = [FizzIcon, ChocolateIcon, PrintIcon];
+
+/** Applications: printed tubes with a fizzing glass on the silk studio backdrop, beside the uses. */
+export function Uses({ t, photo, bg, locale }: { t: Dictionary["productEff"]["uses"]; photo: Img; bg: Img; locale: string }) {
   return (
     <section className={styles.uses} aria-labelledby="uses-title">
-      <div className={styles.usesPhoto} data-reveal-media>
-        <Image src={image.src} alt={t.alt} width={image.width} height={image.height} sizes="(max-width: 1099px) 92vw, 56vw" data-no-mirror />
+      <div className={styles.usesBg} aria-hidden="true">
+        <Image src={bg.src} alt="" fill sizes="100vw" quality={70} data-no-mirror />
       </div>
-      <div className={styles.usesCopy}>
-        <h2 id="uses-title" className="t-h2" data-reveal>
-          {t.title}
-        </h2>
-        <p className="t-lead t-muted" data-reveal>
-          {t.lead}
-        </p>
-        <ul className={styles.usesList} data-reveal-stagger>
-          {t.items.map((it) => (
-            <li key={it.title} data-reveal-item>
-              <h3>{it.title}</h3>
-              <p>{it.text}</p>
-            </li>
-          ))}
-        </ul>
+      <div className={styles.usesInner}>
+        <div className={styles.usesCopy}>
+          <p className={styles.usesEyebrow} lang={locale === "fa" ? "en" : undefined} data-reveal>
+            {t.eyebrow}
+          </p>
+          <h2 id="uses-title" className={`t-h2 ${styles.usesTitle}`} data-reveal>
+            {t.title}
+          </h2>
+          <p className={`t-lead ${styles.usesLead}`} data-reveal>
+            {t.lead}
+          </p>
+          <ul className={styles.usesList} data-reveal-stagger>
+            {t.items.map((it, i) => {
+              const Icon = USE_ICONS[i % USE_ICONS.length]!;
+              return (
+                <li key={it.title} data-reveal-item>
+                  <span className={styles.usesIcon}>
+                    <Icon />
+                  </span>
+                  <span className={styles.usesItemText}>
+                    <h3>{it.title}</h3>
+                    <p>{it.text}</p>
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+        <div className={styles.usesPhoto} data-reveal-media>
+          <Image src={photo.src} alt={t.photoAlt} width={photo.width} height={photo.height} sizes="(max-width: 767px) 96vw, (max-width: 1099px) 80vw, 52vw" data-no-mirror />
+        </div>
       </div>
     </section>
   );

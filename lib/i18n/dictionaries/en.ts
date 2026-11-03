@@ -238,6 +238,7 @@ const en = {
     ],
     scatter: "Scatter the tablets",
     tapHint: "Tap the tablets",
+    drop: "Watch another tablet",
     sizes: {
       title: "Five standard sizes",
       lead: "Most orders use one of these five. Other sizes can be produced to order.",
@@ -266,13 +267,22 @@ const en = {
       },
     },
     caps: {
-      title: "Two cap types, one silica-gel compartment",
-      lead: "Choose a cap with or without a spiral. Both carry a silica-gel cartridge.",
+      title: "The Arapoush effervescent tube cap system",
+      lead: "A two-way cap, with or without a spiral, that keeps effervescent tablets dry, controls moisture and keeps them stable.",
       alt: "Exploded view of the Arapoush effervescent tube cap {variant}: cap, cage, silica-gel cartridge, two rings and the tube neck",
       label: "Cap type",
       facts: ["Silica-gel compartment in every cap", "Coloured caps with masterbatch", "Shipped in sealed multi-layer aluminium bags"],
+      partsLabel: "Cap parts",
+      parts: { cap: { title: "Sturdy, secure cap", text: "Positive closure and a full seal" }, spiral: { title: "Spiral structure", text: "Holds the insert in place and improves air flow" }, plain: { title: "Retaining cage", text: "Stable, light and made for the spiral-free cap" }, chamber: { title: "Silica gel chamber", text: "Absorbs moisture and keeps quality" }, mouth: { title: "Tube mouth", text: "Made for high-speed filling lines" } },
+      variants: {
+        spiral: { heading: "Cap with spiral", text: "The inner spiral holds the insert in place and improves air flow: the option for extra protection.", points: ["Extra protection","Insert held in place","Better air flow"] },
+        plain: { heading: "Cap without spiral", text: "An optimised design for effervescent tablets: it keeps moisture out, stops caking and keeps the product stable through the supply chain.", points: ["Keeps quality and potency","Smart moisture control","Built for mass production"] },
+      },
+      benefits: [{ title: "Product stability", text: "Stops moisture uptake and caking" }, { title: "Smart moisture control", text: "Effective absorption with quality silica gel" }, { title: "Longer shelf life", text: "Quality and potency kept over time" }, { title: "Two flexible options", text: "With spiral for extra protection, without for varied uses" }],
     },
     uses: {
+      eyebrow: "Beyond effervescent",
+      photoAlt: "Arapoush effervescent tubes printed for calcium and vitamin C, beside a glass of water and tablets",
       alt: "An Arapoush effervescent tube lying beside its poured tablets",
       title: "More than effervescent tablets",
       lead: "Any food product that needs moisture protection and a cylindrical pack fits these tubes.",

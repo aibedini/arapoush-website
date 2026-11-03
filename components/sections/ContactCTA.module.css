@@ -30,6 +30,15 @@
 .bg img {
   object-fit: cover;
 }
+/* After a navy section: wash the photo's light top in the same navy, easing into the wave. */
+.closing[data-blend="navy"] .bgTop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 50% at 88% 0%, rgba(84, 150, 222, 0.25), transparent 70%),
+    linear-gradient(180deg, #11365d 0%, #11365d 30%, rgba(17, 54, 93, 0.85) 48%, rgba(17, 54, 93, 0) 78%);
+}
 
 .cta {
   position: relative;

@@ -75,15 +75,18 @@ export function tubeBody(d: number, h: number, logo: THREE.Texture | null) {
     notch.setMatrixAt(i, m);
   }
   g.add(notch);
-  if (logo) {
-    const label = new THREE.Mesh(
-      new THREE.CylinderGeometry(r + 0.004, r + 0.004, d * 0.62, 64, 1, true, Math.PI * 0.2, Math.PI * 0.6),
-      new THREE.MeshPhysicalMaterial({ color: 0xf2f3f1, roughness: 0.34, clearcoat: 0.35, map: labelTexture(logo), transparent: true }),
-    );
-    label.position.y = h * 0.62;
-    label.rotation.y = -Math.PI / 2;
-    g.add(label);
-  }
+  // Printed sleeve over the body: big ARAPOUSH along the front, blue bands round the base, brand mark.
+  const y0 = h * 0.04;
+  const y1 = h - neck - 0.22;
+  const sleeve = new THREE.Mesh(
+    new THREE.CylinderGeometry(r + 0.004, r + 0.004, y1 - y0, 96, 1, true),
+    new THREE.MeshPhysicalMaterial({ map: printTexture(d, y1 - y0, logo), roughness: 0.3, clearcoat: 0.55, clearcoatRoughness: 0.12 }),
+  );
+  sleeve.position.y = (y0 + y1) / 2;
+  sleeve.name = "sleeve";
+  // The art's centre (u = 0.5) faces the viewer at the hero's resting turn (-0.35 rad).
+  sleeve.rotation.y = Math.PI + 0.35;
+  g.add(sleeve);
   return { group: g, neck, innerR: r * 0.95 - wall };
 }
 
@@ -230,7 +233,13 @@ export function tabletGeometry(radius: number, thick: number) {
     pts.push([radius - b + Math.cos(a) * b, thick / 2 - b + Math.sin(a) * b]);
   }
   pts.push([0, thick / 2]);
-  return lathe(pts, 48);
+  const g = lathe(pts, 48);
+  // Faces mapped straight down (not around the lathe), so the pressed lettering lies flat across them.
+  const p = g.getAttribute("position") as THREE.BufferAttribute;
+  const uv = g.getAttribute("uv") as THREE.BufferAttribute;
+  for (let i = 0; i < p.count; i++) uv.setXY(i, p.getX(i) / (2 * radius) + 0.5, 0.5 - p.getZ(i) / (2 * radius));
+  uv.needsUpdate = true;
+  return g;
 }
 
 export function tabletMaterial() {
@@ -246,7 +255,35 @@ export function tabletMaterial() {
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
-  return new THREE.MeshStandardMaterial({ map: t, roughness: 0.92 });
+  return new THREE.MeshStandardMaterial({ map: t, roughness: 0.92, bumpMap: debossTexture(), bumpScale: 22 });
+}
+
+/** Height map for the tablet face: ARAPOUSH pressed in (no ink) with a soft bevel and a fine rim groove. */
+function debossTexture() {
+  const s = 512;
+  const c = document.createElement("canvas");
+  c.width = c.height = s;
+  const x = c.getContext("2d")!;
+  x.fillStyle = "#b4b4b4";
+  x.fillRect(0, 0, s, s);
+  x.filter = "blur(1.6px)";
+  x.strokeStyle = "#5a5a5a";
+  x.lineWidth = 6;
+  x.beginPath();
+  x.arc(s / 2, s / 2, s * 0.4, 0, Math.PI * 2);
+  x.stroke();
+  x.fillStyle = "#1c1c1c";
+  x.textAlign = "center";
+  x.textBaseline = "middle";
+  let size = 120;
+  x.font = `700 ${size}px "Segoe UI", "Helvetica Neue", Arial, sans-serif`;
+  // Fit the word to ~66% of the face.
+  size = Math.floor((size * s * 0.66) / x.measureText("ARAPOUSH").width);
+  x.font = `700 ${size}px "Segoe UI", "Helvetica Neue", Arial, sans-serif`;
+  x.fillText("ARAPOUSH", s / 2, s / 2 + size * 0.04);
+  const t = new THREE.CanvasTexture(c);
+  t.anisotropy = 4;
+  return t;
 }
 
 class Helix extends THREE.Curve<THREE.Vector3> {
@@ -373,18 +410,67 @@ function crownTexture(variant: CapVariant) {
   return t;
 }
 
-function labelTexture(logo: THREE.Texture) {
-  const img = logo.image as HTMLImageElement;
+/**
+ * Sleeve art, laid out flat: x runs round the tube (centre = front), y up its length. Same aspect as
+ * the sleeve (circumference × height) so nothing stretches.
+ */
+function printTexture(d: number, len: number, logo: THREE.Texture | null) {
+  const W = 1024;
+  const H = Math.round((W * len) / (Math.PI * d));
   const c = document.createElement("canvas");
-  // Same aspect as the printed band (0.6π of the circumference × 0.62 d), so the logo is not stretched.
-  c.width = 1024;
-  c.height = 680;
+  c.width = W;
+  c.height = H;
   const x = c.getContext("2d")!;
-  const w = 640;
-  const hgt = (img.height / img.width) * w;
-  x.drawImage(img, (c.width - w) / 2, (c.height - hgt) / 2, w, hgt);
+  x.fillStyle = "#f7f8f8";
+  x.fillRect(0, 0, W, H);
+
+  // Blue swooshes rising diagonally across the lower half of the front. Each spans one turn of the
+  // tube, rising `rise` from the left seam to the right, so it reads as a diagonal on the visible face.
+  const band = (y: number, thick: number, rise: number, colors: [string, string], alpha: number) => {
+    const g = x.createLinearGradient(0, y, W, y - rise);
+    g.addColorStop(0, colors[0]);
+    g.addColorStop(1, colors[1]);
+    x.globalAlpha = alpha;
+    x.fillStyle = g;
+    x.beginPath();
+    x.moveTo(0, y);
+    x.bezierCurveTo(W * 0.3, y - rise * 0.15, W * 0.6, y - rise * 0.75, W, y - rise);
+    x.lineTo(W, y - rise + thick * 0.6);
+    x.bezierCurveTo(W * 0.6, y - rise * 0.75 + thick, W * 0.3, y - rise * 0.15 + thick * 1.2, 0, y + thick * 1.1);
+    x.closePath();
+    x.fill();
+  };
+  band(H * 0.92, H * 0.11, H * 0.42, ["#1f5fa8", "#6fb4ec"], 0.9);
+  band(H * 0.98, H * 0.05, H * 0.36, ["#8cc8f4", "#2a6dbe"], 0.8);
+  band(H * 0.84, H * 0.025, H * 0.4, ["#bfe0fa", "#3f8ad6"], 0.75);
+  band(H * 1.02, H * 0.03, H * 0.5, ["#5aa0e2", "#cde7fb"], 0.6);
+  x.globalAlpha = 1;
+  x.fillStyle = "#e8893a";
+  x.fillRect(0, H * 0.965, W, H * 0.008);
+
+  // Big ARAPOUSH running up the front.
+  x.save();
+  x.translate(W / 2, H * 0.4);
+  x.rotate(-Math.PI / 2);
+  x.textAlign = "center";
+  x.textBaseline = "middle";
+  let size = 200;
+  x.font = `800 ${size}px "Segoe UI", "Helvetica Neue", Arial, sans-serif`;
+  size = Math.min(W * 0.2, (size * H * 0.56) / x.measureText("ARAPOUSH").width);
+  x.font = `800 ${size}px "Segoe UI", "Helvetica Neue", Arial, sans-serif`;
+  x.fillStyle = "#0e2b46";
+  x.fillText("ARAPOUSH", 0, 0);
+  x.restore();
+
+  // Brand mark small, near the shoulder.
+  if (logo) {
+    const img = logo.image as HTMLImageElement;
+    const w = W * 0.3;
+    const hgt = (img.height / img.width) * w;
+    x.drawImage(img, (W - w) / 2, H * 0.035, w, hgt);
+  }
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
-  t.anisotropy = 4;
+  t.anisotropy = 8;
   return t;
 }

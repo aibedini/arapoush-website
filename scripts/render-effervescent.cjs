@@ -7,6 +7,7 @@
  * and writes the render sizes and dimension marks back into content/products/effervescent-tube.json.
  *
  *   node scripts/render-effervescent.cjs [http://localhost:3210] [path/to/chrome]
+ *   ONLY=posters|uses node scripts/render-effervescent.cjs   (just the hero posters, or the uses image)
  */
 const fs = require("fs");
 const path = require("path");
@@ -37,8 +38,11 @@ const png = (dataUrl) => Buffer.from(dataUrl.split(",")[1], "base64");
   const page = await browser.newPage();
   page.on("pageerror", (e) => console.error("pageerror", e.message));
 
-  await ready(page, "/en/products/effervescent-tube", { width: 1600, height: 1000 });
-  for (const s of product.sizes) {
+  const all = !process.env.ONLY;
+  const uses = all || process.env.ONLY === "uses";
+  const posters = all || process.env.ONLY === "posters";
+  await ready(page, "/en/products/effervescent-tube?webgl", { width: 1600, height: 1000 });
+  for (const s of all ? product.sizes : []) {
     const shot = await page.evaluate(
       (d, h, k) => {
         const sc = window.__effScene;
@@ -56,7 +60,7 @@ const png = (dataUrl) => Buffer.from(dataUrl.split(",")[1], "base64");
 
   // Exploded caps, on the hero size.
   const hero0 = product.sizes.find((s) => s.id === product.defaultSize);
-  for (const v of product.caps.variants) {
+  for (const v of all || process.env.ONLY === "caps" ? product.caps.variants : []) {
     const shot = await page.evaluate(
       (d, h, id) => {
         const sc = window.__effScene;
@@ -75,16 +79,17 @@ const png = (dataUrl) => Buffer.from(dataUrl.split(",")[1], "base64");
   await page.evaluate(() => window.__effScene.setVariant("spiral"));
 
   // Applications image: the story's last pose, tablets settled on the floor.
-  {
+  if (uses) {
     const shot = await page.evaluate(
       (d, h) => {
         const sc = window.__effScene;
         sc.setSize(d, h);
+        sc.copyWall = false;
         sc.yaw = -0.6;
-        sc.setProgress(0.75);
+        sc.setProgress(0.75, true);
         for (let i = 0; i < 80; i++) sc.render(performance.now() + i * 16, 1 / 60), sc.settle(1 / 60);
         sc.settle(3);
-        sc.setProgress(0.8);
+        sc.setProgress(0.8, true);
         return sc.snapshot();
       },
       hero0.d,
@@ -96,16 +101,18 @@ const png = (dataUrl) => Buffer.from(dataUrl.split(",")[1], "base64");
   }
 
   const hero = product.sizes.find((s) => s.id === product.defaultSize);
-  for (const [dir, url] of [["ltr", "/en"], ["rtl", "/fa"]]) {
+  for (const [dir, url] of posters ? [["ltr", "/en"], ["rtl", "/fa"]] : []) {
     for (const [kind, vp] of [["wide", { width: 1600, height: 1000 }], ["tall", { width: 780, height: 1688 }]]) {
-      await ready(page, `${url}/products/effervescent-tube`, vp);
+      await ready(page, `${url}/products/effervescent-tube?webgl`, vp);
       const shot = await page.evaluate(
         (d, h) => {
           const sc = window.__effScene;
           sc.setSize(d, h);
           sc.yaw = -0.35;
           sc.velocity = 0;
-          sc.setProgress(0);
+          sc.setProgress(0, true);
+          // The glass waits with clear water: the live scene drops the tablet in from here.
+          sc.glassMoment(0);
           return sc.snapshot();
         },
         hero.d,

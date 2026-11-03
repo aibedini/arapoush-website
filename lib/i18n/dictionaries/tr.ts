@@ -238,6 +238,7 @@ const tr: Dictionary = {
     ],
     scatter: "Tabletleri dağıt",
     tapHint: "Tabletlere dokunun",
+    drop: "Bir tablet daha izleyin",
     sizes: {
       title: "Beş standart ölçü",
       lead: "Siparişlerin çoğu bu beş ölçüden biridir. Diğer ölçüler siparişe göre üretilebilir.",
@@ -266,13 +267,22 @@ const tr: Dictionary = {
       },
     },
     caps: {
-      title: "İki kapak tipi, tek silika jel bölmesi",
-      lead: "Spiralli veya spiralsiz kapağı seçin. İkisinde de silika jel kartuşu var.",
+      title: "Arapoush efervesan tüp kapak sistemi",
+      lead: "Spiralli veya spiralsiz iki yapılı kapak: efervesan tabletlerin kalitesini korur, nemi kontrol eder ve dayanıklılığını artırır.",
       alt: "Arapoush efervesan tüp kapağının patlatılmış görünümü {variant}: kapak, kafes, silika jel kartuşu, iki halka ve tüp boynu",
       label: "Kapak tipi",
       facts: ["Her kapakta silika jel bölmesi", "Masterbatch ile renkli kapaklar", "Mühürlü çok katmanlı alüminyum torbalarda sevkiyat"],
+      partsLabel: "Kapak parçaları",
+      parts: { cap: { title: "Sağlam, güvenli kapak", text: "Güvenli kapanma ve tam sızdırmazlık" }, spiral: { title: "Spiral yapı", text: "Parçayı sabitler, hava dolaşımını iyileştirir" }, plain: { title: "Tutucu yapı", text: "Sabit, hafif ve spiralsiz tip için optimize" }, chamber: { title: "Silika jel haznesi", text: "Nemi etkin biçimde emer, kaliteyi korur" }, mouth: { title: "Tüp ağzı", text: "Yüksek hızlı dolum hatlarıyla uyumlu" } },
+      variants: {
+        spiral: { heading: "Spiralli kapak", text: "İç spiral parçayı yerinde sabitler ve hava dolaşımını iyileştirir: ekstra koruma seçeneği.", points: ["Ekstra koruma","Parça sabitleme","Daha iyi hava dolaşımı"] },
+        plain: { heading: "Spiralsiz kapak", text: "Efervesan tabletler için optimize tasarım: nemi uzak tutar, topaklanmayı önler ve tedarik zinciri boyunca ürünü dayanıklı tutar.", points: ["Kaliteyi ve etkinliği korur","Akıllı nem kontrolü","Seri üretime uygun"] },
+      },
+      benefits: [{ title: "Ürün dayanıklılığı", text: "Nem emilimini ve topaklanmayı önler" }, { title: "Akıllı nem kontrolü", text: "Kaliteli silika jel ile etkin emilim" }, { title: "Daha uzun raf ömrü", text: "Kalite ve etkinlik zamanla korunur" }, { title: "İki esnek seçenek", text: "Ekstra koruma için spiralli, çeşitli kullanımlar için spiralsiz" }],
     },
     uses: {
+      eyebrow: "Efervesanın ötesinde",
+      photoAlt: "Kalsiyum ve C vitamini baskılı Arapoush efervesan tüpler, bir bardak su ve tabletlerin yanında",
       alt: "Dökülmüş tabletlerinin yanında bir Arapoush efervesan tüp",
       title: "Efervesan tabletlerden fazlası",
       lead: "Nemden korunması ve silindirik ambalaj gerektiren her gıda ürünü bu tüplere uygundur.",

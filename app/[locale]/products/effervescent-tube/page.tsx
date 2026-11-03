@@ -63,10 +63,10 @@ export default async function EffervescentTubePage({ params }: { params: Params 
         <EffStage t={t.productEff} product={product} size={hero} dir={localeMeta[locale].dir} locale={locale} />
         <SizeLineup t={t.productEff.sizes} product={product} locale={locale} />
         <CapCompare t={t.productEff.caps} caps={product.caps} locale={locale} />
-        <Uses t={t.productEff.uses} image={product.images.uses} />
+        <Uses t={t.productEff.uses} photo={product.images.usesPhoto} bg={product.images.usesBg} locale={locale} />
         <Making t={t.productEff.make} product={product} locale={locale} />
       </main>
-      <ContactCTA t={t} locale={locale} />
+      <ContactCTA t={t} locale={locale} blend="navy" />
       <Reveals />
       <TouchFeedback />
       <Drift />

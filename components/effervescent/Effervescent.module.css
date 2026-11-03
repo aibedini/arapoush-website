@@ -7,9 +7,11 @@
   --ice-2: #e3ebf3;
   --radius: max(18px, calc(28 * var(--u)));
   --section-y: max(88px, calc(180 * var(--u)));
+  --blue: #2a6cb0;
+  --accent-ink: #a8530d;
   position: relative;
   overflow-x: clip;
-  background: linear-gradient(180deg, #f4f7fa 0%, var(--ice) 40%, #f6f8fa 100%);
+  background: linear-gradient(180deg, #edf5fc 0%, var(--ice) 40%, #f6f9fc 100%);
   color: var(--ink);
 }
 
@@ -34,12 +36,47 @@
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
+  /* Stand-in for the studio photo (and its frame while it loads): champagne light on the glass
+     side, deepening to blue across, a pale reflective floor. */
   background:
-    radial-gradient(42% 52% at var(--tube-x, 72%) 58%, rgba(178, 207, 236, 0.55), transparent 70%),
-    radial-gradient(70% 40% at 50% 100%, rgba(214, 228, 242, 0.9), transparent 70%);
+    radial-gradient(28% 42% at var(--warm-x, 94%) 18%, rgba(255, 238, 210, 0.95), transparent 70%),
+    radial-gradient(36% 22% at var(--warm-x, 94%) 80%, rgba(255, 224, 182, 0.55), transparent 72%),
+    linear-gradient(180deg, transparent 74%, rgba(226, 236, 246, 0.6) 79%, rgba(150, 184, 220, 0.55) 100%),
+    linear-gradient(var(--sweep, 260deg), #f5f2ed 0%, #dfe8f2 36%, #a4c0df 68%, #3c74b0 100%);
 }
 :global([dir="rtl"]) .sticky {
-  --tube-x: 28%;
+  --warm-x: 6%;
+  --sweep: 100deg;
+}
+.backdrop,
+.moodVeil {
+  position: absolute;
+  inset: 0;
+}
+.backdropImg {
+  object-fit: cover;
+  object-position: 28% 60%;
+}
+/* A soft light veil on the copy side keeps the navy headline at AA over the photo's blue half. */
+.backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to var(--copy-side, left), rgba(243, 247, 251, 0.82) 0%, rgba(243, 247, 251, 0.6) 34%, rgba(243, 247, 251, 0) 62%);
+}
+:global([dir="rtl"]) .backdrop::after {
+  --copy-side: right;
+}
+/* The photo is lit from the left: left-to-right pages (glass on the right) see it mirrored. */
+:global([dir="ltr"]) .backdropImg {
+  transform: scaleX(-1);
+}
+/* Deepens to navy as the scroll story goes on (--mood is written by the scene). */
+.moodVeil {
+  background:
+    radial-gradient(60% 50% at 50% 100%, rgba(31, 95, 168, 0.55), transparent 70%),
+    linear-gradient(180deg, #06162b 0%, #10325a 100%);
+  opacity: calc(var(--mood, 0) * 0.92);
 }
 .layer {
   position: absolute;
@@ -142,7 +179,7 @@
   letter-spacing: 0;
 }
 .accent {
-  color: var(--steel);
+  color: var(--blue);
 }
 .heroLead {
   max-width: 30em;
@@ -217,11 +254,26 @@
   margin-inline-start: max(0px, calc(72 * var(--u)));
   padding: max(22px, calc(36 * var(--u)));
   border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 30px 60px -44px rgba(14, 43, 70, 0.35);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.86), rgba(236, 245, 254, 0.74));
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 30px 60px -40px rgba(20, 70, 130, 0.42);
+}
+.stepNum {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font: 600 max(14px, calc(16 * var(--u))) / 1 var(--font-ui);
+  letter-spacing: 0.04em;
+  color: var(--accent-ink);
+}
+.stepNum small {
+  font-size: 0.8em;
+  font-weight: 500;
+  color: var(--muted);
 }
 .stepTitle {
   font: 400 max(24px, calc(40 * var(--u))) / 1.2 var(--font-sans);
@@ -233,10 +285,11 @@
 .stepTitle::before {
   content: "";
   display: block;
-  width: 28px;
-  height: 2px;
+  width: 36px;
+  height: 3px;
   margin-bottom: 16px;
-  background: var(--accent);
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent), #f6b36d);
 }
 .stepText {
   font: 300 max(15px, calc(20 * var(--u))) / 1.6 var(--font-sans);
@@ -246,8 +299,7 @@
   line-height: 1.9;
 }
 /* ── Sizes ── */
-.sizes,
-.caps {
+.sizes {
   padding: var(--section-y) var(--gutter) 0;
   width: min(100%, calc(1824 * var(--u) + 2 * var(--gutter)));
   margin-inline: auto;
@@ -396,9 +448,11 @@
   gap: 18px;
   padding: max(24px, calc(40 * var(--u)));
   border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.82);
+  background:
+    radial-gradient(90% 60% at 100% 0%, rgba(255, 190, 120, 0.22), transparent 70%),
+    linear-gradient(170deg, #ffffff, #f1f7fd);
   border: 1px solid #fff;
-  box-shadow: 0 30px 70px -48px rgba(14, 43, 70, 0.35);
+  box-shadow: 0 34px 70px -44px rgba(20, 70, 130, 0.42);
 }
 .detail :global(.btn) {
   align-self: flex-start;
@@ -432,150 +486,592 @@
   color: var(--slate);
 }
 
-/* ── Caps ── */
+/* ── Cap system: silk backdrop, glass panel, exploded photo with labelled parts ── */
 .caps {
+  --wrap: min(100%, 1480px);
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  margin-top: var(--section-y);
+  padding: max(56px, calc(110 * var(--u))) var(--gutter);
+  overflow: hidden;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1300px;
+}
+.capsBg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+.capsBg img {
+  object-fit: cover;
+}
+/* Soft edges into the page above and below. */
+.capsBg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #eef3f9 0%, rgba(238, 243, 249, 0) 14%, rgba(238, 243, 249, 0) 86%, #f2f6fa 100%);
+}
+.capsHead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  max-width: 920px;
   text-align: center;
 }
-.caps .head {
-  align-items: center;
-  margin-bottom: max(28px, calc(44 * var(--u)));
+.capsHead :global(.t-h2) {
+  color: var(--navy);
+}
+.capsRule {
+  width: 64px;
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent), #f6b36d);
 }
 .switch {
   display: inline-flex;
-  padding: 4px;
+  gap: 4px;
+  margin-top: max(24px, calc(36 * var(--u)));
+  padding: 5px;
   border-radius: 999px;
-  background: var(--ice-2);
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 14px 34px -24px rgba(20, 70, 130, 0.5);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 .switch button {
-  min-height: 44px;
-  padding-inline: max(18px, calc(28 * var(--u)));
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding-inline: max(18px, calc(30 * var(--u)));
   border-radius: 999px;
-  font: 500 max(14px, calc(16 * var(--u))) / 1 var(--font-sans);
+  font: 600 max(14px, calc(17 * var(--u))) / 1 var(--font-sans);
   color: var(--steel-2);
   transition:
     background-color 0.3s ease,
     color 0.3s ease,
     box-shadow 0.3s ease;
 }
+.switchIcon {
+  flex: none;
+  width: 22px;
+  height: 22px;
+}
 .switch button[aria-pressed="true"] {
-  background: #fff;
-  color: var(--navy);
-  box-shadow: 0 6px 18px -10px rgba(14, 43, 70, 0.45);
+  background: var(--navy);
+  color: #fff;
+  box-shadow: 0 10px 24px -12px rgba(14, 43, 70, 0.7);
+}
+.switch button[aria-pressed="true"] .switchIcon {
+  color: #f6a65a;
 }
 .switch button:active {
   transform: scale(0.98);
 }
-.capStage {
-  position: relative;
-  width: min(100%, calc(1100 * var(--u) + 120px));
-  margin: max(24px, calc(40 * var(--u))) 0 0;
-  padding: max(16px, calc(40 * var(--u))) max(12px, calc(64 * var(--u)));
-  border-radius: var(--radius);
-  background: radial-gradient(60% 80% at 50% 50%, #ffffff, #e9f0f6);
+
+.capsPanel {
+  display: grid;
+  grid-template-columns: minmax(250px, 0.82fr) minmax(0, 2fr);
+  align-items: center;
+  gap: max(24px, calc(48 * var(--u)));
+  width: var(--wrap);
+  margin-top: max(24px, calc(40 * var(--u)));
+  padding: max(20px, calc(48 * var(--u)));
+  border-radius: max(24px, calc(36 * var(--u)));
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 40px 90px -60px rgba(20, 70, 130, 0.45);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
 }
-/* Both renders share one box and cross-fade; the wider the stage, the more it breathes. */
-.capPhoto {
-  position: relative;
-  width: min(100%, 300px);
-  margin-inline: auto;
+.capsInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
-.capPhoto img {
+.capsInfoTitle {
+  padding-inline-start: 14px;
+  border-inline-start: 4px solid var(--accent);
+  font: 600 max(20px, calc(30 * var(--u))) / 1.35 var(--font-sans);
+  color: var(--navy);
+}
+.capsInfoText {
+  font: 400 max(15px, calc(17 * var(--u))) / 1.85 var(--font-sans);
+  color: #3a4048;
+}
+.capsPoints {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+}
+.capsPoints li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 56px;
+  padding-block: 8px;
+  padding-inline: 18px 8px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 10px 26px -20px rgba(20, 70, 130, 0.5);
+  font: 600 max(14px, calc(16 * var(--u))) / 1.4 var(--font-sans);
+  color: var(--navy);
+}
+.capsPointIcon {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  padding: 9px;
+  border-radius: 50%;
+  background: #eaf1f9;
+  color: var(--navy);
+}
+
+/* Figure and callouts share one container, so leader lengths can be expressed in its width
+   (cqi): from the callout card, across the gap, into the photo up to the part's edge. */
+.capsVisual {
+  --fig: 44;
+  --gap: max(28px, calc(56 * var(--u)));
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: calc(var(--fig) * 1%) minmax(0, 1fr);
+  column-gap: var(--gap);
+}
+.capsFigure {
+  position: relative;
+  width: 100%;
+  /* The photo's own backdrop fades into the panel: no hard rectangle. */
+  -webkit-mask-image: radial-gradient(closest-side, #000 68%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 68%, transparent 100%);
+}
+.capsFigure img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  object-position: 50% 100%;
+  object-fit: cover;
   opacity: 0;
-  transform: translateY(16px) scale(0.98);
+  transform: scale(0.98);
   transition:
-    opacity 0.45s ease,
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.5s ease,
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.capPhoto img[data-on] {
+.capsFigure img[data-on] {
   opacity: 1;
   transform: none;
 }
+.capsMarker {
+  display: none;
+  position: absolute;
+  top: calc(var(--y) * 100%);
+  inset-inline-end: calc(var(--x) * 100%);
+  width: 26px;
+  height: 26px;
+  margin-block-start: -13px;
+  margin-inline-end: -13px;
+  border-radius: 50%;
+  background: var(--accent-ink);
+  box-shadow: 0 0 0 3px #fff;
+  font: 700 13px/26px var(--font-ui);
+  letter-spacing: 0;
+  text-align: center;
+  color: #fff;
+  transition:
+    top 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    inset-inline-end 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.callouts {
+  position: relative;
+}
+.callout {
+  position: absolute;
+  inset-inline-start: 0;
+  top: calc(var(--y) * 100%);
+  translate: 0 -50%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: min(100%, 340px);
+  padding-block: 12px;
+  padding-inline: 18px 10px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 16px 34px -24px rgba(20, 70, 130, 0.55);
+  transition: top 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.leader {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 100%;
+  width: calc(var(--gap) + var(--fig) * var(--x) * 1cqi);
+  height: 1.5px;
+  background: var(--accent);
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.leader::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: -5px;
+  top: -4px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9);
+}
+.calloutNum {
+  display: none;
+}
+.calloutText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+}
+.calloutText strong {
+  font: 700 max(15px, calc(17 * var(--u))) / 1.35 var(--font-sans);
+  color: var(--navy);
+}
+.calloutText span {
+  font: 400 13.5px/1.6 var(--font-sans);
+  color: #4a5361;
+}
+.calloutIcon {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  padding: 10px;
+  border-radius: 50%;
+  background: #eaf1f9;
+  color: var(--navy);
+}
+
+.benefits {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: max(14px, calc(24 * var(--u)));
+  width: var(--wrap);
+  margin-top: max(20px, calc(32 * var(--u)));
+}
+.benefits li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: max(20px, calc(28 * var(--u))) 18px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 20px 44px -34px rgba(20, 70, 130, 0.55);
+  text-align: center;
+}
+.benefitIcon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 4px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 8px 20px -14px rgba(20, 70, 130, 0.6);
+  color: var(--navy);
+}
+.benefitIcon svg {
+  width: 28px;
+  height: 28px;
+}
+.benefits strong {
+  font: 700 max(16px, calc(19 * var(--u))) / 1.4 var(--font-sans);
+  color: var(--navy);
+}
+.benefits span:last-child {
+  font: 400 max(13.5px, calc(15 * var(--u))) / 1.7 var(--font-sans);
+  color: #4a5361;
+}
+
+@media (max-width: 1279px) {
+  .capsPanel {
+    grid-template-columns: 1fr;
+  }
+  .capsInfo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    column-gap: 32px;
+    align-items: start;
+  }
+  .capsInfoTitle,
+  .capsInfoText {
+    grid-column: 1;
+  }
+  .capsPoints {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    margin-top: 0;
+  }
+  .capsVisual {
+    width: min(100%, 900px);
+    margin-inline: auto;
+  }
+}
+@media (max-width: 1099px) {
+  .benefits {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+/* Tablets and phones: photo with numbered markers, the parts as a numbered list under it, then the
+   summary (four cards beside a short photo would overlap). */
+@media (max-width: 1023px) {
+  .capsVisual {
+    order: -1;
+    display: block;
+  }
+  .capsFigure {
+    width: min(100%, 340px);
+    margin-inline: auto;
+  }
+  .capsMarker {
+    display: block;
+  }
+  .callouts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .callout {
+    position: static;
+    translate: none;
+    width: 100%;
+    padding-inline: 12px 10px;
+  }
+  .leader {
+    display: none;
+  }
+  .calloutNum {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--accent-ink);
+    font: 700 13px/1 var(--font-ui);
+    letter-spacing: 0;
+    color: #fff;
+  }
+}
+@media (max-width: 767px) {
+  .capsPanel {
+    padding: 16px;
+  }
+  .capsInfo {
+    display: flex;
+    align-items: stretch;
+  }
+  .callouts {
+    grid-template-columns: 1fr;
+  }
+  .calloutIcon {
+    width: 40px;
+    height: 40px;
+    padding: 9px;
+  }
+  .switch {
+    max-width: 100%;
+  }
+  .switch button {
+    padding-inline: 14px;
+  }
+}
+@media (max-width: 519px) {
+  .benefits {
+    grid-template-columns: 1fr;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  .capPhoto img {
+  .capsFigure img,
+  .callout,
+  .leader,
+  .capsMarker {
     transition: none;
   }
 }
-.facts {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 14px max(24px, calc(48 * var(--u)));
-  margin-top: max(24px, calc(40 * var(--u)));
-  font: 400 max(14px, calc(18 * var(--u))) / 1.5 var(--font-sans);
-  color: var(--navy);
-}
-.facts li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.facts li::before {
-  content: "";
-  flex: none;
-  width: 16px;
-  height: 2px;
-  background: var(--accent);
-}
 
-/* ── Uses ── */
+/* ── Uses: printed tubes on the silk studio backdrop ── */
 .uses {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+.usesBg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+.usesBg img {
+  object-fit: cover;
+  object-position: 70% 50%;
+}
+/* Soft edges into the sections above and below. */
+.usesBg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #f2f6fa 0%, rgba(242, 246, 250, 0) 12%, rgba(242, 246, 250, 0) 88%, rgba(242, 246, 250, 0.5) 100%);
+}
+.usesInner {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   align-items: center;
-  gap: max(32px, calc(96 * var(--u)));
+  gap: max(28px, calc(64 * var(--u)));
   width: min(100%, calc(1824 * var(--u) + 2 * var(--gutter)));
   margin-inline: auto;
-  padding: var(--section-y) var(--gutter);
+  padding: max(64px, calc(120 * var(--u))) var(--gutter);
 }
-.usesPhoto {
-  overflow: hidden;
-  border-radius: var(--radius);
-  background: radial-gradient(70% 70% at 55% 45%, #ffffff, #e2ebf3);
-}
-.usesPhoto img {
-  width: 100%;
-  height: auto;
+/* As in the mockup, the copy sits on the left in every language (the products need the lit right). */
+:global([dir="rtl"]) .usesCopy {
+  order: 2;
 }
 .usesCopy {
   display: flex;
   flex-direction: column;
-  gap: max(16px, calc(24 * var(--u)));
+  gap: max(14px, calc(22 * var(--u)));
+  max-width: 640px;
 }
-.usesCopy :global(.t-h2) {
+.usesEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font: 500 13px/1 var(--font-ui);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+.usesEyebrow::after {
+  content: "";
+  width: 96px;
+  height: 2px;
+  background: linear-gradient(to var(--eyebrow-to, right), rgba(14, 43, 70, 0.25) 0 75%, var(--accent) 75%);
+}
+:global([dir="rtl"]) .usesEyebrow::after {
+  --eyebrow-to: left;
+}
+.usesTitle {
   color: var(--navy);
 }
+.usesLead {
+  color: #3a4048;
+}
 .usesList {
-  margin-top: max(8px, calc(20 * var(--u)));
-  border-top: 1px solid rgba(14, 43, 70, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: max(16px, calc(24 * var(--u)));
+  margin-top: max(6px, calc(12 * var(--u)));
+  padding-top: max(18px, calc(30 * var(--u)));
+  border-top: 1px solid rgba(14, 43, 70, 0.14);
 }
 .usesList li {
+  display: flex;
+  align-items: center;
+  gap: max(14px, calc(22 * var(--u)));
+}
+.usesIcon {
+  flex: none;
   display: grid;
-  grid-template-columns: minmax(120px, 0.8fr) 1.4fr;
-  gap: 16px;
-  padding-top: max(16px, calc(24 * var(--u)));
+  place-items: center;
+  width: max(60px, calc(84 * var(--u)));
+  height: max(60px, calc(84 * var(--u)));
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid #fff;
+  box-shadow: 0 16px 34px -24px rgba(20, 70, 130, 0.55);
+  color: var(--navy);
+}
+.usesIcon svg {
+  width: 52%;
+  height: 52%;
+}
+.usesItemText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 .usesList h3 {
-  font: 500 max(16px, calc(20 * var(--u))) / 1.4 var(--font-sans);
+  font: 700 max(17px, calc(24 * var(--u))) / 1.4 var(--font-sans);
   color: var(--navy);
 }
 .usesList p {
-  font: 300 max(15px, calc(18 * var(--u))) / 1.6 var(--font-sans);
+  font: 400 max(14px, calc(17 * var(--u))) / 1.7 var(--font-sans);
   color: #3a4048;
+}
+.usesPhoto {
+  position: relative;
+}
+/* A soft pool of light under the products, so they sit on the backdrop rather than float. */
+.usesPhoto::before {
+  content: "";
+  position: absolute;
+  inset: 60% 6% -2% 6%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0));
+}
+.usesPhoto img {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 30px 40px rgba(20, 60, 110, 0.18));
+}
+@media (max-width: 1099px) {
+  .usesInner {
+    grid-template-columns: 1fr;
+  }
+  :global([dir="rtl"]) .usesCopy {
+    order: 0;
+  }
+  .usesCopy {
+    max-width: none;
+  }
+  .usesPhoto {
+    width: min(100%, 760px);
+    margin-inline: auto;
+  }
+}
+@media (max-width: 767px) {
+  .usesEyebrow {
+    letter-spacing: 0.22em;
+    font-size: 11px;
+  }
+  .usesEyebrow::after {
+    width: 56px;
+  }
+  .usesIcon {
+    border-radius: 16px;
+  }
 }
 
 /* ── Manufacturing ── */
+/* Manufacturing sits on a deep navy band: the page's one dark moment before the closing CTA. */
 .make {
-  background: radial-gradient(50% 60% at 85% 20%, rgba(178, 207, 236, 0.4), transparent 70%);
-  color: var(--navy);
+  /* Ends on the exact navy the closing contact band starts with, so the two read as one. */
+  background:
+    radial-gradient(45% 60% at 88% 10%, rgba(84, 150, 222, 0.38), transparent 70%),
+    radial-gradient(40% 40% at 8% 20%, rgba(232, 137, 58, 0.16), transparent 70%),
+    linear-gradient(180deg, #0d2742 0%, #11365d 85%);
+  color: #fff;
 }
 .makeInner {
   width: min(100%, calc(1824 * var(--u) + 2 * var(--gutter)));
@@ -584,12 +1080,12 @@
 }
 .makeTitle {
   max-width: 16em;
-  color: var(--navy);
+  color: #fff;
 }
 .makeLead {
   max-width: 38em;
   margin-top: max(16px, calc(24 * var(--u)));
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.78);
 }
 .stats {
   display: grid;
@@ -603,7 +1099,7 @@
   justify-content: flex-end;
   gap: 14px;
   padding-top: max(18px, calc(28 * var(--u)));
-  border-top: 1px solid rgba(14, 43, 70, 0.14);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
 }
 .stats > div::before {
   content: "";
@@ -616,13 +1112,13 @@
   margin: 0;
   font: 300 max(44px, calc(112 * var(--u))) / 1 var(--font-sans);
   letter-spacing: -0.03em;
-  color: var(--navy);
+  color: #fff;
   text-align: start;
 }
 .stats dt {
   max-width: 18em;
   font: 400 max(14px, calc(18 * var(--u))) / 1.5 var(--font-sans);
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.74);
 }
 .standards {
   display: flex;
@@ -631,7 +1127,7 @@
   gap: 18px max(24px, calc(40 * var(--u)));
   margin-top: max(48px, calc(96 * var(--u)));
   font: 400 max(14px, calc(17 * var(--u))) / 1.6 var(--font-sans);
-  color: var(--steel);
+  color: rgba(255, 255, 255, 0.82);
 }
 .standards ul {
   display: flex;
@@ -645,8 +1141,7 @@
 
 /* ── Narrow layouts ── */
 @media (max-width: 1099px) {
-  .sizesGrid,
-  .uses {
+  .sizesGrid {
     grid-template-columns: 1fr;
   }
   .detail {
@@ -658,10 +1153,11 @@
 }
 @media (max-aspect-ratio: 19/20) {
   /* Portrait: the tube stands in the lower half under the hero copy, and above the story copy. */
-  .sticky {
-    background:
-      radial-gradient(70% 40% at 50% 70%, rgba(178, 207, 236, 0.55), transparent 70%),
-      radial-gradient(90% 40% at 50% 100%, rgba(214, 228, 242, 0.9), transparent 70%);
+  .backdropImg {
+    object-position: 22% 70%;
+  }
+  .backdrop::after {
+    background: linear-gradient(180deg, rgba(243, 247, 251, 0.86) 0%, rgba(243, 247, 251, 0.6) 34%, rgba(243, 247, 251, 0) 56%);
   }
   .hero {
     align-items: flex-start;
@@ -704,10 +1200,6 @@
   }
   .detailDims dd {
     font-size: 40px;
-  }
-  .usesList li {
-    grid-template-columns: 1fr;
-    gap: 4px;
   }
   .switch {
     max-width: 100%;
