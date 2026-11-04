@@ -48,6 +48,11 @@ const en = {
         productsAlt: "Arapoush plastic tube and effervescent tablet tube splashing in water",
       },
       {
+        title: ["Packaging", "reimagined."],
+        lead: "Advanced packaging solutions for the cosmetic, personal care and pharmaceutical industries.",
+        productsAlt: "Cosmetic, personal care and pharmaceutical packaging samples",
+      },
+      {
         title: ["Multi-layered", "seamless tubes."],
         lead: "High-performance, customizable tubes engineered to protect what matters inside.",
         productsAlt: "Multi-layer Arapoush tube showing its protective layers",

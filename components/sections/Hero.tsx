@@ -16,6 +16,7 @@ import styles from "./Hero.module.css";
 /** Visual layers per slide. Copy comes from the dictionary (t.hero.slides), in the same order. */
 const visuals = [
   { bg: "/images/hero-bg.webp", product: { src: "/images/hero-products.webp", w: 1070, h: 713 }, tone: "light" },
+  { bg: "/images/hero-packaging-ltr.webp", product: null, tone: "light" },
   { bg: "/images/cta-bg.webp", product: { src: "/images/cta-tube.webp", w: 941, h: 706 }, tone: "dark" },
   { bg: "/images/partners-bg.webp", product: null, tone: "light" },
 ] as const;
@@ -47,7 +48,7 @@ function AfterLoad({ now, children }: { now: boolean; children: React.ReactNode 
   return on ? children : null;
 }
 
-export default function Hero({ t }: SectionProps) {
+export default function Hero({ t, locale }: SectionProps) {
   const root = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -227,6 +228,7 @@ export default function Hero({ t }: SectionProps) {
       id="top"
       className={styles.hero}
       data-tone={visuals[active].tone}
+      data-active={active}
       aria-roledescription="carousel"
       aria-label={t.hero.label}
       onPointerEnter={() => setPaused(true)}
@@ -246,18 +248,21 @@ export default function Hero({ t }: SectionProps) {
         {visuals.map((v, i) => (
           <div key={v.bg} className={styles.bg} data-slide-bg data-index={i} aria-hidden="true">
             <AfterLoad now={i === 0}>
-              <Image
-                src={v.bg}
-                alt=""
-                fill
-                priority={i === 0}
-                fetchPriority={i === 0 ? "high" : "low"}
-                data-critical={i === 0 ? "" : undefined}
-                sizes="100vw"
-                quality={65}
-                className={styles.bgImg}
-                data-no-mirror
-              />
+              <picture>
+                {i === 1 && <source media="(max-width: 767px)" srcSet="/images/hero-packaging-mobile.webp" />}
+                <Image
+                  src={i === 1 && locale === "fa" ? "/images/hero-packaging-rtl.webp" : v.bg}
+                  alt=""
+                  fill
+                  priority={i === 0}
+                  fetchPriority={i === 0 ? "high" : "low"}
+                  data-critical={i === 0 ? "" : undefined}
+                  sizes="100vw"
+                  quality={65}
+                  className={styles.bgImg}
+                  data-no-mirror
+                />
+              </picture>
             </AfterLoad>
           </div>
         ))}

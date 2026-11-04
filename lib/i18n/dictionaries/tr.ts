@@ -48,6 +48,11 @@ const tr: Dictionary = {
         productsAlt: "Suya sıçrayan Arapoush plastik tüp ve efervesan tablet tüpü",
       },
       {
+        title: ["Ambalaj", "yeniden tasarlandı."],
+        lead: "Kozmetik, kişisel bakım ve ilaç sektörleri için gelişmiş ambalaj çözümleri.",
+        productsAlt: "Kozmetik, kişisel bakım ve ilaç ambalajı örnekleri",
+      },
+      {
         title: ["Çok katmanlı", "dikişsiz tüpler."],
         lead: "İçindekini korumak için tasarlanmış, yüksek performanslı ve özelleştirilebilir tüpler.",
         productsAlt: "Koruyucu katmanlarını gösteren çok katmanlı Arapoush tüpü",

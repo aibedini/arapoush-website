@@ -6,7 +6,7 @@
   --hero-lead: var(--ink);
   --hero-ui: var(--navy);
   position: relative;
-  height: calc(1024 * var(--u));
+  height: min(calc(1024 * var(--u)), 100svh);
   overflow: hidden;
   isolation: isolate;
   background: #efe7dd;
@@ -34,6 +34,10 @@
 :global([dir="rtl"]) .bg {
   scale: -1 1;
 }
+/* The packaging photograph has its own RTL composition; mirroring would reverse label text. */
+:global([dir="rtl"]) .bg[data-index="1"] {
+  scale: 1 1;
+}
 .bgImg {
   object-fit: cover;
   object-position: center;
@@ -50,6 +54,10 @@
   height: calc(546 * var(--u));
   transform-origin: 50% 45%;
   pointer-events: none;
+  transition: opacity 0.7s ease;
+}
+.hero[data-active="1"] .markScroll {
+  opacity: 0;
 }
 .mark {
   font-family: var(--font-mark);
@@ -101,10 +109,15 @@
   z-index: 3;
   inset-inline-start: calc(48 * var(--u));
   top: calc(495 * var(--u));
-  width: calc(560 * var(--u));
+  width: calc(760 * var(--u));
   display: flex;
   flex-direction: column;
   gap: calc(32 * var(--u));
+}
+@media (min-width: 1100px) {
+  .hero[data-active="1"] .content {
+    top: calc(380 * var(--u));
+  }
 }
 .copyStack {
   display: grid;
@@ -150,11 +163,23 @@
   position: absolute;
   z-index: 3;
   inset-inline: calc(48 * var(--u));
-  top: calc(970 * var(--u));
+  bottom: max(20px, calc(28 * var(--u)));
   display: flex;
   align-items: center;
   justify-content: space-between;
   color: var(--hero-ui);
+}
+@media (min-width: 1100px) and (max-height: 900px) {
+  .content,
+  .hero[data-active="1"] .content {
+    top: 28svh;
+  }
+  .productsScroll {
+    top: 22svh;
+    width: min(calc(1070 * var(--u)), 110svh);
+    height: auto;
+    aspect-ratio: 1070 / 713;
+  }
 }
 :global([dir="rtl"]) .fill {
   transform-origin: right center;
@@ -270,8 +295,11 @@
     inset: 40% 0 0 0;
     background: linear-gradient(180deg, rgba(246, 240, 233, 0) 0%, rgba(246, 240, 233, 0.72) 45%, rgba(246, 240, 233, 0.86) 100%);
   }
-  .bg[data-index="1"]::after {
+  .bg[data-index="2"]::after {
     background: linear-gradient(180deg, rgba(10, 39, 71, 0) 0%, rgba(10, 39, 71, 0.6) 45%, rgba(10, 39, 71, 0.85) 100%);
+  }
+  .bg[data-index="1"]::after {
+    display: none;
   }
   .markScroll,
   :global([dir="rtl"]) .markScroll {
@@ -340,12 +368,18 @@
   .bgImg {
     object-position: 30% 50%;
   }
+  .bg[data-index="1"] .bgImg {
+    object-position: center bottom;
+  }
   .bg::after {
     inset: auto 0 0 0;
     height: 30%;
   }
   .mark {
     text-align: start;
+  }
+  .hero[data-active="1"] .markScroll {
+    display: none;
   }
   .productsScroll {
     position: absolute;
@@ -368,6 +402,20 @@
   .lead {
     max-width: 54%;
     font-size: 14px;
+  }
+  .hero[data-active="1"] .lead {
+    max-width: 78%;
+  }
+  .hero[data-active="1"] .ctas {
+    position: absolute;
+    top: clamp(180px, 50vw, 195px);
+    inset-inline-start: var(--gutter);
+  }
+  :global([lang="fa"]) .hero[data-active="1"] .ctas {
+    top: clamp(165px, 47vw, 185px);
+  }
+  .hero[data-active="1"] .story {
+    display: none;
   }
   .ctas {
     flex-direction: column;

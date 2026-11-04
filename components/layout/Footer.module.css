@@ -214,12 +214,9 @@
     white-space: normal;
   }
   .contact {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px 14px;
-  }
-  .contact > :first-child {
-    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
   .row {
     font-size: 12px;
@@ -234,15 +231,21 @@
     height: 16px;
   }
   .bottom {
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
     margin-top: 0;
     padding-top: 12px;
   }
   .copy {
     font-size: 11px;
+    text-align: center;
   }
   .top {
     font-size: 11px;
+    align-self: flex-start;
+    padding-inline-start: 0;
+    border-inline-start: 0;
+    order: -1;
   }
 }

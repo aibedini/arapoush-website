@@ -1,7 +1,5 @@
 import Image from "next/image";
 import RollText from "@/components/ui/RollText";
-import { Magnetic } from "@animate-ui/react/primitives/effects/magnetic";
-import { Shine } from "@animate-ui/react/primitives/effects/shine";
 import type { SectionProps } from "@/lib/sections";
 import Footer from "@/components/layout/Footer";
 import { ArrowRightCircle } from "@/components/ui/icons";
@@ -60,26 +58,20 @@ export default function ContactCTA({ t, locale, blend, footerOnly }: SectionProp
 
         <div className={styles.actions} data-reveal-stagger>
           <div data-reveal-item>
-            <Magnetic strength={0.22} range={110} className={styles.magnet}>
-              <Shine asChild enableOnHover color="#0e2b46" opacity={0.12}>
-                <a href="mailto:sales@arapoush.com?subject=Quote%20request" className="btn btn--light">
-                  <RollText text={c.quote} />
-                  <span className="icon">
-                    <ArrowRightCircle color="#0E2B46" />
-                  </span>
-                </a>
-              </Shine>
-            </Magnetic>
+            <a href="mailto:sales@arapoush.com?subject=Quote%20request" className="btn btn--light">
+              <RollText text={c.quote} />
+              <span className="icon">
+                <ArrowRightCircle color="#0E2B46" />
+              </span>
+            </a>
           </div>
           <div data-reveal-item>
-            <Magnetic strength={0.22} range={110} className={styles.magnet}>
-              <a href="tel:+982126421602" className="btn btn--outline-light">
-                <RollText text={c.contact} />
-                <span className="icon">
-                  <ArrowRightCircle color="#F5F4F4" />
-                </span>
-              </a>
-            </Magnetic>
+            <a href="tel:+982126421602" className="btn btn--outline-light">
+              <RollText text={c.contact} />
+              <span className="icon">
+                <ArrowRightCircle color="#F5F4F4" />
+              </span>
+            </a>
           </div>
         </div>
       </section>
