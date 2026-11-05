@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import RollText from "@/components/ui/RollText";
 import type { Dictionary } from "@/lib/i18n";
@@ -27,6 +27,22 @@ export default function SizeLineup({ t, product, locale }: Props) {
   const sel = product.sizes.find((s) => s.id === id) ?? product.sizes[0]!;
   const label = (d: number, h: number) => `Ø${nf.format(d)} × ${nf.format(h)}`;
   const k = product.renderPxPerMm;
+
+  useEffect(() => {
+    const media = matchMedia("(max-width: 767px)");
+    const centerSelected = () => {
+      if (!media.matches || !group.current) return;
+      const track = group.current;
+      const selected = track.querySelector<HTMLElement>(`[data-id="${id}"]`);
+      if (!selected) return;
+      const trackBox = track.getBoundingClientRect();
+      const selectedBox = selected.getBoundingClientRect();
+      track.scrollLeft += selectedBox.left + selectedBox.width / 2 - trackBox.left - trackBox.width / 2;
+    };
+    centerSelected();
+    media.addEventListener("change", centerSelected);
+    return () => media.removeEventListener("change", centerSelected);
+  }, [id]);
 
   // Radio-group keyboard pattern: arrows move the selection (and focus) along the line-up.
   const onKey = (e: React.KeyboardEvent, i: number) => {

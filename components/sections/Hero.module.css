@@ -400,7 +400,7 @@
     white-space: normal;
   }
   .lead {
-    max-width: 54%;
+    max-width: 70%;
     font-size: 14px;
   }
   .hero[data-active="1"] .lead {
