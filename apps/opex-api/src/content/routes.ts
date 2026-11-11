@@ -8,6 +8,7 @@ import { actorOf } from "../auth/principal.ts";
 import { badRequest, forbidden, notFound } from "../http/problem.ts";
 import { diff } from "./diff.ts";
 import { getEntry, getRevision, publish, saveDraft, typeOrThrow } from "./service.ts";
+import { recheckOpen } from "../cr/service.ts";
 
 const SENSITIVE = (key: string) => key.startsWith("global.");
 
@@ -59,6 +60,8 @@ export async function contentModule(app: FastifyInstance, deps: Deps) {
         if (p.role !== "super_admin" || !fresh) throw forbidden("FIELD_LOCKED", "Locked fields need a super admin with a fresh step-up", { paths: lockedChanged.map((c) => c.path).slice(0, 20) });
       }
       const { revision, changes } = await saveDraft(q, tenant, { typeKey: type, data: body.data, baseRevisionId: body.base_revision_id, actor: actorOf(req), request: req.info, note: body.note });
+      // Open change requests on fields the operator just changed now need a rebase.
+      if (changes.length) await recheckOpen(q, tenant, type, { actor: actorOf(req), request: req.info });
       return { revision: { id: revision.id, number: revision.number }, changes: changes.length };
     });
   });
@@ -84,6 +87,7 @@ export async function contentModule(app: FastifyInstance, deps: Deps) {
         }
       }
       const { revision, changes } = await saveDraft(q, tenant, { typeKey: type, data, baseRevisionId: body.base_revision_id, actor: actorOf(req), request: req.info, note: body.note });
+      if (changes.length) await recheckOpen(q, tenant, type, { actor: actorOf(req), request: req.info });
       return { revision: { id: revision.id, number: revision.number }, changes };
     });
   });

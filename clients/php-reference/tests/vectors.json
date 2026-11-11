@@ -1,0 +1,23 @@
+{
+  "body": "{\"title\":\"Copy fix\",\"items\":[{\"entry\":\"page.printing\",\"base_revision_id\":\"rev_01\",\"path\":\"/hero/title\",\"locale\":\"en\",\"value\":\"Printing at ARAPOUSH\"}]}",
+  "headers": {
+    "idempotency-key": "11111111-2222-4333-8444-555555555555",
+    "content-digest": "sha-256=:L/AbfhGwrX0J1WSq0jcWmZiYUTH2/pcNTtgQdgQ6PAo=:",
+    "x-end-user-ip": "198.51.100.7"
+  },
+  "components": [
+    "@method",
+    "@path",
+    "idempotency-key",
+    "content-digest",
+    "x-end-user-ip"
+  ],
+  "params": "(\"@method\" \"@path\" \"idempotency-key\" \"content-digest\" \"x-end-user-ip\");created=1800000000;keyid=\"aracms-1\";alg=\"ecdsa-p256-sha256\";nonce=\"0123456789abcdef01234567\"",
+  "base": "\"@method\": POST\n\"@path\": /v1/partner/change-requests\n\"idempotency-key\": 11111111-2222-4333-8444-555555555555\n\"content-digest\": sha-256=:L/AbfhGwrX0J1WSq0jcWmZiYUTH2/pcNTtgQdgQ6PAo=:\n\"x-end-user-ip\": 198.51.100.7\n\"@signature-params\": (\"@method\" \"@path\" \"idempotency-key\" \"content-digest\" \"x-end-user-ip\");created=1800000000;keyid=\"aracms-1\";alg=\"ecdsa-p256-sha256\";nonce=\"0123456789abcdef01234567\"",
+  "webhook": {
+    "secret": "whsec-test-0123456789abcdef0123456789",
+    "body": "{\"id\":\"evt_01\",\"event\":\"cr.state_changed\",\"data\":{\"cr\":\"cr_01\",\"state\":\"approved\"},\"created\":\"2027-01-15T08:00:00.000Z\"}",
+    "t": 1800000000,
+    "header": "t=1800000000, v1=1b4d4278749849daddcb493dc833baf4e0d9ad1df9967d4d687492dd28811356"
+  }
+}

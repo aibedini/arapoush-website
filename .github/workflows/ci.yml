@@ -58,6 +58,23 @@ jobs:
           if-no-files-found: ignore
 
   # The production image builds, runs as non-root and answers.
+  # AraCMS reference client (PHP): unit tests, including the cross-language signing vectors.
+  php-client:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: clients/php-reference
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: openssl, json
+          tools: composer:v2
+      - run: composer install --no-interaction --no-progress
+      - run: composer test
+
   docker:
     runs-on: ubuntu-24.04
     timeout-minutes: 30

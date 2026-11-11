@@ -54,6 +54,22 @@ export async function buildApp(deps: Deps, modules: Module[] = []): Promise<Fast
     hsts: config.isProd ? { maxAge: 63072000, includeSubDomains: true, preload: true } : false,
   });
   await app.register(cookie, { secret: config.SESSION_SECRET });
+  // JSON and binary bodies keep their exact bytes (request signatures cover a digest of them).
+  app.removeContentTypeParser("application/json");
+  app.addContentTypeParser("application/json", { parseAs: "buffer" }, (req, body, done) => {
+    const buf = body as Buffer;
+    req.rawBody = buf;
+    if (!buf.length) return done(null, undefined);
+    try {
+      done(null, JSON.parse(buf.toString("utf8")));
+    } catch {
+      done(Object.assign(new Error("Body is not valid JSON"), { statusCode: 400 }), undefined);
+    }
+  });
+  app.addContentTypeParser("application/octet-stream", { parseAs: "buffer", bodyLimit: 25 * 1024 * 1024 }, (req, body, done) => {
+    req.rawBody = body as Buffer;
+    done(null, body);
+  });
   await app.register(formbody);
   await app.register(multipart, { limits: { fileSize: 25 * 1024 * 1024, files: 1, fields: 10 } });
   await app.register(rateLimit, { global: true, max: 600, timeWindow: "1 minute", keyGenerator: (r) => r.ip });

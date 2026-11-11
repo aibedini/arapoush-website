@@ -8,6 +8,8 @@ import { deliveryModule } from "./delivery/routes.ts";
 import { mediaModule } from "./media/routes.ts";
 import { auditModule } from "./audit/routes.ts";
 import { previewModule } from "./delivery/preview.ts";
+import { crManageModule } from "./cr/manage.ts";
+import { openApiModule } from "./partner/openapi.ts";
 
 /** Route modules, in registration order. Each phase adds its module here. */
-export const MODULES: Module[] = [authModule, oauthModule, partnerAdminModule, partnerModule, contentModule, deliveryModule, mediaModule, auditModule, previewModule];
+export const MODULES: Module[] = [authModule, oauthModule, partnerAdminModule, partnerModule, contentModule, deliveryModule, mediaModule, auditModule, previewModule, crManageModule, openApiModule];

@@ -25,3 +25,23 @@ P1 we chose smaller pieces that meet the same requirements with less code to rev
   limit state shared. Tracked in plan §12 (HA v2).
 - No ORM migrations generator: migrations are hand-written SQL files, applied in order inside
   transactions (`src/db/migrate.ts`).
+
+## P6 additions (partner API and change requests)
+
+- **Media upload:**
+  - Partners send the file as the signed request body (`application/octet-stream`), instead of a
+    presigned URL.
+  - The storage is the local filesystem (no object store yet), and this way the RFC 9421
+    `content-digest` covers the bytes.
+  - Presigned uploads return when MinIO/S3 arrives (P9).
+- **Replay caches:** signature nonces, DPoP `jti`s and client-assertion `jti`s share the `jti_seen`
+  table instead of Redis.
+- **Policy priority:** a higher `priority` number is evaluated first. The first policy in scope
+  whose conditions all hold decides; the default is review.
+- **CR approval:** a CR approves only if every approved item merges cleanly. A single conflict moves
+  the whole CR to `needs_rebase`, so a CR never lands half-applied.
+- **Operator edits:** an operator saving a draft immediately re-checks open CRs on that entry. This
+  is stricter than "on publish" in the plan, so reviewers never approve a stale CR.
+- **PHP client:** the PHP reference client uses ext-openssl directly for ES256 and JWTs instead of
+  `web-token/jwt-framework`. That leaves a smaller dependency surface, and cross-language vectors
+  keep the two implementations equal.

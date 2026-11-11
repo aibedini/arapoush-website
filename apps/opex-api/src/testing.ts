@@ -70,3 +70,62 @@ export const pkce = () => {
   const verifier = randomBytes(32).toString("base64url");
   return { verifier, challenge: createHash("sha256").update(verifier).digest("base64url") };
 };
+
+/**
+ * A signed-in AraCMS user (authorization code + PKCE + TOTP), with a `call` that sends DPoP proofs,
+ * RFC 9421 signatures and Idempotency-Keys exactly as the PHP reference client does.
+ */
+export async function partnerSession(app: FastifyInstance, admin: Operator, o: { role?: string; scopes?: string[]; email?: string } = {}) {
+  const { KeyObject, sign: cryptoSign, randomUUID } = await import("node:crypto");
+  const { contentDigest, signatureBase } = await import("./partner/integrity.ts");
+  const k = await partnerKeys();
+  const scopes = o.scopes ?? ["content:read", "content:propose", "media:upload", "cr:read", "cr:withdraw"];
+  const created = await app.inject({ method: "POST", url: "/v1/manage/partners", headers: as(admin), payload: { name: "AraCMS", allowed_cidrs: ["127.0.0.1/32"], jwks: { keys: [k.clientJwk] }, redirect_uris: ["https://aracms.test/callback"], scopes } });
+  if (created.statusCode !== 200) throw new Error(created.body);
+  const { id: partnerId, client_id } = created.json();
+  const email = o.email ?? `editor-${randomBytes(3).toString("hex")}@aracms.test`;
+  const password = "blue tubes print daily 2026";
+  const u = await app.inject({ method: "POST", url: `/v1/manage/partners/${partnerId}/users`, headers: as(admin), payload: { email, display_name: "Sara (AraCMS)", role: o.role ?? "aracms_editor", password } });
+  if (u.statusCode !== 200) throw new Error(u.body);
+  const { verifier, challenge } = pkce();
+  const form = (x: Record<string, string>) => new URLSearchParams(x).toString();
+  const params = { response_type: "code", client_id, redirect_uri: "https://aracms.test/callback", code_challenge: challenge, code_challenge_method: "S256", state: "s", scope: scopes.join(" ") };
+  const pw = await app.inject({ method: "POST", url: "/oauth/authorize", headers: { "content-type": "application/x-www-form-urlencoded" }, payload: form({ ...params, stage: "password", email, password }) });
+  const ch = /name="challenge" value="([^"]+)"/.exec(pw.body)![1]!;
+  const secret = /<code>([A-Z2-7]+)<\/code>/.exec(pw.body)![1]!;
+  const done = await app.inject({ method: "POST", url: "/oauth/authorize", headers: { "content-type": "application/x-www-form-urlencoded" }, payload: form({ ...params, stage: "code", challenge: ch, code: totpAt(secret) }) });
+  const code = new URL(String(done.headers.location)).searchParams.get("code")!;
+  const tokenUrl = "http://opex.test/oauth/token";
+  const tok = await app.inject({
+    method: "POST",
+    url: "/oauth/token",
+    headers: { "content-type": "application/x-www-form-urlencoded", dpop: await dpopProof(k.dpop.privateKey, k.dpopJwk, "POST", tokenUrl) },
+    payload: form({ client_id, client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer", client_assertion: await clientAssertion(client_id, k.client.privateKey, tokenUrl), grant_type: "authorization_code", code, redirect_uri: "https://aracms.test/callback", code_verifier: verifier }),
+  });
+  if (tok.statusCode !== 200) throw new Error(tok.body);
+  const at = tok.json().access_token as string;
+  const signKey = KeyObject.from(k.client.privateKey);
+
+  type CallOpts = { body?: unknown; raw?: Buffer; idem?: string; unsigned?: boolean; tamper?: boolean; headers?: Record<string, string>; endUserIp?: string };
+  const call = async (method: string, path: string, c: CallOpts = {}) => {
+    const url = `http://opex.test${path}`;
+    const headers: Record<string, string> = { authorization: `DPoP ${at}`, dpop: await dpopProof(k.dpop.privateKey, k.dpopJwk, method, url.split("?")[0]!, at), ...(c.headers ?? {}) };
+    const payload = c.raw ?? (c.body !== undefined ? Buffer.from(JSON.stringify(c.body)) : undefined);
+    if (payload) headers["content-type"] = c.raw ? "application/octet-stream" : "application/json";
+    if (method !== "GET") {
+      headers["idempotency-key"] = c.idem ?? randomUUID();
+      if (c.endUserIp) headers["x-end-user-ip"] = c.endUserIp;
+      if (payload) headers["content-digest"] = contentDigest(payload);
+      if (!c.unsigned) {
+        const comps = ["@method", "@path", "idempotency-key", ...(payload ? ["content-digest"] : []), ...(c.endUserIp ? ["x-end-user-ip"] : [])];
+        const paramsRaw = `(${comps.map((x) => `"${x}"`).join(" ")});created=${Math.floor(Date.now() / 1000)};keyid="aracms-1";alg="ecdsa-p256-sha256";nonce="${randomBytes(12).toString("hex")}"`;
+        const base = signatureBase({ method, path: path.split("?")[0]!, headers }, comps, paramsRaw);
+        const sig = cryptoSign("sha256", Buffer.from(base), { key: signKey, dsaEncoding: "ieee-p1363" }).toString("base64");
+        headers["signature-input"] = `sig1=${paramsRaw}`;
+        headers.signature = `sig1=:${sig}:`;
+      }
+    }
+    return app.inject({ method: method as "GET", url: path, headers, payload: c.tamper && payload ? Buffer.concat([payload, Buffer.from(" ")]) : payload });
+  };
+  return { partnerId, client_id, call, role: o.role ?? "aracms_editor" };
+}

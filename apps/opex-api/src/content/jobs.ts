@@ -2,6 +2,7 @@ import type { Job } from "../workers.ts";
 import { SYSTEM_ACTOR, SYSTEM_REQUEST } from "../audit/audit.ts";
 import { deliverPending } from "../webhooks/outbox.ts";
 import { publish } from "./service.ts";
+import { expireIdle } from "../cr/service.ts";
 
 /** Publishes entries whose schedule has come due (idempotent: the schedule is cleared on publish). */
 export const scheduledPublish: Job = {
@@ -13,4 +14,7 @@ export const scheduledPublish: Job = {
   },
 };
 
-export const siteWebhooks: Job = { name: "site-webhooks", everyMs: 5_000, run: (deps, log) => deliverPending(deps, log) };
+export const siteWebhooks: Job = { name: "webhooks", everyMs: 5_000, run: (deps, log) => deliverPending(deps, log) };
+
+/** Change requests idle for 30 days expire (plan §7.2). */
+export const crExpiry: Job = { name: "cr-expiry", everyMs: 3_600_000, run: ({ db, config }) => db.tx((q) => expireIdle(q, config.TENANT, SYSTEM_REQUEST)).then(() => undefined) };
