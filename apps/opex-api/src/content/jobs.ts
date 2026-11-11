@@ -18,3 +18,8 @@ export const siteWebhooks: Job = { name: "webhooks", everyMs: 5_000, run: (deps,
 
 /** Change requests idle for 30 days expire (plan §7.2). */
 export const crExpiry: Job = { name: "cr-expiry", everyMs: 3_600_000, run: ({ db, config }) => db.tx((q) => expireIdle(q, config.TENANT, SYSTEM_REQUEST)).then(() => undefined) };
+
+import { deliverEmails, purgeOld } from "../inquiries/routes.ts";
+/** Inquiry emails to sales, and the two-year retention purge. */
+export const inquiryEmails: Job = { name: "inquiry-emails", everyMs: 15_000, run: (deps, log) => deliverEmails(deps, log) };
+export const inquiryRetention: Job = { name: "inquiry-retention", everyMs: 6 * 3_600_000, run: (deps) => purgeOld(deps) };

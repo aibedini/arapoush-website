@@ -4,6 +4,8 @@ import { useId, useState } from "react";
 import type { Dictionary } from "@/lib/i18n";
 import { EMPTY_QUOTE, quoteMailto, validateQuote, type QuoteErrors, type QuoteForm as Form } from "@/lib/configurator/quote";
 import RollText from "@/components/ui/RollText";
+import Honeypot from "@/components/ui/Honeypot";
+import { sendInquiry } from "@/lib/forms";
 import styles from "./Configurator.module.css";
 
 type Props = {
@@ -12,16 +14,23 @@ type Props = {
   subjectSpec: string;
   search: string;
   email: string;
+  locale: string;
+  /** OPEX is set up: the request is sent directly (the email app is only the fallback). */
+  direct?: boolean;
 };
 
 /**
- * Quote request pre-filled with the configuration. There is no mail backend yet, so it hands a
- * complete message to the visitor's email app, addressed to the sales inbox.
+ * Quote request pre-filled with the configuration. With OPEX it is sent straight to sales (stored
+ * encrypted, emailed); otherwise, or if sending fails, it opens the visitor's email app with a
+ * complete message addressed to the sales inbox.
  */
-export default function QuoteForm({ t, spec, subjectSpec, search, email }: Props) {
+export default function QuoteForm({ t, spec, subjectSpec, search, email, locale, direct }: Props) {
   const id = useId();
   const [form, setForm] = useState<Form>(EMPTY_QUOTE);
   const [errors, setErrors] = useState<QuoteErrors>({});
+  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [trap, setTrap] = useState("");
+  const [shownAt] = useState(() => Date.now());
 
   const fields: {
     key: keyof Form;
@@ -72,8 +81,9 @@ export default function QuoteForm({ t, spec, subjectSpec, search, email }: Props
       <form
         className={styles.form}
         noValidate
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
+          if (status === "sending") return;
           const errs = validateQuote(form);
           setErrors(errs);
           const first = Object.keys(errs)[0];
@@ -81,15 +91,27 @@ export default function QuoteForm({ t, spec, subjectSpec, search, email }: Props
             document.getElementById(`${id}-${first}`)?.focus();
             return;
           }
-          location.href = quoteMailto({
-            to: email,
-            subject: t.subject.replace("{spec}", subjectSpec),
-            spec,
-            fields: fields.map((f) => [f.label, form[f.key]]),
-            link: `${t.linkLabel}: ${location.origin}${location.pathname}?${search}`,
-          });
+          const subject = t.subject.replace("{spec}", subjectSpec);
+          const link = `${location.origin}${location.pathname}?${search}`;
+          const mail = () =>
+            (location.href = quoteMailto({ to: email, subject, spec, fields: fields.map((f) => [f.label, form[f.key]]), link: `${t.linkLabel}: ${link}` }));
+          if (!direct) return mail();
+          setStatus("sending");
+          const r = await sendInquiry(
+            "quote",
+            { locale, page: location.pathname, subject, spec: [...spec, link], fields: { name: form.name, email: form.email, company: form.company, phone: form.phone, quantity: form.quantity, message: form.message } },
+            { website: trap, shownAt },
+          );
+          if (r === "sent") {
+            setStatus("sent");
+            setForm(EMPTY_QUOTE);
+            return;
+          }
+          setStatus("idle");
+          mail();
         }}
       >
+        <Honeypot value={trap} onChange={setTrap} />
         {fields.map((f) => {
           const err = errorText(f.key);
           const props = {
@@ -122,10 +144,18 @@ export default function QuoteForm({ t, spec, subjectSpec, search, email }: Props
           );
         })}
         <div className={`${styles.wide} ${styles.submitRow}`}>
-          <button type="submit" className="btn">
-            <RollText text={t.submit} />
+          <button type="submit" className="btn" disabled={status === "sending"} aria-busy={status === "sending"}>
+            <RollText text={status === "sending" ? t.sending : direct ? t.submitDirect : t.submit} />
           </button>
-          <p className={styles.submitHint}>{t.submitHint.replace("{email}", email)}</p>
+          <p className={styles.submitHint} role={status === "sent" ? "status" : undefined}>
+            {status === "sent" ? (
+              <>
+                <strong>{t.sent}</strong> {t.sentLead}
+              </>
+            ) : (
+              (direct ? t.directHint : t.submitHint).replace("{email}", email)
+            )}
+          </p>
         </div>
       </form>
     </section>

@@ -133,6 +133,12 @@ before):
 | `OPEX_WEBHOOK_SECRET` | Same value as the API's `SITE_WEBHOOK_SECRET`; OPEX posts to `/api/opex/revalidate` after a publish |
 | `OPEX_CONSOLE_ORIGIN` | The console origin, e.g. `https://console.opex.example`: only it may frame the site (draft previews at three widths); unset keeps `X-Frame-Options: SAMEORIGIN` |
 
+Quote forms post to `/api/forms/{quote|contact}`. The site forwards them to OPEX, which stores them
+encrypted and emails `INQUIRY_TO` through `SMTP_URL`. The key is `INQUIRY_KEY` (32 bytes, base64); to
+rotate it, move the old key to `INQUIRY_KEYS_OLD`. Without OPEX, or if sending fails, the form opens
+the visitor's email app as before. Setting `TURNSTILE_SECRET` on the API (optional) requires a
+Cloudflare Turnstile token.
+
 If OPEX is down, the site keeps the last content it loaded, or falls back to the snapshot
 (`packages/schema/src/generated/seed.json`). Previews open through `/api/opex/preview`, a link
 OPEX signs (30 minutes). After changing the dictionaries or `content/*.json`, regenerate the

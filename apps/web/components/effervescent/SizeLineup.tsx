@@ -9,7 +9,7 @@ import { contact as fileContact, type Contact } from "@/lib/site";
 import QuoteSheet from "./QuoteSheet";
 import styles from "./Effervescent.module.css";
 
-type Props = { t: Dictionary["productEff"]["sizes"]; product: EffProduct; locale: string; contact?: Contact };
+type Props = { t: Dictionary["productEff"]["sizes"]; product: EffProduct; locale: string; contact?: Contact; direct?: boolean };
 
 const fill = (s: string, vars: Record<string, string | number>) => s.replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? ""));
 
@@ -17,7 +17,7 @@ const fill = (s: string, vars: Record<string, string | number>) => s.replace(/\{
  * The five standard sizes side by side at true relative scale (renders from the parametric model,
  * one shared px-per-mm), with the selected size's dimensions and a quote form that unfolds in place.
  */
-export default function SizeLineup({ t, product, locale, contact = fileContact }: Props) {
+export default function SizeLineup({ t, product, locale, contact = fileContact, direct }: Props) {
   const [id, setId] = useState(product.defaultSize);
   const [sheet, setSheet] = useState<{ x: number; y: number } | null>(null);
   const group = useRef<HTMLDivElement>(null);
@@ -146,7 +146,7 @@ export default function SizeLineup({ t, product, locale, contact = fileContact }
               <RollText text={fill(t.quote, { size: label(sel.d, sel.h) })} />
             </button>
           </div>
-          <QuoteSheet t={t.form} size={label(sel.d, sel.h)} unit={t.mm} email={contact.email} open={!!sheet} origin={sheet} onClose={close} />
+          <QuoteSheet t={t.form} size={label(sel.d, sel.h)} unit={t.mm} email={contact.email} open={!!sheet} origin={sheet} onClose={close} locale={locale} direct={direct} />
         </aside>
       </div>
     </section>

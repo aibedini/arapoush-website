@@ -23,6 +23,16 @@ const Env = z.object({
   /** Website revalidation webhook (content.published). */
   SITE_WEBHOOK_URL: z.string().url().optional(),
   SITE_WEBHOOK_SECRET: z.string().min(24).default("dev-only-webhook-secret-change-me-0123"),
+  /** 32-byte key (base64) for AES-256-GCM encryption of inquiries (PII). Rotate with INQUIRY_KEYS_OLD. */
+  INQUIRY_KEY: z.string().default(Buffer.alloc(32, "dev-only-inquiry-key").toString("base64")),
+  /** Previous keys (comma-separated base64), still accepted for decryption after a rotation. */
+  INQUIRY_KEYS_OLD: z.string().default(""),
+  /** Where new inquiries are emailed, and the SMTP server (smtp[s]://user:pass@host:port). Unset: kept queued. */
+  INQUIRY_TO: z.string().email().default("sales@arapoush.com"),
+  SMTP_URL: z.string().optional(),
+  MAIL_FROM: z.string().default("OPEX <no-reply@arapoush.com>"),
+  /** Optional Cloudflare Turnstile secret: when set, forms must carry a valid token. */
+  TURNSTILE_SECRET: z.string().optional(),
   /** Public origin of the website, for draft preview links. */
   SITE_URL: z.string().url().default("http://localhost:3210"),
   /** Where uploaded media is stored (filesystem driver). */
@@ -45,6 +55,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   const c = parsed.data;
   const isProd = c.NODE_ENV === "production";
   if (isProd) {
+    if (Buffer.from(c.INQUIRY_KEY, "base64").toString().startsWith("dev-only")) throw new Error("INQUIRY_KEY must be set in production");
     for (const [k, v] of Object.entries({ SESSION_SECRET: c.SESSION_SECRET, DELIVERY_TOKEN: c.DELIVERY_TOKEN, SITE_WEBHOOK_SECRET: c.SITE_WEBHOOK_SECRET }))
       if (v.startsWith("dev-only")) throw new Error(`${k} must be set in production`);
     if (!c.DATABASE_URL) throw new Error("DATABASE_URL must be set in production");

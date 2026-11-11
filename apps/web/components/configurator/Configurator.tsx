@@ -34,10 +34,10 @@ import styles from "./Configurator.module.css";
 
 const fill = (s: string, vars: Record<string, string | number>) => s.replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? ""));
 
-type Props = { t: Dictionary["productTube"]; locale: string; product: TubeProduct; contact?: Contact };
+type Props = { t: Dictionary["productTube"]; locale: string; product: TubeProduct; contact?: Contact; direct?: boolean };
 
 /** Every option below comes from the product content (admin panel); nothing here lists shapes, closures or sizes. */
-export default function Configurator({ t, locale, product: cat, contact = fileContact }: Props) {
+export default function Configurator({ t, locale, product: cat, contact = fileContact, direct }: Props) {
   const c = t.configurator;
   const id = useId();
   const [cfg, setCfg] = useState<TubeConfig>(() => normalize(cat, DEFAULT_CONFIG));
@@ -277,7 +277,7 @@ export default function Configurator({ t, locale, product: cat, contact = fileCo
 
       <Samples t={c} locale={locale} product={cat} cfg={cfg} onApply={(patch) => setCfg(normalize(cat, { ...cfg, ...patch }))} />
 
-      <QuoteForm t={c} spec={spec} subjectSpec={`${shapeName} ${size}, ${closureName}`} search={toSearch(cfg)} email={contact.email} />
+      <QuoteForm t={c} spec={spec} subjectSpec={`${shapeName} ${size}, ${closureName}`} search={toSearch(cfg)} email={contact.email} locale={locale} direct={direct} />
     </>
   );
 }

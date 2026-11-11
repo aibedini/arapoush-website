@@ -1708,6 +1708,36 @@
      "en": "Opens your email app with everything filled in, addressed to {email}.",
      "tr": "E-posta uygulamanız her şey doldurulmuş olarak {email} adresine açılır."
     },
+    "submitDirect": {
+     "fa": "ارسال درخواست",
+     "en": "Send request",
+     "tr": "Talebi gönder"
+    },
+    "sending": {
+     "fa": "در حال ارسال…",
+     "en": "Sending…",
+     "tr": "Gönderiliyor…"
+    },
+    "sent": {
+     "fa": "درخواست ارسال شد",
+     "en": "Request sent",
+     "tr": "Talebiniz gönderildi"
+    },
+    "sentLead": {
+     "fa": "سپاس. درخواست شما به تیم فروش رسید و از راه ایمیل پاسخ می‌دهیم.",
+     "en": "Thank you. Our sales team has your request and will reply by email.",
+     "tr": "Teşekkürler. Satış ekibimiz talebinizi aldı ve e-postayla yanıt verecek."
+    },
+    "directHint": {
+     "fa": "درخواست شما مستقیم به تیم فروش ({email}) فرستاده می‌شود.",
+     "en": "Your request goes straight to our sales team ({email}).",
+     "tr": "Talebiniz doğrudan satış ekibimize ({email}) gider."
+    },
+    "failed": {
+     "fa": "ارسال نشد؛ برنامهٔ ایمیل شما باز می‌شود.",
+     "en": "Could not send. Opening your email app instead.",
+     "tr": "Gönderilemedi; e-posta uygulamanız açılıyor."
+    },
     "required": {
      "fa": "لطفاً این بخش را پر کنید",
      "en": "Please fill this in",
@@ -2670,6 +2700,31 @@
       "fa": "برنامه ایمیل شما با همه اطلاعات، خطاب به {email} باز می‌شود.",
       "en": "Your email app opens with everything filled in, addressed to {email}.",
       "tr": "E-posta uygulamanız tüm bilgilerle, {email} adresine açılır."
+     },
+     "sending": {
+      "fa": "در حال ارسال…",
+      "en": "Sending…",
+      "tr": "Gönderiliyor…"
+     },
+     "sent": {
+      "fa": "درخواست ارسال شد",
+      "en": "Request sent",
+      "tr": "Talebiniz gönderildi"
+     },
+     "sentLead": {
+      "fa": "سپاس. درخواست شما به تیم فروش رسید و از راه ایمیل پاسخ می‌دهیم.",
+      "en": "Thank you. Our sales team has your request and will reply by email.",
+      "tr": "Teşekkürler. Satış ekibimiz talebinizi aldı ve e-postayla yanıt verecek."
+     },
+     "directHint": {
+      "fa": "درخواست شما مستقیم به تیم فروش ({email}) فرستاده می‌شود.",
+      "en": "Your request goes straight to our sales team ({email}).",
+      "tr": "Talebiniz doğrudan satış ekibimize ({email}) gider."
+     },
+     "failed": {
+      "fa": "ارسال نشد؛ برنامهٔ ایمیل شما باز می‌شود.",
+      "en": "Could not send. Opening your email app instead.",
+      "tr": "Gönderilemedi; e-posta uygulamanız açılıyor."
      },
      "subject": {
       "fa": "استعلام قیمت: تیوب قرص جوشان {size}",

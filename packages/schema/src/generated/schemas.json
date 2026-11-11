@@ -1366,6 +1366,36 @@
          "localized": true,
          "multiline": false
         },
+        "submitDirect": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "sending": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "sent": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "sentLead": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "directHint": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "failed": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
         "required": {
          "kind": "text",
          "localized": true,
@@ -2072,6 +2102,31 @@
            "multiline": false
           },
           "hint": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "sending": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "sent": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "sentLead": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "directHint": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "failed": {
            "kind": "text",
            "localized": true,
            "multiline": false

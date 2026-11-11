@@ -12,6 +12,7 @@ const NAV: { href: string; label: string; min?: Me["role"] }[] = [
   { href: "/", label: "داشبورد" },
   { href: "/content", label: "محتوا" },
   { href: "/requests", label: "درخواست‌های تغییر" },
+  { href: "/inquiries", label: "درخواست‌های سایت", min: "operator" },
   { href: "/media", label: "رسانه" },
   { href: "/audit", label: "گزارش رویدادها", min: "auditor" },
   { href: "/operators", label: "اپراتورها", min: "operator" },

@@ -12,7 +12,7 @@ import { getDictionary, isLocale, localeMeta, locales } from "@/lib/i18n";
 import { languageAlternates, pageUrl, productTubeJsonLd } from "@/lib/seo";
 import { productPaths } from "@/lib/site";
 import { getTubeProduct } from "@/lib/products";
-import { ensureContent } from "@/lib/content";
+import { ensureContent, opexEnabled } from "@/lib/content";
 
 const PATH = productPaths.tube;
 type Params = Promise<{ locale: string }>;
@@ -64,7 +64,7 @@ export default async function MultiLayerTubePage({ params }: { params: Params })
       <main id="main" className={styles.page}>
         <div className={styles.wrap}>
           <ProductHero t={t.productTube} video={null} image={product.images.hero} locale={locale} dir={dir} />
-          <Configurator t={t.productTube} locale={locale} product={product} contact={t.site.contact} />
+          <Configurator t={t.productTube} locale={locale} product={product} contact={t.site.contact} direct={opexEnabled()} />
           <div className={styles.lower}>
             <LayerStructure t={t.productTube} structure={product.structures[0]} image={product.images.layers} locale={locale} dir={dir} />
           </div>

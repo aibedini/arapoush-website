@@ -4,6 +4,8 @@ import { useEffect, useId, useRef, useState } from "react";
 import RollText from "@/components/ui/RollText";
 import type { Dictionary } from "@/lib/i18n";
 import { quoteMailto } from "@/lib/configurator/quote";
+import Honeypot from "@/components/ui/Honeypot";
+import { sendInquiry } from "@/lib/forms";
 import styles from "./Effervescent.module.css";
 
 type T = Dictionary["productEff"]["sizes"]["form"];
@@ -18,18 +20,27 @@ const MOBILE = /^\+?\d{8,15}$/;
 
 const fill = (s: string, vars: Record<string, string>) => s.replace(/\{(\w+)\}/g, (_, k: string) => vars[k] ?? "");
 
-type Props = { t: T; size: string; unit: string; email: string; open: boolean; origin: { x: number; y: number } | null; onClose: () => void };
+type Props = { t: T; size: string; unit: string; email: string; open: boolean; origin: { x: number; y: number } | null; onClose: () => void; locale: string; direct?: boolean };
 
 /**
  * Quote request that unfolds from the button that opened it (clip-path circle from the click point,
- * then the fields rise in sequence). No mail backend yet: it hands a complete message to the visitor's
- * email app, addressed to the sales inbox, like the configurator's form.
+ * then the fields rise in sequence). With OPEX it is sent straight to sales; otherwise, or if sending
+ * fails, it opens the visitor's email app with a complete message, like the configurator's form.
  */
-export default function QuoteSheet({ t, size, unit, email, open, origin, onClose }: Props) {
+export default function QuoteSheet({ t, size, unit, email, open, origin, onClose, locale, direct }: Props) {
   const id = useId();
   const panel = useRef<HTMLDivElement>(null);
   const [form, setForm] = useState<Fields>(EMPTY);
   const [errors, setErrors] = useState<Errors>({});
+  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [trap, setTrap] = useState("");
+  const [shownAt, setShownAt] = useState(() => Date.now());
+  useEffect(() => {
+    if (open) {
+      setShownAt(Date.now());
+      setStatus("idle");
+    }
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -92,8 +103,9 @@ export default function QuoteSheet({ t, size, unit, email, open, origin, onClose
       <form
         className={styles.sheetForm}
         noValidate
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
+          if (status === "sending") return;
           const errs = validate(form);
           setErrors(errs);
           const first = Object.keys(errs)[0];
@@ -101,15 +113,27 @@ export default function QuoteSheet({ t, size, unit, email, open, origin, onClose
             panel.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
             return;
           }
-          location.href = quoteMailto({
-            to: email,
-            subject: fill(t.subject, { size: `${size} ${unit}` }),
-            spec: [`${size} ${unit}`],
-            fields: fields.map((f) => [f.label, f.key === "mobile" ? toLatin(form.mobile) : form[f.key]]),
-            link: location.href.split("#")[0]! + "#sizes",
-          });
+          const subject = fill(t.subject, { size: `${size} ${unit}` });
+          const link = location.href.split("#")[0]! + "#sizes";
+          const mail = () =>
+            (location.href = quoteMailto({ to: email, subject, spec: [`${size} ${unit}`], fields: fields.map((f) => [f.label, f.key === "mobile" ? toLatin(form.mobile) : form[f.key]]), link }));
+          if (!direct) return mail();
+          setStatus("sending");
+          const r = await sendInquiry(
+            "quote",
+            { locale, page: location.pathname, subject, spec: [`${size} ${unit}`, link], fields: { name: `${form.first.trim()} ${form.last.trim()}`, email: form.email, mobile: toLatin(form.mobile), message: form.message } },
+            { website: trap, shownAt },
+          );
+          if (r === "sent") {
+            setStatus("sent");
+            setForm(EMPTY);
+            return;
+          }
+          setStatus("idle");
+          mail();
         }}
       >
+        <Honeypot value={trap} onChange={setTrap} />
         {fields.map((f, i) => {
           const err = errors[f.key];
           const props = {
@@ -144,10 +168,18 @@ export default function QuoteSheet({ t, size, unit, email, open, origin, onClose
           );
         })}
         <div className={styles.sheetActions} style={{ "--i": fields.length } as React.CSSProperties}>
-          <button type="submit" className="btn">
-            <RollText text={t.send} />
+          <button type="submit" className="btn" disabled={status === "sending"} aria-busy={status === "sending"}>
+            <RollText text={status === "sending" ? t.sending : t.send} />
           </button>
-          <p className={styles.sheetHelp}>{fill(t.hint, { email })}</p>
+          <p className={styles.sheetHelp} role={status === "sent" ? "status" : undefined}>
+            {status === "sent" ? (
+              <>
+                <strong>{t.sent}</strong> {t.sentLead}
+              </>
+            ) : (
+              fill(direct ? t.directHint : t.hint, { email })
+            )}
+          </p>
         </div>
       </form>
     </div>

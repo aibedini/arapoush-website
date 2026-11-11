@@ -24,6 +24,7 @@
     "@node-rs/argon2": "2.2.2",
     "fastify": "5.12.7",
     "jose": "6.2.13",
+    "nodemailer": "10.2.1",
     "otpauth": "9.5.2",
     "pg": "8.23.1",
     "sharp": "0.34.5",
