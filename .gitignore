@@ -23,3 +23,6 @@ font/
 
 # OPEX local data (PGlite database, uploaded media)
 apps/opex-api/data/
+
+# graphify knowledge graph (rebuilt locally by the post-commit hook)
+graphify-out/
