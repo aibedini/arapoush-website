@@ -20,3 +20,6 @@ font/
 .turbo/
 **/.turbo/
 .lighthouseci/
+
+# OPEX local data (PGlite database, uploaded media)
+apps/opex-api/data/

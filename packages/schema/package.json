@@ -1,0 +1,23 @@
+{
+  "name": "@arapoush/schema",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OPEX content types: field definitions, inference, validation, field paths and localisation. Shared by the website, the OPEX API and the console.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./generated/schemas.json": "./src/generated/schemas.json",
+    "./generated/seed.json": "./src/generated/seed.json"
+  },
+  "scripts": {
+    "generate": "tsx scripts/generate.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "node --no-warnings --test \"src/**/*.test.ts\""
+  },
+  "devDependencies": {
+    "@arapoush/config": "workspace:*",
+    "@types/node": "22.15.29",
+    "tsx": "4.23.15",
+    "typescript": "5.8.3"
+  }
+}

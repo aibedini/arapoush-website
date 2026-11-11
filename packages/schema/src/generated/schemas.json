@@ -1,0 +1,3331 @@
+[
+ {
+  "key": "global.site",
+  "label": "Site: header, footer, contact, closing call to action",
+  "singleton": true,
+  "version": 1,
+  "schema": {
+   "kind": "group",
+   "fields": {
+    "meta": {
+     "kind": "group",
+     "fields": {
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "description": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      }
+     }
+    },
+    "common": {
+     "kind": "group",
+     "fields": {
+      "skip": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false,
+       "operatorOnly": true
+      },
+      "brand": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false,
+       "operatorOnly": true
+      },
+      "loading": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false,
+       "operatorOnly": true
+      },
+      "progress": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false,
+       "operatorOnly": true
+      }
+     }
+    },
+    "nav": {
+     "kind": "group",
+     "fields": {
+      "items": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "label": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "href": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         }
+        }
+       }
+      },
+      "quote": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "search": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "language": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "openMenu": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "closeMenu": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "main": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "mobile": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      }
+     }
+    },
+    "search": {
+     "kind": "group",
+     "fields": {
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "placeholder": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "empty": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "hint": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "close": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "groups": {
+       "kind": "group",
+       "fields": {
+        "section": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "product": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "application": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "article": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "certificate": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        }
+       }
+      }
+     }
+    },
+    "footer": {
+     "kind": "group",
+     "fields": {
+      "tagline": {
+       "kind": "list",
+       "of": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       }
+      },
+      "products": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "productLinks": {
+       "kind": "list",
+       "of": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       }
+      },
+      "explore": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "exploreLinks": {
+       "kind": "list",
+       "of": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       }
+      },
+      "contact": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "office": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "address": {
+       "kind": "list",
+       "of": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       }
+      },
+      "brochure": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "rights": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "company": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "backToTop": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      }
+     }
+    },
+    "cta": {
+     "kind": "group",
+     "fields": {
+      "title": {
+       "kind": "list",
+       "of": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       }
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "quote": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "contact": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      }
+     }
+    },
+    "contact": {
+     "kind": "group",
+     "fields": {
+      "office": {
+       "kind": "text",
+       "localized": false,
+       "multiline": false,
+       "operatorOnly": true
+      },
+      "address": {
+       "kind": "list",
+       "of": {
+        "kind": "text",
+        "localized": false,
+        "multiline": false,
+        "operatorOnly": true
+       },
+       "operatorOnly": true
+      },
+      "phone": {
+       "kind": "text",
+       "localized": false,
+       "multiline": false,
+       "operatorOnly": true
+      },
+      "phoneHref": {
+       "kind": "url",
+       "operatorOnly": true
+      },
+      "email": {
+       "kind": "text",
+       "localized": false,
+       "multiline": false,
+       "operatorOnly": true
+      }
+     }
+    },
+    "social": {
+     "kind": "group",
+     "fields": {
+      "instagram": {
+       "kind": "url",
+       "operatorOnly": true
+      },
+      "linkedin": {
+       "kind": "url",
+       "operatorOnly": true
+      }
+     }
+    },
+    "links": {
+     "kind": "group",
+     "fields": {
+      "brochure": {
+       "kind": "file"
+      }
+     }
+    },
+    "images": {
+     "kind": "group",
+     "fields": {
+      "logo": {
+       "kind": "image",
+       "locked": true
+      },
+      "logoWhite": {
+       "kind": "image",
+       "locked": true
+      },
+      "og": {
+       "kind": "image"
+      },
+      "footerBg": {
+       "kind": "image"
+      },
+      "ctaBg": {
+       "kind": "image"
+      },
+      "ctaTube": {
+       "kind": "image",
+       "perLocale": true
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "key": "page.home.layout",
+  "label": "Home: section order",
+  "singleton": true,
+  "version": 1,
+  "schema": {
+   "kind": "group",
+   "fields": {
+    "sections": {
+     "kind": "list",
+     "of": {
+      "kind": "group",
+      "fields": {
+       "id": {
+        "kind": "text",
+        "localized": false,
+        "multiline": false,
+        "locked": true
+       },
+       "type": {
+        "kind": "text",
+        "localized": false,
+        "multiline": false
+       },
+       "enabled": {
+        "kind": "boolean"
+       }
+      },
+      "operatorOnly": true
+     },
+     "key": "id",
+     "operatorOnly": true
+    }
+   }
+  }
+ },
+ {
+  "key": "page.home.hero",
+  "label": "Home: hero slideshow",
+  "singleton": true,
+  "version": 1,
+  "schema": {
+   "kind": "group",
+   "fields": {
+    "hero": {
+     "kind": "group",
+     "fields": {
+      "label": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "slides": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "title": {
+          "kind": "list",
+          "of": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          }
+         },
+         "lead": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         },
+         "productsAlt": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         }
+        }
+       }
+      },
+      "quote": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "story": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "prev": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "next": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "goTo": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "slideOf": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      }
+     }
+    },
+    "images": {
+     "kind": "group",
+     "fields": {
+      "slides": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "tone": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false
+         },
+         "background": {
+          "kind": "image"
+         },
+         "product": {
+          "kind": "image"
+         },
+         "backgroundRtl": {
+          "kind": "image"
+         },
+         "backgroundMobile": {
+          "kind": "image"
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "key": "page.home.products",
+  "label": "Home: our products",
+  "singleton": true,
+  "version": 1,
+  "schema": {
+   "kind": "group",
+   "fields": {
+    "products": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "list",
+       "of": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       }
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "cards": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "title": {
+          "kind": "list",
+          "of": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          }
+         },
+         "text": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         }
+        }
+       }
+      },
+      "enquire": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "view": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      }
+     }
+    },
+    "images": {
+     "kind": "group",
+     "fields": {
+      "cards": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "image": {
+          "kind": "image",
+          "perLocale": true
+         }
+        }
+       },
+       "key": "id"
+      },
+      "tablets": {
+       "kind": "image"
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "key": "page.home.applications",
+  "label": "Home: applications",
+  "singleton": true,
+  "version": 1,
+  "schema": {
+   "kind": "group",
+   "fields": {
+    "applications": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "list",
+       "of": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       }
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "explore": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "items": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "title": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "text": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         }
+        }
+       }
+      }
+     }
+    },
+    "images": {
+     "kind": "group",
+     "fields": {
+      "items": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "image": {
+          "kind": "image"
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "key": "page.home.insights",
+  "label": "Home: insights and journal",
+  "singleton": true,
+  "version": 1,
+  "schema": {
+   "kind": "group",
+   "fields": {
+    "insights": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "list",
+       "of": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       }
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "viewAll": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "listLabel": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "prev": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "next": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "articles": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "category": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "tag": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "title": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "text": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         }
+        }
+       }
+      }
+     }
+    },
+    "images": {
+     "kind": "group",
+     "fields": {
+      "articles": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "image": {
+          "kind": "image"
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "key": "page.home.partners",
+  "label": "Home: trusted partners",
+  "singleton": true,
+  "version": 1,
+  "schema": {
+   "kind": "group",
+   "fields": {
+    "partners": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "list",
+       "of": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       }
+      },
+      "lead": {
+       "kind": "list",
+       "of": {
+        "kind": "text",
+        "localized": true,
+        "multiline": true
+       }
+      },
+      "stats": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "label": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "sub": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         }
+        }
+       }
+      },
+      "brands": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "prev": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "next": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      }
+     }
+    },
+    "images": {
+     "kind": "group",
+     "fields": {
+      "background": {
+       "kind": "image",
+       "perLocale": true
+      },
+      "logos": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "name": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false
+         },
+         "image": {
+          "kind": "image"
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "key": "page.home.certifications",
+  "label": "Home: certifications",
+  "singleton": true,
+  "version": 1,
+  "schema": {
+   "kind": "group",
+   "fields": {
+    "certifications": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "list",
+       "of": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       }
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "items": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "name": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "text": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         }
+        }
+       }
+      },
+      "learnMore": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "seal": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "features": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "title": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "text": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         }
+        }
+       }
+      }
+     }
+    },
+    "images": {
+     "kind": "group",
+     "fields": {
+      "background": {
+       "kind": "image"
+      },
+      "seals": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "image": {
+          "kind": "image"
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "key": "product.tube.page",
+  "label": "Product: multi-layer tube (page copy)",
+  "singleton": true,
+  "version": 1,
+  "schema": {
+   "kind": "group",
+   "fields": {
+    "productTube": {
+     "kind": "group",
+     "fields": {
+      "meta": {
+       "kind": "group",
+       "fields": {
+        "title": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "description": {
+         "kind": "text",
+         "localized": true,
+         "multiline": true
+        }
+       }
+      },
+      "breadcrumb": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "list",
+       "of": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       }
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "quote": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "video": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "features": {
+       "kind": "list",
+       "of": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       }
+      },
+      "layers": {
+       "kind": "group",
+       "fields": {
+        "title": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "lead": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        }
+       }
+      },
+      "configurator": {
+       "kind": "group",
+       "fields": {
+        "samplesEyebrow": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "samplesTitle": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "samplesLead": {
+         "kind": "text",
+         "localized": true,
+         "multiline": true
+        },
+        "samplesMatch": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "samplesSimilar": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "samplesEmpty": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "useSample": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "eyebrow": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "title": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "lead": {
+         "kind": "text",
+         "localized": true,
+         "multiline": true
+        },
+        "diameter": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "length": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "shape": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "closure": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "mm": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "ml": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "toConfirm": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "notOffered": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "volume": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "statusChart": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "statusEstimate": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "noVolume": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "confirmNote": {
+         "kind": "text",
+         "localized": true,
+         "multiline": true
+        },
+        "specShape": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "specSize": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "specClosure": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "specStructure": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "sameVolume": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "viewerLabel": {
+         "kind": "text",
+         "localized": true,
+         "multiline": true
+        },
+        "loading": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "noWebgl": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "hint": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "autoRotate": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "zoomIn": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "zoomOut": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "dimensions": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "inspect": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "reset": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "fullscreen": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "notToScale": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "snapshot": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "share": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "copied": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "quoteCta": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "disclaimer": {
+         "kind": "text",
+         "localized": true,
+         "multiline": true
+        },
+        "quoteTitle": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "quoteLead": {
+         "kind": "text",
+         "localized": true,
+         "multiline": true
+        },
+        "quoteConfig": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "name": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "company": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "email": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "phone": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "quantity": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "message": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "optional": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "submit": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "submitHint": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "required": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "invalidEmail": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "invalidQuantity": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "subject": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "linkLabel": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        }
+       }
+      }
+     }
+    },
+    "images": {
+     "kind": "group",
+     "fields": {
+      "hero": {
+       "kind": "group",
+       "fields": {
+        "ltr": {
+         "kind": "image",
+         "path": true
+        },
+        "rtl": {
+         "kind": "image",
+         "path": true
+        },
+        "width": {
+         "kind": "number",
+         "integer": true
+        },
+        "height": {
+         "kind": "number",
+         "integer": true
+        },
+        "alt": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        }
+       }
+      },
+      "layers": {
+       "kind": "group",
+       "fields": {
+        "ltr": {
+         "kind": "image",
+         "path": true
+        },
+        "rtl": {
+         "kind": "image",
+         "path": true
+        },
+        "width": {
+         "kind": "number",
+         "integer": true
+        },
+        "height": {
+         "kind": "number",
+         "integer": true
+        },
+        "alt": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "key": "product.tube.catalogue",
+  "label": "Product: multi-layer tube (configurator catalogue)",
+  "singleton": true,
+  "version": 1,
+  "schema": {
+   "kind": "group",
+   "fields": {
+    "version": {
+     "kind": "number",
+     "integer": true,
+     "locked": true
+    },
+    "updated": {
+     "kind": "text",
+     "localized": false,
+     "multiline": false,
+     "locked": true
+    },
+    "shapes": {
+     "kind": "list",
+     "of": {
+      "kind": "group",
+      "fields": {
+       "id": {
+        "kind": "text",
+        "localized": false,
+        "multiline": false,
+        "locked": true
+       },
+       "model": {
+        "kind": "text",
+        "localized": false,
+        "multiline": false,
+        "locked": true
+       },
+       "name": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       },
+       "image": {
+        "kind": "image",
+        "path": true
+       },
+       "sizes": {
+        "kind": "group",
+        "fields": {
+         "19": {
+          "kind": "list",
+          "of": {
+           "kind": "group",
+           "fields": {
+            "l": {
+             "kind": "number",
+             "integer": true
+            },
+            "ml": {
+             "kind": "number",
+             "integer": true
+            },
+            "status": {
+             "kind": "text",
+             "localized": false,
+             "multiline": false
+            }
+           }
+          }
+         },
+         "25": {
+          "kind": "list",
+          "of": {
+           "kind": "group",
+           "fields": {
+            "l": {
+             "kind": "number",
+             "integer": true
+            },
+            "ml": {
+             "kind": "number",
+             "integer": true
+            },
+            "status": {
+             "kind": "text",
+             "localized": false,
+             "multiline": false
+            }
+           }
+          }
+         },
+         "30": {
+          "kind": "list",
+          "of": {
+           "kind": "group",
+           "fields": {
+            "l": {
+             "kind": "number",
+             "integer": true
+            },
+            "ml": {
+             "kind": "number",
+             "integer": true
+            },
+            "status": {
+             "kind": "text",
+             "localized": false,
+             "multiline": false
+            }
+           }
+          }
+         },
+         "35": {
+          "kind": "list",
+          "of": {
+           "kind": "group",
+           "fields": {
+            "l": {
+             "kind": "number",
+             "integer": true
+            },
+            "ml": {
+             "kind": "number",
+             "integer": true
+            },
+            "status": {
+             "kind": "text",
+             "localized": false,
+             "multiline": false
+            }
+           }
+          }
+         },
+         "40": {
+          "kind": "list",
+          "of": {
+           "kind": "group",
+           "fields": {
+            "l": {
+             "kind": "number",
+             "integer": true
+            },
+            "ml": {
+             "kind": "number",
+             "integer": true
+            },
+            "status": {
+             "kind": "text",
+             "localized": false,
+             "multiline": false
+            }
+           }
+          }
+         },
+         "50": {
+          "kind": "list",
+          "of": {
+           "kind": "group",
+           "fields": {
+            "l": {
+             "kind": "number",
+             "integer": true
+            },
+            "ml": {
+             "kind": "number",
+             "integer": true
+            },
+            "status": {
+             "kind": "text",
+             "localized": false,
+             "multiline": false
+            }
+           }
+          }
+         },
+         "60": {
+          "kind": "list",
+          "of": {
+           "kind": "group",
+           "fields": {
+            "l": {
+             "kind": "number",
+             "integer": true
+            },
+            "ml": {
+             "kind": "number",
+             "integer": true
+            },
+            "status": {
+             "kind": "text",
+             "localized": false,
+             "multiline": false
+            }
+           }
+          }
+         }
+        },
+        "locked": true
+       }
+      }
+     },
+     "key": "id"
+    },
+    "closures": {
+     "kind": "list",
+     "of": {
+      "kind": "group",
+      "fields": {
+       "id": {
+        "kind": "text",
+        "localized": false,
+        "multiline": false,
+        "locked": true
+       },
+       "model": {
+        "kind": "text",
+        "localized": false,
+        "multiline": false,
+        "locked": true
+       },
+       "name": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       },
+       "image": {
+        "kind": "image",
+        "path": true
+       },
+       "compat": {
+        "kind": "group",
+        "fields": {
+         "circular": {
+          "kind": "group",
+          "fields": {
+           "19": {
+            "kind": "text",
+            "localized": false,
+            "multiline": false
+           },
+           "25": {
+            "kind": "text",
+            "localized": false,
+            "multiline": false
+           },
+           "30": {
+            "kind": "text",
+            "localized": false,
+            "multiline": false
+           },
+           "35": {
+            "kind": "text",
+            "localized": false,
+            "multiline": false
+           },
+           "40": {
+            "kind": "text",
+            "localized": false,
+            "multiline": false
+           },
+           "50": {
+            "kind": "text",
+            "localized": false,
+            "multiline": false
+           },
+           "60": {
+            "kind": "text",
+            "localized": false,
+            "multiline": false
+           }
+          }
+         },
+         "oval": {
+          "kind": "group",
+          "fields": {
+           "30": {
+            "kind": "text",
+            "localized": false,
+            "multiline": false
+           },
+           "35": {
+            "kind": "text",
+            "localized": false,
+            "multiline": false
+           },
+           "40": {
+            "kind": "text",
+            "localized": false,
+            "multiline": false
+           }
+          }
+         },
+         "eyeNozzle": {
+          "kind": "group",
+          "fields": {
+           "19": {
+            "kind": "text",
+            "localized": false,
+            "multiline": false
+           },
+           "25": {
+            "kind": "text",
+            "localized": false,
+            "multiline": false
+           }
+          }
+         }
+        },
+        "locked": true
+       }
+      }
+     },
+     "key": "id"
+    },
+    "structures": {
+     "kind": "list",
+     "of": {
+      "kind": "group",
+      "fields": {
+       "id": {
+        "kind": "text",
+        "localized": false,
+        "multiline": false,
+        "locked": true
+       },
+       "name": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       },
+       "layers": {
+        "kind": "list",
+        "of": {
+         "kind": "group",
+         "fields": {
+          "id": {
+           "kind": "text",
+           "localized": false,
+           "multiline": false,
+           "locked": true
+          },
+          "color": {
+           "kind": "url",
+           "internal": true
+          },
+          "name": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "text": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          }
+         },
+         "locked": true
+        },
+        "key": "id",
+        "locked": true
+       }
+      }
+     },
+     "key": "id"
+    },
+    "samples": {
+     "kind": "list",
+     "of": {
+      "kind": "group",
+      "fields": {
+       "id": {
+        "kind": "text",
+        "localized": false,
+        "multiline": false,
+        "locked": true
+       },
+       "image": {
+        "kind": "image",
+        "path": true
+       },
+       "shape": {
+        "kind": "text",
+        "localized": false,
+        "multiline": false,
+        "locked": true
+       },
+       "closure": {
+        "kind": "text",
+        "localized": false,
+        "multiline": false,
+        "locked": true
+       },
+       "title": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       }
+      }
+     },
+     "key": "id"
+    }
+   }
+  }
+ },
+ {
+  "key": "product.effervescent.page",
+  "label": "Product: effervescent tube",
+  "singleton": true,
+  "version": 1,
+  "schema": {
+   "kind": "group",
+   "fields": {
+    "productEff": {
+     "kind": "group",
+     "fields": {
+      "meta": {
+       "kind": "group",
+       "fields": {
+        "title": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "description": {
+         "kind": "text",
+         "localized": true,
+         "multiline": true
+        }
+       }
+      },
+      "breadcrumb": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "list",
+       "of": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       }
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "quote": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "sizesLink": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "drag": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "viewerLabel": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "story": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "title": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "text": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         }
+        }
+       }
+      },
+      "scatter": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "tapHint": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "drop": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "sizes": {
+       "kind": "group",
+       "fields": {
+        "title": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "lead": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "label": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "diameter": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "height": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "mm": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "toScale": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "quote": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "form": {
+         "kind": "group",
+         "fields": {
+          "title": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "lead": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "first": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "last": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "mobile": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "email": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "message": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "messageHint": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "send": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "close": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "required": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "invalidEmail": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "invalidMobile": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "hint": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "subject": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          }
+         }
+        }
+       }
+      },
+      "caps": {
+       "kind": "group",
+       "fields": {
+        "title": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "lead": {
+         "kind": "text",
+         "localized": true,
+         "multiline": true
+        },
+        "alt": {
+         "kind": "text",
+         "localized": true,
+         "multiline": true
+        },
+        "label": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "facts": {
+         "kind": "list",
+         "of": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         }
+        },
+        "partsLabel": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "parts": {
+         "kind": "group",
+         "fields": {
+          "cap": {
+           "kind": "group",
+           "fields": {
+            "title": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            },
+            "text": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            }
+           }
+          },
+          "spiral": {
+           "kind": "group",
+           "fields": {
+            "title": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            },
+            "text": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            }
+           }
+          },
+          "plain": {
+           "kind": "group",
+           "fields": {
+            "title": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            },
+            "text": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            }
+           }
+          },
+          "chamber": {
+           "kind": "group",
+           "fields": {
+            "title": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            },
+            "text": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            }
+           }
+          },
+          "mouth": {
+           "kind": "group",
+           "fields": {
+            "title": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            },
+            "text": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            }
+           }
+          }
+         }
+        },
+        "variants": {
+         "kind": "group",
+         "fields": {
+          "spiral": {
+           "kind": "group",
+           "fields": {
+            "heading": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            },
+            "text": {
+             "kind": "text",
+             "localized": true,
+             "multiline": true
+            },
+            "points": {
+             "kind": "list",
+             "of": {
+              "kind": "text",
+              "localized": true,
+              "multiline": false
+             }
+            }
+           }
+          },
+          "plain": {
+           "kind": "group",
+           "fields": {
+            "heading": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            },
+            "text": {
+             "kind": "text",
+             "localized": true,
+             "multiline": true
+            },
+            "points": {
+             "kind": "list",
+             "of": {
+              "kind": "text",
+              "localized": true,
+              "multiline": false
+             }
+            }
+           }
+          }
+         }
+        },
+        "benefits": {
+         "kind": "list",
+         "of": {
+          "kind": "group",
+          "fields": {
+           "title": {
+            "kind": "text",
+            "localized": true,
+            "multiline": false
+           },
+           "text": {
+            "kind": "text",
+            "localized": true,
+            "multiline": false
+           }
+          }
+         }
+        }
+       }
+      },
+      "uses": {
+       "kind": "group",
+       "fields": {
+        "eyebrow": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "photoAlt": {
+         "kind": "text",
+         "localized": true,
+         "multiline": true
+        },
+        "alt": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "title": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "lead": {
+         "kind": "text",
+         "localized": true,
+         "multiline": true
+        },
+        "items": {
+         "kind": "list",
+         "of": {
+          "kind": "group",
+          "fields": {
+           "title": {
+            "kind": "text",
+            "localized": true,
+            "multiline": false
+           },
+           "text": {
+            "kind": "text",
+            "localized": true,
+            "multiline": false
+           }
+          }
+         }
+        }
+       }
+      },
+      "make": {
+       "kind": "group",
+       "fields": {
+        "title": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "lead": {
+         "kind": "text",
+         "localized": true,
+         "multiline": true
+        },
+        "perDay": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "since": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "imports": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "standards": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "seals": {
+         "kind": "list",
+         "of": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         }
+        }
+       }
+      }
+     }
+    },
+    "data": {
+     "kind": "group",
+     "fields": {
+      "defaultSize": {
+       "kind": "text",
+       "localized": false,
+       "multiline": false,
+       "locked": true
+      },
+      "renderPxPerMm": {
+       "kind": "number",
+       "integer": true,
+       "locked": true
+      },
+      "dailyCapacity": {
+       "kind": "number",
+       "integer": true
+      },
+      "since": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "sizes": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "d": {
+          "kind": "number",
+          "integer": true
+         },
+         "h": {
+          "kind": "number",
+          "integer": true
+         },
+         "render": {
+          "kind": "group",
+          "fields": {
+           "src": {
+            "kind": "image",
+            "path": true
+           },
+           "width": {
+            "kind": "number",
+            "integer": true
+           },
+           "height": {
+            "kind": "number",
+            "integer": true
+           },
+           "base": {
+            "kind": "number",
+            "integer": true
+           },
+           "mouth": {
+            "kind": "number",
+            "integer": true
+           },
+           "left": {
+            "kind": "number",
+            "integer": true
+           },
+           "right": {
+            "kind": "number",
+            "integer": true
+           }
+          }
+         }
+        },
+        "locked": true
+       },
+       "key": "id",
+       "locked": true
+      },
+      "caps": {
+       "kind": "group",
+       "fields": {
+        "variants": {
+         "kind": "list",
+         "of": {
+          "kind": "group",
+          "fields": {
+           "id": {
+            "kind": "text",
+            "localized": false,
+            "multiline": false,
+            "locked": true
+           },
+           "name": {
+            "kind": "text",
+            "localized": true,
+            "multiline": false
+           },
+           "image": {
+            "kind": "image",
+            "locked": true
+           },
+           "photo": {
+            "kind": "image"
+           },
+           "parts": {
+            "kind": "list",
+            "of": {
+             "kind": "group",
+             "fields": {
+              "id": {
+               "kind": "text",
+               "localized": false,
+               "multiline": false,
+               "locked": true
+              },
+              "y": {
+               "kind": "number",
+               "integer": false
+              },
+              "x": {
+               "kind": "number",
+               "integer": false
+              }
+             },
+             "locked": true
+            },
+            "key": "id",
+            "locked": true
+           }
+          }
+         },
+         "key": "id"
+        },
+        "background": {
+         "kind": "image"
+        }
+       }
+      },
+      "images": {
+       "kind": "group",
+       "fields": {
+        "poster": {
+         "kind": "image",
+         "locked": true
+        },
+        "uses": {
+         "kind": "image",
+         "locked": true
+        },
+        "usesPhoto": {
+         "kind": "image"
+        },
+        "usesBg": {
+         "kind": "image"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "key": "page.printing",
+  "label": "Printing technologies",
+  "singleton": true,
+  "version": 1,
+  "schema": {
+   "kind": "group",
+   "fields": {
+    "meta": {
+     "kind": "group",
+     "fields": {
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "description": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      }
+     }
+    },
+    "hero": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "explore": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "resources": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "tubesAlt": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "features": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "icon": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false
+         },
+         "text": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         }
+        }
+       }
+      }
+     }
+    },
+    "tech": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "advantages": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "process": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "capabilities": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "uses": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "samples": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "quote": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "items": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "card": {
+          "kind": "image"
+         },
+         "macro": {
+          "kind": "image"
+         },
+         "sample": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "operatorOnly": true
+         },
+         "name": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "short": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "summary": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         },
+         "advantages": {
+          "kind": "list",
+          "of": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          }
+         },
+         "process": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         },
+         "capabilities": {
+          "kind": "list",
+          "of": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          }
+         },
+         "uses": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    },
+    "guide": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "steps": {
+       "kind": "list",
+       "of": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       }
+      },
+      "result": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "fits": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "check": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "no": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "reset": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "empty": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "ask": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "questions": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "label": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "options": {
+          "kind": "list",
+          "of": {
+           "kind": "group",
+           "fields": {
+            "id": {
+             "kind": "text",
+             "localized": false,
+             "multiline": false,
+             "locked": true
+            },
+            "label": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            },
+            "effects": {
+             "kind": "list",
+             "of": {
+              "kind": "group",
+              "fields": {
+               "m": {
+                "kind": "text",
+                "localized": false,
+                "multiline": false
+               },
+               "s": {
+                "kind": "number",
+                "integer": true
+               },
+               "why": {
+                "kind": "text",
+                "localized": true,
+                "multiline": false
+               }
+              },
+              "operatorOnly": true
+             },
+             "operatorOnly": true
+            },
+            "excludes": {
+             "kind": "list",
+             "of": {
+              "kind": "group",
+              "fields": {
+               "m": {
+                "kind": "text",
+                "localized": false,
+                "multiline": false
+               },
+               "why": {
+                "kind": "text",
+                "localized": true,
+                "multiline": false
+               }
+              },
+              "operatorOnly": true
+             },
+             "operatorOnly": true
+            },
+            "asks": {
+             "kind": "list",
+             "of": {
+              "kind": "group",
+              "fields": {
+               "m": {
+                "kind": "text",
+                "localized": false,
+                "multiline": false
+               },
+               "why": {
+                "kind": "text",
+                "localized": true,
+                "multiline": false
+               }
+              },
+              "operatorOnly": true
+             },
+             "operatorOnly": true
+            },
+            "note": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            }
+           }
+          },
+          "key": "id"
+         },
+         "multi": {
+          "kind": "boolean"
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    },
+    "samples": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "badge": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "method": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "view": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "prev": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "next": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "close": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "zoomIn": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "zoomOut": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "of": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "items": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "method": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "operatorOnly": true
+         },
+         "image": {
+          "kind": "image"
+         },
+         "title": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "industry": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "text": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    },
+    "downloads": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "download": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "preview": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "request": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "soon": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "requestSubject": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "guideTitle": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "items": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "format": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false
+         },
+         "file": {
+          "kind": "text",
+          "localized": true
+         },
+         "name": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "text": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    },
+    "compare": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "cta": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "method": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "columns": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "label": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         }
+        }
+       },
+       "key": "id"
+      },
+      "rows": {
+       "kind": "group",
+       "fields": {
+        "flexo": {
+         "kind": "group",
+         "fields": {
+          "colours": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "ink": {
+           "kind": "text",
+           "localized": true
+          },
+          "look": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "where": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          }
+         }
+        },
+        "offset": {
+         "kind": "group",
+         "fields": {
+          "colours": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "ink": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "look": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "where": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          }
+         }
+        },
+        "silk": {
+         "kind": "group",
+         "fields": {
+          "colours": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "ink": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "look": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "where": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          }
+         }
+        },
+        "hotstamp": {
+         "kind": "group",
+         "fields": {
+          "colours": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "ink": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "look": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "where": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          }
+         }
+        },
+        "combination": {
+         "kind": "group",
+         "fields": {
+          "colours": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "ink": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "look": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          },
+          "where": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          }
+         }
+        }
+       },
+       "operatorOnly": false
+      }
+     }
+    },
+    "cta": {
+     "kind": "group",
+     "fields": {
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "consult": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "call": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "subject": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "tubeAlt": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      }
+     }
+    },
+    "images": {
+     "kind": "group",
+     "fields": {
+      "bgLight": {
+       "kind": "image"
+      },
+      "bgNavy": {
+       "kind": "image"
+      },
+      "tubeColour": {
+       "kind": "image"
+      },
+      "tubeGold": {
+       "kind": "image"
+      },
+      "layers": {
+       "kind": "image"
+      },
+      "ctaTube": {
+       "kind": "image"
+      }
+     }
+    }
+   }
+  }
+ }
+]

@@ -1,0 +1,4950 @@
+{
+ "global.site": {
+  "meta": {
+   "title": {
+    "fa": "آراپوش گستر — بسته‌بندی، از نو.",
+    "en": "Arapoush Gostar — Packaging, reimagined.",
+    "tr": "Arapoush Gostar — Ambalaj, yeniden tasarlandı."
+   },
+   "description": {
+    "fa": "تیوپ‌های پلاستیکی چندلایه و تیوپ قرص‌های جوشان با کیفیت بالا برای صنایع آرایشی، دارویی، بهداشتی و غذایی.",
+    "en": "High-quality multi-layer plastic tubes and effervescent tablet tubes for cosmetic, pharmaceutical, hygienic and food applications.",
+    "tr": "Kozmetik, ilaç, hijyen ve gıda uygulamaları için yüksek kaliteli çok katmanlı plastik tüpler ve efervesan tablet tüpleri."
+   }
+  },
+  "common": {
+   "skip": {
+    "fa": "رفتن به محتوا",
+    "en": "Skip to content",
+    "tr": "İçeriğe geç"
+   },
+   "brand": {
+    "fa": "آراپوش گستر",
+    "en": "Arapoush Gostar",
+    "tr": "Arapoush Gostar"
+   },
+   "loading": {
+    "fa": "در حال بارگذاری",
+    "en": "Loading",
+    "tr": "Yükleniyor"
+   },
+   "progress": {
+    "fa": "پیشرفت مطالعه",
+    "en": "Reading progress",
+    "tr": "Okuma ilerlemesi"
+   }
+  },
+  "nav": {
+   "items": [
+    {
+     "label": {
+      "fa": "خانه",
+      "en": "Home",
+      "tr": "Ana Sayfa"
+     },
+     "href": {
+      "fa": "#top",
+      "en": "#top",
+      "tr": "#top"
+     }
+    },
+    {
+     "label": {
+      "fa": "محصولات",
+      "en": "Products",
+      "tr": "Ürünler"
+     },
+     "href": {
+      "fa": "#products",
+      "en": "#products",
+      "tr": "#products"
+     }
+    },
+    {
+     "label": {
+      "fa": "کاربردها",
+      "en": "Applications",
+      "tr": "Uygulamalar"
+     },
+     "href": {
+      "fa": "#applications",
+      "en": "#applications",
+      "tr": "#applications"
+     }
+    },
+    {
+     "label": {
+      "fa": "چاپ",
+      "en": "Printing",
+      "tr": "Baskı"
+     },
+     "href": {
+      "fa": "/printing",
+      "en": "/printing",
+      "tr": "/printing"
+     }
+    },
+    {
+     "label": {
+      "fa": "رسانه",
+      "en": "Media",
+      "tr": "Medya"
+     },
+     "href": {
+      "fa": "/media",
+      "en": "/media",
+      "tr": "/media"
+     }
+    },
+    {
+     "label": {
+      "fa": "درباره ما",
+      "en": "About",
+      "tr": "Hakkımızda"
+     },
+     "href": {
+      "fa": "/about",
+      "en": "/about",
+      "tr": "/about"
+     }
+    },
+    {
+     "label": {
+      "fa": "تماس",
+      "en": "Contact",
+      "tr": "İletişim"
+     },
+     "href": {
+      "fa": "#contact",
+      "en": "#contact",
+      "tr": "#contact"
+     }
+    }
+   ],
+   "quote": {
+    "fa": "درخواست استعلام قیمت",
+    "en": "Request a quote",
+    "tr": "Teklif isteyin"
+   },
+   "search": {
+    "fa": "جستجو",
+    "en": "Search",
+    "tr": "Ara"
+   },
+   "language": {
+    "fa": "زبان",
+    "en": "Language",
+    "tr": "Dil"
+   },
+   "openMenu": {
+    "fa": "باز کردن منو",
+    "en": "Open menu",
+    "tr": "Menüyü aç"
+   },
+   "closeMenu": {
+    "fa": "بستن منو",
+    "en": "Close menu",
+    "tr": "Menüyü kapat"
+   },
+   "main": {
+    "fa": "منوی اصلی",
+    "en": "Main",
+    "tr": "Ana menü"
+   },
+   "mobile": {
+    "fa": "منوی موبایل",
+    "en": "Mobile",
+    "tr": "Mobil menü"
+   }
+  },
+  "search": {
+   "title": {
+    "fa": "جستجو در سایت",
+    "en": "Search the site",
+    "tr": "Sitede ara"
+   },
+   "placeholder": {
+    "fa": "محصولات، کاربردها، مقالات…",
+    "en": "Products, applications, articles…",
+    "tr": "Ürünler, uygulamalar, makaleler…"
+   },
+   "empty": {
+    "fa": "نتیجه‌ای پیدا نشد. واژه دیگری را امتحان کنید.",
+    "en": "No results. Try another word.",
+    "tr": "Sonuç bulunamadı. Başka bir kelime deneyin."
+   },
+   "hint": {
+    "fa": "برای جستجو در محصولات، کاربردها، مقالات و گواهینامه‌ها بنویسید.",
+    "en": "Type to search products, applications, articles and certificates.",
+    "tr": "Ürün, uygulama, makale ve sertifikalarda aramak için yazın."
+   },
+   "close": {
+    "fa": "بستن جستجو",
+    "en": "Close search",
+    "tr": "Aramayı kapat"
+   },
+   "groups": {
+    "section": {
+     "fa": "بخش",
+     "en": "Section",
+     "tr": "Bölüm"
+    },
+    "product": {
+     "fa": "محصول",
+     "en": "Product",
+     "tr": "Ürün"
+    },
+    "application": {
+     "fa": "کاربرد",
+     "en": "Application",
+     "tr": "Uygulama"
+    },
+    "article": {
+     "fa": "مقاله",
+     "en": "Article",
+     "tr": "Makale"
+    },
+    "certificate": {
+     "fa": "گواهینامه",
+     "en": "Certificate",
+     "tr": "Sertifika"
+    }
+   }
+  },
+  "footer": {
+   "tagline": [
+    {
+     "fa": "بسته‌بندی دقیق،",
+     "en": "Precision packaging,",
+     "tr": "Hassas ambalaj,"
+    },
+    {
+     "fa": "ساخته‌شده برای برند شما.",
+     "en": "built for your brand.",
+     "tr": "markanız için üretildi."
+    }
+   ],
+   "products": {
+    "fa": "محصولات",
+    "en": "Products",
+    "tr": "Ürünler"
+   },
+   "productLinks": [
+    {
+     "fa": "تیوپ پلاستیکی چندلایه یکپارچه",
+     "en": "Multi-Layered Seamless Plastic Tube",
+     "tr": "Çok Katmanlı Dikişsiz Plastik Tüp"
+    },
+    {
+     "fa": "تیوپ قرص‌های جوشان",
+     "en": "Effervescent Tablets Tube",
+     "tr": "Efervesan Tablet Tüpü"
+    }
+   ],
+   "explore": {
+    "fa": "بیشتر",
+    "en": "Explore",
+    "tr": "Keşfet"
+   },
+   "exploreLinks": [
+    {
+     "fa": "کاربردها",
+     "en": "Applications",
+     "tr": "Uygulamalar"
+    },
+    {
+     "fa": "درباره ما",
+     "en": "About us",
+     "tr": "Hakkımızda"
+    },
+    {
+     "fa": "دیدگاه‌ها و ژورنال",
+     "en": "Insights & Journals",
+     "tr": "Görüşler ve Günlük"
+    },
+    {
+     "fa": "گواهینامه‌ها",
+     "en": "Certificates",
+     "tr": "Sertifikalar"
+    }
+   ],
+   "contact": {
+    "fa": "تماس و همکاری تجاری",
+    "en": "Contact & business inquiries",
+    "tr": "İletişim ve iş birliği"
+   },
+   "office": {
+    "fa": "دفتر تهران",
+    "en": "Tehran Office",
+    "tr": "Tahran Ofisi"
+   },
+   "address": [
+    {
+     "fa": "تهران، خیابان ظفر،",
+     "en": "No. 3, Gooyabadi St., Zafar Ave.,",
+     "tr": "No. 3, Gooyabadi Cd., Zafar Blv.,"
+    },
+    {
+     "fa": "خیابان گوی‌آبادی، پلاک ۳",
+     "en": "Tehran, Iran",
+     "tr": "Tahran, İran"
+    }
+   ],
+   "brochure": {
+    "fa": "دانلود کاتالوگ شرکت",
+    "en": "Download company brochure",
+    "tr": "Şirket broşürünü indir"
+   },
+   "rights": {
+    "fa": "تمامی حقوق محفوظ است.",
+    "en": "All rights reserved.",
+    "tr": "Tüm hakları saklıdır."
+   },
+   "company": {
+    "fa": "آراپوش گستر.",
+    "en": "Arapoush Gostar.",
+    "tr": "Arapoush Gostar."
+   },
+   "backToTop": {
+    "fa": "بازگشت به بالا",
+    "en": "Back to top",
+    "tr": "Başa dön"
+   }
+  },
+  "cta": {
+   "title": [
+    {
+     "fa": "بیایید راهکار بسته‌بندی",
+     "en": "Let’s Create Your Next",
+     "tr": "Bir sonraki ambalaj"
+    },
+    {
+     "fa": "بعدی شما را بسازیم",
+     "en": "Packaging Solution",
+     "tr": "çözümünüzü birlikte yaratalım"
+    }
+   ],
+   "lead": {
+    "fa": "برای مشاوره تخصصی، راهکارهای سفارشی و دریافت قیمت رقابتی با تیم ما در تماس باشید.",
+    "en": "Get in touch with our team for expert advice, customized solutions and a competitive quote.",
+    "tr": "Uzman tavsiyesi, özel çözümler ve rekabetçi bir teklif için ekibimizle iletişime geçin."
+   },
+   "quote": {
+    "fa": "درخواست استعلام قیمت",
+    "en": "Request a quote",
+    "tr": "Teklif isteyin"
+   },
+   "contact": {
+    "fa": "تماس با ما",
+    "en": "Contact us",
+    "tr": "Bize ulaşın"
+   }
+  },
+  "contact": {
+   "office": "Tehran Office",
+   "address": [
+    "No3,Gooyabadi St,Zafar Ave,",
+    "Tehran,Iran"
+   ],
+   "phone": "+98 21 2642 1602",
+   "phoneHref": "tel:+982126421602",
+   "email": "sales@arapoush.com"
+  },
+  "social": {
+   "instagram": "https://www.instagram.com/arapoush",
+   "linkedin": "https://www.linkedin.com/company/arapoush"
+  },
+  "links": {
+   "brochure": "/files/arapoush-catalog.pdf"
+  },
+  "images": {
+   "logo": {
+    "src": "/images/logo.png",
+    "width": 290,
+    "height": 105
+   },
+   "logoWhite": {
+    "src": "/images/logo-white.png",
+    "width": 290,
+    "height": 105
+   },
+   "og": {
+    "src": "/images/og.jpg",
+    "width": 1200,
+    "height": 630
+   },
+   "footerBg": {
+    "src": "/images/footer-bg.webp",
+    "width": 3840,
+    "height": 412
+   },
+   "ctaBg": {
+    "src": "/images/cta-bg.webp",
+    "width": 3840,
+    "height": 1304
+   },
+   "ctaTube": {
+    "default": {
+     "src": "/images/cta-tube.webp",
+     "width": 1448,
+     "height": 1086
+    },
+    "fa": {
+     "src": "/images/fa/cta-tube.webp",
+     "width": 1447,
+     "height": 1087
+    }
+   }
+  }
+ },
+ "page.home.layout": {
+  "sections": [
+   {
+    "id": "hero",
+    "type": "hero",
+    "enabled": true
+   },
+   {
+    "id": "products",
+    "type": "products",
+    "enabled": true
+   },
+   {
+    "id": "applications",
+    "type": "applications",
+    "enabled": true
+   },
+   {
+    "id": "insights",
+    "type": "insights",
+    "enabled": true
+   },
+   {
+    "id": "partners",
+    "type": "partners",
+    "enabled": true
+   },
+   {
+    "id": "certifications",
+    "type": "certifications",
+    "enabled": true
+   }
+  ]
+ },
+ "page.home.hero": {
+  "hero": {
+   "label": {
+    "fa": "ویژه",
+    "en": "Featured",
+    "tr": "Öne çıkan"
+   },
+   "slides": [
+    {
+     "title": [
+      {
+       "fa": "بسته‌بندی،",
+       "en": "Packaging,",
+       "tr": "Ambalaj,"
+      },
+      {
+       "fa": "از نو.",
+       "en": "reimagined.",
+       "tr": "yeniden tasarlandı."
+      }
+     ],
+     "lead": {
+      "fa": "بسته‌بندی با کیفیت بالا برای صنایع آرایشی، دارویی، بهداشتی و غذایی.",
+      "en": "High-quality packaging for cosmetic, pharmaceutical, hygienic and food applications.",
+      "tr": "Kozmetik, ilaç, hijyen ve gıda uygulamaları için yüksek kaliteli ambalaj."
+     },
+     "productsAlt": {
+      "fa": "تیوپ پلاستیکی و تیوپ قرص جوشان آراپوش در میان آب",
+      "en": "Arapoush plastic tube and effervescent tablet tube splashing in water",
+      "tr": "Suya sıçrayan Arapoush plastik tüp ve efervesan tablet tüpü"
+     }
+    },
+    {
+     "title": [
+      {
+       "fa": "بسته‌بندی",
+       "en": "Packaging",
+       "tr": "Ambalaj"
+      },
+      {
+       "fa": "از نو",
+       "en": "reimagined.",
+       "tr": "yeniden tasarlandı."
+      }
+     ],
+     "lead": {
+      "fa": "راهکارهای پیشرفته بسته‌بندی برای صنایع آرایشی، بهداشتی و دارویی",
+      "en": "Advanced packaging solutions for the cosmetic, personal care and pharmaceutical industries.",
+      "tr": "Kozmetik, kişisel bakım ve ilaç sektörleri için gelişmiş ambalaj çözümleri."
+     },
+     "productsAlt": {
+      "fa": "نمونه‌های بسته‌بندی محصولات آرایشی، بهداشتی و دارویی",
+      "en": "Cosmetic, personal care and pharmaceutical packaging samples",
+      "tr": "Kozmetik, kişisel bakım ve ilaç ambalajı örnekleri"
+     }
+    },
+    {
+     "title": [
+      {
+       "fa": "تیوپ‌های چندلایه",
+       "en": "Multi-layered",
+       "tr": "Çok katmanlı"
+      },
+      {
+       "fa": "و یکپارچه.",
+       "en": "seamless tubes.",
+       "tr": "dikişsiz tüpler."
+      }
+     ],
+     "lead": {
+      "fa": "تیوپ‌های قابل سفارشی‌سازی با کارایی بالا، طراحی‌شده برای محافظت از ارزشمندترین محتوا.",
+      "en": "High-performance, customizable tubes engineered to protect what matters inside.",
+      "tr": "İçindekini korumak için tasarlanmış, yüksek performanslı ve özelleştirilebilir tüpler."
+     },
+     "productsAlt": {
+      "fa": "تیوپ چندلایه آراپوش و لایه‌های محافظ آن",
+      "en": "Multi-layer Arapoush tube showing its protective layers",
+      "tr": "Koruyucu katmanlarını gösteren çok katmanlı Arapoush tüpü"
+     }
+    },
+    {
+     "title": [
+      {
+       "fa": "کیفیتی برتر",
+       "en": "Packaging excellence",
+       "tr": "Öncü markalar için"
+      },
+      {
+       "fa": "برای برندهای پیشرو.",
+       "en": "for leading brands.",
+       "tr": "ambalajda mükemmellik."
+      }
+     ],
+     "lead": {
+      "fa": "از ایده‌های نوآورانه تا تولید انبوه و قابل اتکا، بر پایه اعتماد.",
+      "en": "From innovative concepts to reliable mass production, built on trust.",
+      "tr": "Yenilikçi fikirlerden güvenilir seri üretime, güven üzerine kurulu."
+     },
+     "productsAlt": {
+      "fa": "",
+      "en": "",
+      "tr": ""
+     }
+    }
+   ],
+   "quote": {
+    "fa": "درخواست استعلام قیمت",
+    "en": "Request a quote",
+    "tr": "Teklif isteyin"
+   },
+   "story": {
+    "fa": "داستان ما را ببینید",
+    "en": "Watch our story",
+    "tr": "Hikâyemizi izleyin"
+   },
+   "prev": {
+    "fa": "اسلاید قبلی",
+    "en": "Previous slide",
+    "tr": "Önceki slayt"
+   },
+   "next": {
+    "fa": "اسلاید بعدی",
+    "en": "Next slide",
+    "tr": "Sonraki slayt"
+   },
+   "goTo": {
+    "fa": "رفتن به اسلاید",
+    "en": "Go to slide",
+    "tr": "Slayta git"
+   },
+   "slideOf": {
+    "fa": "اسلاید {n} از {total}",
+    "en": "Slide {n} of {total}",
+    "tr": "Slayt {n} / {total}"
+   }
+  },
+  "images": {
+   "slides": [
+    {
+     "id": "products",
+     "tone": "light",
+     "background": {
+      "src": "/images/hero-bg.webp",
+      "width": 3838,
+      "height": 2048
+     },
+     "product": {
+      "src": "/images/hero-products.webp",
+      "width": 1536,
+      "height": 1024
+     }
+    },
+    {
+     "id": "packaging",
+     "tone": "light",
+     "background": {
+      "src": "/images/hero-packaging-ltr.webp",
+      "width": 1671,
+      "height": 941
+     },
+     "backgroundRtl": {
+      "src": "/images/hero-packaging-rtl.webp",
+      "width": 1717,
+      "height": 916
+     },
+     "backgroundMobile": {
+      "src": "/images/hero-packaging-mobile.webp",
+      "width": 941,
+      "height": 1672
+     }
+    },
+    {
+     "id": "tube",
+     "tone": "dark",
+     "background": {
+      "src": "/images/cta-bg.webp",
+      "width": 3840,
+      "height": 1304
+     },
+     "product": {
+      "src": "/images/cta-tube.webp",
+      "width": 1448,
+      "height": 1086
+     }
+    },
+    {
+     "id": "partners",
+     "tone": "light",
+     "background": {
+      "src": "/images/partners-bg.webp",
+      "width": 3840,
+      "height": 2048
+     }
+    }
+   ]
+  }
+ },
+ "page.home.products": {
+  "products": {
+   "eyebrow": {
+    "fa": "محصولات ما",
+    "en": "Our products",
+    "tr": "Ürünlerimiz"
+   },
+   "title": [
+    {
+     "fa": "دو شکل.",
+     "en": "Two forms.",
+     "tr": "İki form."
+    },
+    {
+     "fa": "بی‌نهایت",
+     "en": "Endless",
+     "tr": "Sonsuz"
+    },
+    {
+     "fa": "امکان.",
+     "en": "possibilities",
+     "tr": "olasılık."
+    }
+   ],
+   "lead": {
+    "fa": "بسته‌بندی با کیفیت بالا برای صنایع آرایشی، دارویی، بهداشتی و غذایی.",
+    "en": "High-quality packaging for cosmetic, pharmaceutical, hygienic and food applications.",
+    "tr": "Kozmetik, ilaç, hijyen ve gıda uygulamaları için yüksek kaliteli ambalaj."
+   },
+   "cards": [
+    {
+     "title": [
+      {
+       "fa": "تیوپ پلاستیکی",
+       "en": "Multi-Layered",
+       "tr": "Çok Katmanlı"
+      },
+      {
+       "fa": "چندلایه",
+       "en": "Seamless",
+       "tr": "Dikişsiz"
+      },
+      {
+       "fa": "یکپارچه",
+       "en": "Plastic Tube",
+       "tr": "Plastik Tüp"
+      }
+     ],
+     "text": {
+      "fa": "تیوپ‌های قابل سفارشی‌سازی با کارایی بالا برای صنایع گوناگون.",
+      "en": "High-performance, customizable tubes for various industries.",
+      "tr": "Farklı sektörler için yüksek performanslı, özelleştirilebilir tüpler."
+     }
+    },
+    {
+     "title": [
+      {
+       "fa": "تیوپ",
+       "en": "Effervescent",
+       "tr": "Efervesan"
+      },
+      {
+       "fa": "قرص‌های جوشان",
+       "en": "Tablets Tube",
+       "tr": "Tablet Tüpü"
+      }
+     ],
+     "text": {
+      "fa": "بسته‌بندی کاربردی و قابل اعتماد برای محصولات جوشان.",
+      "en": "Reliable and functional packaging for effervescent products.",
+      "tr": "Efervesan ürünler için güvenilir ve işlevsel ambalaj."
+     }
+    }
+   ],
+   "enquire": {
+    "fa": "استعلام درباره",
+    "en": "Enquire about",
+    "tr": "Bilgi alın:"
+   },
+   "view": {
+    "fa": "مشاهده جزئیات",
+    "en": "View details:",
+    "tr": "Ayrıntıları görün:"
+   }
+  },
+  "images": {
+   "cards": [
+    {
+     "id": "tube",
+     "image": {
+      "default": {
+       "src": "/images/product-tube.webp",
+       "width": 1095,
+       "height": 1436
+      },
+      "fa": {
+       "src": "/images/fa/product-tube.webp",
+       "width": 1095,
+       "height": 1436
+      }
+     }
+    },
+    {
+     "id": "effervescent",
+     "image": {
+      "default": {
+       "src": "/images/product-effervescent.webp",
+       "width": 1095,
+       "height": 1436
+      },
+      "fa": {
+       "src": "/images/fa/product-effervescent.webp",
+       "width": 1094,
+       "height": 1437
+      }
+     }
+    }
+   ],
+   "tablets": {
+    "src": "/images/tablets.webp",
+    "width": 560,
+    "height": 700
+   }
+  }
+ },
+ "page.home.applications": {
+  "applications": {
+   "eyebrow": {
+    "fa": "کاربردها",
+    "en": "Applications",
+    "tr": "Uygulamalar"
+   },
+   "title": [
+    {
+     "fa": "بسته‌بندی برای",
+     "en": "Packaging for",
+     "tr": "Her olasılık"
+    },
+    {
+     "fa": "هر امکانی",
+     "en": "every possibility",
+     "tr": "için ambalaj"
+    }
+   ],
+   "lead": {
+    "fa": "راهکارهای بسته‌بندی ما در طیف گسترده‌ای از صنایع به کار می‌روند و به برندها کمک می‌کنند کیفیت، ایمنی و تجربه‌ای بهتر ارائه دهند.",
+    "en": "Our packaging solutions are used across a wide range of industries, helping brands deliver quality, safety and better experiences.",
+    "tr": "Ambalaj çözümlerimiz pek çok sektörde kullanılır ve markaların kalite, güvenlik ve daha iyi deneyim sunmasına yardımcı olur."
+   },
+   "explore": {
+    "fa": "مشاهده",
+    "en": "Explore",
+    "tr": "Keşfet"
+   },
+   "items": [
+    {
+     "title": {
+      "fa": "آرایشی",
+      "en": "Cosmetics",
+      "tr": "Kozmetik"
+     },
+     "text": {
+      "fa": "بسته‌بندی ممتاز برای برندهای زیبایی و مراقبت شخصی.",
+      "en": "Premium packaging for beauty and personal care brands.",
+      "tr": "Güzellik ve kişisel bakım markaları için premium ambalaj."
+     }
+    },
+    {
+     "title": {
+      "fa": "دارویی",
+      "en": "Pharmaceutical",
+      "tr": "İlaç"
+     },
+     "text": {
+      "fa": "بسته‌بندی ایمن و مطمئن برای فردایی سالم‌تر.",
+      "en": "Safe, reliable packaging for a healthier tomorrow.",
+      "tr": "Daha sağlıklı bir yarın için güvenli, güvenilir ambalaj."
+     }
+    },
+    {
+     "title": {
+      "fa": "بهداشتی",
+      "en": "Hygienic",
+      "tr": "Hijyen"
+     },
+     "text": {
+      "fa": "راهکارهای قابل اعتماد برای مراقبت و سلامت روزانه.",
+      "en": "Trusted solutions for daily care and well-being.",
+      "tr": "Günlük bakım ve sağlık için güvenilir çözümler."
+     }
+    },
+    {
+     "title": {
+      "fa": "غذا و نوشیدنی",
+      "en": "Food & Beverage",
+      "tr": "Gıda ve İçecek"
+     },
+     "text": {
+      "fa": "بسته‌بندی کاربردی و بادوام برای محصولات روزمره.",
+      "en": "Practical and durable packaging for everyday products.",
+      "tr": "Günlük ürünler için pratik ve dayanıklı ambalaj."
+     }
+    }
+   ]
+  },
+  "images": {
+   "items": [
+    {
+     "id": "cosmetics",
+     "image": {
+      "src": "/images/app-cosmetics.webp",
+      "width": 712,
+      "height": 1010
+     }
+    },
+    {
+     "id": "pharma",
+     "image": {
+      "src": "/images/app-pharma.webp",
+      "width": 712,
+      "height": 930
+     }
+    },
+    {
+     "id": "hygienic",
+     "image": {
+      "src": "/images/app-hygienic.webp",
+      "width": 712,
+      "height": 910
+     }
+    },
+    {
+     "id": "food",
+     "image": {
+      "src": "/images/app-food.webp",
+      "width": 712,
+      "height": 930
+     }
+    }
+   ]
+  }
+ },
+ "page.home.insights": {
+  "insights": {
+   "eyebrow": {
+    "fa": "دیدگاه‌ها و ژورنال",
+    "en": "Insights & journal",
+    "tr": "Görüşler ve günlük"
+   },
+   "title": [
+    {
+     "fa": "ایده‌های امروز",
+     "en": "Ideas Today",
+     "tr": "Bugünün fikirleri,"
+    },
+    {
+     "fa": "برای فردایی",
+     "en": "for a better",
+     "tr": "daha iyi bir"
+    },
+    {
+     "fa": "بهتر",
+     "en": "tomorrow",
+     "tr": "yarın için"
+    }
+   ],
+   "lead": {
+    "fa": "روندهای صنعت، نوآوری‌ها و دیدگاه‌هایی درباره بسته‌بندی، پایداری و بیشتر.",
+    "en": "Industry trends, innovations and perspectives on packaging, sustainability and more.",
+    "tr": "Ambalaj, sürdürülebilirlik ve daha fazlası üzerine sektör trendleri, yenilikler ve bakış açıları."
+   },
+   "viewAll": {
+    "fa": "مشاهده همه مقالات",
+    "en": "View all articles",
+    "tr": "Tüm makaleler"
+   },
+   "listLabel": {
+    "fa": "مقالات",
+    "en": "Articles",
+    "tr": "Makaleler"
+   },
+   "prev": {
+    "fa": "مقالات قبلی",
+    "en": "Previous articles",
+    "tr": "Önceki makaleler"
+   },
+   "next": {
+    "fa": "مقالات بعدی",
+    "en": "Next articles",
+    "tr": "Sonraki makaleler"
+   },
+   "articles": [
+    {
+     "category": {
+      "fa": "پایداری",
+      "en": "Sustainability",
+      "tr": "Sürdürülebilirlik"
+     },
+     "tag": {
+      "fa": "پایداری",
+      "en": "sustainability",
+      "tr": "sürdürülebilirlik"
+     },
+     "title": {
+      "fa": "آینده بسته‌بندی پایدار در صنعت دارو",
+      "en": "The Future of Sustainable Packaging in Pharma",
+      "tr": "İlaç Sektöründe Sürdürülebilir Ambalajın Geleceği"
+     },
+     "text": {
+      "fa": "تیوپ‌های قابل سفارشی‌سازی با کارایی بالا برای صنایع گوناگون.",
+      "en": "High-performance, customizable tubes for various industries.",
+      "tr": "Farklı sektörler için yüksek performanslı, özelleştirilebilir tüpler."
+     }
+    },
+    {
+     "category": {
+      "fa": "نوآوری",
+      "en": "Innovation",
+      "tr": "İnovasyon"
+     },
+     "tag": {
+      "fa": "فناوری",
+      "en": "technology",
+      "tr": "teknoloji"
+     },
+     "title": {
+      "fa": "آشنایی با فناوری تیوپ‌های چندلایه",
+      "en": "Understanding Multi-Layer Tube Technology",
+      "tr": "Çok Katmanlı Tüp Teknolojisini Anlamak"
+     },
+     "text": {
+      "fa": "ببینید ساختارهای چندلایه چگونه محافظت، کارایی و ماندگاری محصول را بهبود می‌دهند.",
+      "en": "Explore how multi-layer structures enhance product protection, performance and shelf life.",
+      "tr": "Çok katmanlı yapıların ürün korumasını, performansı ve raf ömrünü nasıl artırdığını keşfedin."
+     }
+    },
+    {
+     "category": {
+      "fa": "روندهای صنعت",
+      "en": "Industry trends",
+      "tr": "Sektör trendleri"
+     },
+     "tag": {
+      "fa": "روندهای صنعت",
+      "en": "industry trends",
+      "tr": "sektör trendleri"
+     },
+     "title": {
+      "fa": "محافظت چندلایه برای ماندگاری بیشتر",
+      "en": "Multi-Layered Protection for a Longer Shelf Life",
+      "tr": "Daha Uzun Raf Ömrü için Çok Katmanlı Koruma"
+     },
+     "text": {
+      "fa": "ببینید مواد و طراحی پیشرفته چگونه بسته‌بندی ایمن‌تر و مؤثرتری برای بازارهای امروز می‌سازند.",
+      "en": "Discover how advanced materials and design create safer, more effective packaging for today's demanding markets.",
+      "tr": "Gelişmiş malzeme ve tasarımın günümüz pazarları için nasıl daha güvenli ve etkili ambalaj yarattığını keşfedin."
+     }
+    }
+   ]
+  },
+  "images": {
+   "articles": [
+    {
+     "id": "journal-1",
+     "image": {
+      "src": "/images/journal-1.webp",
+      "width": 960,
+      "height": 1199
+     }
+    },
+    {
+     "id": "journal-2",
+     "image": {
+      "src": "/images/journal-2.webp",
+      "width": 960,
+      "height": 1199
+     }
+    },
+    {
+     "id": "journal-3",
+     "image": {
+      "src": "/images/journal-3.webp",
+      "width": 960,
+      "height": 1199
+     }
+    }
+   ]
+  }
+ },
+ "page.home.partners": {
+  "partners": {
+   "eyebrow": {
+    "fa": "همکاران مورد اعتماد",
+    "en": "Trusted partner",
+    "tr": "Güvenilir iş ortağı"
+   },
+   "title": [
+    {
+     "fa": "کیفیتی برتر",
+     "en": "Packaging Excellence",
+     "tr": "Öncü markalar için"
+    },
+    {
+     "fa": "برای برندهای پیشرو",
+     "en": "for Leading Brands",
+     "tr": "ambalajda mükemmellik"
+    }
+   ],
+   "lead": [
+    {
+     "fa": "از ایده‌های نوآورانه تا تولید انبوه و قابل اتکا،",
+     "en": "From innovative concepts to reliable mass production,",
+     "tr": "Yenilikçi fikirlerden güvenilir seri üretime,"
+    },
+    {
+     "fa": "با برندهای جهانی و منطقه‌ای همکاری می‌کنیم تا راهکارهای بسته‌بندی باکیفیت و مبتنی بر اعتماد ارائه دهیم.",
+     "en": "we partner with global and regional brands to deliver high-quality packaging solutions, built on trust.",
+     "tr": "küresel ve bölgesel markalarla güvene dayalı, yüksek kaliteli ambalaj çözümleri sunuyoruz."
+    }
+   ],
+   "stats": [
+    {
+     "label": {
+      "fa": "سال تجربه",
+      "en": "Years of Expertise",
+      "tr": "Yıllık Deneyim"
+     },
+     "sub": {
+      "fa": "در راهکارهای بسته‌بندی",
+      "en": "in packaging solutions",
+      "tr": "ambalaj çözümlerinde"
+     }
+    },
+    {
+     "label": {
+      "fa": "برند همکار",
+      "en": "Brands Supported",
+      "tr": "Desteklenen Marka"
+     },
+     "sub": {
+      "fa": "در بازارهای جهانی",
+      "en": "across global markets",
+      "tr": "küresel pazarlarda"
+     }
+    },
+    {
+     "label": {
+      "fa": "واحد تولید",
+      "en": "Units Produced",
+      "tr": "Üretilen Adet"
+     },
+     "sub": {
+      "fa": "در سال",
+      "en": "annually",
+      "tr": "her yıl"
+     }
+    },
+    {
+     "label": {
+      "fa": "تحویل به‌موقع",
+      "en": "On-Time Delivery",
+      "tr": "Zamanında Teslimat"
+     },
+     "sub": {
+      "fa": "زنجیره تأمین مطمئن",
+      "en": "trusted supply chain",
+      "tr": "güvenilir tedarik zinciri"
+     }
+    }
+   ],
+   "brands": {
+    "fa": "برندهای همکار",
+    "en": "Partner brands",
+    "tr": "İş ortağı markalar"
+   },
+   "prev": {
+    "fa": "لوگوهای قبلی",
+    "en": "Previous partner logos",
+    "tr": "Önceki logolar"
+   },
+   "next": {
+    "fa": "لوگوهای بعدی",
+    "en": "Next partner logos",
+    "tr": "Sonraki logolar"
+   }
+  },
+  "images": {
+   "background": {
+    "default": {
+     "src": "/images/partners-bg.webp",
+     "width": 3840,
+     "height": 2048
+    },
+    "fa": {
+     "src": "/images/fa/partners-bg.webp",
+     "width": 1672,
+     "height": 941
+    }
+   },
+   "logos": [
+    {
+     "id": "hydroderm",
+     "name": "Hydroderm",
+     "image": {
+      "src": "/images/logo-hydroderm.svg",
+      "width": 190,
+      "height": 81
+     }
+    },
+    {
+     "id": "cerita",
+     "name": "Cerita Hair Care",
+     "image": {
+      "src": "/images/logo-cerita.png",
+      "width": 440,
+      "height": 293
+     }
+    },
+    {
+     "id": "jute",
+     "name": "Jute Cosmetics",
+     "image": {
+      "src": "/images/logo-jute.png",
+      "width": 300,
+      "height": 300
+     }
+    },
+    {
+     "id": "prime",
+     "name": "Prime",
+     "image": {
+      "src": "/images/logo-prime.png",
+      "width": 440,
+      "height": 293
+     }
+    }
+   ]
+  }
+ },
+ "page.home.certifications": {
+  "certifications": {
+   "eyebrow": {
+    "fa": "گواهینامه‌ها",
+    "en": "Certifications",
+    "tr": "Sertifikalar"
+   },
+   "title": [
+    {
+     "fa": "کیفیتی که همیشه",
+     "en": "Quality You Can",
+     "tr": "Her zaman"
+    },
+    {
+     "fa": "می‌توانید به آن اعتماد کنید",
+     "en": "Always Trust",
+     "tr": "güvenebileceğiniz kalite"
+    }
+   ],
+   "lead": {
+    "fa": "راهکارهای بسته‌بندی ما بر اساس استانداردهای معتبر بین‌المللی توسعه می‌یابند تا ایمنی، کیفیت و یکپارچگی در هر مرحله تضمین شود.",
+    "en": "Our packaging solutions are developed under internationally recognized standards, ensuring safety, quality and consistency across every stage.",
+    "tr": "Ambalaj çözümlerimiz uluslararası kabul görmüş standartlara göre geliştirilir; her aşamada güvenlik, kalite ve tutarlılık sağlanır."
+   },
+   "items": [
+    {
+     "name": {
+      "fa": "روش‌های خوب تولید",
+      "en": "Good Manufacturing Practice",
+      "tr": "İyi Üretim Uygulamaları"
+     },
+     "text": {
+      "fa": "کیفیت یکنواخت با فرایندهای کنترل‌شده و تأییدشده.",
+      "en": "Consistent quality through controlled and certified processes.",
+      "tr": "Kontrollü ve sertifikalı süreçlerle tutarlı kalite."
+     }
+    },
+    {
+     "name": {
+      "fa": "سیستم مدیریت کیفیت",
+      "en": "Quality Management System",
+      "tr": "Kalite Yönetim Sistemi"
+     },
+     "text": {
+      "fa": "فرایندهای ساختارمند برای برتری پایدار و قابل اتکا.",
+      "en": "Structured processes for reliable and consistent excellence.",
+      "tr": "Güvenilir ve tutarlı mükemmellik için yapılandırılmış süreçler."
+     }
+    },
+    {
+     "name": {
+      "fa": "ایمنی، کیفیت و انطباق",
+      "en": "Safety, Quality & Compliance",
+      "tr": "Güvenlik, Kalite ve Uyum"
+     },
+     "text": {
+      "fa": "پشتیبانی از ایمنی محصول، استانداردهای کیفی و الزامات قانونی.",
+      "en": "Supporting product safety, quality standards and regulatory compliance.",
+      "tr": "Ürün güvenliğini, kalite standartlarını ve mevzuata uyumu destekler."
+     }
+    },
+    {
+     "name": {
+      "fa": "کیفیت، ایمنی و اطمینان",
+      "en": "Quality, Safety & Reliability",
+      "tr": "Kalite, Güvenlik ve Güvenilirlik"
+     },
+     "text": {
+      "fa": "ترویج کیفیت پایدار و انطباق با استانداردهای ملی.",
+      "en": "Promoting consistent quality and compliance with national standards.",
+      "tr": "Ulusal standartlara uyum ve tutarlı kaliteyi teşvik eder."
+     }
+    }
+   ],
+   "learnMore": {
+    "fa": "بیشتر بدانید",
+    "en": "Learn more",
+    "tr": "Daha fazla"
+   },
+   "seal": {
+    "fa": "مهر گواهینامه",
+    "en": "certification seal",
+    "tr": "sertifika mührü"
+   },
+   "features": [
+    {
+     "title": {
+      "fa": "فرایندهای تأییدشده",
+      "en": "Certified processes",
+      "tr": "Sertifikalı süreçler"
+     },
+     "text": {
+      "fa": "از مواد اولیه تا بسته‌بندی نهایی",
+      "en": "From materials to finished packaging",
+      "tr": "Hammaddeden bitmiş ambalaja"
+     }
+    },
+    {
+     "title": {
+      "fa": "ایمن‌تر برای انسان و زمین",
+      "en": "Safer for people & planet",
+      "tr": "İnsan ve gezegen için daha güvenli"
+     },
+     "text": {
+      "fa": "کیفیت همراه با مسئولیت",
+      "en": "Quality with responsibility",
+      "tr": "Sorumlulukla kalite"
+     }
+    },
+    {
+     "title": {
+      "fa": "استانداردهای جهانی",
+      "en": "Global standards",
+      "tr": "Küresel standartlar"
+     },
+     "text": {
+      "fa": "مورد اعتماد برندهای پیشرو",
+      "en": "Trusted by leading brands",
+      "tr": "Öncü markaların güveni"
+     }
+    }
+   ]
+  },
+  "images": {
+   "background": {
+    "src": "/images/cert-bg.webp",
+    "width": 2861,
+    "height": 2091
+   },
+   "seals": [
+    {
+     "id": "gmp",
+     "image": {
+      "src": "/images/cert-gmp.webp",
+      "width": 480,
+      "height": 480
+     }
+    },
+    {
+     "id": "iso",
+     "image": {
+      "src": "/images/cert-iso.webp",
+      "width": 480,
+      "height": 480
+     }
+    },
+    {
+     "id": "ifda",
+     "image": {
+      "src": "/images/cert-ifda.webp",
+      "width": 480,
+      "height": 480
+     }
+    },
+    {
+     "id": "inso",
+     "image": {
+      "src": "/images/cert-inso.webp",
+      "width": 480,
+      "height": 480
+     }
+    }
+   ]
+  }
+ },
+ "product.tube.page": {
+  "productTube": {
+   "meta": {
+    "title": {
+     "fa": "تیوپ پلاستیکی چندلایه بدون درز — آراپوش گستر",
+     "en": "Multi-Layered Seamless Plastic Tube — Arapoush Gostar",
+     "tr": "Çok Katmanlı Dikişsiz Plastik Tüp — Arapoush Gostar"
+    },
+    "description": {
+     "fa": "تیوپ‌های پلاستیکی چندلایه (PE/EVOH) بدون درز برای محصولات دارویی، آرایشی و بهداشتی. محاسبه حجم تیوپ بر اساس قطر و طول.",
+     "en": "Multi-layer (PE/EVOH) seamless plastic tubes for pharmaceutical, cosmetic and personal care products. Calculate tube volume by diameter and length.",
+     "tr": "İlaç, kozmetik ve kişisel bakım ürünleri için çok katmanlı (PE/EVOH) dikişsiz plastik tüpler. Çap ve uzunluğa göre tüp hacmini hesaplayın."
+    }
+   },
+   "breadcrumb": {
+    "fa": "محصولات",
+    "en": "Products",
+    "tr": "Ürünler"
+   },
+   "eyebrow": {
+    "fa": "محصولات ما",
+    "en": "Our products",
+    "tr": "Ürünlerimiz"
+   },
+   "title": [
+    {
+     "fa": "تیوپ پلاستیکی",
+     "en": "Multi-Layered",
+     "tr": "Çok Katmanlı"
+    },
+    {
+     "fa": "چندلایه",
+     "en": "Seamless",
+     "tr": "Dikişsiz"
+    },
+    {
+     "fa": "بدون درز",
+     "en": "Plastic Tube",
+     "tr": "Plastik Tüp"
+    }
+   ],
+   "lead": {
+    "fa": "بسته‌بندی با عملکرد بالا، بادوام و دوستدار محیط‌زیست برای صنایع دارویی، آرایشی و بهداشتی.",
+    "en": "High-performance, versatile and sustainable packaging for pharmaceutical, cosmetic and personal care products.",
+    "tr": "İlaç, kozmetik ve kişisel bakım ürünleri için yüksek performanslı, çok yönlü ve sürdürülebilir ambalaj."
+   },
+   "quote": {
+    "fa": "درخواست استعلام",
+    "en": "Request a quote",
+    "tr": "Teklif isteyin"
+   },
+   "video": {
+    "fa": "تماشای ویدیو",
+    "en": "Watch video",
+    "tr": "Videoyu izle"
+   },
+   "features": [
+    {
+     "fa": "ساختار چندلایه",
+     "en": "Multi-layer structure",
+     "tr": "Çok katmanlı yapı"
+    },
+    {
+     "fa": "محافظت سد بالا",
+     "en": "High barrier protection",
+     "tr": "Yüksek bariyer koruması"
+    },
+    {
+     "fa": "سبک و بادوام",
+     "en": "Lightweight & durable",
+     "tr": "Hafif ve dayanıklı"
+    },
+    {
+     "fa": "مواد قابل بازیافت",
+     "en": "Recyclable materials",
+     "tr": "Geri dönüştürülebilir malzeme"
+    }
+   ],
+   "layers": {
+    "title": {
+     "fa": "ساختار چندلایه",
+     "en": "Multi-layer structure",
+     "tr": "Çok katmanlı yapı"
+    },
+    "lead": {
+     "fa": "عملکرد سدی مهندسی‌شده با فناوری پیشرفته هم‌اکستروژن.",
+     "en": "Engineered barrier performance with advanced co-extrusion technology.",
+     "tr": "Gelişmiş ko-ekstrüzyon teknolojisiyle tasarlanmış bariyer performansı."
+    }
+   },
+   "configurator": {
+    "samplesEyebrow": {
+     "fa": "نمونه محصولات",
+     "en": "Product samples",
+     "tr": "Ürün örnekleri"
+    },
+    "samplesTitle": {
+     "fa": "نمونه‌های مرتبط با انتخاب شما",
+     "en": "Samples for your selection",
+     "tr": "Seçiminize uygun örnekler"
+    },
+    "samplesLead": {
+     "fa": "تیوپ‌هایی که در همین شکل تولید کرده‌ایم — نزدیک‌ترین‌ها به درب و ابعاد انتخابی شما اول آمده‌اند.",
+     "en": "Tubes we have produced in the shape you picked — the closest matches to your closure and size come first.",
+     "tr": "Seçtiğiniz şekilde ürettiğimiz tüpler — kapak ve ölçünüze en yakın olanlar önce gelir."
+    },
+    "samplesMatch": {
+     "fa": "منطبق با انتخاب شما",
+     "en": "Matches your selection",
+     "tr": "Seçiminizle eşleşiyor"
+    },
+    "samplesSimilar": {
+     "fa": "همین شکل",
+     "en": "Same shape",
+     "tr": "Aynı şekil"
+    },
+    "samplesEmpty": {
+     "fa": "هنوز نمونه‌ای برای این شکل ثبت نشده — درخواست دهید تا تصاویر را بفرستیم.",
+     "en": "No samples for this shape yet — ask us and we'll send photos.",
+     "tr": "Bu şekil için henüz örnek yok — isteyin, fotoğraf gönderelim."
+    },
+    "useSample": {
+     "fa": "اعمال این پیکربندی",
+     "en": "Apply this configuration",
+     "tr": "Bu yapılandırmayı uygula"
+    },
+    "eyebrow": {
+     "fa": "پیکربندی تیوپ",
+     "en": "Tube configurator",
+     "tr": "Tüp yapılandırıcı"
+    },
+    "title": {
+     "fa": "تیوپ خود را پیکربندی کنید",
+     "en": "Configure your tube",
+     "tr": "Tüpünüzü yapılandırın"
+    },
+    "lead": {
+     "fa": "قطر، طول، شکل و درب را انتخاب کنید، مدل سه‌بعدی را ببینید و حجم کاتالوگی محصولتان را بدانید.",
+     "en": "Choose diameter, length, shape and closure, inspect the 3D model and see the catalogue volume for your product.",
+     "tr": "Çap, uzunluk, şekil ve kapağı seçin, 3D modeli inceleyin ve ürününüz için katalog hacmini görün."
+    },
+    "diameter": {
+     "fa": "قطر",
+     "en": "Diameter",
+     "tr": "Çap"
+    },
+    "length": {
+     "fa": "طول",
+     "en": "Length",
+     "tr": "Uzunluk"
+    },
+    "shape": {
+     "fa": "شکل تیوپ",
+     "en": "Tube shape",
+     "tr": "Tüp şekli"
+    },
+    "closure": {
+     "fa": "درب",
+     "en": "Closure",
+     "tr": "Kapak"
+    },
+    "mm": {
+     "fa": "میلی‌متر",
+     "en": "mm",
+     "tr": "mm"
+    },
+    "ml": {
+     "fa": "میلی‌لیتر",
+     "en": "ml",
+     "tr": "ml"
+    },
+    "toConfirm": {
+     "fa": "نیازمند تأیید",
+     "en": "To be confirmed",
+     "tr": "Onay gerekli"
+    },
+    "notOffered": {
+     "fa": "برای قطر {d} ارائه نمی‌شود",
+     "en": "Not offered for Ø{d}",
+     "tr": "Ø{d} için sunulmuyor"
+    },
+    "volume": {
+     "fa": "حجم اسمی",
+     "en": "Nominal volume",
+     "tr": "Nominal hacim"
+    },
+    "statusChart": {
+     "fa": "تقریبی · جدول ابعاد آراپوش",
+     "en": "Indicative · Arapoush size chart",
+     "tr": "Yaklaşık · Arapoush ölçü tablosu"
+    },
+    "statusEstimate": {
+     "fa": "برآورد · در انتظار تأیید کارخانه",
+     "en": "Estimate · awaiting factory confirmation",
+     "tr": "Tahmin · fabrika onayı bekleniyor"
+    },
+    "noVolume": {
+     "fa": "برای ظرفیت تأییدشده با ما تماس بگیرید",
+     "en": "Contact us for confirmed capacity",
+     "tr": "Onaylı kapasite için bize ulaşın"
+    },
+    "confirmNote": {
+     "fa": "{closure} برای این ابعاد به‌صورت سفارشی ارائه می‌شود — سازگاری آن در پیش‌فاکتور تأیید می‌شود.",
+     "en": "{closure} on this size is available on request — Arapoush will confirm compatibility in your quote.",
+     "tr": "{closure} bu ölçüde talep üzerine sunulur — uyumluluk teklifinizde onaylanır."
+    },
+    "specShape": {
+     "fa": "شکل تیوپ",
+     "en": "Tube shape",
+     "tr": "Tüp şekli"
+    },
+    "specSize": {
+     "fa": "ابعاد",
+     "en": "Size",
+     "tr": "Ölçü"
+    },
+    "specClosure": {
+     "fa": "درب",
+     "en": "Closure",
+     "tr": "Kapak"
+    },
+    "specStructure": {
+     "fa": "ساختار",
+     "en": "Structure",
+     "tr": "Yapı"
+    },
+    "sameVolume": {
+     "fa": "همین حجم در ابعاد دیگر",
+     "en": "Same volume also as",
+     "tr": "Aynı hacim şu ölçülerde de"
+    },
+    "viewerLabel": {
+     "fa": "مدل سه‌بعدی: تیوپ {shape}، {d} × {l} میلی‌متر، {closure}. با کلیدهای جهت بچرخانید و با + و − بزرگ‌نمایی کنید.",
+     "en": "3D model: {shape} tube, Ø{d} × {l} mm, {closure}. Arrow keys rotate, plus and minus zoom.",
+     "tr": "3D model: {shape} tüp, Ø{d} × {l} mm, {closure}. Ok tuşlarıyla döndürün, artı ve eksiyle yakınlaştırın."
+    },
+    "loading": {
+     "fa": "در حال بارگذاری مدل سه‌بعدی…",
+     "en": "Loading 3D model…",
+     "tr": "3D model yükleniyor…"
+    },
+    "noWebgl": {
+     "fa": "نمایش سه‌بعدی در این مرورگر در دسترس نیست — پیکربندی و حجم همچنان کار می‌کنند.",
+     "en": "3D preview isn't available in this browser — the configuration and volume still work.",
+     "tr": "Bu tarayıcıda 3D önizleme kullanılamıyor — yapılandırma ve hacim yine de çalışır."
+    },
+    "hint": {
+     "fa": "برای چرخش بکشید · برای بزرگ‌نمایی اسکرول یا دو انگشت",
+     "en": "Drag to rotate · scroll or pinch to zoom",
+     "tr": "Döndürmek için sürükleyin · yakınlaştırmak için kaydırın veya iki parmak"
+    },
+    "autoRotate": {
+     "fa": "چرخش خودکار",
+     "en": "Auto-rotate",
+     "tr": "Otomatik döndür"
+    },
+    "zoomIn": {
+     "fa": "بزرگ‌نمایی",
+     "en": "Zoom in",
+     "tr": "Yakınlaştır"
+    },
+    "zoomOut": {
+     "fa": "کوچک‌نمایی",
+     "en": "Zoom out",
+     "tr": "Uzaklaştır"
+    },
+    "dimensions": {
+     "fa": "ابعاد",
+     "en": "Dimensions",
+     "tr": "Ölçüler"
+    },
+    "inspect": {
+     "fa": "بررسی لایه‌ها",
+     "en": "Inspect layers",
+     "tr": "Katmanları incele"
+    },
+    "reset": {
+     "fa": "بازنشانی نما",
+     "en": "Reset view",
+     "tr": "Görünümü sıfırla"
+    },
+    "fullscreen": {
+     "fa": "تمام‌صفحه",
+     "en": "Full screen",
+     "tr": "Tam ekran"
+    },
+    "notToScale": {
+     "fa": "شماتیک — ضخامت لایه‌ها به مقیاس نیست",
+     "en": "Schematic — layer thickness not to scale",
+     "tr": "Şematik — katman kalınlıkları ölçekli değil"
+    },
+    "snapshot": {
+     "fa": "ذخیره تصویر",
+     "en": "Save image",
+     "tr": "Görseli kaydet"
+    },
+    "share": {
+     "fa": "اشتراک لینک",
+     "en": "Share link",
+     "tr": "Bağlantıyı paylaş"
+    },
+    "copied": {
+     "fa": "لینک کپی شد",
+     "en": "Link copied",
+     "tr": "Bağlantı kopyalandı"
+    },
+    "quoteCta": {
+     "fa": "استعلام قیمت همین تیوپ",
+     "en": "Request a quote for this tube",
+     "tr": "Bu tüp için teklif isteyin"
+    },
+    "disclaimer": {
+     "fa": "حجم‌ها، حجم اسمی پرشدن طبق جدول ابعاد آراپوش هستند و تا تأیید در پیش‌فاکتور تقریبی‌اند. مدل سه‌بعدی راهنمای بصری است، نه نقشه تولید.",
+     "en": "Volumes are nominal fill values from the Arapoush size chart and stay indicative until confirmed in your quotation. The 3D model is a visual guide, not production CAD.",
+     "tr": "Hacimler Arapoush ölçü tablosundaki nominal dolum değerleridir ve teklifinizde onaylanana kadar yaklaşıktır. 3D model görsel bir rehberdir, üretim CAD'i değildir."
+    },
+    "quoteTitle": {
+     "fa": "استعلام قیمت",
+     "en": "Request a quote",
+     "tr": "Teklif isteyin"
+    },
+    "quoteLead": {
+     "fa": "این پیکربندی را برای ما بفرستید — ظرفیت تأییدشده، سازگاری درب و قیمت را اعلام می‌کنیم.",
+     "en": "Send us this configuration — we'll reply with confirmed capacity, closure compatibility and pricing.",
+     "tr": "Bu yapılandırmayı bize gönderin — onaylı kapasite, kapak uyumluluğu ve fiyatla dönelim."
+    },
+    "quoteConfig": {
+     "fa": "پیکربندی انتخاب‌شده",
+     "en": "Selected configuration",
+     "tr": "Seçilen yapılandırma"
+    },
+    "name": {
+     "fa": "نام و نام خانوادگی",
+     "en": "Full name",
+     "tr": "Ad soyad"
+    },
+    "company": {
+     "fa": "شرکت",
+     "en": "Company",
+     "tr": "Şirket"
+    },
+    "email": {
+     "fa": "ایمیل",
+     "en": "Email",
+     "tr": "E-posta"
+    },
+    "phone": {
+     "fa": "تلفن",
+     "en": "Phone",
+     "tr": "Telefon"
+    },
+    "quantity": {
+     "fa": "تعداد تقریبی (عدد)",
+     "en": "Estimated quantity (pcs)",
+     "tr": "Tahmini adet"
+    },
+    "message": {
+     "fa": "توضیحات — چاپ، رنگ، محصول",
+     "en": "Notes — print, colour, product",
+     "tr": "Notlar — baskı, renk, ürün"
+    },
+    "optional": {
+     "fa": "اختیاری",
+     "en": "optional",
+     "tr": "isteğe bağlı"
+    },
+    "submit": {
+     "fa": "ارسال با ایمیل",
+     "en": "Send by email",
+     "tr": "E-postayla gönder"
+    },
+    "submitHint": {
+     "fa": "برنامه ایمیل شما با همه اطلاعات، خطاب به {email} باز می‌شود.",
+     "en": "Opens your email app with everything filled in, addressed to {email}.",
+     "tr": "E-posta uygulamanız her şey doldurulmuş olarak {email} adresine açılır."
+    },
+    "required": {
+     "fa": "لطفاً این بخش را پر کنید",
+     "en": "Please fill this in",
+     "tr": "Lütfen doldurun"
+    },
+    "invalidEmail": {
+     "fa": "یک ایمیل معتبر وارد کنید",
+     "en": "Enter a valid email address",
+     "tr": "Geçerli bir e-posta girin"
+    },
+    "invalidQuantity": {
+     "fa": "فقط عدد وارد کنید",
+     "en": "Use numbers only",
+     "tr": "Yalnızca rakam kullanın"
+    },
+    "subject": {
+     "fa": "استعلام قیمت — {spec}",
+     "en": "Quote request — {spec}",
+     "tr": "Teklif talebi — {spec}"
+    },
+    "linkLabel": {
+     "fa": "لینک پیکربندی",
+     "en": "Configuration link",
+     "tr": "Yapılandırma bağlantısı"
+    }
+   }
+  },
+  "images": {
+   "hero": {
+    "ltr": "/images/product/hero-ltr.webp",
+    "rtl": "/images/product/hero-rtl.webp",
+    "width": 1672,
+    "height": 941,
+    "alt": {
+     "fa": "تیوپ پلاستیکی چندلایه بدون درز آراپوش روی پس‌زمینه ابریشمی",
+     "en": "Arapoush multi-layered seamless plastic tube on a silk background",
+     "tr": "İpek zemin üzerinde Arapoush çok katmanlı dikişsiz plastik tüp"
+    }
+   },
+   "layers": {
+    "ltr": "/images/product/layers-ltr.webp",
+    "rtl": "/images/product/layers-rtl.webp",
+    "width": 1672,
+    "height": 941,
+    "alt": {
+     "fa": "برش تیوپ چندلایه که لایه‌های داخلی را نشان می‌دهد",
+     "en": "Cut-away of a multi-layer tube showing its inner layers",
+     "tr": "İç katmanlarını gösteren çok katmanlı tüp kesiti"
+    }
+   }
+  }
+ },
+ "product.tube.catalogue": {
+  "version": 2,
+  "updated": "2026-11-02",
+  "shapes": [
+   {
+    "id": "circular",
+    "model": "circular",
+    "name": {
+     "fa": "گرد",
+     "en": "Circular",
+     "tr": "Yuvarlak"
+    },
+    "image": "/images/product/tube-circular.webp",
+    "sizes": {
+     "19": [
+      {
+       "l": 50,
+       "ml": 5,
+       "status": "chart"
+      },
+      {
+       "l": 65,
+       "ml": 10,
+       "status": "chart"
+      },
+      {
+       "l": 84,
+       "ml": 15,
+       "status": "chart"
+      },
+      {
+       "l": 102,
+       "ml": 20,
+       "status": "chart"
+      }
+     ],
+     "25": [
+      {
+       "l": 65,
+       "ml": 15,
+       "status": "chart"
+      },
+      {
+       "l": 76,
+       "ml": 20,
+       "status": "chart"
+      },
+      {
+       "l": 85,
+       "ml": 25,
+       "status": "chart"
+      },
+      {
+       "l": 96,
+       "ml": 30,
+       "status": "chart"
+      },
+      {
+       "l": 105,
+       "ml": 35,
+       "status": "chart"
+      },
+      {
+       "l": 115,
+       "ml": 40,
+       "status": "chart"
+      },
+      {
+       "l": 135,
+       "ml": 50,
+       "status": "chart"
+      }
+     ],
+     "30": [
+      {
+       "l": 80,
+       "ml": 30,
+       "status": "chart"
+      },
+      {
+       "l": 85,
+       "ml": 35,
+       "status": "chart"
+      },
+      {
+       "l": 95,
+       "ml": 40,
+       "status": "chart"
+      },
+      {
+       "l": 110,
+       "ml": 50,
+       "status": "chart"
+      },
+      {
+       "l": 124,
+       "ml": 60,
+       "status": "chart"
+      },
+      {
+       "l": 142,
+       "ml": 75,
+       "status": "chart"
+      },
+      {
+       "l": 149,
+       "ml": 80,
+       "status": "chart"
+      }
+     ],
+     "35": [
+      {
+       "l": 82,
+       "ml": 40,
+       "status": "chart"
+      },
+      {
+       "l": 90,
+       "ml": 50,
+       "status": "chart"
+      },
+      {
+       "l": 100,
+       "ml": 60,
+       "status": "chart"
+      },
+      {
+       "l": 120,
+       "ml": 75,
+       "status": "chart"
+      },
+      {
+       "l": 125,
+       "ml": 80,
+       "status": "chart"
+      },
+      {
+       "l": 137,
+       "ml": 90,
+       "status": "chart"
+      },
+      {
+       "l": 147,
+       "ml": 100,
+       "status": "chart"
+      }
+     ],
+     "40": [
+      {
+       "l": 85,
+       "ml": 60,
+       "status": "chart"
+      },
+      {
+       "l": 98,
+       "ml": 75,
+       "status": "chart"
+      },
+      {
+       "l": 102,
+       "ml": 80,
+       "status": "chart"
+      },
+      {
+       "l": 110,
+       "ml": 90,
+       "status": "chart"
+      },
+      {
+       "l": 120,
+       "ml": 100,
+       "status": "chart"
+      },
+      {
+       "l": 136,
+       "ml": 120,
+       "status": "chart"
+      },
+      {
+       "l": 146,
+       "ml": 130,
+       "status": "chart"
+      },
+      {
+       "l": 154,
+       "ml": 140,
+       "status": "chart"
+      },
+      {
+       "l": 164,
+       "ml": 150,
+       "status": "chart"
+      },
+      {
+       "l": 184,
+       "ml": 175,
+       "status": "chart"
+      }
+     ],
+     "50": [
+      {
+       "l": 95,
+       "ml": 100,
+       "status": "chart"
+      },
+      {
+       "l": 105,
+       "ml": 120,
+       "status": "chart"
+      },
+      {
+       "l": 110,
+       "ml": 130,
+       "status": "estimate"
+      },
+      {
+       "l": 115,
+       "ml": 140,
+       "status": "estimate"
+      },
+      {
+       "l": 118,
+       "ml": 150,
+       "status": "estimate"
+      },
+      {
+       "l": 132,
+       "ml": 175,
+       "status": "estimate"
+      },
+      {
+       "l": 147,
+       "ml": 200,
+       "status": "chart"
+      },
+      {
+       "l": 160,
+       "ml": 225,
+       "status": "chart"
+      },
+      {
+       "l": 176,
+       "ml": 250,
+       "status": "chart"
+      },
+      {
+       "l": 186,
+       "ml": 275,
+       "status": "chart"
+      },
+      {
+       "l": 198,
+       "ml": 300,
+       "status": "chart"
+      }
+     ],
+     "60": [
+      {
+       "l": 140,
+       "ml": 250,
+       "status": "chart"
+      },
+      {
+       "l": 148,
+       "ml": 275,
+       "status": "chart"
+      },
+      {
+       "l": 155,
+       "ml": 300,
+       "status": "chart"
+      },
+      {
+       "l": 165,
+       "ml": 325,
+       "status": "chart"
+      },
+      {
+       "l": 175,
+       "ml": 350,
+       "status": "chart"
+      },
+      {
+       "l": 185,
+       "ml": 375,
+       "status": "chart"
+      }
+     ]
+    }
+   },
+   {
+    "id": "oval",
+    "model": "oval",
+    "name": {
+     "fa": "بیضی",
+     "en": "Oval",
+     "tr": "Oval"
+    },
+    "image": "/images/product/tube-oval.webp",
+    "sizes": {
+     "30": [
+      {
+       "l": 80
+      },
+      {
+       "l": 85
+      },
+      {
+       "l": 95
+      },
+      {
+       "l": 110
+      },
+      {
+       "l": 124
+      },
+      {
+       "l": 142
+      },
+      {
+       "l": 149
+      }
+     ],
+     "35": [
+      {
+       "l": 82
+      },
+      {
+       "l": 90
+      },
+      {
+       "l": 100
+      },
+      {
+       "l": 120
+      },
+      {
+       "l": 125
+      },
+      {
+       "l": 137
+      },
+      {
+       "l": 147
+      }
+     ],
+     "40": [
+      {
+       "l": 85
+      },
+      {
+       "l": 98
+      },
+      {
+       "l": 102
+      },
+      {
+       "l": 110
+      },
+      {
+       "l": 120
+      },
+      {
+       "l": 136
+      },
+      {
+       "l": 146
+      },
+      {
+       "l": 154
+      },
+      {
+       "l": 164
+      },
+      {
+       "l": 184
+      }
+     ]
+    }
+   },
+   {
+    "id": "eyeNozzle",
+    "model": "eyeNozzle",
+    "name": {
+     "fa": "نازل چشمی",
+     "en": "Eye nozzle",
+     "tr": "Göz nozul"
+    },
+    "image": "/images/product/tube-eye-nozzle.webp",
+    "sizes": {
+     "19": [
+      {
+       "l": 50
+      },
+      {
+       "l": 65
+      },
+      {
+       "l": 84
+      },
+      {
+       "l": 102
+      }
+     ],
+     "25": [
+      {
+       "l": 65
+      },
+      {
+       "l": 76
+      },
+      {
+       "l": 85
+      },
+      {
+       "l": 96
+      },
+      {
+       "l": 105
+      },
+      {
+       "l": 115
+      },
+      {
+       "l": 135
+      }
+     ]
+    }
+   }
+  ],
+  "closures": [
+   {
+    "id": "flipTop",
+    "model": "flipTop",
+    "name": {
+     "fa": "درب فلیپ‌تاپ",
+     "en": "Flip-top cap",
+     "tr": "Flip-top kapak"
+    },
+    "image": "/images/product/cap-flip-top.webp",
+    "compat": {
+     "circular": {
+      "25": "chart",
+      "30": "chart",
+      "35": "chart",
+      "40": "chart",
+      "50": "chart",
+      "60": "chart"
+     },
+     "oval": {
+      "30": "confirm",
+      "35": "confirm",
+      "40": "confirm"
+     }
+    }
+   },
+   {
+    "id": "screw",
+    "model": "screw",
+    "name": {
+     "fa": "درب پیچی",
+     "en": "Screw cap",
+     "tr": "Vidalı kapak"
+    },
+    "image": "/images/product/cap-screw.webp",
+    "compat": {
+     "circular": {
+      "19": "chart",
+      "25": "chart",
+      "30": "chart",
+      "35": "chart"
+     },
+     "oval": {
+      "30": "confirm",
+      "35": "confirm",
+      "40": "confirm"
+     }
+    }
+   },
+   {
+    "id": "nozzle",
+    "model": "nozzle",
+    "name": {
+     "fa": "درب نازل‌دار",
+     "en": "Nozzle cap",
+     "tr": "Nozullu kapak"
+    },
+    "image": "/images/product/cap-nozzle.webp",
+    "compat": {
+     "circular": {
+      "19": "confirm",
+      "25": "confirm",
+      "30": "confirm",
+      "35": "confirm",
+      "40": "confirm",
+      "50": "confirm",
+      "60": "confirm"
+     },
+     "eyeNozzle": {
+      "19": "confirm",
+      "25": "confirm"
+     }
+    }
+   },
+   {
+    "id": "standUp",
+    "model": "standUp",
+    "name": {
+     "fa": "درب ایستاده",
+     "en": "Stand-up cap",
+     "tr": "Ters duran kapak"
+    },
+    "image": "/images/product/cap-stand-up.webp",
+    "compat": {
+     "circular": {
+      "19": "confirm",
+      "25": "confirm",
+      "30": "confirm",
+      "35": "confirm",
+      "40": "confirm",
+      "50": "confirm",
+      "60": "confirm"
+     }
+    }
+   }
+  ],
+  "structures": [
+   {
+    "id": "pe-evoh-5",
+    "name": {
+     "fa": "پنج‌لایه PE / EVOH",
+     "en": "5-layer PE / EVOH",
+     "tr": "5 katmanlı PE / EVOH"
+    },
+    "layers": [
+     {
+      "id": "pe-outer",
+      "color": "#2b4257",
+      "name": {
+       "fa": "PE (لایه بیرونی)",
+       "en": "PE (outer layer)",
+       "tr": "PE (dış katman)"
+      },
+      "text": {
+       "fa": "دوام و کیفیت چاپ",
+       "en": "Durability & print quality",
+       "tr": "Dayanıklılık ve baskı kalitesi"
+      }
+     },
+     {
+      "id": "adhesive-1",
+      "color": "#e08b45",
+      "name": {
+       "fa": "چسب",
+       "en": "Adhesive",
+       "tr": "Yapıştırıcı"
+      },
+      "text": {
+       "fa": "اتصال محکم لایه‌ها",
+       "en": "Strong layer bonding",
+       "tr": "Güçlü katman bağı"
+      }
+     },
+     {
+      "id": "evoh",
+      "color": "#a9c3d6",
+      "name": {
+       "fa": "EVOH",
+       "en": "EVOH",
+       "tr": "EVOH"
+      },
+      "text": {
+       "fa": "سد بالا در برابر اکسیژن و رطوبت",
+       "en": "High barrier to oxygen & moisture",
+       "tr": "Oksijen ve neme karşı yüksek bariyer"
+      }
+     },
+     {
+      "id": "adhesive-2",
+      "color": "#e8a46e",
+      "name": {
+       "fa": "چسب",
+       "en": "Adhesive",
+       "tr": "Yapıştırıcı"
+      },
+      "text": {
+       "fa": "چسبندگی مطمئن بین لایه‌ها",
+       "en": "Secure interlayer adhesion",
+       "tr": "Güvenli katmanlar arası yapışma"
+      }
+     },
+     {
+      "id": "pe-inner",
+      "color": "#e9eef1",
+      "name": {
+       "fa": "PE (لایه درونی)",
+       "en": "PE (inner layer)",
+       "tr": "PE (iç katman)"
+      },
+      "text": {
+       "fa": "ایمنی محصول و مقاومت شیمیایی",
+       "en": "Product safety & chemical resistance",
+       "tr": "Ürün güvenliği ve kimyasal direnç"
+      }
+     }
+    ]
+   }
+  ],
+  "samples": [
+   {
+    "id": "printed-flip-top",
+    "image": "/images/product/hero-ltr.webp",
+    "shape": "circular",
+    "closure": "flipTop",
+    "title": {
+     "fa": "تیوپ چاپ‌شده با درب فلیپ‌تاپ",
+     "en": "Printed tube with flip-top cap",
+     "tr": "Flip-top kapaklı baskılı tüp"
+    }
+   },
+   {
+    "id": "printed-crimp",
+    "image": "/images/product-tube.webp",
+    "shape": "circular",
+    "title": {
+     "fa": "تیوپ چاپ‌شده با دوخت انتهایی",
+     "en": "Printed tube with crimp seal",
+     "tr": "Kıvrık kapamalı baskılı tüp"
+    }
+   },
+   {
+    "id": "multilayer-wall",
+    "image": "/images/product/layers-ltr.webp",
+    "shape": "circular",
+    "title": {
+     "fa": "بدنه چندلایه، نمای برش",
+     "en": "Multi-layer wall, cut-away",
+     "tr": "Çok katmanlı gövde, kesit"
+    }
+   },
+   {
+    "id": "round-body",
+    "image": "/images/product/tube-circular.webp",
+    "shape": "circular",
+    "title": {
+     "fa": "بدنه تیوپ گرد",
+     "en": "Round tube body",
+     "tr": "Yuvarlak tüp gövdesi"
+    }
+   },
+   {
+    "id": "oval-body",
+    "image": "/images/product/tube-oval.webp",
+    "shape": "oval",
+    "title": {
+     "fa": "بدنه تیوپ بیضی",
+     "en": "Oval tube body",
+     "tr": "Oval tüp gövdesi"
+    }
+   },
+   {
+    "id": "eye-nozzle",
+    "image": "/images/product/tube-eye-nozzle.webp",
+    "shape": "eyeNozzle",
+    "closure": "nozzle",
+    "title": {
+     "fa": "تیوپ نازل چشمی",
+     "en": "Eye-nozzle tube",
+     "tr": "Göz nozullu tüp"
+    }
+   }
+  ]
+ },
+ "product.effervescent.page": {
+  "productEff": {
+   "meta": {
+    "title": {
+     "fa": "تیوب قرص جوشان با درب سیلیکاژل‌دار | آراپوش گستر",
+     "en": "Effervescent Tablet Tubes with Silica-Gel Caps | Arapoush Gostar",
+     "tr": "Silika Jel Kapaklı Efervesan Tablet Tüpleri | Arapoush Gostar"
+    },
+    "description": {
+     "fa": "تیوب قرص جوشان در پنج اندازه استاندارد (قطر ۲۲ × ۷۸، ۲۷ × ۸۶، ۲۷ × ۱۳۸، ۲۷ × ۱۷۵ و ۳۶ × ۹۶ میلی‌متر) با درب سیلیکاژل‌دار، با و بدون اسپیرال. ظرفیت تولید ۱۰۰٬۰۰۰ عدد در روز.",
+     "en": "Effervescent tablet tubes in five standard sizes (Ø22×78, Ø27×86, Ø27×138, Ø27×175, Ø36×96 mm) with silica-gel caps, with or without spiral. 100,000 tubes a day.",
+     "tr": "Beş standart ölçüde (Ø22×78, Ø27×86, Ø27×138, Ø27×175, Ø36×96 mm) silika jel kapaklı efervesan tablet tüpleri, spiralli veya spiralsiz. Günde 100.000 tüp."
+    }
+   },
+   "breadcrumb": {
+    "fa": "محصولات",
+    "en": "Products",
+    "tr": "Ürünler"
+   },
+   "eyebrow": {
+    "fa": "تیوب قرص جوشان",
+    "en": "Effervescent tablet tube",
+    "tr": "Efervesan tablet tüpü"
+   },
+   "title": [
+    {
+     "fa": "هر قرص،",
+     "en": "Keeps every tablet",
+     "tr": "Her tablet"
+    },
+    {
+     "fa": "تا آخرین دانه خشک",
+     "en": "dry to the last one",
+     "tr": "sonuncusuna kadar kuru"
+    }
+   ],
+   "lead": {
+    "fa": "تیوب با درب سیلیکاژل‌دار، از اولین تولیدکننده تیوب قرص جوشان در ایران.",
+    "en": "Tubes with a silica-gel cap, from Iran's first effervescent tube maker.",
+    "tr": "İran'ın ilk efervesan tüp üreticisinden silika jel kapaklı tüpler."
+   },
+   "quote": {
+    "fa": "درخواست استعلام",
+    "en": "Request a quote",
+    "tr": "Teklif isteyin"
+   },
+   "sizesLink": {
+    "fa": "مشاهده اندازه‌ها",
+    "en": "See the sizes",
+    "tr": "Ölçüleri görün"
+   },
+   "drag": {
+    "fa": "برای چرخاندن تیوب بکشید",
+    "en": "Drag to turn the tube",
+    "tr": "Tüpü çevirmek için sürükleyin"
+   },
+   "viewerLabel": {
+    "fa": "مدل سه‌بعدی تیوب قرص جوشان، قطر {d} × ارتفاع {h} میلی‌متر. با کلیدهای جهت بچرخانید.",
+    "en": "3D effervescent tube, Ø{d} × {h} mm. Use the arrow keys to turn it.",
+    "tr": "3B efervesan tüp, Ø{d} × {h} mm. Çevirmek için ok tuşlarını kullanın."
+   },
+   "story": [
+    {
+     "title": {
+      "fa": "ساخته‌شده برای محصولات حساس به رطوبت",
+      "en": "Made for moisture-sensitive products",
+      "tr": "Neme duyarlı ürünler için"
+     },
+     "text": {
+      "fa": "قرص جوشان با رطوبت واکنش می‌دهد. این تیوب و درب آن برای محصولاتی ساخته شده‌اند که باید از رطوبت محافظت شوند.",
+      "en": "Effervescent tablets react with humidity. The tube and its cap are made for products that need protection from moisture.",
+      "tr": "Efervesan tabletler nemle tepkimeye girer. Tüp ve kapağı, nemden korunması gereken ürünler için üretilir."
+     }
+    },
+    {
+     "title": {
+      "fa": "سیلیکاژل در هر درب",
+      "en": "Silica gel in every cap",
+      "tr": "Her kapakta silika jel"
+     },
+     "text": {
+      "fa": "هر درب آراپوش یک کارتریج سوراخ‌دار سیلیکاژل دارد و با یا بدون اسپیرال تولید می‌شود.",
+      "en": "Each Arapoush cap holds a perforated silica-gel cartridge, produced with or without a spiral.",
+      "tr": "Her Arapoush kapağında delikli bir silika jel kartuşu vardır; spiralli veya spiralsiz üretilir."
+     }
+    },
+    {
+     "title": {
+      "fa": "آماده برای قرص‌های شما",
+      "en": "Ready for your tablets",
+      "tr": "Tabletleriniz için hazır"
+     },
+     "text": {
+      "fa": "قرص‌های جوشان داخل تیوب روی هم چیده می‌شوند. روی قرص‌های بیرون‌ریخته بزنید تا پخش شوند.",
+      "en": "Effervescent tablets stack inside the tube. Tap or click the poured tablets to scatter them.",
+      "tr": "Efervesan tabletler tüpün içinde üst üste dizilir. Dökülen tabletlere dokunun ya da tıklayın, dağılsınlar."
+     }
+    },
+    {
+     "title": {
+      "fa": "محافظت‌شده پیش از اولین استفاده",
+      "en": "Protected before first use",
+      "tr": "İlk kullanımdan önce korunur"
+     },
+     "text": {
+      "fa": "درب‌ها در پاکت‌های چندلایه آلومینیومی پلمب‌شده و داخل کارتن‌های پنج‌لایه ارسال می‌شوند تا سیلیکاژل از نفوذ رطوبت و آلاینده‌ها در امان بماند.",
+      "en": "Caps are shipped in sealed multi-layer aluminium bags, packed in five-ply cartons, to protect the silica gel from moisture and contaminants.",
+      "tr": "Kapaklar mühürlü çok katmanlı alüminyum torbalarda, beş katlı kolilerde gönderilir; silika jel nem ve kirleticilerden korunur."
+     }
+    }
+   ],
+   "scatter": {
+    "fa": "پخش کردن قرص‌ها",
+    "en": "Scatter the tablets",
+    "tr": "Tabletleri dağıt"
+   },
+   "tapHint": {
+    "fa": "روی قرص‌ها بزنید",
+    "en": "Tap the tablets",
+    "tr": "Tabletlere dokunun"
+   },
+   "drop": {
+    "fa": "یک قرص دیگر ببینید",
+    "en": "Watch another tablet",
+    "tr": "Bir tablet daha izleyin"
+   },
+   "sizes": {
+    "title": {
+     "fa": "پنج اندازه استاندارد",
+     "en": "Five standard sizes",
+     "tr": "Beş standart ölçü"
+    },
+    "lead": {
+     "fa": "بیشتر سفارش‌ها یکی از این پنج اندازه است. اندازه‌های دیگر هم بنا به نیاز شما تولید می‌شود.",
+     "en": "Most orders use one of these five. Other sizes can be produced to order.",
+     "tr": "Siparişlerin çoğu bu beş ölçüden biridir. Diğer ölçüler siparişe göre üretilebilir."
+    },
+    "label": {
+     "fa": "انتخاب اندازه",
+     "en": "Choose a size",
+     "tr": "Ölçü seçin"
+    },
+    "diameter": {
+     "fa": "قطر",
+     "en": "Diameter",
+     "tr": "Çap"
+    },
+    "height": {
+     "fa": "ارتفاع",
+     "en": "Height",
+     "tr": "Yükseklik"
+    },
+    "mm": {
+     "fa": "میلی‌متر",
+     "en": "mm",
+     "tr": "mm"
+    },
+    "toScale": {
+     "fa": "نمایش به مقیاس واقعی",
+     "en": "Shown to scale",
+     "tr": "Gerçek oranlarda"
+    },
+    "quote": {
+     "fa": "استعلام قیمت {size}",
+     "en": "Request a quote for {size}",
+     "tr": "{size} için teklif isteyin"
+    },
+    "form": {
+     "title": {
+      "fa": "درخواست استعلام قیمت",
+      "en": "Request a quote",
+      "tr": "Teklif isteyin"
+     },
+     "lead": {
+      "fa": "تعداد مورد نیازتان را بگویید تا قیمت و زمان تحویل را اعلام کنیم.",
+      "en": "Tell us how many you need. We will reply with pricing and lead time.",
+      "tr": "Kaç adet gerektiğini yazın; fiyat ve teslim süresiyle dönelim."
+     },
+     "first": {
+      "fa": "نام",
+      "en": "First name",
+      "tr": "Ad"
+     },
+     "last": {
+      "fa": "نام خانوادگی",
+      "en": "Last name",
+      "tr": "Soyad"
+     },
+     "mobile": {
+      "fa": "شماره موبایل",
+      "en": "Mobile number",
+      "tr": "Cep telefonu"
+     },
+     "email": {
+      "fa": "ایمیل",
+      "en": "Email",
+      "tr": "E-posta"
+     },
+     "message": {
+      "fa": "متن درخواست",
+      "en": "Your request",
+      "tr": "Talebiniz"
+     },
+     "messageHint": {
+      "fa": "تعداد، چاپ، رنگ درب",
+      "en": "Quantity, printing, cap colour",
+      "tr": "Adet, baskı, kapak rengi"
+     },
+     "send": {
+      "fa": "ارسال درخواست",
+      "en": "Send request",
+      "tr": "Talebi gönder"
+     },
+     "close": {
+      "fa": "بستن فرم",
+      "en": "Close the form",
+      "tr": "Formu kapat"
+     },
+     "required": {
+      "fa": "لطفاً این بخش را پر کنید",
+      "en": "Please fill this in",
+      "tr": "Lütfen bu alanı doldurun"
+     },
+     "invalidEmail": {
+      "fa": "یک ایمیل معتبر وارد کنید",
+      "en": "Enter a valid email address",
+      "tr": "Geçerli bir e-posta adresi girin"
+     },
+     "invalidMobile": {
+      "fa": "یک شماره موبایل معتبر وارد کنید",
+      "en": "Enter a valid mobile number",
+      "tr": "Geçerli bir cep telefonu numarası girin"
+     },
+     "hint": {
+      "fa": "برنامه ایمیل شما با همه اطلاعات، خطاب به {email} باز می‌شود.",
+      "en": "Your email app opens with everything filled in, addressed to {email}.",
+      "tr": "E-posta uygulamanız tüm bilgilerle, {email} adresine açılır."
+     },
+     "subject": {
+      "fa": "استعلام قیمت: تیوب قرص جوشان {size}",
+      "en": "Quote request: effervescent tube {size}",
+      "tr": "Teklif talebi: efervesan tüp {size}"
+     }
+    }
+   },
+   "caps": {
+    "title": {
+     "fa": "سیستم درب پیشرفته تیوب قرص جوشان آراپوش",
+     "en": "The Arapoush effervescent tube cap system",
+     "tr": "Arapoush efervesan tüp kapak sistemi"
+    },
+    "lead": {
+     "fa": "درب دو ساختاره با یا بدون اسپیرال، برای حفظ کیفیت، کنترل رطوبت و افزایش پایداری قرص‌های جوشان.",
+     "en": "A two-way cap, with or without a spiral, that keeps effervescent tablets dry, controls moisture and keeps them stable.",
+     "tr": "Spiralli veya spiralsiz iki yapılı kapak: efervesan tabletlerin kalitesini korur, nemi kontrol eder ve dayanıklılığını artırır."
+    },
+    "alt": {
+     "fa": "نمای انفجاری درب تیوب قرص جوشان آراپوش {variant}: درب، قفسه، کارتریج سیلیکاژل، دو حلقه و گردن تیوب",
+     "en": "Exploded view of the Arapoush effervescent tube cap {variant}: cap, cage, silica-gel cartridge, two rings and the tube neck",
+     "tr": "Arapoush efervesan tüp kapağının patlatılmış görünümü {variant}: kapak, kafes, silika jel kartuşu, iki halka ve tüp boynu"
+    },
+    "label": {
+     "fa": "نوع درب",
+     "en": "Cap type",
+     "tr": "Kapak tipi"
+    },
+    "facts": [
+     {
+      "fa": "محفظه سیلیکاژل در همه درب‌ها",
+      "en": "Silica-gel compartment in every cap",
+      "tr": "Her kapakta silika jel bölmesi"
+     },
+     {
+      "fa": "درب رنگی با مستربچ",
+      "en": "Coloured caps with masterbatch",
+      "tr": "Masterbatch ile renkli kapaklar"
+     },
+     {
+      "fa": "ارسال در پاکت‌های چندلایه آلومینیومی پلمب‌شده",
+      "en": "Shipped in sealed multi-layer aluminium bags",
+      "tr": "Mühürlü çok katmanlı alüminyum torbalarda sevkiyat"
+     }
+    ],
+    "partsLabel": {
+     "fa": "اجزای درب",
+     "en": "Cap parts",
+     "tr": "Kapak parçaları"
+    },
+    "parts": {
+     "cap": {
+      "title": {
+       "fa": "درب مقاوم و ایمن",
+       "en": "Sturdy, secure cap",
+       "tr": "Sağlam, güvenli kapak"
+      },
+      "text": {
+       "fa": "بسته‌شدن مطمئن و آب‌بندی کامل",
+       "en": "Positive closure and a full seal",
+       "tr": "Güvenli kapanma ve tam sızdırmazlık"
+      }
+     },
+     "spiral": {
+      "title": {
+       "fa": "ساختار اسپیرال",
+       "en": "Spiral structure",
+       "tr": "Spiral yapı"
+      },
+      "text": {
+       "fa": "تثبیت قطعه و بهبود گردش هوا",
+       "en": "Holds the insert in place and improves air flow",
+       "tr": "Parçayı sabitler, hava dolaşımını iyileştirir"
+      }
+     },
+     "plain": {
+      "title": {
+       "fa": "ساختار نگهدارنده",
+       "en": "Retaining cage",
+       "tr": "Tutucu yapı"
+      },
+      "text": {
+       "fa": "ثابت، سبک و بهینه برای نوع بدون اسپیرال",
+       "en": "Stable, light and made for the spiral-free cap",
+       "tr": "Sabit, hafif ve spiralsiz tip için optimize"
+      }
+     },
+     "chamber": {
+      "title": {
+       "fa": "محفظه سیلیکاژل",
+       "en": "Silica gel chamber",
+       "tr": "Silika jel haznesi"
+      },
+      "text": {
+       "fa": "جذب مؤثر رطوبت و حفظ کیفیت",
+       "en": "Absorbs moisture and keeps quality",
+       "tr": "Nemi etkin biçimde emer, kaliteyi korur"
+      }
+     },
+     "mouth": {
+      "title": {
+       "fa": "دهانه تیوب",
+       "en": "Tube mouth",
+       "tr": "Tüp ağzı"
+      },
+      "text": {
+       "fa": "سازگار با خط تولید و پُرکنی پرسرعت",
+       "en": "Made for high-speed filling lines",
+       "tr": "Yüksek hızlı dolum hatlarıyla uyumlu"
+      }
+     }
+    },
+    "variants": {
+     "spiral": {
+      "heading": {
+       "fa": "درب با اسپیرال",
+       "en": "Cap with spiral",
+       "tr": "Spiralli kapak"
+      },
+      "text": {
+       "fa": "اسپیرال داخلی قطعه را در جای خود تثبیت می‌کند و گردش هوا را بهبود می‌دهد؛ گزینه‌ای برای محافظت بیشتر.",
+       "en": "The inner spiral holds the insert in place and improves air flow: the option for extra protection.",
+       "tr": "İç spiral parçayı yerinde sabitler ve hava dolaşımını iyileştirir: ekstra koruma seçeneği."
+      },
+      "points": [
+       {
+        "fa": "محافظت بیشتر",
+        "en": "Extra protection",
+        "tr": "Ekstra koruma"
+       },
+       {
+        "fa": "تثبیت قطعه",
+        "en": "Insert held in place",
+        "tr": "Parça sabitleme"
+       },
+       {
+        "fa": "بهبود گردش هوا",
+        "en": "Better air flow",
+        "tr": "Daha iyi hava dolaşımı"
+       }
+      ]
+     },
+     "plain": {
+      "heading": {
+       "fa": "درب بدون اسپیرال",
+       "en": "Cap without spiral",
+       "tr": "Spiralsiz kapak"
+      },
+      "text": {
+       "fa": "طراحی بهینه برای بسته‌بندی قرص‌های جوشان با حفظ رطوبت، جلوگیری از کلوخه‌شدن و افزایش پایداری محصول در زنجیره تأمین.",
+       "en": "An optimised design for effervescent tablets: it keeps moisture out, stops caking and keeps the product stable through the supply chain.",
+       "tr": "Efervesan tabletler için optimize tasarım: nemi uzak tutar, topaklanmayı önler ve tedarik zinciri boyunca ürünü dayanıklı tutar."
+      },
+      "points": [
+       {
+        "fa": "حفظ کیفیت و اثربخشی",
+        "en": "Keeps quality and potency",
+        "tr": "Kaliteyi ve etkinliği korur"
+       },
+       {
+        "fa": "کنترل هوشمند رطوبت",
+        "en": "Smart moisture control",
+        "tr": "Akıllı nem kontrolü"
+       },
+       {
+        "fa": "سازگار با تولید انبوه",
+        "en": "Built for mass production",
+        "tr": "Seri üretime uygun"
+       }
+      ]
+     }
+    },
+    "benefits": [
+     {
+      "title": {
+       "fa": "حفظ پایداری محصول",
+       "en": "Product stability",
+       "tr": "Ürün dayanıklılığı"
+      },
+      "text": {
+       "fa": "جلوگیری از جذب رطوبت و کلوخه‌شدن",
+       "en": "Stops moisture uptake and caking",
+       "tr": "Nem emilimini ve topaklanmayı önler"
+      }
+     },
+     {
+      "title": {
+       "fa": "کنترل هوشمند رطوبت",
+       "en": "Smart moisture control",
+       "tr": "Akıllı nem kontrolü"
+      },
+      "text": {
+       "fa": "جذب مؤثر با سیلیکاژل باکیفیت",
+       "en": "Effective absorption with quality silica gel",
+       "tr": "Kaliteli silika jel ile etkin emilim"
+      }
+     },
+     {
+      "title": {
+       "fa": "افزایش طول عمر",
+       "en": "Longer shelf life",
+       "tr": "Daha uzun raf ömrü"
+      },
+      "text": {
+       "fa": "حفظ کیفیت و اثربخشی در طول زمان",
+       "en": "Quality and potency kept over time",
+       "tr": "Kalite ve etkinlik zamanla korunur"
+      }
+     },
+     {
+      "title": {
+       "fa": "دو گزینه انعطاف‌پذیر",
+       "en": "Two flexible options",
+       "tr": "İki esnek seçenek"
+      },
+      "text": {
+       "fa": "با اسپیرال برای محافظت بیشتر و بدون اسپیرال برای کاربردهای متنوع",
+       "en": "With spiral for extra protection, without for varied uses",
+       "tr": "Ekstra koruma için spiralli, çeşitli kullanımlar için spiralsiz"
+      }
+     }
+    ]
+   },
+   "uses": {
+    "eyebrow": {
+     "fa": "Beyond effervescent",
+     "en": "Beyond effervescent",
+     "tr": "Efervesanın ötesinde"
+    },
+    "photoAlt": {
+     "fa": "تیوب‌های قرص جوشان آراپوش با طرح کلسیم و ویتامین C، کنار لیوان آب و قرص‌های جوشان",
+     "en": "Arapoush effervescent tubes printed for calcium and vitamin C, beside a glass of water and tablets",
+     "tr": "Kalsiyum ve C vitamini baskılı Arapoush efervesan tüpler, bir bardak su ve tabletlerin yanında"
+    },
+    "alt": {
+     "fa": "تیوب قرص جوشان آراپوش کنار قرص‌های بیرون‌ریخته",
+     "en": "An Arapoush effervescent tube lying beside its poured tablets",
+     "tr": "Dökülmüş tabletlerinin yanında bir Arapoush efervesan tüp"
+    },
+    "title": {
+     "fa": "فراتر از قرص جوشان",
+     "en": "More than effervescent tablets",
+     "tr": "Efervesan tabletlerden fazlası"
+    },
+    "lead": {
+     "fa": "هر محصول خوراکی که به محافظت در برابر رطوبت و بسته‌بندی استاندارد نیاز دارد، در این تیوب‌ها جا می‌گیرد.",
+     "en": "Any food product that needs moisture protection and a cylindrical pack fits these tubes.",
+     "tr": "Nemden korunması ve silindirik ambalaj gerektiren her gıda ürünü bu tüplere uygundur."
+    },
+    "items": [
+     {
+      "title": {
+       "fa": "قرص جوشان",
+       "en": "Effervescent tablets",
+       "tr": "Efervesan tabletler"
+      },
+      "text": {
+       "fa": "محصولی که تیوب برای آن ساخته شده است.",
+       "en": "The product the tube was made for.",
+       "tr": "Tüpün asıl üretildiği ürün."
+      }
+     },
+     {
+      "title": {
+       "fa": "شکلات و آدامس",
+       "en": "Confectionery",
+       "tr": "Şekerleme"
+      },
+      "text": {
+       "fa": "شکلات، آدامس و محصولات مشابهی که باید خشک بمانند.",
+       "en": "Chocolates, chewing gum and similar products that must stay dry.",
+       "tr": "Çikolata, sakız ve kuru kalması gereken benzer ürünler."
+      }
+     },
+     {
+      "title": {
+       "fa": "چاپ در خود آراپوش",
+       "en": "Printed in house",
+       "tr": "Kendi baskımız"
+      },
+      "text": {
+       "fa": "چاپ باکیفیت روی بدنه تیوب، آماده قفسه فروشگاه.",
+       "en": "High-quality printing on the tube body, ready for the shelf.",
+       "tr": "Tüp gövdesine yüksek kaliteli baskı, rafa hazır."
+      }
+     }
+    ]
+   },
+   "make": {
+    "title": {
+     "fa": "اولین تولیدکننده تیوب قرص جوشان در ایران",
+     "en": "Iran's first effervescent tube maker",
+     "tr": "İran'ın ilk efervesan tüp üreticisi"
+    },
+    "lead": {
+     "fa": "تا پیش از سال {since} این تیوب‌ها فقط وارد می‌شدند. آراپوش گستر اولین خط تولید داخلی را راه‌اندازی کرد و سهم واردات را به صفر رساند.",
+     "en": "Until {since} these tubes were only imported. Arapoush built the first domestic line and brought the import share down to zero.",
+     "tr": "{since} yılına kadar bu tüpler yalnızca ithal ediliyordu. Arapoush ilk yerli hattı kurdu ve ithalat payını sıfıra indirdi."
+    },
+    "perDay": {
+     "fa": "عدد در روز، بیشترین ظرفیت تولید در ایران",
+     "en": "tubes a day, the largest capacity in Iran",
+     "tr": "tüp/gün, İran'daki en yüksek kapasite"
+    },
+    "since": {
+     "fa": "راه‌اندازی اولین خط تولید داخلی",
+     "en": "first domestic production line",
+     "tr": "ilk yerli üretim hattı"
+    },
+    "imports": {
+     "fa": "سهم واردات، جایگزین‌شده با تولید داخلی",
+     "en": "share of imports, replaced by domestic production",
+     "tr": "yerli üretimle yerine geçen ithalat payı"
+    },
+    "standards": {
+     "fa": "تولید مطابق استاندارد ملی ایران، GMP و الزامات سازمان غذا و دارو (نشان سیب سلامت).",
+     "en": "Produced to the Iranian National Standard, GMP and IFDA requirements.",
+     "tr": "İran Ulusal Standardı, GMP ve IFDA gerekliliklerine göre üretilir."
+    },
+    "seals": [
+     {
+      "fa": "استاندارد ملی ایران",
+      "en": "Iranian National Standard",
+      "tr": "İran Ulusal Standardı"
+     },
+     {
+      "fa": "GMP",
+      "en": "GMP",
+      "tr": "GMP"
+     },
+     {
+      "fa": "سازمان غذا و دارو",
+      "en": "IFDA",
+      "tr": "IFDA"
+     }
+    ]
+   }
+  },
+  "data": {
+   "defaultSize": "27x175",
+   "renderPxPerMm": 6,
+   "dailyCapacity": 100000,
+   "since": {
+    "fa": "۱۳۸۷",
+    "en": "2008",
+    "tr": "2008"
+   },
+   "sizes": [
+    {
+     "id": "22x78",
+     "d": 22,
+     "h": 78,
+     "render": {
+      "src": "/images/eff/size-22x78.webp",
+      "width": 166,
+      "height": 545,
+      "base": 527,
+      "mouth": 62,
+      "left": 17,
+      "right": 149
+     }
+    },
+    {
+     "id": "27x86",
+     "d": 27,
+     "h": 86,
+     "render": {
+      "src": "/images/eff/size-27x86.webp",
+      "width": 200,
+      "height": 606,
+      "base": 587,
+      "mouth": 74,
+      "left": 19,
+      "right": 181
+     }
+    },
+    {
+     "id": "27x138",
+     "d": 27,
+     "h": 138,
+     "render": {
+      "src": "/images/eff/size-27x138.webp",
+      "width": 200,
+      "height": 918,
+      "base": 897,
+      "mouth": 75,
+      "left": 19,
+      "right": 181
+     }
+    },
+    {
+     "id": "27x175",
+     "d": 27,
+     "h": 175,
+     "render": {
+      "src": "/images/eff/size-27x175.webp",
+      "width": 200,
+      "height": 1140,
+      "base": 1119,
+      "mouth": 76,
+      "left": 19,
+      "right": 181
+     }
+    },
+    {
+     "id": "36x96",
+     "d": 36,
+     "h": 96,
+     "render": {
+      "src": "/images/eff/size-36x96.webp",
+      "width": 260,
+      "height": 690,
+      "base": 667,
+      "mouth": 96,
+      "left": 22,
+      "right": 238
+     }
+    }
+   ],
+   "caps": {
+    "variants": [
+     {
+      "id": "spiral",
+      "name": {
+       "fa": "با اسپیرال",
+       "en": "With spiral",
+       "tr": "Spiralli"
+      },
+      "image": {
+       "src": "/images/eff/cap-spiral.webp",
+       "width": 266,
+       "height": 825
+      },
+      "photo": {
+       "src": "/images/eff/cap-spiral-photo.webp",
+       "width": 1122,
+       "height": 1402
+      },
+      "parts": [
+       {
+        "id": "cap",
+        "y": 0.16,
+        "x": 0.34
+       },
+       {
+        "id": "structure",
+        "y": 0.355,
+        "x": 0.38
+       },
+       {
+        "id": "chamber",
+        "y": 0.545,
+        "x": 0.39
+       },
+       {
+        "id": "mouth",
+        "y": 0.765,
+        "x": 0.37
+       }
+      ]
+     },
+     {
+      "id": "plain",
+      "name": {
+       "fa": "بدون اسپیرال",
+       "en": "Without spiral",
+       "tr": "Spiralsiz"
+      },
+      "image": {
+       "src": "/images/eff/cap-plain.webp",
+       "width": 266,
+       "height": 825
+      },
+      "photo": {
+       "src": "/images/eff/cap-plain-photo.webp",
+       "width": 1122,
+       "height": 1402
+      },
+      "parts": [
+       {
+        "id": "cap",
+        "y": 0.17,
+        "x": 0.29
+       },
+       {
+        "id": "structure",
+        "y": 0.41,
+        "x": 0.31
+       },
+       {
+        "id": "chamber",
+        "y": 0.63,
+        "x": 0.32
+       },
+       {
+        "id": "mouth",
+        "y": 0.84,
+        "x": 0.28
+       }
+      ]
+     }
+    ],
+    "background": {
+     "src": "/images/eff/caps-bg.webp",
+     "width": 1672,
+     "height": 941
+    }
+   },
+   "images": {
+    "poster": {
+     "src": "/images/eff/hero-tube.webp",
+     "width": 1600,
+     "height": 1000
+    },
+    "uses": {
+     "src": "/images/eff/uses-tablets.webp",
+     "width": 1600,
+     "height": 1000
+    },
+    "usesPhoto": {
+     "src": "/images/eff/uses-products.webp",
+     "width": 1586,
+     "height": 992
+    },
+    "usesBg": {
+     "src": "/images/eff/uses-bg.webp",
+     "width": 1672,
+     "height": 941
+    }
+   }
+  }
+ },
+ "page.printing": {
+  "meta": {
+   "title": {
+    "fa": "فناوری‌های چاپ روی تیوب | فلکسو، افست خشک، سیلک، هات استمپ و چاپ ترکیبی | آراپوش گستر",
+    "en": "Tube Printing Technologies: Flexo, Dry Offset, Silk Screen, Hot Stamp | Arapoush",
+    "tr": "Tüp Baskı Teknolojileri: Flekso, Kuru Ofset, Serigrafi, Sıcak Baskı | Arapoush"
+   },
+   "description": {
+    "fa": "پنج روش چاپ آراپوش روی تیوب و ظرف قرص جوشان: فلکسو ۸ رنگ، افست خشک ۶ رنگ، سیلک اسکرین تا ۵ رنگ، هات استمپ طلایی و نقره‌ای و چاپ ترکیبی تا ۱۱ رنگ. راهنمای انتخاب، مقایسه و مشاوره.",
+    "en": "Arapoush's five ways to print tubes and effervescent containers: 8-colour flexo, 6-colour dry offset, silk screen up to 5 colours, gold and silver hot stamping, and combination printing up to 11 colours. Selection guide, comparison and advice.",
+    "tr": "Arapoush'un tüp ve efervesan kaplarına beş baskı yöntemi: 8 renk flekso, 6 renk kuru ofset, 5 renge kadar serigrafi, altın ve gümüş sıcak baskı ve 11 renge kadar kombine baskı. Seçim rehberi, karşılaştırma ve danışmanlık."
+   }
+  },
+  "hero": {
+   "eyebrow": {
+    "fa": "Arapoush printing technologies",
+    "en": "Printing technologies for tubes",
+    "tr": "Tüpler için baskı teknolojileri"
+   },
+   "title": {
+    "fa": "فناوری‌های چاپ روی تیوب‌های آراپوش",
+    "en": "ARAPOUSH Tube Printing Technologies",
+    "tr": "ARAPOUSH Tüp Baskı Teknolojileri"
+   },
+   "lead": {
+    "fa": "آراپوش گستر با پنج روش چاپ، یعنی فلکسو، افست خشک، سیلک اسکرین، هات استمپ و چاپ ترکیبی، تیوب‌ها و ظروف قرص جوشان برندهای آرایشی، بهداشتی، دارویی، غذایی و صنعتی را چاپ می‌کند؛ از چاپ تمام‌رنگ تا جلوه‌های فویل طلایی و نقره‌ای.",
+    "en": "Arapoush prints tubes and effervescent containers for cosmetic, hygienic, pharmaceutical, food and industrial brands with five methods: flexo, dry offset, silk screen, hot stamping and combination printing, from full-colour artwork to gold and silver foil.",
+    "tr": "Arapoush; kozmetik, hijyen, ilaç, gıda ve endüstriyel markaların tüp ve efervesan kaplarını beş yöntemle basar: flekso, kuru ofset, serigrafi, sıcak baskı ve kombine baskı; tam renkli tasarımlardan altın ve gümüş folyo efektlerine kadar."
+   },
+   "explore": {
+    "fa": "مشاهده فناوری‌های چاپ",
+    "en": "Explore printing technologies",
+    "tr": "Baskı teknolojilerini keşfedin"
+   },
+   "resources": {
+    "fa": "راهنما و فایل‌های چاپ",
+    "en": "Printing guide and files",
+    "tr": "Baskı rehberi ve dosyalar"
+   },
+   "tubesAlt": {
+    "fa": "دو تیوب آراپوش: یکی با چاپ رنگی و دیگری سفید با برگ‌های طلایی هات استمپ و نقش برجسته سفید",
+    "en": "Two Arapoush tubes: one with colourful print, one white with hot-stamped gold leaves and white relief",
+    "tr": "İki Arapoush tüpü: biri renkli baskılı, diğeri sıcak baskı altın yapraklı ve beyaz kabartmalı"
+   },
+   "features": [
+    {
+     "icon": "layers",
+     "text": {
+      "fa": "پنج روش چاپ تخصصی",
+      "en": "Five specialist methods",
+      "tr": "Beş uzman yöntem"
+     }
+    },
+    {
+     "icon": "palette",
+     "text": {
+      "fa": "تا ۱۱ رنگ در چاپ ترکیبی",
+      "en": "Up to 11 colours combined",
+      "tr": "Kombine baskıda 11 renge kadar"
+     }
+    },
+    {
+     "icon": "shoulder",
+     "text": {
+      "fa": "چاپ تا روی شانه تیوب",
+      "en": "Print up to the shoulder",
+      "tr": "Tüp omzuna kadar baskı"
+     }
+    },
+    {
+     "icon": "file",
+     "text": {
+      "fa": "همراهی در آماده‌سازی فایل چاپ",
+      "en": "Help preparing print files",
+      "tr": "Baskı dosyası hazırlığında destek"
+     }
+    }
+   ]
+  },
+  "tech": {
+   "eyebrow": {
+    "fa": "Our printing technologies",
+    "en": "Our printing technologies",
+    "tr": "Baskı teknolojilerimiz"
+   },
+   "title": {
+    "fa": "فناوری‌های چاپ تیوب در آراپوش",
+    "en": "Our Tube Printing Technologies",
+    "tr": "Tüp Baskı Teknolojilerimiz"
+   },
+   "lead": {
+    "fa": "هر روش را انتخاب کنید تا فرایند، قابلیت‌های فنی و کاربردهای آن را ببینید.",
+    "en": "Choose a method to see how it works, what it can do and where it fits.",
+    "tr": "Nasıl çalıştığını, neler yapabildiğini ve nerede kullanıldığını görmek için bir yöntem seçin."
+   },
+   "advantages": {
+    "fa": "مزیت‌ها",
+    "en": "Advantages",
+    "tr": "Avantajlar"
+   },
+   "process": {
+    "fa": "فرایند چاپ",
+    "en": "How it works",
+    "tr": "Nasıl çalışır"
+   },
+   "capabilities": {
+    "fa": "قابلیت‌های فنی",
+    "en": "Technical capabilities",
+    "tr": "Teknik olanaklar"
+   },
+   "uses": {
+    "fa": "کاربرد مناسب",
+    "en": "Best suited to",
+    "tr": "En uygun kullanım"
+   },
+   "samples": {
+    "fa": "دیدن نمونه طرح",
+    "en": "See a sample design",
+    "tr": "Örnek tasarımı gör"
+   },
+   "quote": {
+    "fa": "مشاوره برای این روش",
+    "en": "Ask about this method",
+    "tr": "Bu yöntem için danışın"
+   },
+   "items": [
+    {
+     "id": "flexo",
+     "card": {
+      "src": "/images/printing/tex-flexo.webp",
+      "width": 470,
+      "height": 230
+     },
+     "macro": {
+      "src": "/images/printing/macro-flexo.webp",
+      "width": 800,
+      "height": 420
+     },
+     "sample": "calcium",
+     "name": {
+      "fa": "چاپ فلکسو",
+      "en": "Flexographic printing",
+      "tr": "Flekso baskı"
+     },
+     "short": {
+      "fa": "فلکسو",
+      "en": "Flexo",
+      "tr": "Flekso"
+     },
+     "summary": {
+      "fa": "چاپ روی تیوب و ظرف قرص جوشان با دستگاه فلکسوی ۸ رنگ اروپایی، در رنگ‌های CMYK و پنتون.",
+      "en": "Printing on tubes and effervescent containers with an 8-colour European flexo press, in CMYK and Pantone.",
+      "tr": "Avrupa yapımı 8 renkli flekso makinesiyle tüp ve efervesan kaplara CMYK ve Pantone baskı."
+     },
+     "advantages": [
+      {
+       "fa": "تا ۸ رنگ",
+       "en": "Up to 8 colours",
+       "tr": "8 renge kadar"
+      },
+      {
+       "fa": "رنگ‌های CMYK و پنتون",
+       "en": "CMYK and Pantone colours",
+       "tr": "CMYK ve Pantone renkler"
+      },
+      {
+       "fa": "۱۰ نوع غلتک آنیلوکس برای وضوح",
+       "en": "10 anilox rollers to set sharpness",
+       "tr": "Netlik için 10 anilox merdane"
+      }
+     ],
+     "process": {
+      "fa": "در چاپ فلکسو مرکب مستقیماً از غلتک آنیلوکس به کلیشه طرح منتقل می‌شود. غلتک‌های آنیلوکس میزان رزولوشن و وضوح تصویر چاپی را تعیین می‌کنند و دستگاه آراپوش امکان تنظیم و استفاده از ۱۰ نوع غلتک آنیلوکس مختلف را دارد. سیستم پنتون (با ۲۱۶۱ رنگ پیش‌فرض) کمک می‌کند رنگ برند بدون اختلاف بازتولید شود.",
+      "en": "In flexo, ink is transferred directly from the anilox roller to the printing plate. The anilox rollers set the resolution and sharpness of the print, and Arapoush's press can be set up with 10 different anilox rollers. The Pantone system (2,161 standard colours) helps reproduce a brand's colours without drift.",
+      "tr": "Flekso baskıda mürekkep doğrudan anilox merdaneden baskı kalıbına aktarılır. Anilox merdaneler baskının çözünürlüğünü ve netliğini belirler; Arapoush'un makinesi 10 farklı anilox merdaneyle ayarlanabilir. Pantone sistemi (2.161 standart renk) marka renklerinin sapmadan üretilmesine yardım eder."
+     },
+     "capabilities": [
+      {
+       "fa": "دستگاه چاپ فلکسوی ۸ رنگ ساخت یک شرکت اروپایی",
+       "en": "8-colour flexo press made by a European manufacturer",
+       "tr": "Avrupalı bir üreticinin 8 renkli flekso makinesi"
+      },
+      {
+       "fa": "تیوب با قطر ۱۹ تا ۶۰ میلی‌متر",
+       "en": "Tubes from 19 to 60 mm in diameter",
+       "tr": "19–60 mm çapında tüpler"
+      },
+      {
+       "fa": "ظرف قرص جوشان با ارتفاع ۵۰ تا ۲۳۰ میلی‌متر",
+       "en": "Effervescent containers 50 to 230 mm tall",
+       "tr": "50–230 mm yüksekliğinde efervesan kaplar"
+      },
+      {
+       "fa": "رنگ‌های CMYK و سیستم پنتون",
+       "en": "CMYK and the Pantone system",
+       "tr": "CMYK ve Pantone sistemi"
+      }
+     ],
+     "uses": {
+      "fa": "تیوب‌ها و ظروف قرص جوشان؛ وقتی رنگ برند باید با پنتون دقیق بازتولید شود.",
+      "en": "Tubes and effervescent containers, especially when brand colours must match Pantone.",
+      "tr": "Tüpler ve efervesan kaplar; özellikle marka renkleri Pantone ile eşleşmeliyse."
+     }
+    },
+    {
+     "id": "offset",
+     "card": {
+      "src": "/images/printing/tex-offset.webp",
+      "width": 470,
+      "height": 230
+     },
+     "macro": {
+      "src": "/images/printing/macro-offset.webp",
+      "width": 800,
+      "height": 390
+     },
+     "sample": "vitamin-c",
+     "name": {
+      "fa": "چاپ افست خشک",
+      "en": "Dry offset printing",
+      "tr": "Kuru ofset baskı"
+     },
+     "short": {
+      "fa": "افست خشک",
+      "en": "Dry offset",
+      "tr": "Kuru ofset"
+     },
+     "summary": {
+      "fa": "چاپ ۶ رنگ روی تیوب‌های پلاستیکی چندلایه بدون درز و تیوب قرص جوشان؛ هر طرحی، حتی تا روی شانه تیوب.",
+      "en": "6-colour printing on seamless multi-layer plastic tubes and effervescent tubes: any design, even up onto the tube's shoulder.",
+      "tr": "Dikişsiz çok katmanlı plastik tüplere ve efervesan tüplere 6 renk baskı: her tasarım, tüpün omzuna kadar."
+     },
+     "advantages": [
+      {
+       "fa": "۶ رنگ",
+       "en": "6 colours",
+       "tr": "6 renk"
+      },
+      {
+       "fa": "چاپ تا روی شانه تیوب",
+       "en": "Prints up to the shoulder",
+       "tr": "Omza kadar baskı"
+      },
+      {
+       "fa": "مقرون‌به‌صرفه برای صاحبان برند",
+       "en": "Cost-effective for brand owners",
+       "tr": "Marka sahipleri için ekonomik"
+      }
+     ],
+     "process": {
+      "fa": "پلیت افست خشک با پلیت افست معمولی فرق دارد و دو لایه است: لایه آلومینیومی که بدنه اصلی پلیت را می‌سازد و لایه پلیمری که مرکب را جذب می‌کند. پلیت طرح را روی سطح چاپ و سپس روی بدنه تیوب منتقل می‌کند. ضخامت لایه رنگ در این روش ۴ تا ۵ میکرون است.",
+      "en": "A dry offset plate differs from a conventional offset plate and has two layers: an aluminium layer that forms its body and a polymer layer that takes up the ink. The plate transfers the image to the printing surface and then onto the tube body. The ink layer is 4 to 5 microns thick.",
+      "tr": "Kuru ofset kalıbı klasik ofset kalıbından farklıdır ve iki katmandır: gövdeyi oluşturan alüminyum katman ve mürekkebi tutan polimer katman. Kalıp görüntüyü önce baskı yüzeyine, sonra tüp gövdesine aktarır. Mürekkep katmanı 4–5 mikron kalınlığındadır."
+     },
+     "capabilities": [
+      {
+       "fa": "چاپ ۶ رنگ",
+       "en": "6-colour printing",
+       "tr": "6 renk baskı"
+      },
+      {
+       "fa": "ضخامت رنگ ۴ تا ۵ میکرون",
+       "en": "Ink layer 4–5 microns",
+       "tr": "4–5 mikron mürekkep katmanı"
+      },
+      {
+       "fa": "تیوب پلاستیکی چندلایه بدون درز و تیوب قرص جوشان",
+       "en": "Seamless multi-layer plastic tubes and effervescent tubes",
+       "tr": "Dikişsiz çok katmanlı plastik tüpler ve efervesan tüpler"
+      },
+      {
+       "fa": "چاپ هر طرحی، حتی تا روی شانه تیوب",
+       "en": "Any design, even up onto the shoulder",
+       "tr": "Her tasarım, omza kadar"
+      }
+     ],
+     "uses": {
+      "fa": "طرح‌های تمام‌رنگ روی تیوب‌های بدون درز؛ کارشناسان آراپوش در بررسی و آماده‌سازی فایل چاپ همراه شما هستند.",
+      "en": "Full-colour designs on seamless tubes; Arapoush's specialists help review and prepare the print file.",
+      "tr": "Dikişsiz tüplerde tam renkli tasarımlar; Arapoush uzmanları baskı dosyasının incelenmesi ve hazırlanmasında yardımcı olur."
+     }
+    },
+    {
+     "id": "silk",
+     "card": {
+      "src": "/images/printing/tex-silk.webp",
+      "width": 470,
+      "height": 230
+     },
+     "macro": {
+      "src": "/images/printing/macro-silk.webp",
+      "width": 800,
+      "height": 330
+     },
+     "sample": "gold",
+     "name": {
+      "fa": "چاپ سیلک اسکرین",
+      "en": "Silk screen printing",
+      "tr": "Serigrafi baskı"
+     },
+     "short": {
+      "fa": "سیلک",
+      "en": "Silk screen",
+      "tr": "Serigrafi"
+     },
+     "summary": {
+      "fa": "چاپ تا ۵ رنگ با لایه رنگ ضخیم تا ۲۰ میکرون؛ حتی روی تیوب‌های رنگی و سطوح هات استمپ‌شده.",
+      "en": "Up to 5 colours with a thick ink layer of up to 20 microns, even on coloured tubes and hot-stamped surfaces.",
+      "tr": "20 mikrona kadar kalın mürekkep katmanıyla 5 renge kadar baskı; renkli tüplerde ve sıcak baskılı yüzeylerde bile."
+     },
+     "advantages": [
+      {
+       "fa": "رنگ پرحجم تا ۲۰ میکرون",
+       "en": "Rich ink up to 20 microns",
+       "tr": "20 mikrona kadar dolgun mürekkep"
+      },
+      {
+       "fa": "چاپ رنگ‌ها روی یکدیگر",
+       "en": "Colours printed over one another",
+       "tr": "Renkler üst üste basılabilir"
+      },
+      {
+       "fa": "مناسب سطوح مدور و غیرمسطح",
+       "en": "Suited to round, non-flat surfaces",
+       "tr": "Yuvarlak ve düz olmayan yüzeylere uygun"
+      }
+     ],
+     "process": {
+      "fa": "طرح روی پارچه توری با سوراخ‌های بسیار ریز که در یک قاب (شابلون یا کلیشه) ثابت شده نقش می‌بندد و بخش‌هایی که نباید رنگ بگیرند با لاک مسدود می‌شوند. مرکب با فشار کاردک یا غلتک فقط از بخش‌های باز توری روی سطح تیوب منتقل می‌شود.",
+      "en": "The design is formed on a very fine mesh fixed in a frame (the stencil), and areas that must stay unprinted are blocked with lacquer. A squeegee or roller presses the ink through the open parts of the mesh onto the tube surface.",
+      "tr": "Tasarım, bir çerçeveye (şablon) gerilmiş çok ince bir elek üzerinde oluşturulur; boyanmayacak alanlar lakla kapatılır. Rakle veya merdane, mürekkebi yalnızca eleğin açık kısımlarından tüp yüzeyine iter."
+     },
+     "capabilities": [
+      {
+       "fa": "تا ۵ رنگ؛ چاپ تصاویر چهار رنگ (CMYK)",
+       "en": "Up to 5 colours; four-colour (CMYK) images",
+       "tr": "5 renge kadar; dört renk (CMYK) görseller"
+      },
+      {
+       "fa": "ضخامت رنگ تا ۲۰ میکرون",
+       "en": "Ink layer up to 20 microns",
+       "tr": "20 mikrona kadar mürekkep katmanı"
+      },
+      {
+       "fa": "چاپ روی تیوب‌های رنگی با مستربچ",
+       "en": "Prints on tubes coloured with masterbatch",
+       "tr": "Masterbatch ile renklendirilmiş tüplere baskı"
+      },
+      {
+       "fa": "چاپ روی سطوح هات استمپ‌شده بدنه",
+       "en": "Prints over hot-stamped areas of the body",
+       "tr": "Gövdenin sıcak baskılı alanları üzerine baskı"
+      },
+      {
+       "fa": "ورنی موضعی و چاپ تا روی شانه تیوب",
+       "en": "Spot varnish and printing up to the shoulder",
+       "tr": "Lokal lak ve omza kadar baskı"
+      }
+     ],
+     "uses": {
+      "fa": "تیوب‌های پلاستیکی بدون درز و قرص جوشان؛ آراپوش گستر خود را اولین ارائه‌دهنده این چاپ روی این تیوب‌ها در ایران معرفی می‌کند.",
+      "en": "Seamless plastic tubes and effervescent tubes; Arapoush introduces itself as the first in Iran to offer silk screen on these tubes.",
+      "tr": "Dikişsiz plastik tüpler ve efervesan tüpler; Arapoush, bu tüplerde serigrafi sunan İran'daki ilk firma olduğunu belirtir."
+     }
+    },
+    {
+     "id": "hotstamp",
+     "card": {
+      "src": "/images/printing/tex-hotstamp.webp",
+      "width": 470,
+      "height": 230
+     },
+     "macro": {
+      "src": "/images/printing/macro-hotstamp.webp",
+      "width": 800,
+      "height": 330
+     },
+     "sample": "gold",
+     "name": {
+      "fa": "هات استمپ",
+      "en": "Hot stamping",
+      "tr": "Sıcak baskı (hot stamp)"
+     },
+     "short": {
+      "fa": "هات استمپ",
+      "en": "Hot stamp",
+      "tr": "Sıcak baskı"
+     },
+     "summary": {
+      "fa": "جلوه فویل نقره‌ای آینه‌ای یا طلایی درخشان، روی بدنه و درب تیوب.",
+      "en": "A mirror-silver or shining gold foil effect, on the tube body and the cap.",
+      "tr": "Tüp gövdesinde ve kapağında ayna gibi gümüş veya parlak altın folyo efekti."
+     },
+     "advantages": [
+      {
+       "fa": "جلوه متالیک نقره‌ای یا طلایی",
+       "en": "Silver or gold metallic finish",
+       "tr": "Gümüş veya altın metalik efekt"
+      },
+      {
+       "fa": "اجرا روی بدنه و درب تیوب",
+       "en": "On the body and the cap",
+       "tr": "Gövde ve kapakta"
+      },
+      {
+       "fa": "حس کالای لوکس و قابل اعتماد",
+       "en": "A premium, trustworthy feel",
+       "tr": "Lüks ve güvenilir bir his"
+      }
+     ],
+     "process": {
+      "fa": "در هات استمپ (فویل استمپ) مرکب از پیش خشک‌شده یا فویل‌های رنگی براق، با حرارت بالا و به کمک کلیشه‌های سیلیکونی روی محصول منتقل می‌شوند.",
+      "en": "In hot stamping (foil stamping), pre-dried ink or glossy coloured foils are transferred onto the product under high heat, using silicone dies.",
+      "tr": "Sıcak baskıda (folyo baskı) önceden kurutulmuş mürekkep veya parlak renkli folyolar, silikon kalıplarla yüksek ısı altında ürüne aktarılır."
+     },
+     "capabilities": [
+      {
+       "fa": "فویل نقره‌ای با خاصیت آینه‌ای",
+       "en": "Mirror-finish silver foil",
+       "tr": "Ayna parlaklığında gümüş folyo"
+      },
+      {
+       "fa": "فویل طلایی با درخشش خاص",
+       "en": "Gold foil with a distinctive shine",
+       "tr": "Özel parlaklıkta altın folyo"
+      },
+      {
+       "fa": "روی بدنه و درب تیوب",
+       "en": "On the tube body and cap",
+       "tr": "Tüp gövdesi ve kapağında"
+      },
+      {
+       "fa": "قابل ترکیب با چاپ سیلک روی سطح استمپ‌شده",
+       "en": "Can be combined with silk screen over the stamped area",
+       "tr": "Baskılı alan üzerine serigrafi ile birleştirilebilir"
+      }
+     ],
+     "uses": {
+      "fa": "برندهای آرایشی، بهداشتی، دارویی، خوراکی و صنعتی؛ برای تأکید بر نقاط تمایز محصول، اگر به‌اندازه در طراحی به کار رود.",
+      "en": "Cosmetic, hygienic, pharmaceutical, food and industrial brands, to highlight what sets a product apart when used in measure.",
+      "tr": "Kozmetik, hijyen, ilaç, gıda ve endüstriyel markalar; ölçülü kullanıldığında ürünü farklı kılan noktaları vurgulamak için."
+     }
+    },
+    {
+     "id": "combination",
+     "card": {
+      "src": "/images/printing/tex-combination.webp",
+      "width": 560,
+      "height": 380
+     },
+     "macro": {
+      "src": "/images/printing/macro-combination.webp",
+      "width": 800,
+      "height": 600
+     },
+     "sample": "lavender",
+     "name": {
+      "fa": "چاپ ترکیبی",
+      "en": "Combination printing",
+      "tr": "Kombine baskı"
+     },
+     "short": {
+      "fa": "ترکیبی",
+      "en": "Combination",
+      "tr": "Kombine"
+     },
+     "summary": {
+      "fa": "تا ۱۱ رنگ: ۶ رنگ افست خشک و ۵ رنگ سیلک، همراه با هات استمپ و چاپ تا روی شانه.",
+      "en": "Up to 11 colours: 6 in dry offset and 5 in silk screen, with hot stamping and printing up to the shoulder.",
+      "tr": "11 renge kadar: 6 renk kuru ofset ve 5 renk serigrafi, sıcak baskı ve omza kadar baskı ile."
+     },
+     "advantages": [
+      {
+       "fa": "تا ۱۱ رنگ",
+       "en": "Up to 11 colours",
+       "tr": "11 renge kadar"
+      },
+      {
+       "fa": "ترکیب افست، سیلک و هات استمپ",
+       "en": "Offset, silk screen and hot stamp together",
+       "tr": "Ofset, serigrafi ve sıcak baskı bir arada"
+      },
+      {
+       "fa": "طرح‌های متنوع و خاص",
+       "en": "Varied, distinctive designs",
+       "tr": "Çeşitli ve özgün tasarımlar"
+      }
+     ],
+     "process": {
+      "fa": "بخشی از طرح با افست خشک چاپ می‌شود و سپس قسمت‌های تعیین‌شده در چاپ سیلک به آن اضافه می‌شوند؛ معمولاً پس‌زمینه با افست و تصاویر روی زمینه با سیلک چاپ می‌شوند. هات استمپ و چاپ تا روی شانه نیز به طرح افزوده می‌شود و در برخی موارد چند بار چاپ مکرر انجام می‌شود.",
+      "en": "Part of the design is printed in dry offset, then the chosen elements are added in silk screen; usually the background is offset and the foreground is silk screen. Hot stamping and shoulder printing can be added, and in some cases the tube goes through several passes.",
+      "tr": "Tasarımın bir kısmı kuru ofsetle basılır, ardından belirlenen öğeler serigrafiyle eklenir; genellikle zemin ofset, üstteki görseller serigrafidir. Sıcak baskı ve omza kadar baskı da eklenebilir; bazı durumlarda tüp birkaç kez baskıdan geçer."
+     },
+     "capabilities": [
+      {
+       "fa": "۱۱ رنگ (۶ افست + ۵ سیلک)",
+       "en": "11 colours (6 offset + 5 silk screen)",
+       "tr": "11 renk (6 ofset + 5 serigrafi)"
+      },
+      {
+       "fa": "افست ۴ تا ۵ میکرون، سیلک تا ۲۰ میکرون",
+       "en": "Offset 4–5 microns, silk screen up to 20 microns",
+       "tr": "Ofset 4–5 mikron, serigrafi 20 mikrona kadar"
+      },
+      {
+       "fa": "افزودن هات استمپ و چاپ تا روی شانه",
+       "en": "Hot stamping and shoulder printing added",
+       "tr": "Sıcak baskı ve omza kadar baskı eklenir"
+      },
+      {
+       "fa": "طبق معرفی آراپوش، تنها ارائه‌دهنده چاپ ترکیبی ۱۱ رنگ در ایران",
+       "en": "By Arapoush's account, the only 11-colour combination printer in Iran",
+       "tr": "Arapoush'a göre İran'da 11 renk kombine baskı yapan tek firma"
+      }
+     ],
+     "uses": {
+      "fa": "طرح‌هایی که از ویژگی‌های چند روش با هم بهره می‌برند؛ کارشناسان آراپوش در بهینه‌سازی فایل چاپ همکاری می‌کنند.",
+      "en": "Designs that draw on several methods at once; Arapoush's specialists help optimise the print file.",
+      "tr": "Birkaç yöntemin özelliklerinden aynı anda yararlanan tasarımlar; Arapoush uzmanları baskı dosyasının optimizasyonuna yardım eder."
+     }
+    }
+   ]
+  },
+  "guide": {
+   "eyebrow": {
+    "fa": "Printing selection guide",
+    "en": "Printing selection guide",
+    "tr": "Baskı seçim rehberi"
+   },
+   "title": {
+    "fa": "راهنمای انتخاب روش چاپ مناسب",
+    "en": "Find the Right Printing Technology",
+    "tr": "Doğru Baskı Teknolojisini Bulun"
+   },
+   "lead": {
+    "fa": "چند پرسش درباره طرح و تیوب خود پاسخ دهید تا روش‌های مناسب را با دلیل ببینید. نتیجه یک پیشنهاد اولیه است، نه توصیه نهایی مهندسی؛ برای تأیید با کارشناسان آراپوش مشورت کنید.",
+    "en": "Answer a few questions about your design and tube to see which methods fit and why. The result is a first suggestion, not a final engineering recommendation; confirm it with Arapoush's specialists.",
+    "tr": "Uygun yöntemleri gerekçeleriyle görmek için tasarımınız ve tüpünüz hakkında birkaç soruyu yanıtlayın. Sonuç ilk bir öneridir, kesin mühendislik tavsiyesi değildir; Arapoush uzmanlarıyla doğrulayın."
+   },
+   "steps": [
+    {
+     "fa": "تعیین نیاز و هدف پروژه",
+     "en": "Define the project's needs",
+     "tr": "Proje ihtiyacını belirleyin"
+    },
+    {
+     "fa": "بررسی ویژگی‌های هر فناوری",
+     "en": "Review each technology",
+     "tr": "Her teknolojiyi inceleyin"
+    },
+    {
+     "fa": "مقایسه و انتخاب گزینه مناسب",
+     "en": "Compare and choose",
+     "tr": "Karşılaştırın ve seçin"
+    },
+    {
+     "fa": "دریافت مشاوره تخصصی",
+     "en": "Get expert advice",
+     "tr": "Uzman görüşü alın"
+    }
+   ],
+   "result": {
+    "fa": "پیشنهاد اولیه",
+    "en": "First suggestion",
+    "tr": "İlk öneri"
+   },
+   "fits": {
+    "fa": "مناسب",
+    "en": "Good fit",
+    "tr": "Uygun"
+   },
+   "check": {
+    "fa": "نیاز به بررسی",
+    "en": "Check with us",
+    "tr": "Bize danışın"
+   },
+   "no": {
+    "fa": "مناسب نیست",
+    "en": "Not a fit",
+    "tr": "Uygun değil"
+   },
+   "reset": {
+    "fa": "پاک کردن پاسخ‌ها",
+    "en": "Clear answers",
+    "tr": "Yanıtları temizle"
+   },
+   "empty": {
+    "fa": "یک یا چند پرسش را پاسخ دهید تا روش‌ها مرتب شوند.",
+    "en": "Answer one or more questions to rank the methods.",
+    "tr": "Yöntemleri sıralamak için bir veya daha fazla soruyu yanıtlayın."
+   },
+   "ask": {
+    "fa": "تأیید با کارشناس",
+    "en": "Confirm with a specialist",
+    "tr": "Bir uzmanla doğrulayın"
+   },
+   "questions": [
+    {
+     "id": "look",
+     "label": {
+      "fa": "چه جلوه‌ای برای طرح مهم‌تر است؟",
+      "en": "What matters most in the look?",
+      "tr": "Görünümde en önemli olan nedir?"
+     },
+     "options": [
+      {
+       "id": "detail",
+       "label": {
+        "fa": "جزئیات و تصویر تمام‌رنگ",
+        "en": "Detail and full-colour images",
+        "tr": "Detay ve tam renkli görseller"
+       },
+       "effects": [
+        {
+         "m": "flexo",
+         "s": 2,
+         "why": {
+          "fa": "غلتک‌های آنیلوکس وضوح تصویر را تعیین می‌کنند؛ CMYK و پنتون",
+          "en": "Anilox rollers set sharpness; CMYK and Pantone",
+          "tr": "Anilox merdaneler netliği belirler; CMYK ve Pantone"
+         }
+        },
+        {
+         "m": "offset",
+         "s": 2,
+         "why": {
+          "fa": "چاپ ۶ رنگ هر طرحی، حتی تا روی شانه",
+          "en": "6-colour printing of any design, even on the shoulder",
+          "tr": "Her tasarıma 6 renk baskı, omza kadar"
+         }
+        },
+        {
+         "m": "combination",
+         "s": 1,
+         "why": {
+          "fa": "پس‌زمینه با افست، جزئیات روی زمینه با سیلک",
+          "en": "Offset background, silk screen foreground",
+          "tr": "Ofset zemin, serigrafi ön plan"
+         }
+        }
+       ]
+      },
+      {
+       "id": "bold",
+       "label": {
+        "fa": "رنگ پرحجم و پوشاننده",
+        "en": "Bold, opaque colour",
+        "tr": "Dolgun, örtücü renk"
+       },
+       "effects": [
+        {
+         "m": "silk",
+         "s": 2,
+         "why": {
+          "fa": "لایه رنگ تا ۲۰ میکرون و چاپ رنگ‌ها روی هم",
+          "en": "Ink up to 20 microns, colours over one another",
+          "tr": "20 mikrona kadar mürekkep, renkler üst üste"
+         }
+        },
+        {
+         "m": "combination",
+         "s": 1,
+         "why": {
+          "fa": "بخش‌های پرحجم با سیلک اضافه می‌شوند",
+          "en": "Bold elements are added in silk screen",
+          "tr": "Dolgun öğeler serigrafiyle eklenir"
+         }
+        }
+       ]
+      },
+      {
+       "id": "metallic",
+       "label": {
+        "fa": "جلوه متالیک طلایی یا نقره‌ای",
+        "en": "Gold or silver metallic",
+        "tr": "Altın veya gümüş metalik"
+       },
+       "effects": [
+        {
+         "m": "hotstamp",
+         "s": 3,
+         "why": {
+          "fa": "فویل نقره‌ای آینه‌ای یا طلایی درخشان",
+          "en": "Mirror-silver or shining gold foil",
+          "tr": "Ayna gümüş veya parlak altın folyo"
+         }
+        },
+        {
+         "m": "combination",
+         "s": 2,
+         "why": {
+          "fa": "هات استمپ در کنار چاپ رنگی",
+          "en": "Hot stamping alongside colour print",
+          "tr": "Renkli baskının yanında sıcak baskı"
+         }
+        }
+       ]
+      },
+      {
+       "id": "mixed",
+       "label": {
+        "fa": "ترکیب چند جلوه در یک طرح",
+        "en": "Several effects in one design",
+        "tr": "Tek tasarımda birden çok efekt"
+       },
+       "effects": [
+        {
+         "m": "combination",
+         "s": 3,
+         "why": {
+          "fa": "افست، سیلک، هات استمپ و چاپ تا روی شانه در یک تیوب",
+          "en": "Offset, silk screen, hot stamp and shoulder print on one tube",
+          "tr": "Tek tüpte ofset, serigrafi, sıcak baskı ve omuz baskısı"
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "colours",
+     "label": {
+      "fa": "طرح چند رنگ دارد؟",
+      "en": "How many colours?",
+      "tr": "Kaç renk?"
+     },
+     "options": [
+      {
+       "id": "c5",
+       "label": {
+        "fa": "تا ۵ رنگ",
+        "en": "Up to 5",
+        "tr": "5'e kadar"
+       },
+       "effects": [
+        {
+         "m": "silk",
+         "s": 1,
+         "why": {
+          "fa": "سیلک تا ۵ رنگ چاپ می‌کند",
+          "en": "Silk screen prints up to 5 colours",
+          "tr": "Serigrafi 5 renge kadar basar"
+         }
+        },
+        {
+         "m": "offset",
+         "s": 1,
+         "why": {
+          "fa": "در محدوده ۶ رنگ افست",
+          "en": "Within offset's 6 colours",
+          "tr": "Ofsetin 6 rengi içinde"
+         }
+        },
+        {
+         "m": "flexo",
+         "s": 1,
+         "why": {
+          "fa": "در محدوده ۸ رنگ فلکسو",
+          "en": "Within flexo's 8 colours",
+          "tr": "Fleksonun 8 rengi içinde"
+         }
+        }
+       ]
+      },
+      {
+       "id": "c6",
+       "label": {
+        "fa": "۶ رنگ",
+        "en": "6",
+        "tr": "6"
+       },
+       "effects": [
+        {
+         "m": "offset",
+         "s": 2,
+         "why": {
+          "fa": "افست خشک ۶ رنگ است",
+          "en": "Dry offset prints 6 colours",
+          "tr": "Kuru ofset 6 renk basar"
+         }
+        },
+        {
+         "m": "flexo",
+         "s": 1,
+         "why": {
+          "fa": "در محدوده ۸ رنگ فلکسو",
+          "en": "Within flexo's 8 colours",
+          "tr": "Fleksonun 8 rengi içinde"
+         }
+        },
+        {
+         "m": "combination",
+         "s": 1,
+         "why": {
+          "fa": "در محدوده ۱۱ رنگ چاپ ترکیبی",
+          "en": "Within combination's 11 colours",
+          "tr": "Kombinenin 11 rengi içinde"
+         }
+        }
+       ],
+       "excludes": [
+        {
+         "m": "silk",
+         "why": {
+          "fa": "سیلک تا ۵ رنگ است",
+          "en": "Silk screen goes up to 5 colours",
+          "tr": "Serigrafi en fazla 5 renk"
+         }
+        }
+       ]
+      },
+      {
+       "id": "c8",
+       "label": {
+        "fa": "۷ یا ۸ رنگ",
+        "en": "7 or 8",
+        "tr": "7 veya 8"
+       },
+       "effects": [
+        {
+         "m": "flexo",
+         "s": 2,
+         "why": {
+          "fa": "دستگاه فلکسوی ۸ رنگ",
+          "en": "8-colour flexo press",
+          "tr": "8 renkli flekso makinesi"
+         }
+        },
+        {
+         "m": "combination",
+         "s": 1,
+         "why": {
+          "fa": "در محدوده ۱۱ رنگ چاپ ترکیبی",
+          "en": "Within combination's 11 colours",
+          "tr": "Kombinenin 11 rengi içinde"
+         }
+        }
+       ],
+       "excludes": [
+        {
+         "m": "offset",
+         "why": {
+          "fa": "افست خشک ۶ رنگ است",
+          "en": "Dry offset prints 6 colours",
+          "tr": "Kuru ofset 6 renk basar"
+         }
+        },
+        {
+         "m": "silk",
+         "why": {
+          "fa": "سیلک تا ۵ رنگ است",
+          "en": "Silk screen goes up to 5 colours",
+          "tr": "Serigrafi en fazla 5 renk"
+         }
+        }
+       ]
+      },
+      {
+       "id": "c11",
+       "label": {
+        "fa": "۹ تا ۱۱ رنگ",
+        "en": "9 to 11",
+        "tr": "9–11"
+       },
+       "effects": [
+        {
+         "m": "combination",
+         "s": 3,
+         "why": {
+          "fa": "چاپ ترکیبی تا ۱۱ رنگ (۶ افست + ۵ سیلک)",
+          "en": "Combination printing up to 11 colours (6 + 5)",
+          "tr": "11 renge kadar kombine baskı (6 + 5)"
+         }
+        }
+       ],
+       "excludes": [
+        {
+         "m": "flexo",
+         "why": {
+          "fa": "فلکسو ۸ رنگ است",
+          "en": "Flexo prints 8 colours",
+          "tr": "Flekso 8 renk basar"
+         }
+        },
+        {
+         "m": "offset",
+         "why": {
+          "fa": "افست خشک ۶ رنگ است",
+          "en": "Dry offset prints 6 colours",
+          "tr": "Kuru ofset 6 renk basar"
+         }
+        },
+        {
+         "m": "silk",
+         "why": {
+          "fa": "سیلک تا ۵ رنگ است",
+          "en": "Silk screen goes up to 5 colours",
+          "tr": "Serigrafi en fazla 5 renk"
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "base",
+     "label": {
+      "fa": "روی چه چیزی چاپ می‌شود؟",
+      "en": "What is being printed?",
+      "tr": "Neye baskı yapılacak?"
+     },
+     "options": [
+      {
+       "id": "seamless",
+       "label": {
+        "fa": "تیوب پلاستیکی بدون درز",
+        "en": "Seamless plastic tube",
+        "tr": "Dikişsiz plastik tüp"
+       },
+       "effects": [
+        {
+         "m": "offset",
+         "s": 1,
+         "why": {
+          "fa": "برای تیوب‌های چندلایه بدون درز",
+          "en": "Made for seamless multi-layer tubes",
+          "tr": "Dikişsiz çok katmanlı tüpler için"
+         }
+        },
+        {
+         "m": "silk",
+         "s": 1,
+         "why": {
+          "fa": "روی تیوب‌های بدون درز",
+          "en": "Prints seamless tubes",
+          "tr": "Dikişsiz tüplere basar"
+         }
+        },
+        {
+         "m": "combination",
+         "s": 1,
+         "why": {
+          "fa": "روی تیوب‌های پلاستیکی",
+          "en": "Prints plastic tubes",
+          "tr": "Plastik tüplere basar"
+         }
+        },
+        {
+         "m": "flexo",
+         "s": 1,
+         "why": {
+          "fa": "تیوب با قطر ۱۹ تا ۶۰ میلی‌متر",
+          "en": "Tubes 19–60 mm in diameter",
+          "tr": "19–60 mm çaplı tüpler"
+         }
+        },
+        {
+         "m": "hotstamp",
+         "s": 1,
+         "why": {
+          "fa": "روی بدنه و درب تیوب",
+          "en": "On the tube body and cap",
+          "tr": "Tüp gövdesi ve kapağında"
+         }
+        }
+       ]
+      },
+      {
+       "id": "eff",
+       "label": {
+        "fa": "ظرف قرص جوشان",
+        "en": "Effervescent container",
+        "tr": "Efervesan kap"
+       },
+       "effects": [
+        {
+         "m": "flexo",
+         "s": 1,
+         "why": {
+          "fa": "ظرف قرص جوشان با ارتفاع ۵۰ تا ۲۳۰ میلی‌متر",
+          "en": "Effervescent containers 50–230 mm tall",
+          "tr": "50–230 mm efervesan kaplar"
+         }
+        },
+        {
+         "m": "offset",
+         "s": 1,
+         "why": {
+          "fa": "روی تیوب قرص جوشان",
+          "en": "Prints effervescent tubes",
+          "tr": "Efervesan tüplere basar"
+         }
+        },
+        {
+         "m": "silk",
+         "s": 1,
+         "why": {
+          "fa": "روی تیوب و ظرف قرص جوشان",
+          "en": "Prints effervescent tubes and containers",
+          "tr": "Efervesan tüp ve kaplara basar"
+         }
+        }
+       ],
+       "asks": [
+        {
+         "m": "hotstamp",
+         "why": {
+          "fa": "برای ظرف قرص جوشان در منبع ذکر نشده است",
+          "en": "Not stated for effervescent containers",
+          "tr": "Efervesan kaplar için belirtilmemiş"
+         }
+        },
+        {
+         "m": "combination",
+         "why": {
+          "fa": "برای ظرف قرص جوشان در منبع ذکر نشده است",
+          "en": "Not stated for effervescent containers",
+          "tr": "Efervesan kaplar için belirtilmemiş"
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "extras",
+     "multi": true,
+     "label": {
+      "fa": "نیازهای ویژه (در صورت وجود)",
+      "en": "Special needs (if any)",
+      "tr": "Özel ihtiyaçlar (varsa)"
+     },
+     "options": [
+      {
+       "id": "shoulder",
+       "label": {
+        "fa": "چاپ تا روی شانه",
+        "en": "Print on the shoulder",
+        "tr": "Omuz baskısı"
+       },
+       "effects": [
+        {
+         "m": "offset",
+         "s": 1,
+         "why": {
+          "fa": "چاپ تا روی شانه تیوب",
+          "en": "Prints up to the shoulder",
+          "tr": "Omza kadar basar"
+         }
+        },
+        {
+         "m": "silk",
+         "s": 1,
+         "why": {
+          "fa": "چاپ تا روی شانه تیوب",
+          "en": "Prints up to the shoulder",
+          "tr": "Omza kadar basar"
+         }
+        },
+        {
+         "m": "combination",
+         "s": 1,
+         "why": {
+          "fa": "چاپ تا روی شانه در ترکیب",
+          "en": "Shoulder print in the combination",
+          "tr": "Kombinasyonda omuz baskısı"
+         }
+        }
+       ],
+       "asks": [
+        {
+         "m": "flexo",
+         "why": {
+          "fa": "چاپ روی شانه برای فلکسو ذکر نشده است",
+          "en": "Shoulder print not stated for flexo",
+          "tr": "Flekso için omuz baskısı belirtilmemiş"
+         }
+        },
+        {
+         "m": "hotstamp",
+         "why": {
+          "fa": "روی شانه ذکر نشده؛ روی بدنه و درب اجرا می‌شود",
+          "en": "Shoulder not stated; done on body and cap",
+          "tr": "Omuz belirtilmemiş; gövde ve kapakta yapılır"
+         }
+        }
+       ]
+      },
+      {
+       "id": "coloured",
+       "label": {
+        "fa": "تیوب رنگی (مستربچ)",
+        "en": "Coloured tube (masterbatch)",
+        "tr": "Renkli tüp (masterbatch)"
+       },
+       "effects": [
+        {
+         "m": "silk",
+         "s": 2,
+         "why": {
+          "fa": "چاپ روی تیوب‌های رنگی با مستربچ",
+          "en": "Prints on masterbatch-coloured tubes",
+          "tr": "Masterbatch renkli tüplere basar"
+         }
+        }
+       ],
+       "asks": [
+        {
+         "m": "flexo",
+         "why": {
+          "fa": "برای تیوب رنگی ذکر نشده است",
+          "en": "Not stated for coloured tubes",
+          "tr": "Renkli tüpler için belirtilmemiş"
+         }
+        },
+        {
+         "m": "offset",
+         "why": {
+          "fa": "برای تیوب رنگی ذکر نشده است",
+          "en": "Not stated for coloured tubes",
+          "tr": "Renkli tüpler için belirtilmemiş"
+         }
+        }
+       ]
+      },
+      {
+       "id": "cap",
+       "label": {
+        "fa": "تزئین روی درب",
+        "en": "Decoration on the cap",
+        "tr": "Kapak süslemesi"
+       },
+       "effects": [
+        {
+         "m": "hotstamp",
+         "s": 2,
+         "why": {
+          "fa": "هات استمپ روی درب تیوب",
+          "en": "Hot stamping on the cap",
+          "tr": "Kapakta sıcak baskı"
+         }
+        }
+       ],
+       "asks": [
+        {
+         "m": "flexo",
+         "why": {
+          "fa": "چاپ روی درب ذکر نشده است",
+          "en": "Cap printing not stated",
+          "tr": "Kapak baskısı belirtilmemiş"
+         }
+        },
+        {
+         "m": "offset",
+         "why": {
+          "fa": "چاپ روی درب ذکر نشده است",
+          "en": "Cap printing not stated",
+          "tr": "Kapak baskısı belirtilmemiş"
+         }
+        },
+        {
+         "m": "silk",
+         "why": {
+          "fa": "چاپ روی درب ذکر نشده است",
+          "en": "Cap printing not stated",
+          "tr": "Kapak baskısı belirtilmemiş"
+         }
+        }
+       ]
+      },
+      {
+       "id": "pantone",
+       "label": {
+        "fa": "تطبیق دقیق رنگ پنتون",
+        "en": "Exact Pantone match",
+        "tr": "Tam Pantone eşleşmesi"
+       },
+       "effects": [
+        {
+         "m": "flexo",
+         "s": 2,
+         "why": {
+          "fa": "چاپ با سیستم پنتون برای بازتولید بدون اختلاف رنگ",
+          "en": "Pantone printing to reproduce colours without drift",
+          "tr": "Renkleri sapmadan üretmek için Pantone baskı"
+         }
+        }
+       ]
+      },
+      {
+       "id": "cost",
+       "label": {
+        "fa": "هزینه مهم‌ترین معیار است",
+        "en": "Cost matters most",
+        "tr": "Maliyet en önemli kriter"
+       },
+       "effects": [
+        {
+         "m": "offset",
+         "s": 2,
+         "why": {
+          "fa": "آراپوش افست خشک را برای صاحبان برند مقرون‌به‌صرفه معرفی می‌کند",
+          "en": "Arapoush describes dry offset as cost-effective for brands",
+          "tr": "Arapoush kuru ofseti markalar için ekonomik olarak tanımlar"
+         }
+        }
+       ],
+       "note": {
+        "fa": "هزینه نهایی به تیراژ، تعداد رنگ و طرح بستگی دارد؛ برای قیمت دقیق استعلام بگیرید.",
+        "en": "Final cost depends on run length, colours and artwork; ask for a quote.",
+        "tr": "Nihai maliyet tiraja, renk sayısına ve tasarıma bağlıdır; teklif isteyin."
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "samples": {
+   "eyebrow": {
+    "fa": "Sample designs",
+    "en": "Sample designs",
+    "tr": "Örnek tasarımlar"
+   },
+   "title": {
+    "fa": "نمونه طرح‌های چاپ تیوب",
+    "en": "Tube Printing Design Samples",
+    "tr": "Tüp Baskı Tasarım Örnekleri"
+   },
+   "lead": {
+    "fa": "این تصاویر نمونه‌های طراحی برای نمایش هر روش چاپ هستند، نه پروژه‌های تحویل‌شده به مشتری. تصاویر پروژه‌های واقعی پس از تأیید منتشر می‌شوند.",
+    "en": "These are design samples that show what each method can do, not delivered customer projects. Photographs of real projects will be published once approved.",
+    "tr": "Bunlar her yöntemin neler yapabildiğini gösteren tasarım örnekleridir, teslim edilmiş müşteri projeleri değildir. Gerçek proje fotoğrafları onaylandıktan sonra yayınlanacaktır."
+   },
+   "badge": {
+    "fa": "نمونه طراحی",
+    "en": "Design sample",
+    "tr": "Tasarım örneği"
+   },
+   "method": {
+    "fa": "روش پیشنهادی",
+    "en": "Suggested method",
+    "tr": "Önerilen yöntem"
+   },
+   "view": {
+    "fa": "نمایش بزرگ",
+    "en": "View larger",
+    "tr": "Büyük görüntüle"
+   },
+   "prev": {
+    "fa": "قبلی",
+    "en": "Previous",
+    "tr": "Önceki"
+   },
+   "next": {
+    "fa": "بعدی",
+    "en": "Next",
+    "tr": "Sonraki"
+   },
+   "close": {
+    "fa": "بستن",
+    "en": "Close",
+    "tr": "Kapat"
+   },
+   "zoomIn": {
+    "fa": "بزرگ‌نمایی",
+    "en": "Zoom in",
+    "tr": "Yakınlaştır"
+   },
+   "zoomOut": {
+    "fa": "کوچک‌نمایی",
+    "en": "Zoom out",
+    "tr": "Uzaklaştır"
+   },
+   "of": {
+    "fa": "{n} از {total}",
+    "en": "{n} of {total}",
+    "tr": "{n} / {total}"
+   },
+   "items": [
+    {
+     "id": "lavender",
+     "method": "combination",
+     "image": {
+      "src": "/images/printing/sample-lavender.webp",
+      "width": 1448,
+      "height": 1086
+     },
+     "title": {
+      "fa": "تیوب کرم دست اسطوخودوس",
+      "en": "Lavender hand cream tube",
+      "tr": "Lavanta el kremi tüpü"
+     },
+     "industry": {
+      "fa": "آرایشی و بهداشتی",
+      "en": "Cosmetics and hygiene",
+      "tr": "Kozmetik ve hijyen"
+     },
+     "text": {
+      "fa": "طرح نمونه با رنگ‌های لایه‌ای و جزئیات گل؛ نمایش کاری که از ترکیب افست و سیلک برمی‌آید.",
+      "en": "A sample with layered colour and floral detail, showing what offset and silk screen can do together.",
+      "tr": "Katmanlı renk ve çiçek detaylı örnek; ofset ve serigrafinin birlikte neler yapabildiğini gösterir."
+     }
+    },
+    {
+     "id": "vitamin-c",
+     "method": "offset",
+     "image": {
+      "src": "/images/printing/sample-vitamin-c.webp",
+      "width": 1448,
+      "height": 1086
+     },
+     "title": {
+      "fa": "تیوب شوینده صورت ویتامین C",
+      "en": "Vitamin C face wash tube",
+      "tr": "C vitaminli yüz yıkama tüpü"
+     },
+     "industry": {
+      "fa": "مراقبت از پوست",
+      "en": "Skincare",
+      "tr": "Cilt bakımı"
+     },
+     "text": {
+      "fa": "طرح نمونه تمام‌رنگ با تصویر میوه؛ نمونه‌ای از چاپ چندرنگ روی بدنه تیوب.",
+      "en": "A full-colour sample with fruit imagery: an example of multi-colour printing on the tube body.",
+      "tr": "Meyve görselli tam renkli örnek; tüp gövdesine çok renkli baskı örneği."
+     }
+    },
+    {
+     "id": "calcium",
+     "method": "flexo",
+     "image": {
+      "src": "/images/printing/sample-calcium.webp",
+      "width": 1448,
+      "height": 1086
+     },
+     "title": {
+      "fa": "تیوب ژل مکمل کلسیم",
+      "en": "Calcium gel tube",
+      "tr": "Kalsiyum jel tüpü"
+     },
+     "industry": {
+      "fa": "دارویی و مکمل",
+      "en": "Pharmaceutical and supplements",
+      "tr": "İlaç ve takviye"
+     },
+     "text": {
+      "fa": "طرح نمونه با رنگ آبی برند و شیب رنگی؛ جایی که تطبیق رنگ پنتون اهمیت دارد.",
+      "en": "A sample built on a brand blue and colour gradients, where Pantone matching matters.",
+      "tr": "Marka mavisi ve renk geçişleriyle örnek; Pantone eşleşmesinin önemli olduğu bir tasarım."
+     }
+    },
+    {
+     "id": "colour",
+     "method": "offset",
+     "image": {
+      "src": "/images/printing/tube-colour.webp",
+      "width": 1086,
+      "height": 1448
+     },
+     "title": {
+      "fa": "تیوب قرص جوشان با طرح رنگی",
+      "en": "Effervescent tube with colour sweep",
+      "tr": "Renkli desenli efervesan tüp"
+     },
+     "industry": {
+      "fa": "قرص جوشان",
+      "en": "Effervescent tablets",
+      "tr": "Efervesan tablet"
+     },
+     "text": {
+      "fa": "طرح نمونه با موج‌های رنگی روی تیوب قرص جوشان.",
+      "en": "A sample with colour waves on an effervescent tube.",
+      "tr": "Efervesan tüp üzerinde renk dalgalarıyla örnek."
+     }
+    },
+    {
+     "id": "gold",
+     "method": "hotstamp",
+     "image": {
+      "src": "/images/printing/tube-gold.webp",
+      "width": 1086,
+      "height": 1448
+     },
+     "title": {
+      "fa": "تیوب سفید با برگ‌های طلایی",
+      "en": "White tube with gold leaves",
+      "tr": "Altın yapraklı beyaz tüp"
+     },
+     "industry": {
+      "fa": "محصولات لوکس",
+      "en": "Premium products",
+      "tr": "Lüks ürünler"
+     },
+     "text": {
+      "fa": "طرح نمونه با فویل طلایی هات استمپ کنار نقش سفید؛ نمونه‌ای از ترکیب فویل و چاپ.",
+      "en": "A sample pairing hot-stamped gold foil with a white pattern: foil and print together.",
+      "tr": "Sıcak baskı altın folyo ile beyaz desen; folyo ve baskı bir arada."
+     }
+    }
+   ]
+  },
+  "downloads": {
+   "eyebrow": {
+    "fa": "Downloads",
+    "en": "Downloads",
+    "tr": "İndirmeler"
+   },
+   "title": {
+    "fa": "راهنمای آماده‌سازی فایل‌های چاپ",
+    "en": "Printing Resources & Downloads",
+    "tr": "Baskı Kaynakları ve İndirmeler"
+   },
+   "lead": {
+    "fa": "راهنماها و قالب‌های آماده‌سازی فایل چاپ. فایل‌هایی که هنوز منتشر نشده‌اند را می‌توانید با ایمیل درخواست کنید.",
+    "en": "Guides and templates for preparing print files. Files not yet published can be requested by email.",
+    "tr": "Baskı dosyası hazırlama rehberleri ve şablonları. Henüz yayınlanmamış dosyaları e-postayla isteyebilirsiniz."
+   },
+   "download": {
+    "fa": "دانلود",
+    "en": "Download",
+    "tr": "İndir"
+   },
+   "preview": {
+    "fa": "پیش‌نمایش",
+    "en": "Preview",
+    "tr": "Önizle"
+   },
+   "request": {
+    "fa": "درخواست با ایمیل",
+    "en": "Request by email",
+    "tr": "E-postayla iste"
+   },
+   "soon": {
+    "fa": "به‌زودی",
+    "en": "Coming soon",
+    "tr": "Yakında"
+   },
+   "requestSubject": {
+    "fa": "درخواست فایل: {name}",
+    "en": "File request: {name}",
+    "tr": "Dosya talebi: {name}"
+   },
+   "guideTitle": {
+    "fa": "راهنمای آماده‌سازی چاپ",
+    "en": "Print preparation guide",
+    "tr": "Baskı hazırlık rehberi"
+   },
+   "items": [
+    {
+     "id": "guide",
+     "format": "PDF",
+     "file": null,
+     "name": {
+      "fa": "راهنمای آماده‌سازی فایل",
+      "en": "Print preparation guide",
+      "tr": "Baskı hazırlık rehberi"
+     },
+     "text": {
+      "fa": "نکات آماده‌سازی طرح برای چاپ روی تیوب",
+      "en": "Preparing artwork for tube printing",
+      "tr": "Tüp baskısı için tasarım hazırlığı"
+     }
+    },
+    {
+     "id": "templates",
+     "format": "AI",
+     "file": null,
+     "name": {
+      "fa": "قالب‌های طراحی",
+      "en": "Artwork templates",
+      "tr": "Tasarım şablonları"
+     },
+     "text": {
+      "fa": "قالب ابعاد بدنه تیوب برای طراحی",
+      "en": "Tube body dielines for your designer",
+      "tr": "Tasarımcınız için tüp gövdesi şablonları"
+     }
+    },
+    {
+     "id": "specs",
+     "format": "PDF",
+     "file": null,
+     "name": {
+      "fa": "مشخصات فنی",
+      "en": "Technical specifications",
+      "tr": "Teknik özellikler"
+     },
+     "text": {
+      "fa": "مشخصات روش‌های چاپ و تیوب‌ها",
+      "en": "Printing methods and tube specifications",
+      "tr": "Baskı yöntemleri ve tüp özellikleri"
+     }
+    },
+    {
+     "id": "checklist",
+     "format": "PDF",
+     "file": null,
+     "name": {
+      "fa": "چک‌لیست کنترل فایل",
+      "en": "Print file checklist",
+      "tr": "Baskı dosyası kontrol listesi"
+     },
+     "text": {
+      "fa": "بررسی فایل پیش از ارسال",
+      "en": "Check your file before sending",
+      "tr": "Göndermeden önce dosyanızı kontrol edin"
+     }
+    }
+   ]
+  },
+  "compare": {
+   "eyebrow": {
+    "fa": "Quick comparison",
+    "en": "Quick comparison",
+    "tr": "Hızlı karşılaştırma"
+   },
+   "title": {
+    "fa": "مقایسه سریع فناوری‌های چاپ",
+    "en": "Compare Printing Technologies at a Glance",
+    "tr": "Baskı Teknolojilerini Hızla Karşılaştırın"
+   },
+   "lead": {
+    "fa": "خلاصه ویژگی‌های هر روش، بر اساس اطلاعات آراپوش. خانه‌های «—» در منبع ذکر نشده‌اند؛ برای جزئیات بپرسید.",
+    "en": "Each method at a glance, from Arapoush's own information. A dash means the source doesn't say; ask us for details.",
+    "tr": "Arapoush'un kendi bilgilerine göre her yöntemin özeti. Tire, kaynakta belirtilmediğini gösterir; ayrıntı için bize sorun."
+   },
+   "cta": {
+    "fa": "درخواست مشاوره رایگان",
+    "en": "Request a free consultation",
+    "tr": "Ücretsiz danışmanlık isteyin"
+   },
+   "method": {
+    "fa": "روش چاپ",
+    "en": "Method",
+    "tr": "Yöntem"
+   },
+   "columns": [
+    {
+     "id": "colours",
+     "label": {
+      "fa": "رنگ‌ها",
+      "en": "Colours",
+      "tr": "Renkler"
+     }
+    },
+    {
+     "id": "ink",
+     "label": {
+      "fa": "لایه رنگ",
+      "en": "Ink layer",
+      "tr": "Mürekkep katmanı"
+     }
+    },
+    {
+     "id": "look",
+     "label": {
+      "fa": "جلوه بصری",
+      "en": "Visual character",
+      "tr": "Görsel karakter"
+     }
+    },
+    {
+     "id": "where",
+     "label": {
+      "fa": "محل چاپ",
+      "en": "Where it prints",
+      "tr": "Baskı yeri"
+     }
+    }
+   ],
+   "rows": {
+    "flexo": {
+     "colours": {
+      "fa": "تا ۸ رنگ؛ CMYK و پنتون",
+      "en": "Up to 8; CMYK and Pantone",
+      "tr": "8'e kadar; CMYK ve Pantone"
+     },
+     "ink": null,
+     "look": {
+      "fa": "وضوح تنظیم‌شده با ۱۰ نوع غلتک آنیلوکس",
+      "en": "Sharpness set by 10 anilox options",
+      "tr": "10 anilox seçeneğiyle ayarlanan netlik"
+     },
+     "where": {
+      "fa": "تیوب Ø۱۹–۶۰ میلی‌متر؛ ظرف قرص جوشان ۵۰–۲۳۰ میلی‌متر",
+      "en": "Tubes Ø19–60 mm; effervescent containers 50–230 mm",
+      "tr": "Ø19–60 mm tüpler; 50–230 mm efervesan kaplar"
+     }
+    },
+    "offset": {
+     "colours": {
+      "fa": "۶ رنگ",
+      "en": "6",
+      "tr": "6"
+     },
+     "ink": {
+      "fa": "۴ تا ۵ میکرون",
+      "en": "4–5 microns",
+      "tr": "4–5 mikron"
+     },
+     "look": {
+      "fa": "هر طرحی، تمام‌رنگ",
+      "en": "Any design, full colour",
+      "tr": "Her tasarım, tam renk"
+     },
+     "where": {
+      "fa": "تیوب چندلایه بدون درز و تیوب قرص جوشان؛ تا روی شانه",
+      "en": "Seamless multi-layer and effervescent tubes; up to the shoulder",
+      "tr": "Dikişsiz çok katmanlı ve efervesan tüpler; omza kadar"
+     }
+    },
+    "silk": {
+     "colours": {
+      "fa": "تا ۵ رنگ؛ تصاویر CMYK",
+      "en": "Up to 5; CMYK images",
+      "tr": "5'e kadar; CMYK görseller"
+     },
+     "ink": {
+      "fa": "تا ۲۰ میکرون",
+      "en": "Up to 20 microns",
+      "tr": "20 mikrona kadar"
+     },
+     "look": {
+      "fa": "پرحجم، رنگ‌ها روی هم، ورنی موضعی",
+      "en": "Rich, overprinted colours, spot varnish",
+      "tr": "Dolgun, üst üste renkler, lokal lak"
+     },
+     "where": {
+      "fa": "تیوب بدون درز و قرص جوشان، تیوب رنگی، سطح استمپ‌شده؛ تا روی شانه",
+      "en": "Seamless and effervescent tubes, coloured tubes, stamped areas; up to the shoulder",
+      "tr": "Dikişsiz ve efervesan tüpler, renkli tüpler, baskılı alanlar; omza kadar"
+     }
+    },
+    "hotstamp": {
+     "colours": {
+      "fa": "فویل نقره‌ای آینه‌ای یا طلایی",
+      "en": "Mirror silver or gold foil",
+      "tr": "Ayna gümüş veya altın folyo"
+     },
+     "ink": {
+      "fa": "فویل منتقل‌شده با حرارت",
+      "en": "Foil transferred with heat",
+      "tr": "Isıyla aktarılan folyo"
+     },
+     "look": {
+      "fa": "متالیک براق، حس لوکس",
+      "en": "Glossy metallic, premium feel",
+      "tr": "Parlak metalik, lüks his"
+     },
+     "where": {
+      "fa": "بدنه و درب تیوب",
+      "en": "Tube body and cap",
+      "tr": "Tüp gövdesi ve kapak"
+     }
+    },
+    "combination": {
+     "colours": {
+      "fa": "تا ۱۱ رنگ (۶ افست + ۵ سیلک)",
+      "en": "Up to 11 (6 offset + 5 silk)",
+      "tr": "11'e kadar (6 ofset + 5 serigrafi)"
+     },
+     "ink": {
+      "fa": "افست ۴–۵، سیلک تا ۲۰ میکرون",
+      "en": "Offset 4–5, silk up to 20 microns",
+      "tr": "Ofset 4–5, serigrafi 20 mikrona kadar"
+     },
+     "look": {
+      "fa": "پس‌زمینه افست، جزئیات سیلک، فویل",
+      "en": "Offset background, silk detail, foil",
+      "tr": "Ofset zemin, serigrafi detay, folyo"
+     },
+     "where": {
+      "fa": "تیوب پلاستیکی؛ تا روی شانه",
+      "en": "Plastic tubes; up to the shoulder",
+      "tr": "Plastik tüpler; omza kadar"
+     }
+    }
+   }
+  },
+  "cta": {
+   "title": {
+    "fa": "برای پروژه چاپ تیوب خود، مشاوره تخصصی دریافت کنید",
+    "en": "Let's Find the Right Printing Solution for Your Brand",
+    "tr": "Markanız İçin Doğru Baskı Çözümünü Bulalım"
+   },
+   "lead": {
+    "fa": "کارشناسان آراپوش در انتخاب روش چاپ و آماده‌سازی فایل همراه شما هستند.",
+    "en": "Arapoush's specialists help you choose the printing method and prepare the file.",
+    "tr": "Arapoush uzmanları baskı yöntemini seçmenize ve dosyayı hazırlamanıza yardım eder."
+   },
+   "consult": {
+    "fa": "درخواست مشاوره رایگان",
+    "en": "Request a consultation",
+    "tr": "Danışmanlık isteyin"
+   },
+   "call": {
+    "fa": "تماس با ما",
+    "en": "Call us",
+    "tr": "Bizi arayın"
+   },
+   "subject": {
+    "fa": "مشاوره چاپ تیوب",
+    "en": "Tube printing consultation",
+    "tr": "Tüp baskı danışmanlığı"
+   },
+   "tubeAlt": {
+    "fa": "تیوب سفید آراپوش با حلقه نارنجی",
+    "en": "White Arapoush tube with an orange ring",
+    "tr": "Turuncu halkalı beyaz Arapoush tüpü"
+   }
+  },
+  "images": {
+   "bgLight": {
+    "src": "/images/printing/bg-light.webp",
+    "width": 1672,
+    "height": 941
+   },
+   "bgNavy": {
+    "src": "/images/printing/bg-navy.webp",
+    "width": 1672,
+    "height": 941
+   },
+   "tubeColour": {
+    "src": "/images/printing/tube-colour.webp",
+    "width": 1086,
+    "height": 1448
+   },
+   "tubeGold": {
+    "src": "/images/printing/tube-gold.webp",
+    "width": 1086,
+    "height": 1448
+   },
+   "layers": {
+    "src": "/images/printing/layers.webp",
+    "width": 1448,
+    "height": 1086
+   },
+   "ctaTube": {
+    "src": "/images/printing/cta-tube.webp",
+    "width": 1447,
+    "height": 1087
+   }
+  }
+ }
+}
