@@ -1,8 +1,10 @@
 import type { Deps } from "./app.ts";
 import { createOperator } from "./auth/routes.ts";
+import { seedContent } from "./content/seed.ts";
 
 /** CLI commands (see cli.ts). */
 export const COMMANDS: Record<string, (deps: Deps, args: string[]) => Promise<void>> = {
+  seed: async (deps) => console.log(`imported: ${(await seedContent(deps)).join(", ") || "nothing (all entries exist)"}`),
   /** create-operator <email> <display name> <role> — the password is read from OPEX_NEW_PASSWORD. */
   "create-operator": async (deps, [email, name, role = "super_admin"]) => {
     const pw = process.env.OPEX_NEW_PASSWORD;

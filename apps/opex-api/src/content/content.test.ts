@@ -1,0 +1,137 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { createHmac } from "node:crypto";
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import sharp from "sharp";
+import { getAt } from "@arapoush/schema";
+import { testApp, signIn, stepUp, as } from "../testing.ts";
+import { deliverPending } from "../webhooks/outbox.ts";
+
+const TOKEN = "test-delivery-token-0123456789abcdef";
+const env = () => ({ DELIVERY_TOKEN: TOKEN, MEDIA_DIR: mkdtempSync(path.join(tmpdir(), "opex-media-")), SITE_WEBHOOK_URL: "https://site.test/api/opex/revalidate", SITE_WEBHOOK_SECRET: "test-webhook-secret-0123456789" });
+const bearer = { authorization: `Bearer ${TOKEN}` };
+
+test("seed publishes the website's content; the Delivery API serves it to the site only", async () => {
+  const t = await testApp(env(), { seed: true });
+  try {
+    const bundle = await t.app.inject({ method: "GET", url: "/v1/delivery/bundle", headers: bearer });
+    assert.equal(bundle.statusCode, 200);
+    const b = bundle.json();
+    assert.equal(Object.keys(b.entries).length, 12);
+    assert.equal(getAt(b.entries["page.printing"].data, "/hero/title@en"), "ARAPOUSH Tube Printing Technologies");
+    assert.equal((await t.app.inject({ method: "GET", url: "/v1/delivery/bundle", headers: { authorization: "Bearer wrong-token-wrong-token-wrong" } })).statusCode, 403);
+    assert.equal((await t.app.inject({ method: "GET", url: "/v1/delivery/bundle" })).statusCode, 401);
+    const again = await t.app.inject({ method: "GET", url: "/v1/delivery/bundle", headers: { ...bearer, "if-none-match": String(bundle.headers.etag) } });
+    assert.equal(again.statusCode, 304);
+  } finally {
+    await t.close();
+  }
+});
+
+test("draft edit → publish → delivered; stale edits are refused; rollback restores", async () => {
+  const t = await testApp(env(), { seed: true });
+  try {
+    const op = await signIn(t.app, t, "operator");
+    const entry = (await t.app.inject({ method: "GET", url: "/v1/manage/entries/page.printing", headers: { cookie: op.cookie } })).json();
+    const base = entry.draft.id;
+    const edit = await t.app.inject({ method: "PATCH", url: "/v1/manage/entries/page.printing", headers: as(op), payload: { base_revision_id: base, ops: [{ path: "/hero/title@fa", value: "فناوری‌های چاپ آراپوش" }] } });
+    assert.equal(edit.statusCode, 200, edit.body);
+    assert.deepEqual(edit.json().changes.map((c: { path: string }) => c.path), ["/hero/title@fa"]);
+    // Someone else still holds the old base: refused, not overwritten.
+    const stale = await t.app.inject({ method: "PATCH", url: "/v1/manage/entries/page.printing", headers: as(op), payload: { base_revision_id: base, ops: [{ path: "/hero/lead@fa", value: "x" }] } });
+    assert.equal(stale.statusCode, 412);
+    assert.equal(stale.json().code, "CONFLICT_BASE_REVISION");
+
+    // Not live until published.
+    const live = async () => getAt((await t.app.inject({ method: "GET", url: "/v1/delivery/content/page.printing", headers: bearer })).json().data, "/hero/title@fa");
+    assert.equal(await live(), "فناوری‌های چاپ روی تیوب‌های آراپوش");
+    const pub = await t.app.inject({ method: "POST", url: "/v1/manage/entries/page.printing/publish", headers: as(op), payload: {} });
+    assert.equal(pub.statusCode, 200, pub.body);
+    assert.equal(await live(), "فناوری‌های چاپ آراپوش");
+
+    // The website is told, with a verifiable signature.
+    let got: { body: string; sig: string } | null = null;
+    await deliverPending({ config: t.config, db: t.db }, t.app.log, (async (_u: string, init: RequestInit) => {
+      got = { body: String(init.body), sig: String((init.headers as Record<string, string>)["opex-signature"]) };
+      return new Response(null, { status: 204 });
+    }) as typeof fetch);
+    assert.ok(got);
+    const { body, sig } = got as { body: string; sig: string };
+    const [, ts, v1] = /^t=(\d+), v1=([0-9a-f]+)$/.exec(sig)!;
+    assert.equal(v1, createHmac("sha256", "test-webhook-secret-0123456789").update(`${ts}.${body}`).digest("hex"));
+    assert.equal(JSON.parse(body).data.entry, "page.printing");
+
+    const revs = (await t.app.inject({ method: "GET", url: "/v1/manage/entries/page.printing/revisions", headers: { cookie: op.cookie } })).json();
+    assert.equal(revs.length, 2);
+    const first = revs.find((r: { number: number }) => r.number === 1).id;
+    await stepUp(t.app, op);
+    const rb = await t.app.inject({ method: "POST", url: "/v1/manage/entries/page.printing/rollback", headers: as(op), payload: { revision_id: first } });
+    assert.equal(rb.statusCode, 200, rb.body);
+    assert.equal(await live(), "فناوری‌های چاپ روی تیوب‌های آراپوش");
+
+    const a = (await t.db.q<{ action: string }>(`SELECT action FROM audit_events ORDER BY seq`)).map((r) => r.action);
+    for (const x of ["content.revision.create", "content.publish", "content.rollback"]) assert.ok(a.includes(x), x);
+  } finally {
+    await t.close();
+  }
+});
+
+test("locked fields, bad text and unknown fields are refused with exact paths", async () => {
+  const t = await testApp(env(), { seed: true });
+  try {
+    const op = await signIn(t.app, t, "operator");
+    const e = (await t.app.inject({ method: "GET", url: "/v1/manage/entries/product.effervescent.page", headers: { cookie: op.cookie } })).json();
+    const locked = await t.app.inject({ method: "PATCH", url: "/v1/manage/entries/product.effervescent.page", headers: as(op), payload: { base_revision_id: e.draft.id, ops: [{ path: "/data/sizes[id=27x175]/h", value: 999 }] } });
+    assert.equal(locked.json().code, "FIELD_LOCKED");
+    const bidi = await t.app.inject({ method: "PATCH", url: "/v1/manage/entries/product.effervescent.page", headers: as(op), payload: { base_revision_id: e.draft.id, ops: [{ path: "/productEff/title[0]@en", value: "evil‮text" }] } });
+    assert.equal(bidi.statusCode, 400);
+    assert.ok(bidi.json().issues.some((i: { path: string }) => i.path.includes("@en")));
+    const missing = await t.app.inject({ method: "PATCH", url: "/v1/manage/entries/product.effervescent.page", headers: as(op), payload: { base_revision_id: e.draft.id, ops: [{ path: "/nope/x", value: 1 }] } });
+    assert.equal(missing.json().code, "PATH_NOT_FOUND");
+    const viewer = await signIn(t.app, t, "viewer");
+    assert.equal((await t.app.inject({ method: "PATCH", url: "/v1/manage/entries/product.effervescent.page", headers: as(viewer), payload: { base_revision_id: e.draft.id, ops: [{ path: "/productEff/title[0]@en", value: "x" }] } })).statusCode, 403);
+  } finally {
+    await t.close();
+  }
+});
+
+test("media: re-encoded on upload, private until published, active content rejected", async () => {
+  const t = await testApp(env(), { seed: true });
+  try {
+    const op = await signIn(t.app, t, "operator");
+    const png = await sharp({ create: { width: 40, height: 30, channels: 3, background: "#09263c" } }).png().withMetadata({ exif: { IFD0: { Copyright: "secret GPS" } } }).toBuffer();
+    const upload = (buf: Buffer, name: string, type: string) => {
+      const boundary = "----opex";
+      const payload = Buffer.concat([Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${name}"\r\nContent-Type: ${type}\r\n\r\n`), buf, Buffer.from(`\r\n--${boundary}--\r\n`)]);
+      return t.app.inject({ method: "POST", url: "/v1/manage/media", headers: { ...as(op), "content-type": `multipart/form-data; boundary=${boundary}` }, payload });
+    };
+    const up = await upload(png, "hero.png", "image/png");
+    assert.equal(up.statusCode, 200, up.body);
+    const asset = up.json();
+    assert.equal(asset.mime, "image/webp");
+    assert.equal(asset.width, 40);
+    assert.match(asset.url, /^\/media\/ast_[0-9A-Z]{26}\.webp$/);
+    assert.equal((await t.app.inject({ method: "GET", url: asset.url })).statusCode, 404, "not public before publish");
+
+    const e = (await t.app.inject({ method: "GET", url: "/v1/manage/entries/page.printing", headers: { cookie: op.cookie } })).json();
+    const set = await t.app.inject({ method: "PATCH", url: "/v1/manage/entries/page.printing", headers: as(op), payload: { base_revision_id: e.draft.id, ops: [{ path: "/images/tubeGold", value: { src: asset.url, width: 40, height: 30 } }] } });
+    assert.equal(set.statusCode, 200, set.body);
+    await t.app.inject({ method: "POST", url: "/v1/manage/entries/page.printing/publish", headers: as(op), payload: {} });
+    const served = await t.app.inject({ method: "GET", url: asset.url });
+    assert.equal(served.statusCode, 200);
+    assert.equal(served.headers["content-type"], "image/webp");
+    const meta = await sharp(served.rawPayload).metadata();
+    assert.equal(meta.exif, undefined, "metadata stripped");
+
+    const svg = await upload(Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'), "logo.svg", "image/svg+xml");
+    assert.equal(svg.json().code, "MEDIA_REJECTED");
+    const pdf = await upload(Buffer.from("%PDF-1.7\n1 0 obj << /OpenAction << /S /JavaScript /JS (app.alert(1)) >> >>"), "guide.pdf", "application/pdf");
+    assert.equal(pdf.json().code, "MEDIA_REJECTED");
+    const exe = await upload(Buffer.from("MZ\x90\x00 this is not an image at all......"), "photo.jpg", "image/jpeg");
+    assert.equal(exe.json().code, "MEDIA_REJECTED", "extension and Content-Type are ignored");
+  } finally {
+    await t.close();
+  }
+});

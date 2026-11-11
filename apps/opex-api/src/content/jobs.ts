@@ -1,0 +1,16 @@
+import type { Job } from "../workers.ts";
+import { SYSTEM_ACTOR, SYSTEM_REQUEST } from "../audit/audit.ts";
+import { deliverPending } from "../webhooks/outbox.ts";
+import { publish } from "./service.ts";
+
+/** Publishes entries whose schedule has come due (idempotent: the schedule is cleared on publish). */
+export const scheduledPublish: Job = {
+  name: "scheduled-publish",
+  everyMs: 30_000,
+  async run({ db, config }) {
+    const due = await db.q<{ type_key: string }>(`SELECT type_key FROM entries WHERE tenant_id = $1 AND scheduled_at IS NOT NULL AND scheduled_at <= clock_timestamp()`, [config.TENANT]);
+    for (const e of due) await db.tx((q) => publish(q, config.TENANT, { typeKey: e.type_key, actor: { ...SYSTEM_ACTOR, display: "Scheduler" }, request: SYSTEM_REQUEST, trigger: "schedule" }));
+  },
+};
+
+export const siteWebhooks: Job = { name: "site-webhooks", everyMs: 5_000, run: (deps, log) => deliverPending(deps, log) };

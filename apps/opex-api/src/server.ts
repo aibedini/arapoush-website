@@ -4,10 +4,13 @@ import { migrate } from "./db/migrate.ts";
 import { buildApp } from "./app.ts";
 import { MODULES } from "./modules.ts";
 import { startWorkers } from "./workers.ts";
+import { seedContent } from "./content/seed.ts";
 
 const config = loadConfig();
 const db = await openDb({ url: config.DATABASE_URL, dataDir: config.DATA_DIR });
 await migrate(db, (m) => console.log(m));
+const seeded = await seedContent({ config, db });
+if (seeded.length) console.log(`imported ${seeded.length} content entries from the website`);
 const app = await buildApp({ config, db }, MODULES);
 const stopWorkers = startWorkers({ config, db }, app.log);
 

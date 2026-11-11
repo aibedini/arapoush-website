@@ -5,6 +5,10 @@ import type { Deps } from "./app.ts";
 export type Job = { name: string; everyMs: number; run: (deps: Deps, log: FastifyBaseLogger) => Promise<void> };
 export const JOBS: Job[] = [];
 
+// Registered by modules (kept here so the list is visible in one place).
+import { scheduledPublish, siteWebhooks } from "./content/jobs.ts";
+JOBS.push(scheduledPublish, siteWebhooks);
+
 export function startWorkers(deps: Deps, log: FastifyBaseLogger): () => void {
   const timers = JOBS.map((job) => {
     let running = false;
