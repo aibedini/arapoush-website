@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { createContext, useContext, useState } from "react";
+import { ArrowDown, ArrowUp, CaretDown, Plus, Trash } from "@phosphor-icons/react";
 import type { Field, GroupField, ImageValue, ListField, Localized } from "@arapoush/schema";
 import { previewSrc } from "@/lib/api";
-import { LOCALE_LABEL } from "@/lib/fa";
+import { LOCALE_LABEL, num } from "@/lib/fa";
 import { MediaLibrary, assetUrl, type Asset } from "./MediaLibrary";
 import { Dialog } from "./ui";
 
@@ -14,6 +15,28 @@ type Props = { field: Field; value: unknown; orig: unknown; onChange: (v: unknow
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 /** Keys are shown as labels when the schema has none: camelCase → words. */
 const nice = (k: string) => k.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/[_-]/g, " ");
+
+/** Persian names for the field keys and schema labels operators meet most (falls back to the key). */
+const FA: Record<string, string> = {
+  title: "عنوان", subtitle: "زیرعنوان", heading: "سرتیتر", eyebrow: "برچسب بالای عنوان", lead: "متن معرفی", text: "متن", body: "متن", description: "توضیح",
+  label: "برچسب", name: "نام", items: "موارد", slides: "اسلایدها", cards: "کارت‌ها", articles: "مقاله‌ها", image: "تصویر", images: "تصویرها", photo: "عکس",
+  alt: "متن جایگزین", href: "پیوند", link: "پیوند", links: "پیوندها", url: "نشانی", cta: "دعوت به اقدام", button: "دکمه", buttons: "دکمه‌ها", viewAll: "دیدن همه",
+  meta: "سئو (عنوان و توضیح صفحه)", nav: "منوی بالا", footer: "پانویس", contact: "اطلاعات تماس", social: "شبکه‌های اجتماعی", email: "ایمیل", phone: "تلفن",
+  address: "نشانی", hero: "بخش بالای صفحه", products: "محصولات", applications: "کاربردها", partners: "مشتریان", certifications: "گواهینامه‌ها", insights: "مقاله‌ها",
+  features: "ویژگی‌ها", sizes: "اندازه‌ها", caps: "درپوش‌ها", variants: "گونه‌ها", logo: "لوگو", logos: "لوگوها", date: "تاریخ", tag: "برچسب", tags: "برچسب‌ها",
+  sections: "بخش‌ها", listLabel: "برچسب فهرست (برای صفحه‌خوان)", ariaLabel: "برچسب دسترس‌پذیری", enabled: "نمایش", type: "نوع", props: "محتوای بخش", tone: "زمینه", imageSide: "جای تصویر", form: "فرم (نشانی)", size: "فاصله",
+  q: "پرسش", a: "پاسخ", common: "عمومی", search: "جستجو", downloads: "دانلودها", samples: "نمونه‌ها", guide: "راهنمای انتخاب", compare: "مقایسه", tech: "فناوری‌ها",
+  configurator: "پیکربندی‌کننده", quote: "درخواست قیمت", note: "یادداشت", caption: "زیرنویس", value: "مقدار", unit: "واحد", id: "شناسه",
+  "Block content": "محتوای بخش", "Eyebrow": "برچسب بالای عنوان", "Title": "عنوان", "Text": "متن", "Image": "تصویر", "Image side": "جای تصویر", "Background": "زمینه",
+  "Button": "دکمه", "Button label": "متن دکمه", "Button link": "پیوند دکمه", "Questions": "پرسش‌ها", "Question": "پرسش", "Answer": "پاسخ", "Form address (slug)": "فرم (نشانی)",
+  "Space": "اندازهٔ فاصله", "Sections": "بخش‌ها", "Section type": "نوع بخش",
+};
+const ENUM_FA: Record<string, string> = { start: "سمت شروع", end: "سمت پایان", light: "روشن", dark: "تیره", s: "کم", m: "متوسط", l: "زیاد", richText: "متن", imageText: "تصویر و متن", cta: "دعوت به اقدام", faq: "پرسش‌های پرتکرار", form: "فرم", spacer: "فاصله", hero: "اسلایدر", products: "محصولات", applications: "کاربردها", insights: "مقاله‌ها", partners: "مشتریان", certifications: "گواهینامه‌ها" };
+export const faLabel = (key: string, schemaLabel?: string) => (schemaLabel && FA[schemaLabel]) || FA[key] || schemaLabel || nice(key);
+
+/** Which language(s) the localized inputs show: one at a time keeps long forms readable. */
+export type LocaleView = "all" | "fa" | "en" | "tr";
+export const LocaleViewContext = createContext<LocaleView>("all");
 const obj = (v: unknown) => (v && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, unknown>) : {});
 
 /** A blank value with the right shape, for new list items. */
@@ -53,9 +76,11 @@ function Badges({ f }: { f: Field }) {
 function LocalizedInput({ f, value, onChange, disabled, name, multiline, ltrOnly, path }: { f: Field; value: unknown; onChange: (v: unknown) => void; disabled: boolean; name: string; multiline?: boolean; ltrOnly?: boolean; path?: string }) {
   const v = obj(value) as Localized;
   const max = f.kind === "text" ? f.max : undefined;
+  const view = useContext(LocaleViewContext);
+  const shown = view === "all" ? LOCALES : LOCALES.filter((l) => l === view);
   return (
-    <div className="locs">
-      {LOCALES.map((l) => {
+    <div className="locs" data-view={view}>
+      {shown.map((l) => {
         const dir = l === "fa" && !ltrOnly ? "rtl" : "ltr";
         const props = {
           dir,
@@ -64,6 +89,7 @@ function LocalizedInput({ f, value, onChange, disabled, name, multiline, ltrOnly
           maxLength: max,
           "aria-label": `${name} — ${LOCALE_LABEL[l]}${path ? ` (${path})` : ""}`,
           value: v[l] ?? "",
+          placeholder: l !== "fa" && !v[l] ? (v.en ?? v.fa ?? "") : undefined,
           onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
             const next = { ...v, [l]: e.target.value };
             if (!e.target.value) delete next[l];
@@ -72,7 +98,10 @@ function LocalizedInput({ f, value, onChange, disabled, name, multiline, ltrOnly
         } as const;
         return (
           <label key={l} className="loc">
-            <span>{LOCALE_LABEL[l]}</span>
+            <span>
+              {LOCALE_LABEL[l]}
+              {!v[l] && Object.values(v).some(Boolean) && <span className="badge warn" style={{ marginInlineStart: 6 }}>ترجمه نشده</span>}
+            </span>
             {multiline ? <textarea rows={3} {...props} /> : <input {...props} />}
           </label>
         );
@@ -130,10 +159,13 @@ function ListEditor({ f, value, orig, onChange, name, path, ctx, disabled }: Pro
   };
   const keyOf = (it: unknown, i: number) => (f.key && obj(it)[f.key] !== undefined ? String(obj(it)[f.key]) : String(i + 1));
   const titleOf = (it: unknown) => {
+    if (typeof it === "string") return it;
     const o = obj(it);
-    for (const k of ["title", "name", "label", "heading"]) {
+    if (typeof o.fa === "string" || typeof o.en === "string") return String(o.fa ?? o.en);
+    for (const k of ["title", "name", "label", "heading", "q", "text"]) {
       const t = o[k];
       if (typeof t === "string") return t;
+      if (Array.isArray(t)) return t.map((x) => (typeof x === "string" ? x : ((x as Localized)?.fa ?? ""))).join(" ");
       if (t && typeof t === "object") return String((t as Localized).fa ?? (t as Localized).en ?? "");
     }
     return "";
@@ -144,27 +176,29 @@ function ListEditor({ f, value, orig, onChange, name, path, ctx, disabled }: Pro
       {items.map((it, i) => {
         const o = f.key ? origItems.find((x) => obj(x)[f.key!] === obj(it)[f.key!]) : origItems[i];
         return (
-          <div key={f.key ? keyOf(it, i) : i} className={`list-item${same(it, o) ? "" : " changed"}`}>
-            <div className="li-head">
-              <span className="small">
-                <b>#{keyOf(it, i)}</b> {titleOf(it)}
+          <details key={f.key ? keyOf(it, i) : i} className={`list-item${same(it, o) ? "" : " changed"}`} open={items.length <= 2 || !o}>
+            <summary className="li-head">
+              <CaretDown size={14} className="li-caret" aria-hidden />
+              <span className="li-title small">
+                <b>{num(i + 1)}</b> {titleOf(it) || <span className="muted">بدون عنوان</span>}
               </span>
+              {!same(it, o) && <span className="badge warn">تغییر کرده</span>}
               {!fixed && (
-                <span className="row">
-                  <button type="button" className="btn sm ghost" disabled={i === 0} onClick={() => move(i, -1)} aria-label={`بالا بردن مورد ${i + 1}`}>
-                    بالا
+                <span className="row li-tools" onClick={(e) => e.preventDefault()}>
+                  <button type="button" className="btn sm ghost icon-btn" disabled={i === 0} onClick={() => move(i, -1)} aria-label={`بالا بردن مورد ${i + 1}`}>
+                    <ArrowUp size={15} aria-hidden />
                   </button>
-                  <button type="button" className="btn sm ghost" disabled={i === items.length - 1} onClick={() => move(i, 1)} aria-label={`پایین بردن مورد ${i + 1}`}>
-                    پایین
+                  <button type="button" className="btn sm ghost icon-btn" disabled={i === items.length - 1} onClick={() => move(i, 1)} aria-label={`پایین بردن مورد ${i + 1}`}>
+                    <ArrowDown size={15} aria-hidden />
                   </button>
-                  <button type="button" className="btn sm danger" disabled={f.min !== undefined && items.length <= f.min} onClick={() => onChange(items.filter((_, j) => j !== i))} aria-label={`حذف مورد ${i + 1}`}>
-                    حذف
+                  <button type="button" className="btn sm ghost icon-btn danger" disabled={f.min !== undefined && items.length <= f.min} onClick={() => confirm(`مورد ${i + 1} حذف شود؟`) && onChange(items.filter((_, j) => j !== i))} aria-label={`حذف مورد ${i + 1}`}>
+                    <Trash size={15} aria-hidden />
                   </button>
                 </span>
               )}
-            </div>
+            </summary>
             <FieldEditor field={f.of} value={it} orig={o} onChange={(v) => set(i, v)} name={`${name} ${i + 1}`} path={`${path}[${i}]`} ctx={ctx} inList />
-          </div>
+          </details>
         );
       })}
       {!fixed && (f.max === undefined || items.length < f.max) && (
@@ -177,7 +211,7 @@ function ListEditor({ f, value, orig, onChange, name, path, ctx, disabled }: Pro
             onChange([...items, b]);
           }}
         >
-          افزودن مورد
+          <Plus size={14} aria-hidden /> افزودن مورد
         </button>
       )}
     </div>
@@ -188,7 +222,7 @@ function ListEditor({ f, value, orig, onChange, name, path, ctx, disabled }: Pro
 export function FieldEditor({ field: f, value, orig, onChange, name, path, ctx, inList }: Props & { inList?: boolean }) {
   const disabled = !ctx.canEdit || (!!f.locked && !ctx.superAdmin);
   const changed = !same(value, orig);
-  const label = f.label ?? nice(name.split(" ").pop() ?? name);
+  const label = faLabel(name.split(" ").pop() ?? name, f.label);
 
   if (f.kind === "group") {
     const v = obj(value);
@@ -242,7 +276,7 @@ export function FieldEditor({ field: f, value, orig, onChange, name, path, ctx, 
         <select style={{ maxInlineSize: 280 }} value={String(value ?? "")} disabled={disabled} aria-label={`${label} (${path})`} onChange={(e) => onChange(e.target.value)}>
           {f.values.map((x) => (
             <option key={x} value={x}>
-              {x}
+              {ENUM_FA[x] ?? x}
             </option>
           ))}
         </select>

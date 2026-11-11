@@ -45,6 +45,11 @@ export default function Visual() {
   const edit = canWrite(me);
   const [page, setPage] = useState<PageDef>(PAGES[0]!);
   const [locale, setLocale] = useState<"fa" | "en" | "tr">("fa");
+  useEffect(() => {
+    const k = new URLSearchParams(window.location.search).get("page");
+    const p = PAGES.find((x) => x.key === k);
+    if (p) setPage(p);
+  }, []);
   const [width, setWidth] = useState<number>(1440);
   const [docs, setDocs] = useState<Record<string, Doc> | null>(null);
   const [url, setUrl] = useState<string | null>(null);

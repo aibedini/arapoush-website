@@ -7,7 +7,8 @@ import type { GroupField } from "@arapoush/schema";
 import { api } from "@/lib/api";
 import { canWrite, useAction, useApi, useMe } from "@/lib/hooks";
 import { ago, num, when } from "@/lib/fa";
-import { FieldEditor } from "@/components/FieldEditor";
+import { FieldEditor, LocaleViewContext, faLabel, type LocaleView } from "@/components/FieldEditor";
+import { MagnifyingGlass, PaintBrush } from "@phosphor-icons/react";
 import { Dialog, ErrorNote, Loading, PageHead } from "@/components/ui";
 import { CapPositions } from "@/components/CapPositions";
 import { RenderPanel } from "@/components/RenderPanel";
@@ -56,6 +57,9 @@ export default function EditEntry() {
   const [diff, setDiff] = useState<{ title: string; list: Change[] } | null>(null);
   const [schedule, setSchedule] = useState("");
   const [frames, setFrames] = useState(false);
+  const [lview, setLview] = useState<LocaleView>("fa");
+  const [find, setFind] = useState("");
+  const [backup, setBackup] = useState<Record<string, unknown> | null>(null);
   const act = useAction();
 
   useEffect(() => {
@@ -63,6 +67,25 @@ export default function EditEntry() {
   }, [view.data]);
   const orig = useMemo(() => view.data?.draft?.data ?? {}, [view.data]);
   const dirty = useMemo(() => !!data && JSON.stringify(data) !== JSON.stringify(orig), [data, orig]);
+
+  // Unsaved edits are kept in this browser, so a closed tab or a crash loses nothing.
+  const backupKey = `opex:unsaved:${key}`;
+  useEffect(() => {
+    if (!view.data) return;
+    try {
+      const raw = localStorage.getItem(backupKey);
+      if (!raw) return;
+      const b = JSON.parse(raw) as { base: string | null; data: Record<string, unknown> };
+      if (b.base === (view.data.draft?.id ?? null) && JSON.stringify(b.data) !== JSON.stringify(view.data.draft?.data ?? {})) setBackup(b.data);
+      else localStorage.removeItem(backupKey);
+    } catch {}
+  }, [view.data, backupKey]);
+  useEffect(() => {
+    try {
+      if (dirty && data) localStorage.setItem(backupKey, JSON.stringify({ base: view.data?.draft?.id ?? null, data }));
+      else if (!dirty) localStorage.removeItem(backupKey);
+    } catch {}
+  }, [dirty, data, backupKey, view.data]);
 
   // Leaving with unsaved edits asks first.
   useEffect(() => {
@@ -109,15 +132,58 @@ export default function EditEntry() {
   if (!view.data || !data) return <Loading rows={10} />;
   const v = view.data;
   const writable = canWrite(me);
+  // Field search: top-level fields whose name or Persian label matches.
+  const q = find.trim().toLowerCase();
+  const fields = Object.entries(v.schema.fields).filter(([k, f]) => !q || k.toLowerCase().includes(q) || faLabel(k, f.label).includes(find.trim()) || JSON.stringify(data[k] ?? "").toLowerCase().includes(q));
+  const changedCount = Object.keys(v.schema.fields).filter((k) => JSON.stringify(data[k]) !== JSON.stringify(orig[k])).length;
+  const VISUAL: Record<string, string> = { "product.tube.page": "tube", "product.effervescent.page": "eff", "page.printing": "printing" };
+  const visualPage = key.startsWith("page.home") ? "home" : (VISUAL[key] ?? null);
   const unpublished = v.entry.draft_revision_id !== v.entry.published_revision_id;
 
   return (
     <>
       <PageHead title={types.data?.find((t) => t.key === key)?.label ?? key} sub={key}>
+        {visualPage && (
+          <Link className="btn" href={`/visual?page=${visualPage}`}>
+            <PaintBrush size={16} aria-hidden /> ویرایش روی صفحه
+          </Link>
+        )}
         <Link className="btn" href="/content">
           بازگشت
         </Link>
       </PageHead>
+      {backup && (
+        <div className="note warn row" role="status" style={{ marginBlockEnd: 12 }}>
+          <span>تغییرات ذخیره‌نشدهٔ قبلی شما در این مرورگر پیدا شد.</span>
+          <button type="button" className="btn sm" onClick={() => (setData(backup), setBackup(null))}>
+            بازگردانی
+          </button>
+          <button type="button" className="btn sm ghost" onClick={() => (localStorage.removeItem(backupKey), setBackup(null))}>
+            دور ریختن
+          </button>
+        </div>
+      )}
+      <div className="editor-tools">
+        <label className="search">
+          <MagnifyingGlass size={16} aria-hidden />
+          <span className="sr-only">جستجو در فیلدها</span>
+          <input type="search" placeholder="جستجو در فیلدها و متن‌ها" value={find} onChange={(e) => setFind(e.target.value)} />
+        </label>
+        <span className="seg" role="group" aria-label="زبان فیلدها">
+          {(
+            [
+              ["fa", "فارسی"],
+              ["en", "English"],
+              ["tr", "Türkçe"],
+              ["all", "هر سه"],
+            ] as const
+          ).map(([k, l]) => (
+            <button key={k} type="button" aria-pressed={lview === k} onClick={() => setLview(k)} style={{ paddingInline: 10 }}>
+              {l}
+            </button>
+          ))}
+        </span>
+      </div>
       <div className="editor">
         <div className="stack">
         {key === "product.effervescent.page" && (
@@ -128,9 +194,12 @@ export default function EditEntry() {
         )}
         <div className="card">
           <div className="card-body" style={{ paddingBlock: 6 }}>
-            {Object.entries(v.schema.fields).map(([k, f]) => (
-              <FieldEditor key={k} field={f} name={k} path={`/${k}`} value={data[k]} orig={orig[k]} onChange={(x) => setData({ ...data, [k]: x })} ctx={{ canEdit: writable, superAdmin: me?.role === "super_admin" }} />
-            ))}
+            <LocaleViewContext.Provider value={lview}>
+              {fields.map(([k, f]) => (
+                <FieldEditor key={k} field={f} name={k} path={`/${k}`} value={data[k]} orig={orig[k]} onChange={(x) => setData({ ...data, [k]: x })} ctx={{ canEdit: writable, superAdmin: me?.role === "super_admin" }} />
+              ))}
+              {!fields.length && <p className="empty small">فیلدی با «{find}» پیدا نشد.</p>}
+            </LocaleViewContext.Provider>
           </div>
         </div>
         </div>
@@ -233,6 +302,17 @@ export default function EditEntry() {
           </section>
         </aside>
       </div>
+      {dirty && writable && (
+        <div className="savebar" role="region" aria-label="تغییرات ذخیره‌نشده">
+          <span>{num(changedCount)} بخش تغییر کرده و هنوز ذخیره نشده است.</span>
+          <button type="button" className="btn ghost" onClick={() => setData(orig)}>
+            لغو تغییرات
+          </button>
+          <button type="button" className="btn primary" disabled={act.busy} onClick={save}>
+            ذخیرهٔ پیش‌نویس
+          </button>
+        </div>
+      )}
       <PreviewFrames open={frames} onClose={() => setFrames(false)} type={key} />
       <Dialog open={!!diff} onClose={() => setDiff(null)} title={diff?.title ?? ""} wide>
         {diff && <Changes list={diff.list} />}

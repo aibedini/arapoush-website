@@ -410,3 +410,28 @@ fieldset { border: 0; margin: 0; padding: 0; min-inline-size: 0; }
 /* The inspector is narrow: one language per row. */
 .vis-inspector .locs { grid-template-columns: 1fr; }
 .vis-inspector .fld { padding-block: 8px; }
+
+/* ── P13: content editor ── */
+.editor-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-block-end: 12px; position: sticky; inset-block-start: 0; z-index: 5; padding-block: 8px; background: var(--bg); }
+.editor-tools .search { max-inline-size: 420px; }
+.locs[data-view]:not([data-view="all"]) { grid-template-columns: 1fr; }
+.loc > span { display: flex; align-items: center; }
+details.list-item { padding: 0; }
+details.list-item > summary.li-head { list-style: none; cursor: pointer; padding: 6px 10px; min-block-size: 40px; }
+details.list-item > summary::-webkit-details-marker { display: none; }
+details.list-item[open] > summary.li-head { border-block-end: 1px dashed var(--line); }
+details.list-item > .fld, details.list-item > div { padding: 4px 12px 10px; }
+.li-caret { transition: transform 0.15s; color: var(--muted); flex: none; }
+details.list-item:not([open]) .li-caret { transform: rotate(90deg); }
+[dir="rtl"] details.list-item:not([open]) .li-caret { transform: rotate(-90deg); }
+.li-title { flex: 1; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.li-head { display: flex; align-items: center; gap: 8px; }
+.li-tools { flex-wrap: nowrap; gap: 0; }
+.savebar { position: sticky; inset-block-end: 12px; z-index: 6; margin-block-start: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; background: var(--surface); border: 1px solid var(--accent); box-shadow: 0 8px 30px rgb(13 30 50 / 18%); }
+.savebar > span { flex: 1; min-inline-size: 200px; }
+details.group > summary { list-style: none; }
+details.group > summary::-webkit-details-marker { display: none; }
+details.group > summary::before { content: ""; inline-size: 8px; block-size: 8px; border-inline-end: 2px solid var(--muted); border-block-end: 2px solid var(--muted); transform: rotate(45deg); transition: transform 0.15s; margin-inline-end: 4px; flex: none; }
+details.group:not([open]) > summary::before { transform: rotate(135deg); }
+[dir="rtl"] details.group:not([open]) > summary::before { transform: rotate(-45deg); }
+@media (prefers-reduced-motion: reduce) { .li-caret, details.group > summary::before { transition: none; } }
