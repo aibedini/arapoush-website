@@ -73,3 +73,31 @@ test("health and readiness answer, errors are problem+json with a request id", a
     await close();
   }
 });
+
+test("audit search filters by actor, ip and action; verify and export are audited", async () => {
+  const { testApp, signIn, stepUp, as } = await import("../testing.ts");
+  const t = await testApp();
+  try {
+    const op = await signIn(t.app, t, "super_admin");
+    const q = (qs: string) => t.app.inject({ method: "GET", url: `/v1/manage/audit?${qs}`, headers: { cookie: op.cookie } });
+    const logins = (await q("action=auth.*")).json();
+    assert.ok(logins.length >= 2);
+    assert.ok(logins.every((r: { action: string }) => r.action.startsWith("auth.")));
+    assert.ok((await q("ip=127.0.0.1")).json().length > 0);
+    assert.equal((await q("ip=10.9.9.9")).json().length, 0);
+    assert.ok((await q("actor=Test%20Operator")).json().length > 0);
+    const v = await t.app.inject({ method: "GET", url: "/v1/manage/audit/verify", headers: { cookie: op.cookie } });
+    assert.equal(v.json().ok, true);
+    await stepUp(t.app, op);
+    const ex = await t.app.inject({ method: "GET", url: "/v1/manage/audit/export", headers: as(op) });
+    assert.equal(ex.statusCode, 200);
+    assert.ok(ex.body.trim().split("\n").length > 3);
+    const actions = (await q("action=audit.*")).json().map((r: { action: string }) => r.action);
+    assert.ok(actions.includes("audit.verify") && actions.includes("audit.export"));
+    const dash = await t.app.inject({ method: "GET", url: "/v1/manage/dashboard", headers: { cookie: op.cookie } });
+    assert.equal(dash.statusCode, 200);
+    assert.ok(dash.json().recent.length > 0);
+  } finally {
+    await t.close();
+  }
+});

@@ -113,9 +113,22 @@ pnpm test            # configurator catalogue rules + quote flow (node --test)
 pnpm check           # everything CI runs: typecheck, lint, test, build
 ```
 
+OPEX locally (API on :4000, console on :3300):
+
+```bash
+pnpm --filter @arapoush/opex-api dev        # migrates and imports the site's content on first start
+OPEX_NEW_PASSWORD='…' pnpm --filter @arapoush/opex-api cli create-operator you@example.com "Your Name" super_admin
+pnpm --filter @arapoush/opex-console dev    # sign in, then set up the authenticator app
+```
+
+The console reads `OPEX_API_URL` (default `http://127.0.0.1:4000`) and `SITE_URL` for site image previews.
+
 | Folder | What |
 |---|---|
 | `apps/web` | The website (Next.js). Paths below are relative to it. |
+| `apps/opex-api` | OPEX core API (Fastify; PGlite in dev, Postgres in production): content, identity, audit, media, Delivery API |
+| `apps/opex-console` | OPEX operator console (Next.js, Persian RTL) on port 3300; it reaches the API through same-origin rewrites |
+| `packages/schema` | Content types, validation and field paths shared by the site, the API and the console |
 | `packages/config` | Shared TypeScript and ESLint presets |
 | `docs/opex` | OPEX content platform plan (admin, API, audit) |
 | `.github/workflows/ci.yml` | CI: checks, Lighthouse budgets, Docker image, installer upgrade and rollback test |

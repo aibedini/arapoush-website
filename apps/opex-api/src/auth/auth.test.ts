@@ -157,3 +157,21 @@ test("partner network allowlist is enforced at the token endpoint", async () => 
     await t.close();
   }
 });
+
+test("a reloaded console fetches a fresh CSRF token; the old one stops working", async () => {
+  const { testApp, signIn } = await import("../testing.ts");
+  const t = await testApp();
+  try {
+    const op = await signIn(t.app, t, "super_admin");
+    const r = await t.app.inject({ method: "GET", url: "/v1/manage/auth/csrf", headers: { cookie: op.cookie } });
+    assert.equal(r.statusCode, 200);
+    const fresh = r.json().csrf as string;
+    assert.notEqual(fresh, op.csrf);
+    const post = (csrf: string) => t.app.inject({ method: "POST", url: "/v1/manage/auth/logout", headers: { cookie: op.cookie, "x-csrf-token": csrf } });
+    assert.equal((await post(op.csrf)).json().code, "CSRF");
+    assert.equal((await post(fresh)).statusCode, 200);
+    assert.equal((await t.app.inject({ method: "GET", url: "/v1/manage/auth/csrf" })).statusCode, 401);
+  } finally {
+    await t.close();
+  }
+});

@@ -4,7 +4,7 @@ import { z } from "zod";
 import type { Deps } from "../app.ts";
 import { audit, auditNow } from "../audit/audit.ts";
 import { badRequest, conflict, forbidden, notFound, unauthorized } from "../http/problem.ts";
-import { ulid } from "../ids.ts";
+import { sha256, token, ulid } from "../ids.ts";
 import { requireOperator, requireStepUp } from "./guards.ts";
 import { checkPasswordPolicy, dummyVerify, hashPassword, verifyPassword } from "./password.ts";
 import { actorOf } from "./principal.ts";
@@ -132,6 +132,15 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
   app.get("/v1/manage/auth/me", { preHandler: requireOperator(deps) }, async (req) => {
     const p = req.principal!;
     return { id: p.id, display: p.display, role: p.role, stepUpValid: !!p.stepUpAt && Date.now() - p.stepUpAt.getTime() < 300_000 };
+  });
+
+  // The console keeps the CSRF token in memory only; after a reload it fetches a fresh one.
+  // Safe as a GET: the session cookie is SameSite=Strict and CORS stops other origins reading it.
+  app.get("/v1/manage/auth/csrf", { preHandler: requireOperator(deps) }, async (req, reply) => {
+    const csrf = token(24);
+    await db.q(`UPDATE sessions SET csrf_hash = $2 WHERE id = $1`, [req.principal!.sessionId, sha256(csrf)]);
+    reply.header("Cache-Control", "no-store");
+    return { csrf };
   });
 
   app.post("/v1/manage/auth/logout", { preHandler: requireOperator(deps) }, async (req, reply) => {
