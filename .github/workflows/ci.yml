@@ -82,6 +82,9 @@ jobs:
       - uses: actions/checkout@v4
       - run: docker build -f apps/opex-api/Dockerfile -t opex-api:ci .
       - run: docker build -f apps/opex-console/Dockerfile -t opex-console:ci --build-arg OPEX_API_URL=http://api:4000 .
+      - run: docker build -f apps/opex-renderer/Dockerfile -t opex-renderer:ci .
+      - name: Renderer image has Chromium and starts
+        run: docker run --rm --entrypoint chromium-browser opex-renderer:ci --version
       - name: Start Postgres, the API (production mode) and the console
         run: |
           docker network create opex

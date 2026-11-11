@@ -36,6 +36,7 @@ export const OVERRIDES: Override[] = [
   { type: "product.effervescent.page", path: "/data/caps/variants/id", set: { locked: true } },
   { type: "product.effervescent.page", path: "/data/images/poster", set: { locked: true } },
   { type: "product.effervescent.page", path: "/data/images/uses", set: { locked: true } },
+  { type: "product.effervescent.page", path: "/data/images/posters", set: { locked: true } },
 
   // Printing: method ids and the guide's scoring are logic, not copy.
   { type: "page.printing", path: "/tech/items/id", set: { locked: true } },

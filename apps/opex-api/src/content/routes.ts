@@ -9,6 +9,7 @@ import { badRequest, forbidden, notFound } from "../http/problem.ts";
 import { diff } from "./diff.ts";
 import { getEntry, getRevision, publish, saveDraft, typeOrThrow } from "./service.ts";
 import { recheckOpen } from "../cr/service.ts";
+import { enqueueRender, RENDER_TYPE, touchesRender } from "../render/routes.ts";
 
 const SENSITIVE = (key: string) => key.startsWith("global.");
 
@@ -64,6 +65,8 @@ export async function contentModule(app: FastifyInstance, deps: Deps) {
       const { revision, changes } = await saveDraft(q, tenant, { typeKey: type, data: body.data, baseRevisionId: body.base_revision_id, actor: actorOf(req), request: req.info, note: body.note });
       // Open change requests on fields the operator just changed now need a rebase.
       if (changes.length) await recheckOpen(q, tenant, type, { actor: actorOf(req), request: req.info });
+      // New sizes or caps: the 3D images are rendered again automatically (P10).
+      if (type === RENDER_TYPE && touchesRender(changes)) await enqueueRender(q, tenant, { actor: actorOf(req), request: req.info }, "render inputs changed");
       return { revision: { id: revision.id, number: revision.number }, changes: changes.length };
     });
   });
@@ -91,6 +94,8 @@ export async function contentModule(app: FastifyInstance, deps: Deps) {
       }
       const { revision, changes } = await saveDraft(q, tenant, { typeKey: type, data, baseRevisionId: body.base_revision_id, actor: actorOf(req), request: req.info, note: body.note });
       if (changes.length) await recheckOpen(q, tenant, type, { actor: actorOf(req), request: req.info });
+      // New sizes or caps: the 3D images are rendered again automatically (P10).
+      if (type === RENDER_TYPE && touchesRender(changes)) await enqueueRender(q, tenant, { actor: actorOf(req), request: req.info }, "render inputs changed");
       return { revision: { id: revision.id, number: revision.number }, changes };
     });
   });

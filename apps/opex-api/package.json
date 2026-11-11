@@ -5,13 +5,14 @@
   "description": "OPEX core: content, identity, permissions, change requests, audit and publishing (docs/opex/OPEX-PLAN.md).",
   "type": "module",
   "scripts": {
-    "dev": "node --watch-path=src --watch-path=../../packages/schema/src --no-warnings src/server.ts",
+    "dev": "node --env-file-if-exists=.env.local --no-warnings src/server.ts",
     "start": "node --no-warnings src/server.ts",
     "migrate": "node --no-warnings src/cli.ts migrate",
     "seed": "node --no-warnings src/cli.ts seed",
     "cli": "node --no-warnings src/cli.ts",
     "typecheck": "tsc --noEmit",
-    "test": "node --no-warnings --test --test-concurrency=1 \"src/**/*.test.ts\""
+    "test": "node --no-warnings --test --test-concurrency=1 \"src/**/*.test.ts\"",
+    "dev:watch": "node --env-file-if-exists=.env.local --watch-path=src --watch-path=../../packages/schema/src --no-warnings src/server.ts"
   },
   "dependencies": {
     "@arapoush/schema": "workspace:*",

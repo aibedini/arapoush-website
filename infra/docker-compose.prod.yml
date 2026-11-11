@@ -76,6 +76,7 @@ services:
       CONSOLE_ALLOWED_CIDRS: ${CONSOLE_ALLOWED_CIDRS:-}
       AUDIT_ARCHIVE_DIR: /archive
       METRICS_TOKEN: ${METRICS_TOKEN}
+      RENDER_TOKEN: ${RENDER_TOKEN}
     volumes:
       - opex_data:/data
       - ${AUDIT_ARCHIVE_PATH:-./audit-archive}:/archive
@@ -96,6 +97,28 @@ services:
         SITE_URL: https://${SITE_DOMAIN}
     read_only: true
     tmpfs: ["/tmp"]
+    networks: [internal]
+
+  # 3D renders for the effervescent page (P10): claims jobs from the API and renders the
+  # website's own scene in headless Chromium, then uploads the images.
+  opex-renderer:
+    <<: *restart
+    build:
+      context: ..
+      dockerfile: apps/opex-renderer/Dockerfile
+    environment:
+      OPEX_URL: http://opex-api:4000
+      RENDER_TOKEN: ${RENDER_TOKEN}
+      RENDER_SITE_URL: http://web:3000
+      # It only ever opens our own website. The container is the boundary (default seccomp, no
+      # capabilities, read-only, internal network) instead of Chromium's user-namespace sandbox.
+      CHROME_NO_SANDBOX: "1"
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    read_only: true
+    tmpfs: ["/tmp", "/home/render"]
+    shm_size: 512m
+    depends_on: [opex-api, web]
     networks: [internal]
 
   postgres:

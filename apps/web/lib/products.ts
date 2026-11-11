@@ -34,7 +34,8 @@ export type EffProduct = {
     background: Img;
   };
   /** `studio`: optional photographic backdrop behind the hero's live 3D. */
-  images: { poster: Img; uses: Img; usesPhoto: Img; usesBg: Img; studio?: Img };
+  /** `posters`: the hero renders per shape and direction (made by the OPEX renderer, P10). */
+  images: { poster: Img; posters?: Partial<Record<"wide-ltr" | "tall-ltr" | "wide-rtl" | "tall-rtl", Img>>; uses: Img; usesPhoto: Img; usesBg: Img; studio?: Img };
 };
 
 export type CapPart = "cap" | "structure" | "chamber" | "mouth";

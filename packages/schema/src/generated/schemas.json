@@ -2577,6 +2577,24 @@
         },
         "usesBg": {
          "kind": "image"
+        },
+        "posters": {
+         "kind": "group",
+         "fields": {
+          "wide-ltr": {
+           "kind": "image"
+          },
+          "tall-ltr": {
+           "kind": "image"
+          },
+          "wide-rtl": {
+           "kind": "image"
+          },
+          "tall-rtl": {
+           "kind": "image"
+          }
+         },
+         "locked": true
         }
        }
       }

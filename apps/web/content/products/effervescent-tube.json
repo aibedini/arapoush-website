@@ -189,6 +189,28 @@
       "src": "/images/eff/uses-bg.webp",
       "width": 1672,
       "height": 941
+    },
+    "posters": {
+      "wide-ltr": {
+        "src": "/images/eff/hero-tube-wide-ltr.webp",
+        "width": 1600,
+        "height": 1000
+      },
+      "tall-ltr": {
+        "src": "/images/eff/hero-tube-tall-ltr.webp",
+        "width": 780,
+        "height": 1688
+      },
+      "wide-rtl": {
+        "src": "/images/eff/hero-tube-wide-rtl.webp",
+        "width": 1600,
+        "height": 1000
+      },
+      "tall-rtl": {
+        "src": "/images/eff/hero-tube-tall-rtl.webp",
+        "width": 780,
+        "height": 1688
+      }
     }
   }
 }

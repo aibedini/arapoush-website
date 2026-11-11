@@ -149,6 +149,7 @@ snapshot with `pnpm --filter @arapoush/schema generate`.
 | `apps/web` | The website (Next.js). Paths below are relative to it. |
 | `apps/opex-api` | OPEX core API (Fastify; PGlite in dev, Postgres in production): content, identity, audit, media, Delivery API |
 | `apps/opex-console` | OPEX operator console (Next.js, Persian RTL) on port 3300; it reaches the API through same-origin rewrites |
+| `apps/opex-renderer` | 3D renderer: renders the effervescent sizes, caps and posters from the site's scene when they change |
 | `packages/schema` | Content types, validation and field paths shared by the site, the API and the console |
 | `packages/config` | Shared TypeScript and ESLint presets |
 | `clients/php-reference` | PHP client for AraCMS (OAuth + DPoP, request signing, change requests, webhooks) |

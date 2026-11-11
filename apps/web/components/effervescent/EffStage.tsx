@@ -84,7 +84,8 @@ export default function EffStage({ t, product, size, dir, locale }: Props) {
         await s.warm();
         if (cancelled) return;
         scene.current = s;
-        if (process.env.NODE_ENV !== "production") (window as unknown as { __effScene?: EffScene }).__effScene = s;
+        // The OPEX renderer drives the scene through this handle (?render); it is also kept in development.
+        if (process.env.NODE_ENV !== "production" || new URLSearchParams(location.search).has("render")) (window as unknown as { __effScene?: EffScene }).__effScene = s;
         registerGsap();
         // Reduced motion: the tube stays in its hero pose; the story is plain reading.
         if (!reduced) {
@@ -136,8 +137,12 @@ export default function EffStage({ t, product, size, dir, locale }: Props) {
   }, [side, size.d, size.h]);
 
   // Art-directed poster: a wide and a tall render of the same tube, already on the right side.
-  const wide = getImageProps({ src: `${poster.src.replace(".webp", "")}-wide-${tag}.webp`, alt: "", width: 1600, height: 1000, sizes: "100vw", priority: true });
-  const tall = getImageProps({ src: `${poster.src.replace(".webp", "")}-tall-${tag}.webp`, alt: "", width: 780, height: 1688, sizes: "100vw", priority: true });
+  // Rendered images from content, or the original files named after the poster.
+  const shot = (kind: "wide" | "tall", w: number, h: number) => product.images.posters?.[`${kind}-${tag}`] ?? { src: `${poster.src.replace(".webp", "")}-${kind}-${tag}.webp`, width: w, height: h };
+  const wideImg = shot("wide", 1600, 1000);
+  const tallImg = shot("tall", 780, 1688);
+  const wide = getImageProps({ src: wideImg.src, alt: "", width: wideImg.width, height: wideImg.height, sizes: "100vw", priority: true });
+  const tall = getImageProps({ src: tallImg.src, alt: "", width: tallImg.width, height: tallImg.height, sizes: "100vw", priority: true });
 
   return (
     <section ref={root} className={styles.stage} aria-labelledby="eff-title">

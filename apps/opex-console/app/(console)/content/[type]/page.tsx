@@ -10,6 +10,7 @@ import { ago, num, when } from "@/lib/fa";
 import { FieldEditor } from "@/components/FieldEditor";
 import { Dialog, ErrorNote, Loading, PageHead } from "@/components/ui";
 import { CapPositions } from "@/components/CapPositions";
+import { RenderPanel } from "@/components/RenderPanel";
 import { PreviewFrames } from "@/components/PreviewFrames";
 
 type Change = { op: string; path: string; old?: unknown; new?: unknown };
@@ -120,7 +121,10 @@ export default function EditEntry() {
       <div className="editor">
         <div className="stack">
         {key === "product.effervescent.page" && (
-          <CapPositions data={data} orig={orig} onChange={(d) => setData(d)} canEdit={me?.role === "super_admin"} />
+          <>
+            <RenderPanel canRender={me?.role === "super_admin"} onDone={refresh} />
+            <CapPositions data={data} orig={orig} onChange={(d) => setData(d)} canEdit={me?.role === "super_admin"} />
+          </>
         )}
         <div className="card">
           <div className="card-body" style={{ paddingBlock: 6 }}>

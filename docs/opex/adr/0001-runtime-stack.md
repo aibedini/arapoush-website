@@ -45,3 +45,16 @@ P1 we chose smaller pieces that meet the same requirements with less code to rev
 - **PHP client:** the PHP reference client uses ext-openssl directly for ES256 and JWTs instead of
   `web-token/jwt-framework`. That leaves a smaller dependency surface, and cross-language vectors
   keep the two implementations equal.
+
+## P10 (3D render pipeline)
+
+- **Renderer process:** rendering runs in a separate service (`apps/opex-renderer`, headless
+  Chromium with SwiftShader), not inside the API. Chromium is heavy and is the riskiest dependency,
+  so it is isolated with a narrow token. The API stays small.
+- **What it renders:** the renderer drives the **website's** own 3D scene (`?webgl&render`). The
+  renders always match what visitors see, and there is no second copy of the scene code.
+- **How results land:** results become a new draft revision, not a direct publish. Operators review
+  renders like any other change.
+- **Sandbox:** in its container, Chromium runs without its internal sandbox and with default
+  seccomp, no capabilities and a read-only filesystem. The alternative, `seccomp=unconfined`, keeps
+  Chromium's sandbox but weakens the whole container. The renderer only loads our own site.

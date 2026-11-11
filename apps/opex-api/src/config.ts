@@ -43,6 +43,8 @@ const Env = z.object({
   CONSOLE_ALLOWED_CIDRS: z.string().default(""),
   /** Write-once audit archive directory (mount WORM storage here). Unset: no archive job. */
   AUDIT_ARCHIVE_DIR: z.string().optional(),
+  /** Bearer token of the 3D renderer service (P10). Unset: render jobs queue but nothing claims them. */
+  RENDER_TOKEN: z.string().min(24).optional(),
   /** Bearer token for GET /metrics (Prometheus). Unset: metrics are off. */
   METRICS_TOKEN: z.string().min(24).optional(),
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]).default("info"),

@@ -1,0 +1,23 @@
+{
+  "name": "@arapoush/opex-renderer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "OPEX 3D renderer (P10): claims render jobs, drives the website's effervescent 3D scene in headless Chromium, uploads the images.",
+  "type": "module",
+  "scripts": {
+    "start": "node --no-warnings src/main.ts",
+    "once": "node --no-warnings src/main.ts --once",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "puppeteer-core": "25.14.0"
+  },
+  "devDependencies": {
+    "@arapoush/config": "workspace:*",
+    "@types/node": "22.15.29",
+    "typescript": "5.8.3"
+  },
+  "engines": {
+    "node": ">=22.18"
+  }
+}

@@ -33,6 +33,7 @@ export const COMMANDS: Record<string, (deps: Deps, args: string[]) => Promise<vo
     console.log(`SITE_WEBHOOK_SECRET=${b64(32)}`);
     console.log(`INQUIRY_KEY=${randomBytes(32).toString("base64")}`);
     console.log(`METRICS_TOKEN=${b64(32)}`);
+    console.log(`RENDER_TOKEN=${b64(32)}`);
   },
 
   /** Writes the audit rows since the last archive to AUDIT_ARCHIVE_DIR (or the given directory). */

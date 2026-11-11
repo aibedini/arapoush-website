@@ -14,7 +14,9 @@ via `lib/sections.tsx`; copy lives in `lib/i18n/dictionaries/`. The OPEX content
   `packages/schema/scripts/generate.ts`, then run `pnpm --filter @arapoush/schema generate`.
 - After changing dictionaries or `content/*.json`, regenerate the snapshot (same command).
 - Locked content (3D geometry, sizes, cap marker positions, renders) stays locked in
-  `packages/schema/src/overrides.ts`.
+  `packages/schema/src/overrides.ts`. Effervescent renders are made by `apps/opex-renderer` from the
+  site's own scene (`?webgl&render`); keep the `window.__effScene` API in `EffStage.tsx` in step with
+  `apps/opex-renderer/src/main.ts`.
 
 ## SEO, AI indexing and speed are checked on EVERY change (client requirement)
 
