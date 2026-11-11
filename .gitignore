@@ -15,3 +15,8 @@ font/
 !.lighthouse/run.sh
 
 .claude/
+
+# Monorepo tooling
+.turbo/
+**/.turbo/
+.lighthouseci/

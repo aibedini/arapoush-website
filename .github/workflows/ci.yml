@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NEXT_TELEMETRY_DISABLED: 1
+  NEXT_PUBLIC_SITE_URL: https://arapoush.com
+
+jobs:
+  # Typecheck, lint, unit tests, production build and Lighthouse budgets (CLAUDE.md: A11y/BP/SEO = 100).
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4 # version comes from package.json "packageManager"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+      - name: Assemble the standalone server (as install.sh and the Docker image do)
+        run: |
+          S=apps/web/.next/standalone/apps/web
+          cp -r apps/web/public "$S/"
+          mkdir -p "$S/.next" && cp -r apps/web/.next/static "$S/.next/"
+      - name: Smoke test every route
+        run: |
+          (cd apps/web/.next/standalone/apps/web && PORT=3211 HOSTNAME=127.0.0.1 NODE_ENV=production node server.js > ../../../../../server.log 2>&1 &)
+          for _ in $(seq 1 30); do curl -sf -o /dev/null http://127.0.0.1:3211/fa && break; sleep 1; done
+          for p in /fa /en /tr /fa/printing /en/printing /fa/products/effervescent-tube /fa/products/multi-layer-tube /sitemap.xml /robots.txt /llms.txt /llms-full.txt; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:3211$p"); echo "$p $code"; [ "$code" = 200 ] || exit 1
+          done
+          [ "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3211/fa/does-not-exist)" = 404 ]
+      - name: Lighthouse CI
+        run: npx --yes @lhci/cli@0.15.1 autorun
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse
+          path: .lighthouseci
+          if-no-files-found: ignore
+
+  # The production image builds, runs as non-root and answers.
+  docker:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t arapoush:ci --build-arg SITE_URL=https://arapoush.com .
+      - run: |
+          docker run -d --name web -p 3000:3000 arapoush:ci
+          for _ in $(seq 1 30); do curl -sf -o /dev/null http://127.0.0.1:3000/fa && break; sleep 1; done
+          curl -sf -o /dev/null http://127.0.0.1:3000/fa
+          curl -sf -o /dev/null http://127.0.0.1:3000/fa/printing
+          [ "$(docker exec web id -u)" != 0 ]
+      - if: failure()
+        run: docker logs web
+
+  # Real server path: install the last single-app release, upgrade to this commit (monorepo),
+  # roll back, upgrade again. Proves existing servers update and roll back safely.
+  installer:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      PORT: 8080
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install v1.0.1 (single-app layout)
+        run: sudo PORT=$PORT VERSION=v1.0.1 bash install.sh
+      - run: curl -sf -o /dev/null http://127.0.0.1:$PORT/fa
+      - name: Upgrade to this commit (monorepo layout)
+        run: sudo PORT=$PORT VERSION=${{ github.head_ref || github.ref_name }} FORCE=1 bash install.sh
+      - name: Check the new release serves the new layout
+        run: |
+          curl -sf -o /dev/null http://127.0.0.1:$PORT/fa
+          curl -sf -o /dev/null http://127.0.0.1:$PORT/fa/printing
+          readlink -f /opt/arapoush/current/run | grep -q 'apps/web/.next/standalone/apps/web'
+      - name: Roll back to v1.0.1 and forward again
+        run: |
+          sudo arapoush rollback
+          sleep 5 && curl -sf -o /dev/null http://127.0.0.1:$PORT/fa
+          readlink -f /opt/arapoush/current/run | grep -q '/.next/standalone$'
+          sudo PORT=$PORT VERSION=${{ github.head_ref || github.ref_name }} bash install.sh
+          curl -sf -o /dev/null http://127.0.0.1:$PORT/fa
+      - if: failure()
+        run: sudo journalctl -u arapoush -n 100 --no-pager || true

@@ -148,7 +148,7 @@ export default function EffStage({ t, product, size, dir, locale }: Props) {
         </div>
         <div className={styles.moodVeil} aria-hidden="true" />
         <div ref={layer} className={styles.layer} data-ready={status === "ready" || undefined}>
-          <picture className={styles.poster} aria-hidden="true">
+          <picture className={styles.poster}>
             <source media="(max-aspect-ratio: 19/20)" srcSet={tall.props.srcSet} sizes="100vw" />
             <img {...wide.props} alt="" data-no-mirror fetchPriority="high" />
           </picture>

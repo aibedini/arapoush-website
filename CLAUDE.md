@@ -1,14 +1,16 @@
 # Arapoush website — standing rules
 
-Next.js 15 App Router site, locales `fa` (default, RTL), `en`, `tr`. Home sections come from
-`content/home-layout.json` via `lib/sections.tsx`; copy lives in `lib/i18n/dictionaries/`.
+Monorepo (pnpm + Turborepo). The site is `apps/web`: Next.js 15 App Router, locales `fa` (default, RTL),
+`en`, `tr`. Paths below are relative to `apps/web`. Home sections come from `content/home-layout.json`
+via `lib/sections.tsx`; copy lives in `lib/i18n/dictionaries/`. The OPEX content platform plan is
+`docs/opex/OPEX-PLAN.md`.
 
 ## SEO, AI indexing and speed are checked on EVERY change (client requirement)
 
 Before calling any change done:
 
-1. `npx next build` passes with no type errors.
-2. Run Lighthouse against the production build (`npx next start -p 3211`, then
+1. `pnpm check` passes (typecheck, lint, tests, `next build`).
+2. Run Lighthouse against the production build (`pnpm start -p 3211` from the repo root, then
    `.lighthouse/run.sh /fa <name>` and `.lighthouse/run.sh /fa <name> desktop`).
    Targets: Accessibility, Best Practices, SEO = 100; Performance as high as the motion allows.
    Never let a score drop; report the numbers you measured.

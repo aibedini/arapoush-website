@@ -181,6 +181,18 @@ RELEASES="$APP_DIR/releases"
 CURRENT="$APP_DIR/current"
 mkdir -p "$RELEASES"
 
+# Every release has a "run" link to the folder holding server.js; the service always starts
+# "$CURRENT/run/server.js". Single-app releases (v1.0.x) keep it in .next/standalone, monorepo
+# releases in apps/web/.next/standalone/apps/web. Older releases get the link added here.
+link_run() {
+  local r="$1"
+  if [ -e "$r/run" ]; then return 0
+  elif [ -f "$r/.next/standalone/server.js" ]; then ln -sfn .next/standalone "$r/run"
+  elif [ -f "$r/apps/web/.next/standalone/apps/web/server.js" ]; then ln -sfn apps/web/.next/standalone/apps/web "$r/run"
+  fi
+}
+for r in "$RELEASES"/*/; do if [ -d "$r" ]; then link_run "${r%/}"; fi; done
+
 if [ "$VERSION" = latest ]; then
   # numeric sort of vX.Y.Z (BusyBox has no sort -V)
   REF="$(git ls-remote --tags --refs "$REPO_URL" 'v*' | awk -F/ '{print $NF}' | sort -t. -k1.2,1n -k2,2n -k3,3n | tail -n1)"
@@ -194,7 +206,7 @@ RELEASE="$RELEASES/$REF-$SHA"
 PREVIOUS=""
 [ ! -L "$CURRENT" ] || PREVIOUS="$(readlink -f "$CURRENT")"
 
-if [ "$PREVIOUS" = "$RELEASE" ] && [ "${FORCE:-0}" != "1" ] && [ -f "$RELEASE/.next/standalone/server.js" ]; then
+if [ "$PREVIOUS" = "$RELEASE" ] && [ "${FORCE:-0}" != "1" ] && [ -f "$RELEASE/run/server.js" ]; then
   ok "Already running $REF ($SHA) — refreshing the configuration only (FORCE=1 rebuilds)"
   BUILD=0
 else
@@ -231,15 +243,32 @@ log "Installing dependencies"
 cd "$RELEASE"
 export NEXT_TELEMETRY_DISABLED=1 npm_config_fund=false npm_config_audit=false npm_config_update_notifier=false
 [ -z "$NPM_REGISTRY" ] || export npm_config_registry="$NPM_REGISTRY"
-"$NODE_DIR/npm" ci --no-audit --no-fund --loglevel=error
-
-log "Building the site (SITE_URL=$SITE_URL) — this takes a few minutes"
-NEXT_PUBLIC_SITE_URL="$SITE_URL" NODE_OPTIONS="--max-old-space-size=1536" "$NODE_DIR/npm" run build --silent
+if [ -f pnpm-workspace.yaml ]; then
+  # Monorepo (v1.1+): the site is apps/web; pnpm at the exact version the repo pins.
+  PNPM_VERSION="$(sed -n 's/.*"packageManager": *"pnpm@\([^"]*\)".*/\1/p' package.json)"
+  [ -n "$PNPM_VERSION" ] || die "package.json does not pin a pnpm version (packageManager)"
+  pnpm_run() { "$NODE_DIR/npx" --yes "pnpm@$PNPM_VERSION" "$@"; }
+  pnpm_run install --frozen-lockfile --reporter=silent
+  log "Building the site (SITE_URL=$SITE_URL) — this takes a few minutes"
+  NEXT_PUBLIC_SITE_URL="$SITE_URL" NODE_OPTIONS="--max-old-space-size=1536" pnpm_run --filter @arapoush/web build --reporter=silent
+  APP_SRC=apps/web
+  SERVER_DIR=apps/web/.next/standalone/apps/web
+else
+  # Single-app layout (v1.0.x).
+  "$NODE_DIR/npm" ci --no-audit --no-fund --loglevel=error
+  log "Building the site (SITE_URL=$SITE_URL) — this takes a few minutes"
+  NEXT_PUBLIC_SITE_URL="$SITE_URL" NODE_OPTIONS="--max-old-space-size=1536" "$NODE_DIR/npm" run build --silent
+  APP_SRC=.
+  SERVER_DIR=.next/standalone
+fi
+[ -f "$SERVER_DIR/server.js" ] || die "The build did not produce $SERVER_DIR/server.js"
 
 # The standalone server needs its static assets beside it.
-cp -r public .next/standalone/
-mkdir -p .next/standalone/.next && rm -rf .next/standalone/.next/static && cp -r .next/static .next/standalone/.next/
-rm -rf node_modules .next/cache   # the standalone server carries its own dependencies
+cp -r "$APP_SRC/public" "$SERVER_DIR/"
+mkdir -p "$SERVER_DIR/.next" && rm -rf "$SERVER_DIR/.next/static" && cp -r "$APP_SRC/.next/static" "$SERVER_DIR/.next/"
+# The standalone server carries its own dependencies: drop the build-time ones.
+rm -rf node_modules apps/*/node_modules packages/*/node_modules "$APP_SRC/.next/cache"
+ln -sfn "$SERVER_DIR" "$RELEASE/run"
 printf 'version=%s\ncommit=%s\nbuilt=%s\n' "$REF" "$SHA" "$(date -u +%FT%TZ)" > "$RELEASE/.arapoush-release"
 trap 'die "Failed at line $LINENO: $BASH_COMMAND"' ERR
 fi
@@ -251,8 +280,8 @@ restart_app() {
   if [ "$INIT" = systemd ]; then systemctl restart "$SERVICE"
   elif [ "$INIT" = openrc ]; then rc-service "$SERVICE" restart >/dev/null
   else
-    pkill -f "$CURRENT/.next/standalone/server.js" 2>/dev/null || true
-    (cd "$CURRENT/.next/standalone" && NODE_ENV=production HOSTNAME=$BIND_HOST PORT=$BIND_PORT nohup "$NODE_BIN" server.js >"/var/log/$SERVICE.log" 2>&1 &)
+    pkill -f "$CURRENT/run/server.js" 2>/dev/null || true
+    (cd "$CURRENT/run" && NODE_ENV=production HOSTNAME=$BIND_HOST PORT=$BIND_PORT nohup "$NODE_BIN" "$CURRENT/run/server.js" >"/var/log/$SERVICE.log" 2>&1 &)
   fi
 }
 
@@ -266,7 +295,7 @@ Wants=network-online.target
 
 [Service]
 User=$APP_USER
-WorkingDirectory=$CURRENT/.next/standalone
+WorkingDirectory=$CURRENT/run
 Environment=NODE_ENV=production HOSTNAME=$BIND_HOST PORT=$BIND_PORT NEXT_TELEMETRY_DISABLED=1
 ExecStart=$NODE_BIN server.js
 Restart=always
@@ -289,7 +318,7 @@ description="Arapoush website (Next.js)"
 command="$NODE_BIN"
 command_args="server.js"
 command_user="$APP_USER"
-directory="$CURRENT/.next/standalone"
+directory="$CURRENT/run"
 command_background=true
 pidfile="/run/$SERVICE.pid"
 output_log="/var/log/$SERVICE.log"
@@ -305,8 +334,8 @@ EOF
   rc-service "$SERVICE" restart >/dev/null
 else
   warn "No systemd or OpenRC found: starting in the background (it won't survive a reboot)."
-  pkill -f "$CURRENT/.next/standalone/server.js" 2>/dev/null || true
-  (cd "$CURRENT/.next/standalone" && NODE_ENV=production HOSTNAME=$BIND_HOST PORT=$BIND_PORT nohup "$NODE_BIN" "$CURRENT/.next/standalone/server.js" >/var/log/$SERVICE.log 2>&1 &)
+  pkill -f "$CURRENT/run/server.js" 2>/dev/null || true
+  (cd "$CURRENT/run" && NODE_ENV=production HOSTNAME=$BIND_HOST PORT=$BIND_PORT nohup "$NODE_BIN" "$CURRENT/run/server.js" >/var/log/$SERVICE.log 2>&1 &)
 fi
 
 # ── HTTPS with Caddy (only when DOMAIN is set) ─────────────────────────────

@@ -1,8 +1,14 @@
-node_modules
-.next
+**/node_modules
+**/.next
+**/.turbo
+**/*.tsbuildinfo
+**/next-env.d.ts
 .git
+.github
 _figma
 font
+docs
 .lighthouse
 .claude
-*.tsbuildinfo
+**/.env*
+!**/.env.example

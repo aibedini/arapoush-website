@@ -116,7 +116,7 @@ export default function Header({ t, locale, path = "" }: Props) {
             {/* animate-ui Highlight: a soft pill glides between links on hover */}
             <ul>
               <Highlight controlledItems hover className={styles.navPill} transition={glide}>
-                {t.nav.items.map((item, i) => (
+                {t.nav.items.map((item) => (
                   <HighlightItem key={item.href} as="li" value={item.href} data-intro="nav">
                     <a className="u-link" href={to(item.href)} aria-current={item.href === current ? "page" : undefined}>
                       <RollText text={item.label} />

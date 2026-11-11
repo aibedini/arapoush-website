@@ -22,7 +22,6 @@ const CLOUD = new THREE.Color("#eaf1f4");
 const DRINK = new THREE.Color("#ff8a1c");
 
 const innerR = (y: number) => THREE.MathUtils.lerp(BASE_R - WALL, RIM_R - WALL, y / HEIGHT);
-const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
 
 type Phase = "idle" | "fall" | "sink" | "bottom" | "rise" | "float";
 

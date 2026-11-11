@@ -1,0 +1,8 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# Native builds the workspace is allowed to run on install (pnpm 10 blocks the rest by default).
+onlyBuiltDependencies:
+  - sharp
+  - unrs-resolver

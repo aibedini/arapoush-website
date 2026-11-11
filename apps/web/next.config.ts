@@ -1,3 +1,4 @@
+import path from "node:path";
 import type { NextConfig } from "next";
 
 const year = "public, max-age=31536000, immutable";
@@ -6,6 +7,9 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Self-contained server bundle (.next/standalone) for the Linux installer and Docker image.
   output: "standalone",
+  // Monorepo: trace from the workspace root so pnpm-linked dependencies land in the bundle
+  // (the server ends up at .next/standalone/apps/web/server.js).
+  outputFileTracingRoot: path.join(__dirname, "../.."),
   images: {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [480, 768, 1024, 1280, 1440, 1920, 2560, 3840],

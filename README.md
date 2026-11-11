@@ -102,12 +102,23 @@ sudo arapoush update
 
 ## Development
 
+Monorepo (pnpm workspaces + Turborepo). Node 22 LTS and pnpm (`corepack enable`; the version is pinned in
+`package.json`).
+
 ```bash
-npm install
-npm run dev          # http://localhost:3000 → /fa
-npm run build && npm start
-npm test             # configurator catalogue rules + quote flow (node --test)
+pnpm install
+pnpm dev             # the website: http://localhost:3000 → /fa
+pnpm build && pnpm start
+pnpm test            # configurator catalogue rules + quote flow (node --test)
+pnpm check           # everything CI runs: typecheck, lint, test, build
 ```
+
+| Folder | What |
+|---|---|
+| `apps/web` | The website (Next.js). Paths below are relative to it. |
+| `packages/config` | Shared TypeScript and ESLint presets |
+| `docs/opex` | OPEX content platform plan (admin, API, audit) |
+| `.github/workflows/ci.yml` | CI: checks, Lighthouse budgets, Docker image, installer upgrade and rollback test |
 
 - Section order of the home page: `content/home-layout.json` (backend drag-and-drop writes this list).
 - Text for every language: `lib/i18n/dictionaries/`.
