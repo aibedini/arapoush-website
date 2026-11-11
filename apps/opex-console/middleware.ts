@@ -10,6 +10,8 @@ export function middleware(req: NextRequest) {
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob:",
     "font-src 'self'",
+    // Draft previews of the website (three widths).
+    `frame-src ${new URL(process.env.SITE_URL ?? "http://localhost:3210").origin}`,
     `connect-src 'self'${dev ? " ws:" : ""}`,
     "frame-ancestors 'none'",
     "form-action 'self'",

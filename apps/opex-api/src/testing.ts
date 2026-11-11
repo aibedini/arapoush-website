@@ -75,7 +75,8 @@ export const pkce = () => {
  * A signed-in AraCMS user (authorization code + PKCE + TOTP), with a `call` that sends DPoP proofs,
  * RFC 9421 signatures and Idempotency-Keys exactly as the PHP reference client does.
  */
-export async function partnerSession(app: FastifyInstance, admin: Operator, o: { role?: string; scopes?: string[]; email?: string } = {}) {
+export async function partnerSession(app: Pick<FastifyInstance, "inject">, admin: Operator, o: { role?: string; scopes?: string[]; email?: string; origin?: string } = {}) {
+  const origin = o.origin ?? "http://opex.test";
   const { KeyObject, sign: cryptoSign, randomUUID } = await import("node:crypto");
   const { contentDigest, signatureBase } = await import("./partner/integrity.ts");
   const k = await partnerKeys();
@@ -95,7 +96,7 @@ export async function partnerSession(app: FastifyInstance, admin: Operator, o: {
   const secret = /<code>([A-Z2-7]+)<\/code>/.exec(pw.body)![1]!;
   const done = await app.inject({ method: "POST", url: "/oauth/authorize", headers: { "content-type": "application/x-www-form-urlencoded" }, payload: form({ ...params, stage: "code", challenge: ch, code: totpAt(secret) }) });
   const code = new URL(String(done.headers.location)).searchParams.get("code")!;
-  const tokenUrl = "http://opex.test/oauth/token";
+  const tokenUrl = `${origin}/oauth/token`;
   const tok = await app.inject({
     method: "POST",
     url: "/oauth/token",
@@ -108,7 +109,7 @@ export async function partnerSession(app: FastifyInstance, admin: Operator, o: {
 
   type CallOpts = { body?: unknown; raw?: Buffer; idem?: string; unsigned?: boolean; tamper?: boolean; headers?: Record<string, string>; endUserIp?: string };
   const call = async (method: string, path: string, c: CallOpts = {}) => {
-    const url = `http://opex.test${path}`;
+    const url = `${origin}${path}`;
     const headers: Record<string, string> = { authorization: `DPoP ${at}`, dpop: await dpopProof(k.dpop.privateKey, k.dpopJwk, method, url.split("?")[0]!, at), ...(c.headers ?? {}) };
     const payload = c.raw ?? (c.body !== undefined ? Buffer.from(JSON.stringify(c.body)) : undefined);
     if (payload) headers["content-type"] = c.raw ? "application/octet-stream" : "application/json";

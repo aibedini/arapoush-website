@@ -11,10 +11,14 @@ import { Dialog, ErrorNote, Loading } from "./ui";
 const NAV: { href: string; label: string; min?: Me["role"] }[] = [
   { href: "/", label: "داشبورد" },
   { href: "/content", label: "محتوا" },
+  { href: "/requests", label: "درخواست‌های تغییر" },
   { href: "/media", label: "رسانه" },
   { href: "/audit", label: "گزارش رویدادها", min: "auditor" },
   { href: "/operators", label: "اپراتورها", min: "operator" },
   { href: "/partners", label: "شرکا (آراسی‌ام‌اس)", min: "operator" },
+  { href: "/access", label: "دسترسی‌ها", min: "operator" },
+  { href: "/policies", label: "سیاست‌های تأیید" },
+  { href: "/webhooks", label: "وب‌هوک‌ها", min: "operator" },
   { href: "/account", label: "حساب من" },
 ];
 
@@ -28,6 +32,27 @@ export function Shell({ children }: { children: React.ReactNode }) {
     api<Me>("/v1/manage/auth/me").then(setMe).catch(() => {});
   }, []);
   useEffect(() => setMenu(false), [path]);
+
+  // Pending reviews: a count in the menu and the tab title, refreshed every minute and on navigation.
+  const [pending, setPending] = useState(0);
+  useEffect(() => {
+    if (!me) return;
+    let live = true;
+    const load = () => api<unknown[]>("/v1/manage/change-requests?state=pending_review").then((r) => live && setPending(r.length)).catch(() => {});
+    load();
+    const t = setInterval(load, 60_000);
+    // The review page announces decisions, so the count is right at once.
+    window.addEventListener("opex:requests-changed", load);
+    return () => {
+      live = false;
+      clearInterval(t);
+      window.removeEventListener("opex:requests-changed", load);
+    };
+  }, [me, path]);
+  useEffect(() => {
+    const base = document.title.replace(/^(d+) /, "");
+    document.title = pending ? `(${pending}) ${base}` : base;
+  }, [pending, path]);
 
   const logout = async () => {
     try {
@@ -66,6 +91,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
             {NAV.filter((n) => !n.min || atLeast(me, n.min)).map((n) => (
               <Link key={n.href} href={n.href} aria-current={active(n.href) ? "page" : undefined}>
                 {n.label}
+                {n.href === "/requests" && pending > 0 && (
+                  <span className="badge warn" style={{ marginInlineStart: "auto" }} aria-label={`${pending} در انتظار بررسی`}>
+                    {new Intl.NumberFormat("fa-IR").format(pending)}
+                  </span>
+                )}
               </Link>
             ))}
           </nav>

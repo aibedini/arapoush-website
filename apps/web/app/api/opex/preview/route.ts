@@ -23,6 +23,8 @@ export async function GET(req: Request) {
   // Same-site paths only; never an open redirect.
   if (!/^[\w.-]+\.[\w.-]+\.[\w-]+$/.test(token) || token.length > 2000 || !/^\/(?!\/)[\w\-/]*$/.test(path)) return new Response("Bad preview link", { status: 400 });
   draft.enable();
-  jar.set("opex_preview", token, { httpOnly: true, secure: url.protocol === "https:", sameSite: "lax", path: "/", maxAge: 30 * 60 });
+  // SameSite=None over https so the preview also works inside the console frame (another site).
+  const https = url.protocol === "https:";
+  jar.set("opex_preview", token, { httpOnly: true, secure: https, sameSite: https ? "none" : "lax", path: "/", maxAge: 30 * 60 });
   redirect(path);
 }

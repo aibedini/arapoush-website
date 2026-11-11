@@ -57,7 +57,9 @@ export async function contentModule(app: FastifyInstance, deps: Deps) {
       if (lockedChanged.length) {
         const p = req.principal!;
         const fresh = p.stepUpAt && Date.now() - p.stepUpAt.getTime() < 300_000;
-        if (p.role !== "super_admin" || !fresh) throw forbidden("FIELD_LOCKED", "Locked fields need a super admin with a fresh step-up", { paths: lockedChanged.map((c) => c.path).slice(0, 20) });
+        if (p.role !== "super_admin") throw forbidden("FIELD_LOCKED", "Locked fields can only be changed by a super admin", { paths: lockedChanged.map((c) => c.path).slice(0, 20) });
+        // Super admins confirm with their authenticator first (the console then retries).
+        if (!fresh) throw forbidden("STEP_UP_REQUIRED", "Confirm with your authenticator code to change locked fields", { paths: lockedChanged.map((c) => c.path).slice(0, 20) });
       }
       const { revision, changes } = await saveDraft(q, tenant, { typeKey: type, data: body.data, baseRevisionId: body.base_revision_id, actor: actorOf(req), request: req.info, note: body.note });
       // Open change requests on fields the operator just changed now need a rebase.
@@ -77,7 +79,8 @@ export async function contentModule(app: FastifyInstance, deps: Deps) {
       for (const op of body.ops) {
         if (isLockedPath(t.schema, op.path)) {
           const p = req.principal!;
-          if (p.role !== "super_admin" || !p.stepUpAt || Date.now() - p.stepUpAt.getTime() > 300_000) throw forbidden("FIELD_LOCKED", `${op.path} is locked`);
+          if (p.role !== "super_admin") throw forbidden("FIELD_LOCKED", `${op.path} is locked`);
+          if (!p.stepUpAt || Date.now() - p.stepUpAt.getTime() > 300_000) throw forbidden("STEP_UP_REQUIRED", `${op.path} is locked: confirm with your authenticator code`);
         }
         if (getAt(data, op.path.replace(/@\w+$/, "")) === undefined && !op.path.includes("@")) throw badRequest("PATH_NOT_FOUND", `${op.path} does not exist`);
         try {

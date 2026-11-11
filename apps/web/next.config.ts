@@ -28,6 +28,7 @@ const nextConfig: NextConfig = {
     return opex ? [{ source: "/media/:path*", destination: `${opex}/media/:path*` }] : [];
   },
   async headers() {
+    const opexConsole = process.env.OPEX_CONSOLE_ORIGIN?.replace(/\/$/, "");
     return [
       { source: "/images/:path*", headers: [{ key: "Cache-Control", value: year }] },
       { source: "/files/:path*", headers: [{ key: "Cache-Control", value: "public, max-age=86400" }] },
@@ -37,7 +38,8 @@ const nextConfig: NextConfig = {
         headers: [
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          // The OPEX console shows draft previews in frames; only that origin may embed the site.
+          opexConsole ? { key: "Content-Security-Policy", value: `frame-ancestors 'self' ${opexConsole}` } : { key: "X-Frame-Options", value: "SAMEORIGIN" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
         ],
       },

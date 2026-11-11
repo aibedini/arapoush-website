@@ -6,7 +6,7 @@ import { useAction, useApi, useMe } from "@/lib/hooks";
 import { ago, num, when } from "@/lib/fa";
 import { Dialog, ErrorNote, Loading, PageHead } from "@/components/ui";
 
-type Partner = { id: string; client_id: string; name: string; status: string; allowed_cidrs: string[]; mtls_fingerprint: string | null; redirect_uris: string[]; scopes: string[]; contact: string | null; created_at: string; keys: number; users: number };
+type Partner = { id: string; client_id: string; name: string; status: string; allowed_cidrs: string[]; mtls_fingerprint: string | null; redirect_uris: string[]; scopes: string[]; contact: string | null; created_at: string; keys: number; users: number; webhook_url: string | null };
 type PUser = { id: string; email: string; display_name: string; role: string; status: string; last_login_at: string | null; locked_until: string | null; mfa: boolean };
 
 const SCOPES: Record<string, string> = {
@@ -139,6 +139,15 @@ export default function Partners() {
   const [created, setCreated] = useState<string | null>(null);
   const [usersOf, setUsersOf] = useState<Partner | null>(null);
   const [rotate, setRotate] = useState<Partner | null>(null);
+  const [hook, setHook] = useState<Partner | null>(null);
+  const [hookUrl, setHookUrl] = useState("");
+  const [hookSecret, setHookSecret] = useState<string | null>(null);
+  const saveHook = (url: string | null) =>
+    act.run(async () => {
+      const r = await api<{ secret: string | null }>(`/v1/manage/partners/${hook!.id}/webhook`, { method: "PUT", body: { url } });
+      setHookSecret(r.secret);
+      list.reload();
+    }, url ? "نشانی وب‌هوک ذخیره شد." : "وب‌هوک خاموش شد.");
   const [jwks, setJwks] = useState("");
 
   const parseJwks = (s: string) => {
@@ -204,6 +213,9 @@ export default function Partners() {
                   </button>
                   {admin && (
                     <>
+                      <button type="button" className="btn sm" onClick={() => (setHook(p), setHookUrl(p.webhook_url ?? ""), setHookSecret(null))}>
+                        وب‌هوک{p.webhook_url ? "" : " (خاموش)"}
+                      </button>
                       <button type="button" className="btn sm" onClick={() => (setJwks(""), setRotate(p))}>
                         چرخش کلید
                       </button>
@@ -291,6 +303,27 @@ export default function Partners() {
             <button type="button" className="btn" onClick={() => setAdding(false)}>
               انصراف
             </button>
+          </div>
+        </form>
+      </Dialog>
+
+      <Dialog open={!!hook} onClose={() => setHook(null)} title={`وب‌هوک ${hook?.name ?? ""}`}>
+        <form className="stack" onSubmit={(e) => (e.preventDefault(), saveHook(hookUrl.trim() || null))}>
+          <p className="small muted">OPEX تغییر وضعیت درخواست‌ها و انتشار محتوا را با امضای HMAC به این نشانی می‌فرستد. با ذخیره، رمز تازه‌ای ساخته می‌شود و فقط یک بار نمایش داده می‌شود.</p>
+          <label className="f">
+            <span>نشانی (https)</span>
+            <input dir="ltr" type="url" value={hookUrl} onChange={(e) => setHookUrl(e.target.value)} placeholder="https://cms.example.com/opex/webhook" />
+          </label>
+          {hookSecret && (
+            <div className="note warn">
+              <div>رمز وب‌هوک (الان کپی کنید؛ دوباره نمایش داده نمی‌شود):</div>
+              <div className="secret">{hookSecret}</div>
+            </div>
+          )}
+          <ErrorNote error={act.error} />
+          <div className="row">
+            <button className="btn primary" disabled={act.busy || !hookUrl.trim()}>ذخیره و ساخت رمز تازه</button>
+            {hook?.webhook_url && <button type="button" className="btn danger" disabled={act.busy} onClick={() => saveHook(null)}>خاموش کردن</button>}
           </div>
         </form>
       </Dialog>

@@ -9,6 +9,8 @@ import { canWrite, useAction, useApi, useMe } from "@/lib/hooks";
 import { ago, num, when } from "@/lib/fa";
 import { FieldEditor } from "@/components/FieldEditor";
 import { Dialog, ErrorNote, Loading, PageHead } from "@/components/ui";
+import { CapPositions } from "@/components/CapPositions";
+import { PreviewFrames } from "@/components/PreviewFrames";
 
 type Change = { op: string; path: string; old?: unknown; new?: unknown };
 type EntryView = {
@@ -52,6 +54,7 @@ export default function EditEntry() {
   const [note, setNote] = useState("");
   const [diff, setDiff] = useState<{ title: string; list: Change[] } | null>(null);
   const [schedule, setSchedule] = useState("");
+  const [frames, setFrames] = useState(false);
   const act = useAction();
 
   useEffect(() => {
@@ -95,16 +98,6 @@ export default function EditEntry() {
       setSchedule("");
       refresh();
     }, at ? "انتشار زمان‌بندی شد." : "زمان‌بندی لغو شد.");
-  // Opens the website with this entry's draft (and every other draft). The tab opens first so the
-  // browser does not block it as a pop-up; it is cut off from this window before navigating.
-  const preview = async (locale: "fa" | "en" | "tr") => {
-    const w = window.open("", "_blank");
-    const r = await act.run(() => api<{ url: string }>("/v1/manage/preview", { body: { type: key, locale } }));
-    if (!w) return;
-    if (!r) return w.close();
-    w.opener = null;
-    w.location.href = r.url;
-  };
   const compare = async (r: Rev) => {
     if (!view.data?.draft) return;
     const list = await act.run(() => api<Change[]>(`/v1/manage/diff?from=${r.id}&to=${view.data!.draft!.id}`));
@@ -125,12 +118,17 @@ export default function EditEntry() {
         </Link>
       </PageHead>
       <div className="editor">
+        <div className="stack">
+        {key === "product.effervescent.page" && (
+          <CapPositions data={data} orig={orig} onChange={(d) => setData(d)} canEdit={me?.role === "super_admin"} />
+        )}
         <div className="card">
           <div className="card-body" style={{ paddingBlock: 6 }}>
             {Object.entries(v.schema.fields).map(([k, f]) => (
               <FieldEditor key={k} field={f} name={k} path={`/${k}`} value={data[k]} orig={orig[k]} onChange={(x) => setData({ ...data, [k]: x })} ctx={{ canEdit: writable, superAdmin: me?.role === "super_admin" }} />
             ))}
           </div>
+        </div>
         </div>
         <aside className="aside">
           <section className="card" aria-label="ذخیره و انتشار">
@@ -183,12 +181,9 @@ export default function EditEntry() {
                 </>
               )}
               <div className="row">
-                <span className="small muted">پیش‌نمایش پیش‌نویس روی سایت:</span>
-                {(["fa", "en", "tr"] as const).map((l) => (
-                  <button key={l} type="button" className="btn sm" disabled={dirty || act.busy} onClick={() => preview(l)} title={dirty ? "اول ذخیره کنید" : undefined}>
-                    {l.toUpperCase()}
-                  </button>
-                ))}
+                <button type="button" className="btn sm" disabled={dirty} onClick={() => setFrames(true)} title={dirty ? "اول ذخیره کنید" : undefined}>
+                  پیش‌نمایش روی سایت (موبایل، تبلت، دسکتاپ)
+                </button>
               </div>
               {v.changesSincePublish.length > 0 && (
                 <button type="button" className="btn sm ghost" onClick={() => setDiff({ title: "تغییرات از آخرین انتشار", list: v.changesSincePublish })}>
@@ -234,6 +229,7 @@ export default function EditEntry() {
           </section>
         </aside>
       </div>
+      <PreviewFrames open={frames} onClose={() => setFrames(false)} type={key} />
       <Dialog open={!!diff} onClose={() => setDiff(null)} title={diff?.title ?? ""} wide>
         {diff && <Changes list={diff.list} />}
       </Dialog>

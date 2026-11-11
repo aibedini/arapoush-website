@@ -131,6 +131,7 @@ before):
 | `OPEX_DELIVERY_URL` | OPEX API origin, e.g. `http://127.0.0.1:4000`; `/media/*` is proxied there |
 | `OPEX_DELIVERY_TOKEN` | Same value as the API's `DELIVERY_TOKEN` |
 | `OPEX_WEBHOOK_SECRET` | Same value as the API's `SITE_WEBHOOK_SECRET`; OPEX posts to `/api/opex/revalidate` after a publish |
+| `OPEX_CONSOLE_ORIGIN` | The console origin, e.g. `https://console.opex.example`: only it may frame the site (draft previews at three widths); unset keeps `X-Frame-Options: SAMEORIGIN` |
 
 If OPEX is down, the site keeps the last content it loaded, or falls back to the snapshot
 (`packages/schema/src/generated/seed.json`). Previews open through `/api/opex/preview`, a link

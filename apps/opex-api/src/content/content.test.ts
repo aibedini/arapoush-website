@@ -162,3 +162,21 @@ test("preview: the console gets a signed link; the site reads drafts only with i
     await t.close();
   }
 });
+
+test("locked fields: super admins are asked to confirm (STEP_UP_REQUIRED), then the edit goes through", async () => {
+  const t = await testApp(env(), { seed: true });
+  try {
+    const admin = await signIn(t.app, t, "super_admin");
+    // Age the sign-in so it no longer counts as a fresh confirmation.
+    await t.db.q(`UPDATE sessions SET step_up_at = clock_timestamp() - interval '10 minutes'`);
+    const e = (await t.app.inject({ method: "GET", url: "/v1/manage/entries/product.effervescent.page", headers: { cookie: admin.cookie } })).json();
+    const op = { base_revision_id: e.draft.id, ops: [{ path: "/data/caps/variants[id=spiral]/parts[id=cap]/y", value: 0.15 }] };
+    const first = await t.app.inject({ method: "PATCH", url: "/v1/manage/entries/product.effervescent.page", headers: as(admin), payload: op });
+    assert.equal(first.json().code, "STEP_UP_REQUIRED");
+    await stepUp(t.app, admin);
+    const again = await t.app.inject({ method: "PATCH", url: "/v1/manage/entries/product.effervescent.page", headers: as(admin), payload: op });
+    assert.equal(again.statusCode, 200, again.body);
+  } finally {
+    await t.close();
+  }
+});

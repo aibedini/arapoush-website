@@ -30,7 +30,7 @@ export async function partnerAdminModule(app: FastifyInstance, deps: Deps) {
 
   app.get("/v1/manage/partners", { preHandler: requireOperator(deps, "operator") }, async () =>
     db.q(
-      `SELECT c.id, c.client_id, c.name, c.status, c.allowed_cidrs, c.mtls_fingerprint, c.redirect_uris, c.scopes, c.contact, c.created_at, jsonb_array_length(c.jwks->'keys') AS keys,
+      `SELECT c.id, c.client_id, c.name, c.status, c.allowed_cidrs, c.mtls_fingerprint, c.redirect_uris, c.scopes, c.contact, c.created_at, c.webhook_url, jsonb_array_length(c.jwks->'keys') AS keys,
               (SELECT count(*)::int FROM principals p WHERE p.partner_client_id = c.id AND p.kind = 'partner_user') AS users
          FROM partner_clients c WHERE c.tenant_id = $1 ORDER BY c.created_at`,
       [tenant],
