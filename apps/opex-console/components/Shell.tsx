@@ -7,7 +7,7 @@ import { api, ApiError, onStepUp, setCsrf } from "@/lib/api";
 import { atLeast, canWrite, MeContext, type Me } from "@/lib/hooks";
 import { ROLE } from "@/lib/fa";
 import { Dialog, ErrorNote, Loading } from "./ui";
-import { Bell, ClockCounterClockwise, GitPullRequest, Handshake, IdentificationCard, Images, Key, ListChecks, PlugsConnected, ShieldCheck, SquaresFour, TextAa, Tray, UserCircle, UsersThree, type Icon } from "@phosphor-icons/react";
+import { Bell, PaintBrush, ClockCounterClockwise, GitPullRequest, Handshake, IdentificationCard, Images, Key, ListChecks, PlugsConnected, ShieldCheck, SquaresFour, TextAa, Tray, UserCircle, UsersThree, type Icon } from "@phosphor-icons/react";
 
 type Item = { href: string; label: string; icon: Icon; min?: Me["role"]; write?: boolean };
 /** Grouped by what operators do: daily work, the website, then settings. */
@@ -23,7 +23,8 @@ const NAV: { group: string; items: Item[] }[] = [
   {
     group: "وب‌سایت",
     items: [
-      { href: "/content", label: "محتوا", icon: TextAa },
+      { href: "/visual", label: "ویرایشگر بصری", icon: PaintBrush },
+      { href: "/content", label: "محتوا (فیلدها)", icon: TextAa },
       { href: "/forms", label: "فرم‌ها", icon: ListChecks },
       { href: "/media", label: "رسانه", icon: Images },
     ],

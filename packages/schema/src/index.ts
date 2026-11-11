@@ -16,3 +16,4 @@ export function contentType(key: string): ContentType | undefined {
   return CONTENT_TYPES.find((t) => t.key === key);
 }
 export * from "./forms.ts";
+export * from "./blocks.ts";

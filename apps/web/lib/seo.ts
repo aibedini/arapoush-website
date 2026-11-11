@@ -1,4 +1,5 @@
-import { pickL } from "@arapoush/schema";
+import { isBlockKind, pickL, type LayoutSection } from "@arapoush/schema";
+import { entry } from "@/lib/content";
 import { pageForms } from "@/lib/content/forms";
 import { formPath } from "@/lib/forms";
 import { printingPath, productPaths, siteUrl } from "@/lib/site";
@@ -140,6 +141,7 @@ export function llmsText(full: boolean) {
       t.certifications.lead,
       ...t.certifications.items.map((c, i) => `- ${["GMP", "ISO 9001", "IFDA", "INSO"][i]} (${c.name}): ${c.text}`),
       "",
+      ...blockFacts(l),
       `### ${t.insights.eyebrow}`,
       ...t.insights.articles.map((a) => `- ${a.title}: ${a.text}`),
       "",
@@ -320,4 +322,17 @@ function printingFacts(p: Printing, l: Locale) {
     pt(p.hero.lead, l),
     ...p.tech.items.flatMap((m) => [`- ${pt(m.name, l)}: ${pt(m.summary, l)} ${pt(m.process, l)}`, ...m.capabilities.map((c) => `  - ${pt(c, l)}`)]),
   ];
+}
+
+/** Text of the page-builder blocks on the home page (P12), for llms-full.txt. */
+function blockFacts(l: Locale) {
+  const sections = entry<{ sections?: LayoutSection[] }>("page.home.layout")?.sections ?? [];
+  return sections
+    .filter((s) => s.enabled && isBlockKind(s.type) && s.type !== "spacer" && s.type !== "form")
+    .flatMap((s) => {
+      const p = s.props ?? {};
+      const title = pickL(p.title, l);
+      const lines = [title ? `### ${title}` : "", pickL(p.body, l), ...(p.items ?? []).map((it) => (pickL(it.q, l) ? `- ${pickL(it.q, l)} ${pickL(it.a, l)}` : ""))].filter(Boolean);
+      return lines.length ? [...lines, ""] : [];
+    });
 }

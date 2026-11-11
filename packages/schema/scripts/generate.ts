@@ -12,7 +12,8 @@ import sharp from "sharp";
 import { asGroup, infer } from "../src/infer.ts";
 import { mergeLocales } from "../src/localize.ts";
 import { applyOverrides } from "../src/overrides.ts";
-import type { ContentType } from "../src/fields.ts";
+import type { ContentType, GroupField, ListField } from "../src/fields.ts";
+import { BLOCK_KINDS, BLOCK_PROPS, SECTION_TYPES } from "../src/blocks.ts";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const web = path.resolve(here, "../../../apps/web");
@@ -172,12 +173,26 @@ const defs: Def[] = [
   },
 ];
 
+/** Shapes inference cannot see in the seed data (P12: page-builder blocks in the home layout). */
+function extend(key: string, g: GroupField): GroupField {
+  if (key !== "page.home.layout") return g;
+  const sections = g.fields.sections as ListField;
+  const item = sections.of as GroupField;
+  return {
+    ...g,
+    fields: {
+      ...g.fields,
+      sections: { ...sections, label: "Sections", of: { ...item, fields: { ...item.fields, type: { kind: "enum", values: [...SECTION_TYPES, ...BLOCK_KINDS], label: "Section type" }, props: BLOCK_PROPS } } },
+    },
+  };
+}
+
 const types: ContentType[] = defs.map((d) => ({
   key: d.key,
   label: d.label,
   singleton: d.singleton ?? true,
   version: 1,
-  schema: applyOverrides(d.key, asGroup(infer(d.data))),
+  schema: applyOverrides(d.key, extend(d.key, asGroup(infer(d.data)))),
 }));
 
 mkdirSync(out, { recursive: true });

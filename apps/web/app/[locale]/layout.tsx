@@ -7,6 +7,8 @@ import { languageAlternates, pageUrl } from "@/lib/seo";
 import { siteUrl } from "@/lib/site";
 import "../globals.css";
 import { ensureContent } from "@/lib/content";
+import { editMode } from "@/lib/content/edit";
+import EditBridgeLoader from "@/components/opex/EditBridgeLoader";
 
 // Primary Latin typeface of the design (licensed files supplied by the client, subset to Latin).
 const helvetica = localFont({
@@ -105,6 +107,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = getDictionary(locale);
+  const edit = await editMode();
 
   return (
     <html
@@ -126,6 +129,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
           {t.common.skip}
         </a>
         {children}
+        {edit && <EditBridgeLoader consoleOrigin={process.env.OPEX_CONSOLE_ORIGIN ?? ""} />}
       </body>
     </html>
   );

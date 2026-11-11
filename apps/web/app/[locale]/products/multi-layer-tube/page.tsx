@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { editMode } from "@/lib/content/edit";
+import EditScope from "@/components/opex/EditScope";
 import { notFound } from "next/navigation";
 import Header from "@/components/layout/Header";
 import ContactCTA from "@/components/sections/ContactCTA";
@@ -47,6 +49,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 export default async function MultiLayerTubePage({ params }: { params: Params }) {
   await ensureContent();
+  const edit = await editMode();
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = getDictionary(locale);
@@ -61,15 +64,17 @@ export default async function MultiLayerTubePage({ params }: { params: Params })
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productTubeJsonLd(t, product, locale, PATH)).replace(/</g, "\\u003c") }}
       />
       <Header t={t} locale={locale} path={PATH} />
+      <EditScope on={edit} entry="product.tube.page" label="صفحهٔ تیوب">
       <main id="main" className={styles.page}>
-        <div className={styles.wrap}>
-          <ProductHero t={t.productTube} video={null} image={product.images.hero} locale={locale} dir={dir} />
-          <Configurator t={t.productTube} locale={locale} product={product} contact={t.site.contact} direct={opexEnabled()} />
-          <div className={styles.lower}>
-            <LayerStructure t={t.productTube} structure={product.structures[0]} image={product.images.layers} locale={locale} dir={dir} />
+          <div className={styles.wrap}>
+            <ProductHero t={t.productTube} video={null} image={product.images.hero} locale={locale} dir={dir} />
+            <Configurator t={t.productTube} locale={locale} product={product} contact={t.site.contact} direct={opexEnabled()} />
+            <div className={styles.lower}>
+              <LayerStructure t={t.productTube} structure={product.structures[0]} image={product.images.layers} locale={locale} dir={dir} />
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </EditScope>
       {/* Same closing CTA and footer as every page. */}
       <ContactCTA t={t} locale={locale} />
       <Reveals />

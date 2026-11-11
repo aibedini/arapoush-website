@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { editMode } from "@/lib/content/edit";
+import EditScope from "@/components/opex/EditScope";
 import { notFound } from "next/navigation";
 import Header from "@/components/layout/Header";
 import ContactCTA from "@/components/sections/ContactCTA";
@@ -48,6 +50,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 export default async function EffervescentTubePage({ params }: { params: Params }) {
   await ensureContent();
+  const edit = await editMode();
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = getDictionary(locale);
@@ -62,13 +65,15 @@ export default async function EffervescentTubePage({ params }: { params: Params 
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productEffJsonLd(t, product, locale, PATH)).replace(/</g, "\\u003c") }}
       />
       <Header t={t} locale={locale} path={PATH} />
+      <EditScope on={edit} entry="product.effervescent.page" label="صفحهٔ قرص جوشان">
       <main id="main" className={styles.page}>
-        <EffStage t={t.productEff} product={product} size={hero} dir={localeMeta[locale].dir} locale={locale} />
-        <SizeLineup t={t.productEff.sizes} product={product} locale={locale} contact={t.site.contact} direct={opexEnabled()} />
-        <CapCompare t={t.productEff.caps} caps={product.caps} locale={locale} />
-        <Uses t={t.productEff.uses} photo={product.images.usesPhoto} bg={product.images.usesBg} locale={locale} />
-        <Making t={t.productEff.make} product={product} locale={locale} seals={t.media.certifications.seals} />
-      </main>
+          <EffStage t={t.productEff} product={product} size={hero} dir={localeMeta[locale].dir} locale={locale} />
+          <SizeLineup t={t.productEff.sizes} product={product} locale={locale} contact={t.site.contact} direct={opexEnabled()} />
+          <CapCompare t={t.productEff.caps} caps={product.caps} locale={locale} />
+          <Uses t={t.productEff.uses} photo={product.images.usesPhoto} bg={product.images.usesBg} locale={locale} />
+          <Making t={t.productEff.make} product={product} locale={locale} seals={t.media.certifications.seals} />
+        </main>
+      </EditScope>
       <ContactCTA t={t} locale={locale} blend="navy" />
       <Reveals />
       <TouchFeedback />

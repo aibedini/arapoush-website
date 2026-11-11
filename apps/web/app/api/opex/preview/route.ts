@@ -16,6 +16,7 @@ export async function GET(req: Request) {
   if (url.searchParams.get("exit")) {
     draft.disable();
     jar.delete("opex_preview");
+    jar.delete("opex_edit");
     redirect("/");
   }
   const token = url.searchParams.get("token") ?? "";
@@ -26,5 +27,8 @@ export async function GET(req: Request) {
   // SameSite=None over https so the preview also works inside the console frame (another site).
   const https = url.protocol === "https:";
   jar.set("opex_preview", token, { httpOnly: true, secure: https, sameSite: https ? "none" : "lax", path: "/", maxAge: 30 * 60 });
+  // Visual editor (P12): the page loads its in-place editing bridge.
+  if (url.searchParams.get("edit") === "1") jar.set("opex_edit", "1", { httpOnly: true, secure: https, sameSite: https ? "none" : "lax", path: "/", maxAge: 30 * 60 });
+  else jar.delete("opex_edit");
   redirect(path);
 }

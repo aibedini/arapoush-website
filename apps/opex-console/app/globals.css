@@ -361,3 +361,52 @@ fieldset { border: 0; margin: 0; padding: 0; min-inline-size: 0; }
   .canvas-list, .pf-grid { grid-template-columns: 1fr; }
   .cv-field, .cv-field[data-width="half"], .pf-full, .pf-half { grid-column: span 1; }
 }
+
+/* ── P12: visual editor ── */
+.main:has(.visual) { padding: 0; }
+.visual { display: grid; grid-template-rows: auto auto 1fr; block-size: 100dvh; min-block-size: 0; }
+.vis-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 16px; background: var(--surface); border-block-end: 1px solid var(--line); }
+.vis-bar h1 { font-size: 1.05rem; margin-inline-end: 8px; }
+.vis-bar > select { inline-size: auto; min-block-size: 32px; padding: 2px 10px; }
+.vis-status { color: var(--muted); min-inline-size: 110px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg button { display: grid; place-items: center; min-inline-size: 34px; min-block-size: 32px; border: 0; background: var(--surface); color: var(--muted); cursor: pointer; }
+.seg button + button { border-inline-start: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); }
+.seg button:disabled { opacity: 0.4; cursor: not-allowed; }
+.vis-body { display: grid; grid-template-columns: 260px minmax(0, 1fr) 340px; min-block-size: 0; }
+.vis-panel, .vis-inspector { background: var(--surface); overflow-y: auto; padding: 14px; display: grid; align-content: start; gap: 10px; }
+.vis-panel { border-inline-end: 1px solid var(--line); }
+.vis-inspector { border-inline-start: 1px solid var(--line); }
+.vis-inspector h2 { font-size: 1rem; }
+.vis-sections { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.vis-sections li { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); padding-inline-end: 2px; }
+.vis-sections li[aria-current="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent); }
+.vis-sections li[data-off="true"] .vs-main { opacity: 0.5; text-decoration: line-through; }
+.vis-sections .grip { cursor: grab; color: var(--muted); display: grid; padding: 0 2px; }
+.vs-main { flex: 1; min-inline-size: 0; display: flex; align-items: center; gap: 8px; min-block-size: 40px; padding: 0 4px; border: 0; background: none; color: inherit; font: inherit; text-align: start; cursor: pointer; }
+.vs-main span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vs-tools { display: none; margin-inline-start: auto; }
+.vis-sections li:hover .vs-tools, .vis-sections li:focus-within .vs-tools, .vis-sections li[aria-current="true"] .vs-tools { display: flex; }
+@media (hover: none) { .vs-tools { display: flex; } }
+.vis-help { border-block-start: 1px solid var(--line); padding-block-start: 10px; display: grid; gap: 6px; }
+.vis-stage { background: var(--bg); overflow: auto; padding: 12px; display: grid; justify-content: center; align-content: start; }
+.vis-device { position: relative; overflow: hidden; border-radius: 10px; border: 1px solid var(--line); background: #fff; box-shadow: var(--shadow); }
+.vis-device iframe { position: absolute; inset-block-start: 0; left: 0; border: 0; display: block; }
+.block-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.block-tile { display: grid; gap: 6px; justify-items: start; text-align: start; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; cursor: pointer; }
+.block-tile:hover, .block-tile:focus-visible { border-color: var(--accent); background: var(--accent-soft); }
+.block-tile svg { color: var(--accent); }
+@media (max-width: 1280px) {
+  .vis-body { grid-template-columns: 230px minmax(0, 1fr); }
+  .vis-inspector { grid-column: 1 / -1; border-inline-start: 0; border-block-start: 1px solid var(--line); max-block-size: 45dvh; }
+  .visual { block-size: auto; }
+}
+@media (max-width: 860px) {
+  .vis-body { grid-template-columns: 1fr; }
+  .vis-panel { border-inline-end: 0; border-block-end: 1px solid var(--line); }
+}
+
+/* The inspector is narrow: one language per row. */
+.vis-inspector .locs { grid-template-columns: 1fr; }
+.vis-inspector .fld { padding-block: 8px; }

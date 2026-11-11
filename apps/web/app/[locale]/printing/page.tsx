@@ -16,6 +16,8 @@ import { languageAlternates, pageUrl, printingJsonLd } from "@/lib/seo";
 import { printingPath } from "@/lib/site";
 import { getPrinting, t } from "@/lib/printing";
 import { ensureContent } from "@/lib/content";
+import { editMode } from "@/lib/content/edit";
+import EditScope from "@/components/opex/EditScope";
 
 const PATH = printingPath;
 type Params = Promise<{ locale: string }>;
@@ -46,6 +48,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 /** Printing technologies: the five methods, a selection guide, samples, resources and a comparison. */
 export default async function PrintingPage({ params }: { params: Params }) {
   await ensureContent();
+  const edit = await editMode();
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const dict = getDictionary(locale);
@@ -59,15 +62,17 @@ export default async function PrintingPage({ params }: { params: Params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(printingJsonLd(dict, p, locale, PATH)).replace(/</g, "\\u003c") }}
       />
       <Header t={dict} locale={locale} path={PATH} />
+      <EditScope on={edit} entry="page.printing" label="صفحهٔ چاپ">
       <main id="main" className={styles.page}>
-        <PrintHero c={p.hero} locale={locale} images={dict.media.printing} />
-        <TechExplorer c={p.tech} locale={locale} contact={dict.site.contact} />
-        <SelectionGuide c={p.guide} techs={p.tech.items} locale={locale} images={dict.media.printing} contact={dict.site.contact} />
-        <SampleCarousel c={p.samples} techs={p.tech.items} locale={locale} />
-        <Downloads c={p.downloads} locale={locale} images={dict.media.printing} contact={dict.site.contact} />
-        <Comparison c={p.compare} techs={p.tech.items} locale={locale} contact={dict.site.contact} />
-        <PrintCta c={p.cta} locale={locale} images={dict.media.printing} contact={dict.site.contact} />
-      </main>
+          <PrintHero c={p.hero} locale={locale} images={dict.media.printing} />
+          <TechExplorer c={p.tech} locale={locale} contact={dict.site.contact} />
+          <SelectionGuide c={p.guide} techs={p.tech.items} locale={locale} images={dict.media.printing} contact={dict.site.contact} />
+          <SampleCarousel c={p.samples} techs={p.tech.items} locale={locale} />
+          <Downloads c={p.downloads} locale={locale} images={dict.media.printing} contact={dict.site.contact} />
+          <Comparison c={p.compare} techs={p.tech.items} locale={locale} contact={dict.site.contact} />
+          <PrintCta c={p.cta} locale={locale} images={dict.media.printing} contact={dict.site.contact} />
+        </main>
+      </EditScope>
       <ContactCTA t={dict} locale={locale} footerOnly />
       <Reveals />
       <TouchFeedback />

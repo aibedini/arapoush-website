@@ -18,6 +18,18 @@ via `lib/sections.tsx`; copy lives in `lib/i18n/dictionaries/`. The OPEX content
   site's own scene (`?webgl&render`); keep the `window.__effScene` API in `EffStage.tsx` in step with
   `apps/opex-renderer/src/main.ts`.
 
+## Visual editor (P12)
+
+- `/visual` in the console edits the real page in a frame. The site marks content with
+  `components/opex/EditScope` and loads `components/opex/EditBridge` only in edit mode (draft mode plus
+  the `opex_edit` cookie). Normal visitors get neither.
+- A new section or page wraps its content in `EditScope` with the entry it reads, so the editor can
+  match its text and images.
+- Page-builder blocks live in `page.home.layout` (`sections[i].props`). Their kinds and fields are in
+  `packages/schema/src/blocks.ts`, and they render in `components/sections/blocks/Block.tsx`.
+- A new block kind needs all three: the schema in blocks.ts, the render in Block.tsx and the console
+  label in the visual editor. Then regenerate the schema.
+
 ## SEO, AI indexing and speed are checked on EVERY change (client requirement)
 
 Before calling any change done:

@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import { BLOCK_KINDS, isBlockKind, SECTION_ENTRY, type BlockKind, type BlockProps } from "@arapoush/schema";
 import type { Dictionary, Locale } from "@/lib/i18n";
 import Hero from "@/components/sections/Hero";
 import Products from "@/components/sections/Products";
@@ -6,6 +7,8 @@ import Applications from "@/components/sections/Applications";
 import Insights from "@/components/sections/Insights";
 import TrustedPartners from "@/components/sections/TrustedPartners";
 import Certifications from "@/components/sections/Certifications";
+import Block from "@/components/sections/blocks/Block";
+import EditScope from "@/components/opex/EditScope";
 
 /** Every page section receives the same props, so any of them can be placed anywhere. */
 export type SectionProps = { t: Dictionary; locale: Locale };
@@ -21,7 +24,8 @@ export const sectionRegistry = {
 
 export type SectionType = keyof typeof sectionRegistry;
 
-export type SectionConfig = { id: string; type: SectionType; enabled: boolean };
+/** Built-in sections read their own entries; page-builder blocks (P12) carry their data in `props`. */
+export type SectionConfig = { id: string; type: SectionType | BlockKind; enabled: boolean; props?: BlockProps };
 export type PageLayout = { sections: SectionConfig[] };
 
 export function isSectionType(value: string): value is SectionType {
@@ -29,26 +33,49 @@ export function isSectionType(value: string): value is SectionType {
 }
 
 /** Validates a layout coming from a CMS: unknown types and duplicates are dropped. */
-export function normalizeLayout(raw: { sections?: { id?: string; type?: string; enabled?: boolean }[] }): SectionConfig[] {
+export function normalizeLayout(raw: { sections?: { id?: string; type?: string; enabled?: boolean; props?: unknown }[] }): SectionConfig[] {
   const seen = new Set<string>();
   return (raw.sections ?? []).flatMap((s) => {
-    if (!s.type || !isSectionType(s.type)) return [];
-    const id = s.id ?? s.type;
-    if (seen.has(id)) return [];
+    if (!s.type || !(isSectionType(s.type) || isBlockKind(s.type))) return [];
+    const id = (s.id ?? s.type).replace(/[^\w-]/g, "");
+    if (!id || seen.has(id)) return [];
     seen.add(id);
-    return [{ id, type: s.type, enabled: s.enabled !== false }];
+    const props = s.props && typeof s.props === "object" && !Array.isArray(s.props) ? (s.props as BlockProps) : undefined;
+    return [{ id, type: s.type as SectionType | BlockKind, enabled: s.enabled !== false, ...(props ? { props } : {}) }];
   });
 }
 
-export function Sections({ layout, ...props }: SectionProps & { layout: SectionConfig[] }) {
+const LABEL: Record<string, string> = { hero: "اسلایدر", products: "محصولات", applications: "کاربردها", insights: "مقاله‌ها", partners: "مشتریان", certifications: "گواهینامه‌ها", richText: "متن", imageText: "تصویر و متن", cta: "دعوت به اقدام", faq: "پرسش‌های پرتکرار", form: "فرم", spacer: "فاصله" };
+
+/** The page's sections in order. In edit mode each is marked for the OPEX visual editor. */
+export function Sections({ layout, edit = false, ...props }: SectionProps & { layout: SectionConfig[]; edit?: boolean }) {
   return (
     <>
-      {layout
-        .filter((s) => s.enabled)
-        .map((s) => {
-          const { Component } = sectionRegistry[s.type];
-          return <Component key={s.id} {...props} />;
-        })}
+      {layout.map((s, index) => {
+        if (!s.enabled) return null;
+        const block = isBlockKind(s.type);
+        let body: React.ReactNode;
+        if (block) body = <Block kind={s.type as BlockKind} id={s.id} props={s.props ?? {}} {...props} />;
+        else {
+          const { Component } = sectionRegistry[s.type as SectionType];
+          body = <Component {...props} />;
+        }
+        return (
+          <EditScope key={s.id} on={edit} section={s.id} label={LABEL[s.type] ?? s.type} entry={block ? "page.home.layout" : SECTION_ENTRY[s.type as SectionType]} base={block ? `/sections[${index}]/props` : undefined}>
+            {body}
+          </EditScope>
+        );
+      })}
     </>
   );
 }
+
+/** FAQ blocks for structured data (FAQPage) and llms-full.txt. */
+export const faqItems = (layout: SectionConfig[], locale: Locale) =>
+  layout
+    .filter((s) => s.enabled && s.type === "faq")
+    .flatMap((s) => s.props?.items ?? [])
+    .map((it) => ({ q: it.q?.[locale] || it.q?.fa || "", a: it.a?.[locale] || it.a?.fa || "" }))
+    .filter((x) => x.q && x.a);
+
+export { BLOCK_KINDS };
