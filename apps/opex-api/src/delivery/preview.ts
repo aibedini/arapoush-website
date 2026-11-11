@@ -1,3 +1,5 @@
+import type { FormDefinition } from "@arapoush/schema";
+import { publicDefinition } from "../forms/routes.ts";
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { SignJWT, jwtVerify } from "jose";
 import { z } from "zod";
@@ -104,6 +106,9 @@ export async function previewModule(app: FastifyInstance, deps: Deps) {
       }
     }
     reply.header("Cache-Control", "no-store");
+    // Forms preview as drafts (the builder's "view on site").
+    const forms = await db.q<{ slug: string; version: number; draft: FormDefinition }>(`SELECT slug, version, draft FROM forms WHERE tenant_id = $1 AND status <> 'archived'`, [tenant]);
+    for (const f of forms) (entries as Record<string, unknown>)[`form.${f.slug}`] = { revision: `form.${f.slug}@draft`, number: f.version, data: publicDefinition(f.slug, f.version, f.draft) };
     return { preview: true, cr: payload.cr ?? null, entries };
   });
 }

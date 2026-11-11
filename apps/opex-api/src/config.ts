@@ -31,6 +31,13 @@ const Env = z.object({
   INQUIRY_TO: z.string().email().default("sales@arapoush.com"),
   SMTP_URL: z.string().optional(),
   MAIL_FROM: z.string().default("OPEX <no-reply@arapoush.com>"),
+  /** Helpdesk mailbox (P11): replies to customers come from here, and their answers arrive here. */
+  SUPPORT_ADDRESS: z.string().email().default("support@arapoush.com"),
+  SUPPORT_NAME: z.string().default("Arapoush"),
+  /** imaps://user:pass@host:993/INBOX — customer replies are read from this mailbox. Unset: inbound email off. */
+  IMAP_URL: z.string().optional(),
+  /** Console origin, for links in operator notification emails. */
+  CONSOLE_URL: z.string().url().default("http://localhost:3300"),
   /** Optional Cloudflare Turnstile secret: when set, forms must carry a valid token. */
   TURNSTILE_SECRET: z.string().optional(),
   /** Public origin of the website, for draft preview links. */

@@ -4,23 +4,43 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api, ApiError, onStepUp, setCsrf } from "@/lib/api";
-import { atLeast, MeContext, type Me } from "@/lib/hooks";
+import { atLeast, canWrite, MeContext, type Me } from "@/lib/hooks";
 import { ROLE } from "@/lib/fa";
 import { Dialog, ErrorNote, Loading } from "./ui";
+import { Bell, ClockCounterClockwise, GitPullRequest, Handshake, IdentificationCard, Images, Key, ListChecks, PlugsConnected, ShieldCheck, SquaresFour, TextAa, Tray, UserCircle, UsersThree, type Icon } from "@phosphor-icons/react";
 
-const NAV: { href: string; label: string; min?: Me["role"] }[] = [
-  { href: "/", label: "داشبورد" },
-  { href: "/content", label: "محتوا" },
-  { href: "/requests", label: "درخواست‌های تغییر" },
-  { href: "/inquiries", label: "درخواست‌های سایت", min: "operator" },
-  { href: "/media", label: "رسانه" },
-  { href: "/audit", label: "گزارش رویدادها", min: "auditor" },
-  { href: "/operators", label: "اپراتورها", min: "operator" },
-  { href: "/partners", label: "شرکا (آراسی‌ام‌اس)", min: "operator" },
-  { href: "/access", label: "دسترسی‌ها", min: "operator" },
-  { href: "/policies", label: "سیاست‌های تأیید" },
-  { href: "/webhooks", label: "وب‌هوک‌ها", min: "operator" },
-  { href: "/account", label: "حساب من" },
+type Item = { href: string; label: string; icon: Icon; min?: Me["role"]; write?: boolean };
+/** Grouped by what operators do: daily work, the website, then settings. */
+const NAV: { group: string; items: Item[] }[] = [
+  {
+    group: "کار روزانه",
+    items: [
+      { href: "/", label: "داشبورد", icon: SquaresFour },
+      { href: "/tickets", label: "صندوق تیکت‌ها", icon: Tray, write: true },
+      { href: "/requests", label: "درخواست‌های تغییر", icon: GitPullRequest },
+    ],
+  },
+  {
+    group: "وب‌سایت",
+    items: [
+      { href: "/content", label: "محتوا", icon: TextAa },
+      { href: "/forms", label: "فرم‌ها", icon: ListChecks },
+      { href: "/media", label: "رسانه", icon: Images },
+    ],
+  },
+  {
+    group: "تنظیمات",
+    items: [
+      { href: "/helpdesk", label: "تیم‌ها و پاسخ‌های آماده", icon: UsersThree, min: "operator" },
+      { href: "/operators", label: "اپراتورها", icon: IdentificationCard, min: "operator" },
+      { href: "/partners", label: "شرکا (آراسی‌ام‌اس)", icon: Handshake, min: "operator" },
+      { href: "/access", label: "دسترسی‌ها", icon: Key, min: "operator" },
+      { href: "/policies", label: "سیاست‌های تأیید", icon: ShieldCheck },
+      { href: "/webhooks", label: "وب‌هوک‌ها", icon: PlugsConnected, min: "operator" },
+      { href: "/audit", label: "گزارش رویدادها", icon: ClockCounterClockwise, min: "auditor" },
+      { href: "/account", label: "حساب من", icon: UserCircle },
+    ],
+  },
 ];
 
 export function Shell({ children }: { children: React.ReactNode }) {
@@ -50,10 +70,25 @@ export function Shell({ children }: { children: React.ReactNode }) {
       window.removeEventListener("opex:requests-changed", load);
     };
   }, [me, path]);
+  // Helpdesk: unread tickets for me (mine + unassigned).
+  const [tickets, setTickets] = useState(0);
   useEffect(() => {
-    const base = document.title.replace(/^(d+) /, "");
-    document.title = pending ? `(${pending}) ${base}` : base;
-  }, [pending, path]);
+    if (!me || !canWrite(me)) return;
+    let live = true;
+    const load = () => api<{ unread: number }>("/v1/manage/tickets/counts").then((c) => live && setTickets(c.unread)).catch(() => {});
+    load();
+    const t = setInterval(load, 30_000);
+    window.addEventListener("opex:tickets-changed", load);
+    return () => {
+      live = false;
+      clearInterval(t);
+      window.removeEventListener("opex:tickets-changed", load);
+    };
+  }, [me, path]);
+  useEffect(() => {
+    const base = document.title.replace(/^\(\d+\) /, "");
+    document.title = pending + tickets ? `(${pending + tickets}) ${base}` : base;
+  }, [pending, tickets, path]);
 
   const logout = async () => {
     try {
@@ -89,21 +124,37 @@ export function Shell({ children }: { children: React.ReactNode }) {
             <span>کنسول اپراتور</span>
           </div>
           <nav className="nav" aria-label="بخش‌ها">
-            {NAV.filter((n) => !n.min || atLeast(me, n.min)).map((n) => (
-              <Link key={n.href} href={n.href} aria-current={active(n.href) ? "page" : undefined}>
-                {n.label}
-                {n.href === "/requests" && pending > 0 && (
-                  <span className="badge warn" style={{ marginInlineStart: "auto" }} aria-label={`${pending} در انتظار بررسی`}>
-                    {new Intl.NumberFormat("fa-IR").format(pending)}
-                  </span>
-                )}
-              </Link>
-            ))}
+            {NAV.map((g) => {
+              const items = g.items.filter((n) => (!n.min || atLeast(me, n.min)) && (!n.write || canWrite(me)));
+              if (!items.length) return null;
+              return (
+                <div key={g.group} className="nav-group">
+                  <div className="nav-h">{g.group}</div>
+                  {items.map((n) => {
+                    const count = n.href === "/requests" ? pending : n.href === "/tickets" ? tickets : 0;
+                    return (
+                      <Link key={n.href} href={n.href} aria-current={active(n.href) ? "page" : undefined}>
+                        <n.icon size={18} weight={active(n.href) ? "fill" : "regular"} aria-hidden />
+                        <span>{n.label}</span>
+                        {count > 0 && (
+                          <span className={`badge ${n.href === "/tickets" ? "accent" : "warn"} nav-count`} aria-label={`${count} مورد تازه`}>
+                            {new Intl.NumberFormat("fa-IR").format(count)}
+                          </span>
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
+              );
+            })}
           </nav>
           <div className="me">
-            <div>
-              <div style={{ fontWeight: 600 }}>{me.display}</div>
-              <div className="small muted">{ROLE[me.role]}</div>
+            <div className="row" style={{ justifyContent: "space-between", flexWrap: "nowrap" }}>
+              <div>
+                <div style={{ fontWeight: 600 }}>{me.display}</div>
+                <div className="small muted">{ROLE[me.role]}</div>
+              </div>
+              <Notifications />
             </div>
             <div className="row">
               <button type="button" className="btn sm" onClick={logout}>
@@ -183,5 +234,57 @@ function StepUp() {
         </div>
       </form>
     </Dialog>
+  );
+}
+
+type Note = { id: string; kind: string; text: string; read_at: string | null; created_at: string; number: number | null };
+/** The bell: assignments, referrals, mentions, customer replies and SLA alerts. */
+function Notifications() {
+  const [data, setData] = useState<{ unread: number; items: Note[] } | null>(null);
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const load = useCallback(() => api<{ unread: number; items: Note[] }>("/v1/manage/notifications").then(setData).catch(() => {}), []);
+  useEffect(() => {
+    load();
+    const t = setInterval(load, 30_000);
+    return () => clearInterval(t);
+  }, [load]);
+  const go = async (n: Note) => {
+    setOpen(false);
+    if (!n.read_at) await api("/v1/manage/notifications/read", { body: { ids: [n.id] } }).catch(() => {});
+    load();
+    if (n.number) router.push(`/tickets/${n.number}`);
+  };
+  const unread = data?.unread ?? 0;
+  return (
+    <>
+      <button type="button" className="btn ghost icon-btn" aria-label={unread ? `اعلان‌ها، ${unread} خوانده‌نشده` : "اعلان‌ها"} onClick={() => setOpen(true)}>
+        <Bell size={20} weight={unread ? "fill" : "regular"} aria-hidden />
+        {unread > 0 && <span className="dot-count">{new Intl.NumberFormat("fa-IR").format(Math.min(unread, 99))}</span>}
+      </button>
+      <Dialog open={open} onClose={() => setOpen(false)} title="اعلان‌ها">
+        {!data?.items.length ? (
+          <p className="empty">اعلانی نیست.</p>
+        ) : (
+          <>
+            <ul className="notes-list">
+              {data.items.map((n) => (
+                <li key={n.id}>
+                  <button type="button" className="note-item" data-unread={!n.read_at} onClick={() => go(n)}>
+                    <span>{n.text}</span>
+                    <span className="small muted">{new Intl.DateTimeFormat("fa-IR", { dateStyle: "short", timeStyle: "short" }).format(new Date(n.created_at))}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+            {unread > 0 && (
+              <button type="button" className="btn sm" onClick={() => api("/v1/manage/notifications/read", { body: {} }).then(load)}>
+                همه خوانده شد
+              </button>
+            )}
+          </>
+        )}
+      </Dialog>
+    </>
   );
 }

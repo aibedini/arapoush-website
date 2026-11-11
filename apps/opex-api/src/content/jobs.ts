@@ -19,10 +19,12 @@ export const siteWebhooks: Job = { name: "webhooks", everyMs: 5_000, run: (deps,
 /** Change requests idle for 30 days expire (plan §7.2). */
 export const crExpiry: Job = { name: "cr-expiry", everyMs: 3_600_000, run: ({ db, config }) => db.tx((q) => expireIdle(q, config.TENANT, SYSTEM_REQUEST)).then(() => undefined) };
 
-import { deliverEmails, purgeOld } from "../inquiries/routes.ts";
-/** Inquiry emails to sales, and the two-year retention purge. */
-export const inquiryEmails: Job = { name: "inquiry-emails", everyMs: 15_000, run: (deps, log) => deliverEmails(deps, log) };
-export const inquiryRetention: Job = { name: "inquiry-retention", everyMs: 6 * 3_600_000, run: (deps) => purgeOld(deps) };
+import { checkSla, deliverOutbox, pollMailbox, purgeTickets } from "../tickets/mail.ts";
+/** Helpdesk (P11): outgoing email, the inbound mailbox, SLA breaches and retention. */
+export const emailOutbox: Job = { name: "email-outbox", everyMs: 15_000, run: (deps, log) => deliverOutbox(deps, log) };
+export const mailboxPoll: Job = { name: "mailbox-poll", everyMs: 60_000, run: (deps, log) => pollMailbox(deps, log) };
+export const slaCheck: Job = { name: "sla-check", everyMs: 60_000, run: (deps) => checkSla(deps) };
+export const ticketRetention: Job = { name: "ticket-retention", everyMs: 6 * 3_600_000, run: (deps) => purgeTickets(deps) };
 
 import { exportArchive } from "../audit/archive.ts";
 /** Hourly write-once audit archive, when AUDIT_ARCHIVE_DIR is set. */

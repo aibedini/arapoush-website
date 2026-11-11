@@ -81,6 +81,16 @@ export function entry<T = Record<string, unknown>>(type: string): T | undefined 
   return (src?.[type] ?? (src ? snapshot[type] : undefined)) as T | undefined;
 }
 
+/** Every published (or previewed) entry whose key starts with `prefix` (forms: `form.`). */
+export function entriesWithPrefix<T = Record<string, unknown>>(prefix: string): [string, T][] {
+  let preview: Entries | null = null;
+  try {
+    preview = requestStore().preview;
+  } catch {}
+  const src = preview ?? published ?? {};
+  return Object.entries(src).filter(([k]) => k.startsWith(prefix)) as [string, T][];
+}
+
 /** Data for a type: OPEX when on, else the snapshot (used for images and other non-dictionary data). */
 export function entryOrSnapshot<T = Record<string, unknown>>(type: string): T {
   return (entry<T>(type) ?? snapshot[type]) as T;

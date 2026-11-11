@@ -72,6 +72,10 @@ services:
       SMTP_URL: ${SMTP_URL}
       MAIL_FROM: ${MAIL_FROM:-OPEX <no-reply@arapoush.com>}
       TURNSTILE_SECRET: ${TURNSTILE_SECRET:-}
+      SUPPORT_ADDRESS: ${SUPPORT_ADDRESS:-support@arapoush.com}
+      SUPPORT_NAME: ${SUPPORT_NAME:-Arapoush}
+      IMAP_URL: ${IMAP_URL:-}
+      CONSOLE_URL: https://${CONSOLE_DOMAIN}
       CLAMAV: clamav:3310
       CONSOLE_ALLOWED_CIDRS: ${CONSOLE_ALLOWED_CIDRS:-}
       AUDIT_ARCHIVE_DIR: /archive

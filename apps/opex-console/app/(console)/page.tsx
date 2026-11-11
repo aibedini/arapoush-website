@@ -10,7 +10,7 @@ type Dash = {
   entries: { total?: number; unpublished?: number; scheduled?: number };
   security24h: { failed_logins?: number; denies?: number; lockouts?: number };
   webhooks: { retrying?: number; dead?: number };
-  inquiries?: { open?: number; week?: number };
+  tickets?: { open?: number; new?: number; unassigned?: number; overdue?: number; week?: number };
   auditHead: { seq?: string; hash?: string };
   recent: { seq: number; ts: string; action: string; result: string; who: string | null; kind: string; ip: string | null; resource: Record<string, unknown> | null }[];
 };
@@ -51,7 +51,8 @@ export default function Dashboard() {
               <Stat k="درخواست‌های در انتظار بررسی" v={data.crs.pending} s={`${num(data.crs.rebase ?? 0)} نیازمند به‌روزرسانی`} tone="warn" />
               <Stat k="محتوای منتشرنشده" v={data.entries.unpublished} s={`از ${num(data.entries.total ?? 0)} محتوا`} tone="warn" href="/content" />
               <Stat k="انتشار زمان‌بندی‌شده" v={data.entries.scheduled} href="/content" />
-              <Stat k="درخواست‌های سایت (پیگیری‌نشده)" v={data.inquiries?.open} s={`${num(data.inquiries?.week ?? 0)} در ۷ روز گذشته`} tone="warn" href="/inquiries" />
+              <Stat k="تیکت‌های باز" v={data.tickets?.open} s={`${num(data.tickets?.new ?? 0)} تازه · ${num(data.tickets?.unassigned ?? 0)} بدون مسئول · ${num(data.tickets?.week ?? 0)} در ۷ روز`} tone="warn" href="/tickets" />
+              <Stat k="تیکت‌های عقب از SLA" v={data.tickets?.overdue} tone="bad" href="/tickets?view=overdue" />
               <Stat k="ورود ناموفق (۲۴ ساعت)" v={data.security24h.failed_logins} s={`${num(data.security24h.lockouts ?? 0)} قفل حساب`} tone="bad" href="/audit?action=*failure" />
               <Stat k="دسترسی‌های ردشده (۲۴ ساعت)" v={data.security24h.denies} tone="bad" href="/audit?result=denied" />
               <Stat k="وب‌هوک‌های ناموفق" v={(data.webhooks.dead ?? 0) + (data.webhooks.retrying ?? 0)} s={`${num(data.webhooks.dead ?? 0)} متوقف`} tone="bad" />

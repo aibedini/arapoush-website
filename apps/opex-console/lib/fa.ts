@@ -72,6 +72,34 @@ export const ACTION: Record<string, string> = {
   "inquiry.reopened": "بازکردن دوبارهٔ درخواست سایت",
   "inquiry.erased": "حذف درخواست سایت",
   "inquiry.purged": "حذف خودکار درخواست‌های قدیمی",
+  "ticket.created": "تیکت تازه",
+  "ticket.list": "دیدن فهرست تیکت‌ها",
+  "ticket.read": "باز کردن تیکت",
+  "ticket.updated": "تغییر تیکت",
+  "ticket.assigned": "تعیین مسئول تیکت",
+  "ticket.referred": "ارجاع تیکت",
+  "ticket.transferred": "انتقال تیکت",
+  "ticket.note": "یادداشت داخلی",
+  "ticket.replied": "پاسخ به مشتری",
+  "ticket.customer_reply": "پاسخ مشتری (ایمیل)",
+  "ticket.merged": "ادغام تیکت",
+  "ticket.erased": "حذف تیکت",
+  "ticket.purged": "حذف خودکار تیکت‌های قدیمی",
+  "ticket.imported": "انتقال درخواست قدیمی به تیکت",
+  "ticket.attachment_read": "دریافت پیوست تیکت",
+  "form.created": "ساخت فرم",
+  "form.draft_saved": "ذخیرهٔ پیش‌نویس فرم",
+  "form.published": "انتشار فرم",
+  "form.archived": "بایگانی فرم",
+  "form.restored": "بازگردانی فرم",
+  "form.version_read": "دیدن نسخهٔ فرم",
+  "team.created": "ساخت تیم",
+  "team.updated": "تغییر تیم",
+  "team.members": "تغییر اعضای تیم",
+  "team.deleted": "حذف تیم",
+  "saved_reply.created": "ساخت پاسخ آماده",
+  "saved_reply.updated": "تغییر پاسخ آماده",
+  "saved_reply.deleted": "حذف پاسخ آماده",
   "render.queued": "رندر سه‌بعدی در صف",
   "render.started": "شروع رندر سه‌بعدی",
   "render.completed": "پایان رندر سه‌بعدی",
@@ -93,3 +121,24 @@ export const ACTION: Record<string, string> = {
   "audit.export": "خروجی گزارش",
 };
 export const actionLabel = (a: string) => ACTION[a] ?? a;
+
+/** Helpdesk labels (P11). */
+export const STATUS: Record<string, [string, string]> = {
+  new: ["تازه", "accent"],
+  open: ["باز", "ok"],
+  pending: ["در انتظار مشتری", "warn"],
+  on_hold: ["معلق", ""],
+  resolved: ["حل‌شده", ""],
+  closed: ["بسته", ""],
+  spam: ["هرزنامه", "bad"],
+};
+export const PRIORITY: Record<string, [string, string]> = { low: ["کم", ""], normal: ["عادی", ""], high: ["زیاد", "warn"], urgent: ["فوری", "bad"] };
+export const VIEW_LABEL: Record<string, string> = { mine: "مال من", unassigned: "بدون مسئول", teams: "تیم‌های من", all: "همهٔ باز", overdue: "عقب از SLA", waiting: "در انتظار مشتری", closed: "حل‌شده و بسته", spam: "هرزنامه" };
+/** "in 3 h" / "2 h late". */
+export function dueIn(v: string | null | undefined) {
+  if (!v) return "";
+  const m = Math.round((new Date(v).getTime() - Date.now()) / 60_000);
+  const a = Math.abs(m);
+  const t = a < 60 ? `${num(a)} دقیقه` : a < 48 * 60 ? `${num(Math.round(a / 60))} ساعت` : `${num(Math.round(a / 1440))} روز`;
+  return m >= 0 ? `${t} مانده` : `${t} تأخیر`;
+}

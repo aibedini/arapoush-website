@@ -1,3 +1,4 @@
+import { publishedForms } from "../forms/routes.ts";
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { CONTENT_TYPES } from "@arapoush/schema";
 import type { Deps } from "../app.ts";
@@ -29,10 +30,11 @@ export async function deliveryModule(app: FastifyInstance, deps: Deps) {
   // Everything the site renders, in one call (build time and revalidation).
   app.get("/v1/delivery/bundle", { preHandler: guard, config: { rateLimit: { max: 3000, timeWindow: "1 minute" } } }, async (req, reply) => {
     const rows = await published();
-    const etag = `"${rows.map((r) => r.revision_id).join(".")}"`;
+    const forms = await publishedForms((sql, params) => db.q(sql, params), tenant);
+    const etag = `"${rows.map((r) => r.revision_id).join(".")}.${forms.map((f) => `${f.key}@${f.version}`).join(".")}"`;
     reply.headers({ ...cache, ETag: etag });
     if (req.headers["if-none-match"] === etag) return reply.status(304).send();
-    return { generatedAt: new Date().toISOString(), types: CONTENT_TYPES.map((t) => t.key), entries: Object.fromEntries(rows.map((r) => [r.type_key, { revision: r.revision_id, number: r.number, data: r.data }])) };
+    return { generatedAt: new Date().toISOString(), types: CONTENT_TYPES.map((t) => t.key), entries: Object.fromEntries([...rows.map((r) => [r.type_key, { revision: r.revision_id, number: r.number, data: r.data }]), ...forms.map((f) => [f.key, { revision: `${f.key}@${f.version}`, number: f.version, data: f.data }])]) };
   });
 
   app.get("/v1/delivery/content/:type", { preHandler: guard }, async (req, reply) => {

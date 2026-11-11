@@ -6,8 +6,8 @@ export type Job = { name: string; everyMs: number; run: (deps: Deps, log: Fastif
 export const JOBS: Job[] = [];
 
 // Registered by modules (kept here so the list is visible in one place).
-import { auditArchive, crExpiry, inquiryEmails, inquiryRetention, scheduledPublish, siteWebhooks } from "./content/jobs.ts";
-JOBS.push(scheduledPublish, siteWebhooks, crExpiry, inquiryEmails, inquiryRetention, auditArchive);
+import { auditArchive, crExpiry, emailOutbox, mailboxPoll, scheduledPublish, siteWebhooks, slaCheck, ticketRetention } from "./content/jobs.ts";
+JOBS.push(scheduledPublish, siteWebhooks, crExpiry, emailOutbox, mailboxPoll, slaCheck, ticketRetention, auditArchive);
 
 export function startWorkers(deps: Deps, log: FastifyBaseLogger): () => void {
   const timers = JOBS.map((job) => {

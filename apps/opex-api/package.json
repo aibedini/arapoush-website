@@ -24,7 +24,9 @@
     "@fastify/rate-limit": "11.2.1",
     "@node-rs/argon2": "2.2.2",
     "fastify": "5.12.7",
+    "imapflow": "2.9.1",
     "jose": "6.2.13",
+    "mailparser": "3.12.4",
     "nodemailer": "10.2.1",
     "otpauth": "9.5.2",
     "pg": "8.23.1",
@@ -33,6 +35,7 @@
   },
   "devDependencies": {
     "@arapoush/config": "workspace:*",
+    "@types/mailparser": "3.9.0",
     "@types/node": "22.15.29",
     "@types/pg": "8.23.1",
     "typescript": "5.8.3"

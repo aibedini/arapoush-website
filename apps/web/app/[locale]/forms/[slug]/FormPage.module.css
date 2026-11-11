@@ -1,0 +1,39 @@
+/* Standalone form page (P11): a calm column on the site's porcelain background. */
+.page {
+  min-height: 70vh;
+  padding-block: calc(var(--header-h) + max(40px, calc(80 * var(--u)))) max(64px, calc(120 * var(--u)));
+  background: linear-gradient(180deg, #f2f6fb 0%, #f9fafc 60%, #f3f7fb 100%);
+}
+.inner {
+  width: min(100%, calc(880px + 2 * var(--gutter)));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  display: grid;
+  gap: max(24px, calc(40 * var(--u)));
+}
+.head {
+  display: grid;
+  gap: 12px;
+}
+.h1 {
+  font: 700 max(28px, calc(52 * var(--u))) / 1.25 var(--font-sans);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+:lang(fa) .h1 {
+  letter-spacing: 0;
+  line-height: 1.45;
+}
+.lead {
+  max-width: 62ch;
+  font: 400 max(16px, calc(19 * var(--u))) / 1.8 var(--font-sans);
+  color: #46505d;
+}
+.card {
+  padding: max(20px, calc(40 * var(--u)));
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid rgba(14, 43, 70, 0.1);
+  box-shadow: 0 1px 2px rgba(3, 29, 47, 0.04), 0 12px 40px rgba(3, 29, 47, 0.06);
+}

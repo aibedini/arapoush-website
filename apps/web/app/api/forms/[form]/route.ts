@@ -1,4 +1,5 @@
-import { opexEnabled } from "@/lib/content";
+import { ensureContent, opexEnabled } from "@/lib/content";
+import { getForm } from "@/lib/content/forms";
 
 /**
  * Website forms → OPEX (docs/opex/OPEX-PLAN.md §10.4). The browser posts here; this server adds the
@@ -10,7 +11,6 @@ import { opexEnabled } from "@/lib/content";
  */
 export const dynamic = "force-dynamic";
 
-const FORMS = new Set(["quote", "contact"]);
 const MIN_FILL_MS = 2500;
 
 function visitorIp(req: Request) {
@@ -21,9 +21,13 @@ function visitorIp(req: Request) {
 
 export async function POST(req: Request, ctx: { params: Promise<{ form: string }> }) {
   const { form } = await ctx.params;
-  if (!FORMS.has(form) || !opexEnabled()) return Response.json({ fallback: true }, { status: 404 });
+  if (!opexEnabled() || !/^[a-z0-9][a-z0-9-]{1,39}$/.test(form)) return Response.json({ fallback: true }, { status: 404 });
+  await ensureContent();
+  if (!getForm(form)) return Response.json({ fallback: true }, { status: 404 });
+  // Room for uploads (files travel base64 in the JSON body; OPEX checks each one).
+  if (Number(req.headers.get("content-length") ?? 0) > 16_000_000) return Response.json({ error: "too_large" }, { status: 413 });
   const raw = await req.text();
-  if (raw.length > 32_000) return Response.json({ error: "too_large" }, { status: 413 });
+  if (raw.length > 16_000_000) return Response.json({ error: "too_large" }, { status: 413 });
   let body: { website?: string; shownAt?: number; [k: string]: unknown };
   try {
     body = JSON.parse(raw);
@@ -39,12 +43,17 @@ export async function POST(req: Request, ctx: { params: Promise<{ form: string }
       method: "POST",
       headers: { authorization: `Bearer ${process.env.OPEX_DELIVERY_TOKEN}`, "content-type": "application/json", ...(ip ? { "x-end-user-ip": ip } : {}) },
       body: JSON.stringify(inquiry),
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(30_000),
       cache: "no-store",
     });
-    if (r.ok) return Response.json({ ok: true, id: ((await r.json()) as { id: string }).id }, { status: 201 });
+    if (r.status === 202) return Response.json({ ok: true }, { status: 202 });
+    if (r.ok) return Response.json({ ok: true, number: ((await r.json()) as { number?: number }).number }, { status: 201 });
     if (r.status === 429) return Response.json({ error: "rate_limited" }, { status: 429 });
-    if (r.status === 400) return Response.json({ error: "invalid" }, { status: 400 });
+    // Field-level problems go back to the form (field id + code only).
+    if (r.status === 400) {
+      const issues = (((await r.json().catch(() => ({}))) as { issues?: { path: string; message: string }[] }).issues ?? []).slice(0, 60).map((i) => ({ path: String(i.path).slice(0, 40), message: String(i.message).slice(0, 40) }));
+      return Response.json({ error: "invalid", issues }, { status: 400 });
+    }
     return Response.json({ fallback: true }, { status: 503 });
   } catch {
     return Response.json({ fallback: true }, { status: 503 });

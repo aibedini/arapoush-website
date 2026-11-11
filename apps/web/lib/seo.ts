@@ -1,3 +1,6 @@
+import { pickL } from "@arapoush/schema";
+import { pageForms } from "@/lib/content/forms";
+import { formPath } from "@/lib/forms";
 import { printingPath, productPaths, siteUrl } from "@/lib/site";
 import { getPrinting, t as pt, type Printing } from "@/lib/printing";
 import { getEffervescentProduct, getTubeProduct, type EffProduct } from "@/lib/products";
@@ -101,6 +104,9 @@ export function llmsText(full: boolean) {
     ...locales.map((l) => `- [${getDictionary(l).productTube.meta.title}](${pageUrl(l, productPaths.tube)}): ${getDictionary(l).productTube.meta.description}`),
     ...locales.map((l) => `- [${getDictionary(l).productEff.meta.title}](${pageUrl(l, productPaths.effervescent)}): ${getDictionary(l).productEff.meta.description}`),
     ...locales.map((l) => `- [${pt(getPrinting().meta.title, l)}](${pageUrl(l, printingPath)}): ${pt(getPrinting().meta.description, l)}`),
+    ...pageForms()
+      .filter((f) => f.page.indexable)
+      .flatMap((f) => locales.map((l) => `- [${pickL(f.page.title, l) || pickL(f.title, l)}](${pageUrl(l, formPath(f.slug))}): ${pickL(f.page.description, l) || pickL(f.intro, l) || "Request form"}`)),
     "",
     "## Contact",
     `- Email: ${contact.email}`,

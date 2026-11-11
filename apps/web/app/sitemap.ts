@@ -5,6 +5,8 @@ import { getPrinting } from "@/lib/printing";
 import { getEffervescentProduct, getTubeProduct } from "@/lib/products";
 import { languageAlternates, pageUrl } from "@/lib/seo";
 import { printingPath, productPaths, siteUrl } from "@/lib/site";
+import { pageForms } from "@/lib/content/forms";
+import { formPath } from "@/lib/forms";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   await ensureContent();
@@ -19,6 +21,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: productPaths.tube, priority: 0.9, images: src([media.products.cards[0]?.image, media.site.ctaTube, tube.images?.hero ? { src: tube.images.hero.ltr } : null]) },
     { path: printingPath, priority: 0.8, images: src([media.printing.tubeGold, media.printing.tubeColour, media.printing.layers, ...printing.tech.items.map((m) => m.macro)]) },
     { path: productPaths.effervescent, priority: 0.9, images: src([eff.images.uses, ...eff.caps.variants.flatMap((v) => [v.photo, v.image]), eff.images.usesPhoto]) },
+    // Form pages the operators marked as indexable (P11).
+    ...pageForms().filter((f) => f.page.indexable).map((f) => ({ path: formPath(f.slug), priority: 0.6, images: [] as string[] })),
   ];
   return pages.flatMap((p) =>
     locales.map((l) => ({
