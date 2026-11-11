@@ -18,6 +18,9 @@ declare module "fastify" {
   interface FastifyRequest {
     info: RequestInfo;
   }
+  interface FastifyInstance {
+    routeList: { method: string; url: string }[];
+  }
 }
 
 /** What OPEX records about where a request came from (after trusted-proxy parsing). */
@@ -47,6 +50,12 @@ export async function buildApp(deps: Deps, modules: Module[] = []): Promise<Fast
       redact: ["req.headers.authorization", "req.headers.cookie", "req.headers.dpop", "req.headers.signature", "res.headers['set-cookie']"],
     },
   });
+  // Every registered route, so the API contracts can be checked against reality (openapi.test.ts).
+  const routes: { method: string; url: string }[] = [];
+  app.addHook("onRoute", (r) => {
+    for (const m of [r.method].flat()) if (m !== "HEAD" && m !== "OPTIONS") routes.push({ method: m, url: r.url });
+  });
+  app.decorate("routeList", routes);
 
   await app.register(helmet, {
     contentSecurityPolicy: { directives: { defaultSrc: ["'none'"], frameAncestors: ["'none'"], formAction: ["'self'"], styleSrc: ["'self'", "'unsafe-inline'"] } },

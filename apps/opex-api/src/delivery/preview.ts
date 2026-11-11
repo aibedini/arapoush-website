@@ -1,3 +1,4 @@
+import { DELIVERY } from "./contract.ts";
 import type { FormDefinition } from "@arapoush/schema";
 import { publicDefinition } from "../forms/routes.ts";
 import type { FastifyInstance, FastifyRequest } from "fastify";
@@ -52,7 +53,7 @@ export async function previewModule(app: FastifyInstance, deps: Deps) {
   const tenant = config.TENANT;
 
   app.post("/v1/manage/preview", { preHandler: requireOperator(deps) }, async (req) => {
-    const { type, locale, cr } = z.strictObject({ type: z.string().max(80), locale: z.enum(["fa", "en", "tr"]).default("fa"), cr: z.string().max(40).optional() }).parse(req.body ?? {});
+    const { type, locale, cr } = DELIVERY.managePreview.body.parse(req.body ?? {});
     typeOrThrow(type);
     const link = await previewLink(config, { sub: req.principal!.id, type, locale, cr });
     await auditNow(db, tenant, { action: "content.preview", actor: actorOf(req), request: req.info, resource: { type: "entry", entry: type, cr: cr ?? null, jti: link.jti } });

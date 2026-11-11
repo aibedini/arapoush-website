@@ -1,3 +1,4 @@
+import { AUTH, LoginBody, MfaBody, NewOperatorBody, OperatorPatch } from "./contract.ts";
 import type { FastifyInstance } from "fastify";
 import { SignJWT, jwtVerify } from "jose";
 import { z } from "zod";
@@ -12,9 +13,8 @@ import { clearSessionCookie, createSession, setSessionCookie } from "./sessions.
 import { newTotpSecret, verifyTotp } from "./totp.ts";
 
 const LOCK_AFTER = 5;
-const Login = z.strictObject({ email: z.string().email().max(200), password: z.string().min(1).max(200) });
-const Mfa = z.strictObject({ challenge: z.string().max(2000), code: z.string().regex(/^\d{6}$/) });
-const Role = z.enum(["super_admin", "operator", "auditor", "viewer"]);
+const Login = LoginBody;
+const Mfa = MfaBody;
 
 type PrincipalRow = { id: string; email: string; display_name: string; status: string; role: string | null; kind: string; failed_logins: number; locked_until: Date | null; secret: string | null };
 
@@ -71,7 +71,7 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
 
   // First sign-in: create a TOTP secret (shown once) for the authenticator app.
   app.post("/v1/manage/auth/mfa/enroll", { config: { rateLimit: { max: 10, timeWindow: "1 minute" } } }, async (req) => {
-    const { challenge: c } = z.strictObject({ challenge: z.string().max(2000) }).parse(req.body);
+    const { challenge: c } = AUTH.enroll.body.parse(req.body);
     const id = await readChallenge(c);
     const [existing] = await db.q<{ confirmed: boolean }>(`SELECT confirmed FROM credentials WHERE principal_id = $1 AND kind = 'totp'`, [id]);
     if (existing?.confirmed) throw conflict("MFA_ENROLLED", "An authenticator is already set up");
@@ -113,7 +113,7 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
 
   // Step-up: re-confirm the authenticator before sensitive actions.
   app.post("/v1/manage/auth/step-up", { preHandler: requireOperator(deps), config: { rateLimit: { max: 10, timeWindow: "1 minute" } } }, async (req) => {
-    const { code } = z.strictObject({ code: z.string().regex(/^\d{6}$/) }).parse(req.body);
+    const { code } = AUTH.stepUp.body.parse(req.body);
     const me = req.principal!;
     const [c] = await db.q<{ secret: string; last_used_step: string | null }>(`SELECT secret, last_used_step FROM credentials WHERE principal_id = $1 AND kind = 'totp' AND confirmed`, [me.id]);
     const step = c ? verifyTotp(c.secret, code, c.last_used_step === null ? null : Number(c.last_used_step)) : null;
@@ -153,7 +153,7 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
   });
 
   app.post("/v1/manage/auth/password", { preHandler: [requireOperator(deps), requireStepUp(deps)] }, async (req) => {
-    const body = z.strictObject({ current: z.string().max(200), next: z.string().max(200) }).parse(req.body);
+    const body = AUTH.password.body.parse(req.body);
     const me = req.principal!;
     const [row] = await db.q<{ secret: string; email: string }>(`SELECT c.secret, p.email FROM credentials c JOIN principals p ON p.id = c.principal_id WHERE c.principal_id = $1 AND c.kind = 'password'`, [me.id]);
     if (!row || !(await verifyPassword(row.secret, body.current))) throw unauthorized("Current password is incorrect");
@@ -171,7 +171,7 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
 
   // ── Sessions ──
   app.get("/v1/manage/sessions", { preHandler: requireOperator(deps) }, async (req) => {
-    const all = req.principal!.role === "super_admin" && (req.query as { all?: string }).all === "1";
+    const all = req.principal!.role === "super_admin" && AUTH.sessions.query.parse(req.query).all === "1";
     return db.q(
       `SELECT s.id, s.kind, s.ip, s.user_agent, s.created_at, s.last_seen_at, s.expires_at, s.client_id, p.display_name, p.kind AS principal_kind
          FROM sessions s JOIN principals p ON p.id = s.principal_id
@@ -196,7 +196,7 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
   });
 
   // ── Operators (super admin) ──
-  const NewOperator = z.strictObject({ email: z.string().email().max(200), display_name: z.string().min(2).max(120), role: Role, password: z.string().max(200) });
+  const NewOperator = NewOperatorBody;
   app.get("/v1/manage/operators", { preHandler: requireOperator(deps, "operator") }, async () =>
     db.q(
       `SELECT p.id, p.email, p.display_name, p.role, p.status, p.last_login_at, p.locked_until, p.created_at,
@@ -224,7 +224,7 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
 
   app.patch("/v1/manage/operators/:id", { preHandler: [requireOperator(deps, "super_admin"), requireStepUp(deps)] }, async (req) => {
     const { id } = req.params as { id: string };
-    const body = z.strictObject({ role: Role.optional(), status: z.enum(["active", "disabled"]).optional(), display_name: z.string().min(2).max(120).optional(), reset_mfa: z.boolean().optional(), unlock: z.boolean().optional() }).parse(req.body);
+    const body = OperatorPatch.parse(req.body);
     if (id === req.principal!.id && (body.role || body.status)) throw forbidden("SELF_CHANGE", "You cannot change your own role or status");
     const [before] = await db.q<Record<string, unknown>>(`SELECT role, status, display_name FROM principals WHERE id = $1 AND tenant_id = $2 AND kind = 'operator'`, [id, tenant]);
     if (!before) throw notFound("Operator");

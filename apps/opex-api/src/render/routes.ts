@@ -1,3 +1,4 @@
+import { RENDER, RenderResult, Shot } from "./contract.ts";
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { getAt, setAt } from "@arapoush/schema";
 import { z } from "zod";
@@ -69,13 +70,7 @@ export async function enqueueRender(q: Q, tenant: string, who: { actor: Actor; r
   return id;
 }
 
-const Shot = z.object({ asset: z.string().regex(/^ast_[0-9A-Z]{26}$/), width: z.number().int().positive(), height: z.number().int().positive() });
-const Result = z.strictObject({
-  sizes: z.array(Shot.extend({ id: z.string(), base: z.number(), mouth: z.number(), left: z.number(), right: z.number() })),
-  caps: z.array(Shot.extend({ id: z.string() })),
-  uses: Shot.optional(),
-  posters: z.partialRecord(z.enum(["wide-ltr", "tall-ltr", "wide-rtl", "tall-rtl"]), Shot).optional(),
-});
+const Result = RenderResult;
 
 export async function renderModule(app: FastifyInstance, deps: Deps) {
   const { db, config } = deps;
@@ -133,7 +128,7 @@ export async function renderModule(app: FastifyInstance, deps: Deps) {
 
   app.post("/v1/render/jobs/:id/fail", { preHandler: renderer }, async (req) => {
     const { id } = req.params as { id: string };
-    const { error } = z.strictObject({ error: z.string().max(2000) }).parse(req.body);
+    const { error } = RENDER.fail.body.parse(req.body);
     await running(id);
     await db.tx(async (q) => {
       // Three tries, then it stays failed for an operator to look at.

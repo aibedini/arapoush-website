@@ -1,12 +1,12 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { CONTENT_TYPES } from "@arapoush/schema";
-import { z } from "zod";
+import { PARTNER } from "./contract.ts";
 import type { Deps } from "../app.ts";
 import { auditNow } from "../audit/audit.ts";
 import { actorOf } from "../auth/principal.ts";
 import { evaluate, grantsFor, project, projectSchema, type Grant } from "../authz/grants.ts";
 import { getEntry, getRevision, typeOrThrow } from "../content/service.ts";
-import { CrInput, createCr, itemsOf, resubmitCr, withdrawCr } from "../cr/service.ts";
+import { createCr, itemsOf, resubmitCr, withdrawCr } from "../cr/service.ts";
 import { previewLink } from "../delivery/preview.ts";
 import { forbidden, notFound, badRequest } from "../http/problem.ts";
 import { ingest } from "../media/service.ts";
@@ -116,7 +116,7 @@ export async function partnerModule(app: FastifyInstance, deps: Deps) {
     "/v1/partner/change-requests",
     { preHandler: [requirePartner(deps, "content:propose"), sign], config: { rateLimit: { max: 300, timeWindow: "1 hour" } } },
     idempotent(deps, async (req, reply) => {
-      const body = CrInput.parse(req.body);
+      const body = PARTNER.createCr.body.parse(req.body);
       const r = await createCr(deps, body, await who(req), String(req.headers["idempotency-key"]));
       reply.status(201);
       return r;
@@ -136,7 +136,7 @@ export async function partnerModule(app: FastifyInstance, deps: Deps) {
   };
 
   app.get("/v1/partner/change-requests", { preHandler: requirePartner(deps, "cr:read") }, async (req) => {
-    const { state } = z.object({ state: z.string().max(20).optional() }).parse(req.query);
+    const { state } = PARTNER.listCr.query.parse(req.query);
     return db.q(
       `SELECT id, title, state, created_at, updated_at, decision->>'effect' AS effect FROM change_requests
         WHERE tenant_id = $1 AND partner_client_id = $2 AND ($3 OR author_principal_id = $4) ${state ? "AND state = $5" : ""} ORDER BY created_at DESC LIMIT 200`,
@@ -164,7 +164,7 @@ export async function partnerModule(app: FastifyInstance, deps: Deps) {
     "/v1/partner/change-requests/:id/resubmit",
     { preHandler: [requirePartner(deps, "content:propose"), sign] },
     idempotent(deps, async (req) => {
-      const { base_revision_ids } = z.strictObject({ base_revision_ids: z.record(z.string().max(80), z.string().max(40)) }).parse(req.body);
+      const { base_revision_ids } = PARTNER.resubmit.body.parse(req.body);
       return resubmitCr(deps, (req.params as { id: string }).id, await who(req), base_revision_ids);
     }),
   );
@@ -174,7 +174,7 @@ export async function partnerModule(app: FastifyInstance, deps: Deps) {
     "/v1/partner/previews",
     { preHandler: [requirePartner(deps, "cr:read"), sign] },
     idempotent(deps, async (req) => {
-      const { cr, locale } = z.strictObject({ cr: z.string().max(40), locale: z.enum(["fa", "en", "tr"]).default("fa") }).parse(req.body);
+      const { cr, locale } = PARTNER.preview.body.parse(req.body);
       const row = await own(req, cr);
       const [first] = await itemsOf(db.q, String(row.id));
       const link = await previewLink(config, { sub: req.principal!.id, type: first?.type_key ?? "page.home.hero", locale, cr });

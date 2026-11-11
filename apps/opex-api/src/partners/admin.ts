@@ -1,3 +1,4 @@
+import { ClientBody, ClientPatch, UserBody, UserPatch } from "./contract.ts";
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import type { Deps } from "../app.ts";
@@ -8,19 +9,6 @@ import { actorOf } from "../auth/principal.ts";
 import { badRequest, conflict, notFound } from "../http/problem.ts";
 import { ulid } from "../ids.ts";
 import { PARTNER_SCOPES } from "../oauth/routes.ts";
-
-const Cidr = z.string().regex(/^[0-9a-fA-F:.]+\/\d{1,3}$/, "CIDR like 203.0.113.0/24");
-const Jwk = z.object({ kty: z.enum(["EC", "OKP", "RSA"]), kid: z.string().max(100).optional(), crv: z.string().optional(), x: z.string().optional(), y: z.string().optional(), n: z.string().optional(), e: z.string().optional(), alg: z.string().optional(), use: z.string().optional() }).refine((k) => !("d" in k), "Public keys only");
-const ClientBody = z.strictObject({
-  name: z.string().min(2).max(120),
-  allowed_cidrs: z.array(Cidr).max(50),
-  mtls_fingerprint: z.string().regex(/^[0-9a-fA-F:]{64,95}$/).nullable().optional(),
-  jwks: z.object({ keys: z.array(Jwk).min(1).max(5) }),
-  redirect_uris: z.array(z.string().url().refine((u) => u.startsWith("https://") || u.startsWith("http://localhost"), "https only")).max(10),
-  scopes: z.array(z.enum(PARTNER_SCOPES)).min(1),
-  contact: z.string().max(200).optional(),
-});
-const UserBody = z.strictObject({ email: z.string().email().max(200), display_name: z.string().min(2).max(120), role: z.string().regex(/^[a-z0-9_]{2,40}$/), password: z.string().max(200) });
 
 /** Operators manage AraCMS (and future partners): clients, their users and keys. */
 export async function partnerAdminModule(app: FastifyInstance, deps: Deps) {
@@ -57,7 +45,7 @@ export async function partnerAdminModule(app: FastifyInstance, deps: Deps) {
 
   app.patch("/v1/manage/partners/:id", { preHandler: admin }, async (req) => {
     const { id } = req.params as { id: string };
-    const b = ClientBody.partial().extend({ status: z.enum(["active", "disabled"]).optional() }).strict().parse(req.body);
+    const b = ClientPatch.parse(req.body);
     const [before] = await db.q<Record<string, unknown>>(`SELECT * FROM partner_clients WHERE id = $1 AND tenant_id = $2`, [id, tenant]);
     if (!before) throw notFound("Partner");
     const cols: Record<string, unknown> = { ...b };
@@ -106,7 +94,7 @@ export async function partnerAdminModule(app: FastifyInstance, deps: Deps) {
 
   app.patch("/v1/manage/partner-users/:uid", { preHandler: admin }, async (req) => {
     const { uid } = req.params as { uid: string };
-    const b = z.strictObject({ role: z.string().regex(/^[a-z0-9_]{2,40}$/).optional(), status: z.enum(["active", "disabled"]).optional(), reset_mfa: z.boolean().optional(), unlock: z.boolean().optional() }).parse(req.body);
+    const b = UserPatch.parse(req.body);
     const [before] = await db.q<Record<string, unknown>>(`SELECT role, status FROM principals WHERE id = $1 AND tenant_id = $2 AND kind = 'partner_user'`, [uid, tenant]);
     if (!before) throw notFound("User");
     await db.tx(async (q) => {

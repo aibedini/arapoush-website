@@ -33,7 +33,8 @@ export type TicketData = {
 export type EventActor = { kind: "operator" | "customer" | "system"; id: string | null; display: string };
 export const SYSTEM: EventActor = { kind: "system", id: null, display: "OPEX" };
 
-export const STATUSES = ["new", "open", "pending", "on_hold", "resolved", "closed", "spam"] as const;
+export { STATUSES } from "./contract.ts";
+import { STATUSES } from "./contract.ts";
 export type Status = (typeof STATUSES)[number];
 export const OPEN_STATUSES: Status[] = ["new", "open", "pending", "on_hold"];
 

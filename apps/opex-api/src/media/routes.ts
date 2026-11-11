@@ -1,3 +1,4 @@
+import { MEDIA } from "./contract.ts";
 import { createReadStream, existsSync } from "node:fs";
 import path from "node:path";
 import type { FastifyInstance, FastifyRequest } from "fastify";
@@ -29,7 +30,7 @@ export async function mediaModule(app: FastifyInstance, deps: Deps) {
   });
 
   app.get("/v1/manage/media", { preHandler: requireOperator(deps) }, async (req) => {
-    const { q, cursor } = req.query as { q?: string; cursor?: string };
+    const { q, cursor } = MEDIA.list.query.parse(req.query);
     return db.q(
       `SELECT a.id, a.mime, a.bytes, a.width, a.height, a.original_name, a.status, a.scan, a.public, a.created_at, p.display_name AS uploaded_by
          FROM assets a LEFT JOIN principals p ON p.id = a.uploaded_by

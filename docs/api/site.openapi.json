@@ -1,0 +1,564 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "Arapoush website routes",
+    "version": "1.11.0",
+    "description": "HTTP routes the Next.js website serves besides its pages: the form endpoint browsers post to, the OPEX publish webhook, draft previews, and files for crawlers and AI assistants.\n\nThese routes answer with plain JSON or empty bodies (not problem+json).",
+    "license": {
+      "name": "Proprietary",
+      "url": "https://arapoush.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://arapoush.com"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Website",
+      "description": "Routes the website itself serves: form posts from browsers, the publish webhook, previews, llms.txt, sitemap, robots."
+    }
+  ],
+  "x-tagGroups": [
+    {
+      "name": "Website routes (apps/web)",
+      "tags": [
+        "Website"
+      ]
+    }
+  ],
+  "paths": {
+    "/api/forms/{form}": {
+      "post": {
+        "operationId": "siteSubmitForm",
+        "summary": "A visitor sends a form (the browser posts here; the server forwards to OPEX)",
+        "description": "Adds the visitor's IP and the delivery token, so OPEX credentials never reach the browser. Bot checks here: a filled honeypot (`website`) or a form sent faster than 2.5 s after it was shown (or older than a day) gets 202 and is dropped. Body limit 16 MB (files are base64).\n\n**Source:** `apps/web/app/api/forms/[form]/route.ts`",
+        "tags": [
+          "Website"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "form",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{1,39}$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "locale": {
+                    "type": "string",
+                    "enum": [
+                      "fa",
+                      "en",
+                      "tr"
+                    ]
+                  },
+                  "page": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "pattern": "^\\/[\\w\\-/]*$",
+                    "description": "The site path the form was sent from."
+                  },
+                  "values": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string",
+                      "maxLength": 40
+                    },
+                    "additionalProperties": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 10000
+                        },
+                        {
+                          "maxItems": 100,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "maxLength": 300
+                          }
+                        },
+                        {
+                          "type": "boolean"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "description": "Field id → answer."
+                  },
+                  "context": {
+                    "description": "Extra context from built-in site components (the configurator's spec).",
+                    "type": "object",
+                    "properties": {
+                      "subject": {
+                        "type": "string",
+                        "maxLength": 300
+                      },
+                      "spec": {
+                        "maxItems": 30,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "maxLength": 300
+                        }
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "files": {
+                    "maxItems": 5,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "field": {
+                          "type": "string",
+                          "maxLength": 40
+                        },
+                        "name": {
+                          "type": "string",
+                          "maxLength": 200
+                        },
+                        "data": {
+                          "type": "string",
+                          "maxLength": 13981022,
+                          "description": "base64"
+                        }
+                      },
+                      "required": [
+                        "field",
+                        "name",
+                        "data"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "turnstile": {
+                    "type": "string",
+                    "maxLength": 4000
+                  },
+                  "website": {
+                    "description": "Honeypot: must stay empty.",
+                    "type": "string"
+                  },
+                  "shownAt": {
+                    "type": "number",
+                    "description": "Date.now() when the form was shown."
+                  }
+                },
+                "required": [
+                  "locale",
+                  "page",
+                  "values",
+                  "shownAt"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Stored as a ticket.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "const": true
+                    },
+                    "number": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Accepted (or silently dropped as a bot or blocked sender).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "const": true
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`invalid` (with OPEX's field `issues`: field id and code) or `bad_json`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "enum": [
+                        "invalid",
+                        "bad_json"
+                      ]
+                    },
+                    "issues": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "message"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "OPEX is not configured, or no such published form.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "fallback": {
+                      "type": "boolean",
+                      "const": true
+                    }
+                  },
+                  "required": [
+                    "fallback"
+                  ],
+                  "additionalProperties": false,
+                  "description": "OPEX is off or unreachable: the page falls back to opening the visitor's email app."
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body over 16 MB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "const": "too_large"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "OPEX's per-visitor limit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "const": "rate_limited"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "OPEX unreachable or failing.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "fallback": {
+                      "type": "boolean",
+                      "const": true
+                    }
+                  },
+                  "required": [
+                    "fallback"
+                  ],
+                  "additionalProperties": false,
+                  "description": "OPEX is off or unreachable: the page falls back to opening the visitor's email app."
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "site"
+      }
+    },
+    "/api/opex/preview": {
+      "get": {
+        "operationId": "siteOpenPreview",
+        "summary": "Open a draft preview (link from the OPEX console or a partner preview)",
+        "description": "Stores the signed token in an HttpOnly cookie (`opex_preview`, 30 minutes; SameSite=None over https so it works inside the console frame), turns on draft mode and redirects to `path`. With `edit=1` the visual editor's bridge loads too (`opex_edit` cookie). `exit=1` leaves preview.\n\n**Source:** `apps/web/app/api/opex/preview/route.ts`",
+        "tags": [
+          "Website"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 2000
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\/(?!\\/)[\\w\\-/]*$"
+            },
+            "description": "Same-site path only (never an open redirect)."
+          },
+          {
+            "name": "edit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "1"
+              ]
+            }
+          },
+          {
+            "name": "exit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "1"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "307": {
+            "description": "To `path` (or `/` after exit).",
+            "headers": {
+              "Location": {
+                "description": "The page",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Set-Cookie": {
+                "description": "opex_preview / opex_edit",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad preview link (malformed token or path)."
+          }
+        },
+        "x-audience": "site"
+      }
+    },
+    "/api/opex/revalidate": {
+      "post": {
+        "operationId": "siteRevalidate",
+        "summary": "Webhook receiver: OPEX published something; refresh the pages",
+        "description": "Verifies `OPEX-Signature` (HMAC-SHA256 with OPEX_WEBHOOK_SECRET over `t.body`, 5-minute window) and refuses a repeated event id, then revalidates the `opex` cache tag.\n\n**Source:** `apps/web/app/api/opex/revalidate/route.ts`",
+        "tags": [
+          "Website"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "OPEX-Signature",
+            "in": "header",
+            "required": true,
+            "description": "t=<unix>, v1=<hex HMAC>",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "event": {
+                    "type": "string"
+                  },
+                  "data": {},
+                  "created": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "event",
+                  "data",
+                  "created"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Refreshed."
+          },
+          "400": {
+            "description": "Body is not JSON."
+          },
+          "401": {
+            "description": "Bad or stale signature (or body over 64 KB)."
+          },
+          "404": {
+            "description": "OPEX_WEBHOOK_SECRET is not set: webhooks are off."
+          },
+          "409": {
+            "description": "Event id already processed (or missing)."
+          }
+        },
+        "x-audience": "site"
+      }
+    },
+    "/llms-full.txt": {
+      "get": {
+        "operationId": "siteLlmsFullTxt",
+        "summary": "All site text for AI assistants, per language",
+        "description": "**Source:** `apps/web/app/llms-full.txt/route.ts`",
+        "tags": [
+          "Website"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Markdown text: every section, product facts, printing, FAQ blocks."
+          }
+        },
+        "x-audience": "site"
+      }
+    },
+    "/llms.txt": {
+      "get": {
+        "operationId": "siteLlmsTxt",
+        "summary": "Site summary for AI assistants (llmstxt.org)",
+        "description": "**Source:** `apps/web/app/llms.txt/route.ts`",
+        "tags": [
+          "Website"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Markdown text: pages, contact, indexable form pages."
+          }
+        },
+        "x-audience": "site"
+      }
+    },
+    "/robots.txt": {
+      "get": {
+        "operationId": "siteRobots",
+        "summary": "Crawler rules (AI crawlers allowed)",
+        "description": "**Source:** `apps/web/app/robots.ts`",
+        "tags": [
+          "Website"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "robots.txt"
+          }
+        },
+        "x-audience": "site"
+      }
+    },
+    "/sitemap.xml": {
+      "get": {
+        "operationId": "siteSitemap",
+        "summary": "Sitemap with hreflang alternates and key images",
+        "description": "**Source:** `apps/web/app/sitemap.ts`",
+        "tags": [
+          "Website"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "XML sitemap (every page in fa, en, tr, plus indexable form pages)."
+          }
+        },
+        "x-audience": "site"
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {},
+    "schemas": {}
+  }
+}

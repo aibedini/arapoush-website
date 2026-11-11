@@ -1,0 +1,16 @@
+# OpenAPI lint rules (docs/DOCS-PLAN.md). The specs in docs/api are generated: fix the contracts in
+# apps/opex-api/src/**/contract.ts, then run `pnpm docs:api`.
+extends:
+  - recommended
+
+apis:
+  opex:
+    root: docs/api/opex.openapi.json
+  partner:
+    root: docs/api/partner.openapi.json
+  site:
+    root: docs/api/site.openapi.json
+    rules:
+      # Files for crawlers never answer 4xx; the preview opener answers with a redirect.
+      operation-4xx-response: off
+      operation-2xx-response: off

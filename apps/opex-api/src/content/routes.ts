@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { CONTENT_TYPES, getAt, isLockedPath, setAt } from "@arapoush/schema";
-import { z } from "zod";
+import { CONTENT } from "./contract.ts";
 import type { Deps } from "../app.ts";
 import { audit } from "../audit/audit.ts";
 import { requireOperator, requireStepUp } from "../auth/guards.ts";
@@ -48,7 +48,7 @@ export async function contentModule(app: FastifyInstance, deps: Deps) {
   // Whole-draft save (console form). If-Match / base_revision_id guards concurrent edits.
   app.put("/v1/manage/entries/:type", { preHandler: write }, async (req) => {
     const { type } = req.params as { type: string };
-    const body = z.strictObject({ data: z.record(z.string(), z.unknown()), base_revision_id: z.string().nullable(), note: z.string().max(500).optional() }).parse(req.body);
+    const body = CONTENT.save.body.parse(req.body);
     const t = typeOrThrow(type);
     return db.tx(async (q) => {
       const e = await getEntry(q, tenant, type, "main", true);
@@ -74,7 +74,7 @@ export async function contentModule(app: FastifyInstance, deps: Deps) {
   // Field-level edits (path + value), same concurrency rule.
   app.patch("/v1/manage/entries/:type", { preHandler: write }, async (req) => {
     const { type } = req.params as { type: string };
-    const body = z.strictObject({ base_revision_id: z.string().nullable(), ops: z.array(z.object({ path: z.string().startsWith("/").max(300), value: z.unknown() })).min(1).max(200), note: z.string().max(500).optional() }).parse(req.body);
+    const body = CONTENT.patch.body.parse(req.body);
     const t = typeOrThrow(type);
     return db.tx(async (q) => {
       const e = await getEntry(q, tenant, type, "main", true);
@@ -103,19 +103,19 @@ export async function contentModule(app: FastifyInstance, deps: Deps) {
   app.post("/v1/manage/entries/:type/publish", { preHandler: write }, async (req) => {
     const { type } = req.params as { type: string };
     if (SENSITIVE(type)) await requireStepUp(deps)(req);
-    const { revision_id } = z.strictObject({ revision_id: z.string().optional() }).parse(req.body ?? {});
+    const { revision_id } = CONTENT.publish.body.parse(req.body ?? {}) ?? {};
     return db.tx((q) => publish(q, tenant, { typeKey: type, revisionId: revision_id, actor: actorOf(req), request: req.info, trigger: "manual" }));
   });
 
   app.post("/v1/manage/entries/:type/rollback", { preHandler: [write, requireStepUp(deps)] }, async (req) => {
     const { type } = req.params as { type: string };
-    const { revision_id } = z.strictObject({ revision_id: z.string() }).parse(req.body);
+    const { revision_id } = CONTENT.rollback.body.parse(req.body);
     return db.tx((q) => publish(q, tenant, { typeKey: type, revisionId: revision_id, actor: actorOf(req), request: req.info, trigger: "rollback" }));
   });
 
   app.post("/v1/manage/entries/:type/schedule", { preHandler: write }, async (req) => {
     const { type } = req.params as { type: string };
-    const { at } = z.strictObject({ at: z.string().datetime().nullable() }).parse(req.body);
+    const { at } = CONTENT.schedule.body.parse(req.body);
     if (at && new Date(at).getTime() < Date.now() + 60_000) throw badRequest("SCHEDULE_IN_PAST", "Schedule at least one minute ahead");
     await db.tx(async (q) => {
       const e = await getEntry(q, tenant, type, "main", true);
@@ -139,7 +139,7 @@ export async function contentModule(app: FastifyInstance, deps: Deps) {
   app.get("/v1/manage/revisions/:id", { preHandler: read }, async (req) => getRevision(db.q, (req.params as { id: string }).id));
 
   app.get("/v1/manage/diff", { preHandler: read }, async (req) => {
-    const { from, to } = z.object({ from: z.string(), to: z.string() }).parse(req.query);
+    const { from, to } = CONTENT.diff.query.parse(req.query);
     const [a, b] = await Promise.all([getRevision(db.q, from), getRevision(db.q, to)]);
     if (a.entry_id !== b.entry_id) throw notFound("Comparable revisions");
     return diff(a.data, b.data);

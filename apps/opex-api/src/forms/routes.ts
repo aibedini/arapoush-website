@@ -1,6 +1,7 @@
+import { Definition, FORMS, Legacy, MAX_FILE, Submission } from "./contract.ts";
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { z } from "zod";
-import { definitionIssues, FIELD_TYPES, FILE_KINDS, fillTemplate, pickL, PRIORITIES, route, validateSubmission, type FormDefinition, type FormValue } from "@arapoush/schema";
+import { definitionIssues, fillTemplate, pickL, route, validateSubmission, type FormDefinition, type FormValue } from "@arapoush/schema";
 import type { Deps } from "../app.ts";
 import { audit, auditNow } from "../audit/audit.ts";
 import { requireOperator } from "../auth/guards.ts";
@@ -12,49 +13,6 @@ import { checkPdf, clamScan, MIME, Rejected, sniff } from "../media/inspect.ts";
 import { enqueueSiteWebhook } from "../webhooks/outbox.ts";
 import { createTicket, enqueueEmail, pii, replyMessageId, type Requester } from "../tickets/service.ts";
 import { starterDefinition, SYSTEM_FORMS } from "./system.ts";
-
-const Loc = z.strictObject({ fa: z.string().max(4000).optional(), en: z.string().max(4000).optional(), tr: z.string().max(4000).optional() });
-const Field = z.strictObject({
-  id: z.string().max(40),
-  type: z.enum(FIELD_TYPES),
-  label: Loc,
-  help: Loc.optional(),
-  placeholder: Loc.optional(),
-  required: z.boolean().optional(),
-  width: z.enum(["full", "half"]).optional(),
-  options: z.array(z.strictObject({ value: z.string().max(100), label: Loc })).max(100).optional(),
-  min: z.number().optional(),
-  max: z.number().optional(),
-  pattern: z.string().max(200).optional(),
-  showIf: z.strictObject({ field: z.string().max(40), op: z.enum(["eq", "neq", "in", "filled", "empty"]), value: z.union([z.string().max(100), z.array(z.string().max(100)).max(50)]).optional() }).optional(),
-  role: z.enum(["name", "email", "phone", "company", "message"]).optional(),
-  accept: z.array(z.enum(FILE_KINDS)).optional(),
-  defaultValue: z.string().max(300).optional(),
-});
-const Rule = z.strictObject({
-  when: z.strictObject({ field: z.string().max(40), op: z.enum(["eq", "neq", "contains", "in", "gte", "lte", "filled"]), value: z.union([z.string().max(100), z.array(z.string().max(100)).max(50)]).optional() }),
-  set: z.strictObject({ team: z.string().max(40).optional(), priority: z.enum(PRIORITIES).optional(), assignee: z.string().max(40).optional(), tags: z.array(z.string().max(40)).max(10).optional() }),
-});
-export const Definition = z.strictObject({
-  title: Loc,
-  intro: Loc,
-  submitLabel: Loc,
-  success: Loc,
-  fields: z.array(Field).max(60),
-  settings: z.strictObject({
-    team: z.string().max(40).nullable(),
-    priority: z.enum(PRIORITIES),
-    tags: z.array(z.string().max(40)).max(10),
-    rules: z.array(Rule).max(30),
-    notify: z.array(z.string().email().max(200)).max(10),
-    confirmation: z.strictObject({ enabled: z.boolean(), subject: Loc, body: Loc }),
-    page: z.strictObject({ enabled: z.boolean(), indexable: z.boolean(), title: Loc, description: Loc }),
-    subject: z.string().max(300),
-    retentionDays: z.number().int().min(30).max(3650),
-    perIpLimit: z.number().int().min(1).max(100),
-  }),
-});
-const Slug = z.string().regex(/^[a-z0-9][a-z0-9-]{1,39}$/, "lowercase letters, digits and dashes");
 
 type FormRow = { id: string; slug: string; status: string; system: boolean; draft: FormDefinition; published: FormDefinition | null; version: number; updated_at: Date; created_at: Date };
 
@@ -86,17 +44,6 @@ export async function publishedForms(q: Q, tenant: string) {
   return rows.map((r) => ({ key: `form.${r.slug}`, version: r.version, data: publicDefinition(r.slug, r.version, r.published) }));
 }
 
-const MAX_FILE = 10 * 1024 * 1024;
-const Submission = z.strictObject({
-  locale: z.enum(["fa", "en", "tr"]),
-  page: z.string().regex(/^\/[\w\-/]*$/).max(200),
-  values: z.record(z.string().max(40), z.union([z.string().max(10_000), z.array(z.string().max(300)).max(100), z.boolean(), z.number()])),
-  context: z.strictObject({ subject: z.string().max(300).optional(), spec: z.array(z.string().max(300)).max(30).optional() }).optional(),
-  files: z.array(z.strictObject({ field: z.string().max(40), name: z.string().max(200), data: z.string().max(Math.ceil((MAX_FILE * 4) / 3) + 8) })).max(5).optional(),
-  turnstile: z.string().max(4000).optional(),
-});
-// The P8 shape (quote sheet, contact), still accepted.
-const Legacy = z.object({ locale: z.enum(["fa", "en", "tr"]), page: z.string(), subject: z.string().max(300), spec: z.array(z.string().max(300)).max(30).default([]), fields: z.record(z.string(), z.string().max(4000)), turnstile: z.string().optional() });
 function normalize(body: unknown): z.infer<typeof Submission> {
   if (body && typeof body === "object" && "fields" in body && !("values" in body)) {
     const l = Legacy.parse(body);
@@ -275,7 +222,7 @@ export async function formsModule(app: FastifyInstance, deps: Deps) {
   });
 
   app.post("/v1/manage/forms", { preHandler: write }, async (req) => {
-    const { slug, title } = z.strictObject({ slug: Slug, title: z.string().min(1).max(200) }).parse(req.body);
+    const { slug, title } = FORMS.create.body.parse(req.body);
     const id = ulid("frm_");
     await db.tx(async (q) => {
       const r = await q(`INSERT INTO forms (id, tenant_id, slug, draft, created_by, updated_by) VALUES ($1,$2,$3,$4,$5,$5) ON CONFLICT DO NOTHING RETURNING id`, [id, tenant, slug, JSON.stringify(starterDefinition(title)), req.principal!.id]);
@@ -294,7 +241,7 @@ export async function formsModule(app: FastifyInstance, deps: Deps) {
 
   app.put("/v1/manage/forms/:id/draft", { preHandler: write }, async (req) => {
     const f = await load((req.params as { id: string }).id);
-    const { definition, version } = z.strictObject({ definition: Definition, version: z.string() }).parse(req.body);
+    const { definition, version } = FORMS.saveDraft.body.parse(req.body);
     // Optimistic lock: the updated_at the editor loaded.
     if (new Date(version).getTime() !== new Date(f.updated_at).getTime()) throw conflict("CONFLICT_BASE_REVISION", "The form changed since you opened it");
     const def = definition as FormDefinition;
@@ -324,7 +271,7 @@ export async function formsModule(app: FastifyInstance, deps: Deps) {
 
   app.post("/v1/manage/forms/:id/status", { preHandler: write }, async (req) => {
     const f = await load((req.params as { id: string }).id);
-    const { archived } = z.strictObject({ archived: z.boolean() }).parse(req.body);
+    const { archived } = FORMS.setStatus.body.parse(req.body);
     if (f.system && archived) throw forbidden("SYSTEM_FORM", "Built-in forms cannot be archived");
     const status = archived ? "archived" : f.published ? "published" : "draft";
     await db.tx(async (q) => {
@@ -337,7 +284,7 @@ export async function formsModule(app: FastifyInstance, deps: Deps) {
 
   app.post("/v1/manage/forms/:id/duplicate", { preHandler: write }, async (req) => {
     const f = await load((req.params as { id: string }).id);
-    const { slug } = z.strictObject({ slug: Slug }).parse(req.body);
+    const { slug } = FORMS.duplicate.body.parse(req.body);
     const id = ulid("frm_");
     await db.tx(async (q) => {
       const r = await q(`INSERT INTO forms (id, tenant_id, slug, draft, created_by, updated_by) VALUES ($1,$2,$3,$4,$5,$5) ON CONFLICT DO NOTHING RETURNING id`, [id, tenant, slug, JSON.stringify(f.draft), req.principal!.id]);

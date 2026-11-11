@@ -12,7 +12,9 @@
     "cli": "node --no-warnings src/cli.ts",
     "typecheck": "tsc --noEmit",
     "test": "node --no-warnings --test --test-concurrency=1 \"src/**/*.test.ts\"",
-    "dev:watch": "node --env-file-if-exists=.env.local --watch-path=src --watch-path=../../packages/schema/src --no-warnings src/server.ts"
+    "dev:watch": "node --env-file-if-exists=.env.local --watch-path=src --watch-path=../../packages/schema/src --no-warnings src/server.ts",
+    "docs:api": "node --no-warnings src/openapi/cli.ts",
+    "docs:api:check": "node --no-warnings src/openapi/cli.ts --check"
   },
   "dependencies": {
     "@arapoush/schema": "workspace:*",

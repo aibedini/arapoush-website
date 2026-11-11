@@ -237,7 +237,7 @@ test("the OpenAPI document lists every partner route", async () => {
   const t = await testApp(env());
   try {
     const doc = (await t.app.inject({ method: "GET", url: "/v1/partner/openapi.json" })).json();
-    assert.equal(doc.openapi, "3.1.0");
+    assert.equal(doc.openapi, "3.1.1");
     const routes = t.app.printRoutes({ commonPrefix: false });
     for (const p of ["/v1/partner/me", "/v1/partner/schema", "/v1/partner/content/{type}", "/v1/partner/media", "/v1/partner/change-requests", "/v1/partner/change-requests/{id}/resubmit", "/v1/partner/previews"]) assert.ok(doc.paths[p], p);
     assert.ok(routes.includes("change-requests"));

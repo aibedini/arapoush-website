@@ -1,3 +1,4 @@
+import { AuthorizeQuery } from "./contract.ts";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { SignJWT, jwtVerify, type JWK } from "jose";
 import { createHash } from "node:crypto";
@@ -12,7 +13,8 @@ import { sha256, token, ulid } from "../ids.ts";
 import { signingKeys } from "./keys.ts";
 import { verifyClientAssertion, verifyDpop } from "./proofs.ts";
 
-export const PARTNER_SCOPES = ["content:read", "content:propose", "media:upload", "cr:read", "cr:withdraw"] as const;
+export { PARTNER_SCOPES } from "./contract.ts";
+import { PARTNER_SCOPES } from "./contract.ts";
 const ACCESS_TTL = 300;
 const REFRESH_TTL_H = 8;
 
@@ -65,15 +67,7 @@ export async function oauthModule(app: FastifyInstance, deps: Deps) {
   }));
 
   // ── Authorization (AraCMS staff sign in here, never in AraCMS) ──
-  const AuthQ = z.object({
-    response_type: z.literal("code"),
-    client_id: z.string().max(100),
-    redirect_uri: z.string().url().max(500),
-    code_challenge: z.string().regex(/^[A-Za-z0-9_-]{43,128}$/),
-    code_challenge_method: z.literal("S256"),
-    state: z.string().max(500).optional(),
-    scope: z.string().max(300).default("content:read"),
-  });
+  const AuthQ = AuthorizeQuery;
   type AuthParams = z.infer<typeof AuthQ>;
 
   const page = (reply: FastifyReply, client: ClientRow, p: AuthParams, body: string, error?: string) => {

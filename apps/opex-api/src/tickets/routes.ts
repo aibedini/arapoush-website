@@ -1,3 +1,4 @@
+import { SavedReplyBody, TICKETS, UpdateBody, VIEWS } from "./contract.ts";
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { PRIORITIES, type FormDefinition, type Priority } from "@arapoush/schema";
@@ -40,7 +41,6 @@ type TicketRow = {
 };
 type EventRow = { id: string; kind: string; actor_kind: string; actor_id: string | null; actor_display: string | null; body_enc: string | null; key_id: string | null; meta: Record<string, unknown>; message_id: string | null; created_at: Date };
 
-const VIEWS = ["mine", "unassigned", "teams", "all", "overdue", "waiting", "closed", "spam"] as const;
 const OPEN_SQL = `('new','open','pending','on_hold')`;
 const OVERDUE_SQL = `((t.first_response_at IS NULL AND t.first_response_due < clock_timestamp()) OR t.resolve_due < clock_timestamp())`;
 const viewSql = (v: (typeof VIEWS)[number]) =>
@@ -99,19 +99,7 @@ export async function ticketsModule(app: FastifyInstance, deps: Deps) {
 
   // ── Lists ──
   app.get("/v1/manage/tickets", { preHandler: agent }, async (req) => {
-    const f = z
-      .object({
-        view: z.enum(VIEWS).default("all"),
-        q: z.string().max(200).optional(),
-        status: z.enum(STATUSES).optional(),
-        priority: z.enum(PRIORITIES).optional(),
-        team: z.string().max(40).optional(),
-        assignee: z.string().max(40).optional(),
-        form: z.string().max(40).optional(),
-        tag: z.string().max(40).optional(),
-        before: z.string().optional(),
-      })
-      .parse(req.query);
+    const f = TICKETS.list.query.parse(req.query);
     const s = await scopeOf(req);
     const params: unknown[] = [tenant, s.me, s.teams, s.all];
     const where = [`t.tenant_id = $1`, scopeSql, `t.merged_into IS NULL`, f.status ? `t.status = $${params.push(f.status)}` : viewSql(f.view)];
@@ -223,7 +211,7 @@ export async function ticketsModule(app: FastifyInstance, deps: Deps) {
     };
   });
 
-  const Update = z.strictObject({ status: z.enum(STATUSES).optional(), priority: z.enum(PRIORITIES).optional(), team: z.string().max(40).nullable().optional(), tags: z.array(z.string().min(1).max(40)).max(20).optional() });
+  const Update = UpdateBody;
   /** Status, priority, team and tags changes, each on the timeline. */
   async function update(q: Q, req: FastifyRequest, t: TicketRow, u: z.infer<typeof Update>) {
     const actor = me(req);
@@ -262,7 +250,7 @@ export async function ticketsModule(app: FastifyInstance, deps: Deps) {
   const operatorExists = async (q: Q, id: string) => !!(await q(`SELECT 1 FROM principals WHERE id = $1 AND tenant_id = $2 AND kind = 'operator' AND status = 'active' AND role IN ('operator','super_admin')`, [id, tenant])).length;
 
   app.post("/v1/manage/tickets/:ref/assign", { preHandler: agent }, async (req) => {
-    const { assignee } = z.strictObject({ assignee: z.string().max(40).nullable() }).parse(req.body);
+    const { assignee } = TICKETS.assign.body.parse(req.body);
     await db.tx(async (q) => {
       const t = await load(req, (req.params as { ref: string }).ref, q);
       if (assignee && !(await operatorExists(q, assignee))) throw badRequest("UNKNOWN_OPERATOR", "No such operator");
@@ -279,7 +267,7 @@ export async function ticketsModule(app: FastifyInstance, deps: Deps) {
 
   // Referral ("ارجاع"): to a colleague or a team, with a message. With transfer, ownership moves too.
   app.post("/v1/manage/tickets/:ref/refer", { preHandler: agent }, async (req) => {
-    const b = z.strictObject({ to: z.string().max(40).optional(), team: z.string().max(40).optional(), message: z.string().trim().min(2).max(5000), transfer: z.boolean().default(false) }).refine((x) => !!x.to !== !!x.team, "Refer to one person or one team").parse(req.body);
+    const b = TICKETS.refer.body.parse(req.body);
     await db.tx(async (q) => {
       const t = await load(req, (req.params as { ref: string }).ref, q);
       const actor = me(req);
@@ -309,7 +297,7 @@ export async function ticketsModule(app: FastifyInstance, deps: Deps) {
   });
 
   app.post("/v1/manage/tickets/:ref/notes", { preHandler: agent }, async (req) => {
-    const b = z.strictObject({ body: z.string().trim().min(1).max(10_000), mentions: z.array(z.string().max(40)).max(20).default([]) }).parse(req.body);
+    const b = TICKETS.note.body.parse(req.body);
     const id = await db.tx(async (q) => {
       const t = await load(req, (req.params as { ref: string }).ref, q);
       const actor = me(req);
@@ -327,7 +315,7 @@ export async function ticketsModule(app: FastifyInstance, deps: Deps) {
 
   // Reply to the customer by email; their answer threads back (Message-ID / References / [#n]).
   app.post("/v1/manage/tickets/:ref/replies", { preHandler: agent }, async (req) => {
-    const b = z.strictObject({ body: z.string().trim().min(1).max(20_000), status: z.enum(["open", "pending", "on_hold", "resolved"]).default("pending") }).parse(req.body);
+    const b = TICKETS.reply.body.parse(req.body);
     const id = await db.tx(async (q) => {
       const t = await load(req, (req.params as { ref: string }).ref, q);
       const data = openTicket(keys, t);
@@ -360,7 +348,7 @@ export async function ticketsModule(app: FastifyInstance, deps: Deps) {
   });
 
   app.post("/v1/manage/tickets/:ref/merge", { preHandler: agent }, async (req) => {
-    const { into } = z.strictObject({ into: z.number().int() }).parse(req.body);
+    const { into } = TICKETS.merge.body.parse(req.body);
     await db.tx(async (q) => {
       const t = await load(req, (req.params as { ref: string }).ref, q);
       const target = await load(req, String(into), q);
@@ -377,7 +365,7 @@ export async function ticketsModule(app: FastifyInstance, deps: Deps) {
   });
 
   app.post("/v1/manage/tickets/:ref/spam", { preHandler: agent }, async (req) => {
-    const { spam, block } = z.strictObject({ spam: z.boolean(), block: z.boolean().default(false) }).parse(req.body);
+    const { spam, block } = TICKETS.spam.body.parse(req.body);
     await db.tx(async (q) => {
       const t = await load(req, (req.params as { ref: string }).ref, q);
       await update(q, req, t, { status: spam ? "spam" : "open" });
@@ -388,7 +376,7 @@ export async function ticketsModule(app: FastifyInstance, deps: Deps) {
   });
 
   app.post("/v1/manage/tickets/bulk", { preHandler: agent }, async (req) => {
-    const b = z.strictObject({ ids: z.array(z.string().max(40)).min(1).max(100), status: z.enum(STATUSES).optional(), priority: z.enum(PRIORITIES).optional(), team: z.string().max(40).nullable().optional(), assignee: z.string().max(40).nullable().optional() }).parse(req.body);
+    const b = TICKETS.bulk.body.parse(req.body);
     let n = 0;
     await db.tx(async (q) => {
       if (b.assignee && !(await operatorExists(q, b.assignee))) throw badRequest("UNKNOWN_OPERATOR", "No such operator");
@@ -419,7 +407,7 @@ export async function ticketsModule(app: FastifyInstance, deps: Deps) {
 
   // Erasure on request (privacy): super admin with step-up; the audit row keeps that it existed.
   app.delete("/v1/manage/tickets/:ref", { preHandler: [requireOperator(deps, "super_admin"), requireStepUp(deps)] }, async (req) => {
-    const { reason } = z.strictObject({ reason: z.string().min(3).max(300) }).parse(req.body ?? {});
+    const { reason } = TICKETS.erase.body.parse(req.body ?? {});
     await db.tx(async (q) => {
       const t = await load(req, (req.params as { ref: string }).ref, q);
       await q(`DELETE FROM tickets WHERE id = $1`, [t.id]);
@@ -450,9 +438,8 @@ export async function ticketsModule(app: FastifyInstance, deps: Deps) {
   );
 
   const admin = requireOperator(deps, "super_admin");
-  const SlaBody = z.partialRecord(z.enum(PRIORITIES), z.strictObject({ first: z.number().int().min(5).max(60 * 24 * 30), resolve: z.number().int().min(5).max(60 * 24 * 90) }));
   app.post("/v1/manage/teams", { preHandler: admin }, async (req) => {
-    const b = z.strictObject({ key: z.string().regex(/^[a-z][a-z0-9-]{1,39}$/), name: z.string().trim().min(1).max(80) }).parse(req.body);
+    const b = TICKETS.createTeam.body.parse(req.body);
     const id = ulid("team_");
     await db.tx(async (q) => {
       const r = await q(`INSERT INTO teams (id, tenant_id, key, name) VALUES ($1,$2,$3,$4) ON CONFLICT DO NOTHING RETURNING id`, [id, tenant, b.key, b.name]);
@@ -467,7 +454,7 @@ export async function ticketsModule(app: FastifyInstance, deps: Deps) {
 
   app.patch("/v1/manage/teams/:id", { preHandler: agent }, async (req) => {
     const { id } = req.params as { id: string };
-    const b = z.strictObject({ name: z.string().trim().min(1).max(80).optional(), sla: SlaBody.optional(), auto_assign: z.boolean().optional() }).parse(req.body);
+    const b = TICKETS.updateTeam.body.parse(req.body);
     if (!(await isLead(req, id))) throw forbidden("ROLE_DENIED", "Only a team lead or a super admin can change the team");
     await db.tx(async (q) => {
       const r = await q(`UPDATE teams SET name = COALESCE($3, name), sla = COALESCE($4, sla), auto_assign = COALESCE($5, auto_assign) WHERE id = $1 AND tenant_id = $2 RETURNING id`, [id, tenant, b.name ?? null, b.sla ? JSON.stringify(b.sla) : null, b.auto_assign ?? null]);
@@ -479,7 +466,7 @@ export async function ticketsModule(app: FastifyInstance, deps: Deps) {
 
   app.put("/v1/manage/teams/:id/members", { preHandler: agent }, async (req) => {
     const { id } = req.params as { id: string };
-    const members = z.array(z.strictObject({ id: z.string().max(40), role: z.enum(["agent", "lead"]) })).max(100).parse(req.body);
+    const members = TICKETS.setMembers.body.parse(req.body);
     if (!(await isLead(req, id))) throw forbidden("ROLE_DENIED", "Only a team lead or a super admin can change members");
     await db.tx(async (q) => {
       for (const m of members) if (!(await operatorExists(q, m.id))) throw badRequest("UNKNOWN_OPERATOR", "No such operator");
@@ -502,14 +489,14 @@ export async function ticketsModule(app: FastifyInstance, deps: Deps) {
   });
 
   app.post("/v1/manage/me/availability", { preHandler: agent }, async (req) => {
-    const { team, available } = z.strictObject({ team: z.string().max(40), available: z.boolean() }).parse(req.body);
+    const { team, available } = TICKETS.availability.body.parse(req.body);
     await db.q(`UPDATE team_members SET available = $3 WHERE team_id = $1 AND principal_id = $2`, [team, req.principal!.id, available]);
     return { ok: true };
   });
 
   app.get("/v1/manage/me/prefs", { preHandler: requireOperator(deps, "viewer") }, async (req) => (await db.q<{ prefs: unknown }>(`SELECT prefs FROM principals WHERE id = $1`, [req.principal!.id]))[0]?.prefs ?? {});
   app.put("/v1/manage/me/prefs", { preHandler: requireOperator(deps, "viewer") }, async (req) => {
-    const prefs = z.strictObject({ emailNotifications: z.boolean() }).parse(req.body);
+    const prefs = TICKETS.setPrefs.body.parse(req.body);
     await db.q(`UPDATE principals SET prefs = prefs || $2::jsonb WHERE id = $1`, [req.principal!.id, JSON.stringify(prefs)]);
     return prefs;
   });
@@ -521,13 +508,13 @@ export async function ticketsModule(app: FastifyInstance, deps: Deps) {
     return { unread, items };
   });
   app.post("/v1/manage/notifications/read", { preHandler: requireOperator(deps, "viewer") }, async (req) => {
-    const { ids } = z.strictObject({ ids: z.array(z.string().max(40)).max(200).optional() }).parse(req.body ?? {});
+    const { ids } = TICKETS.readNotifications.body.parse(req.body ?? {}) ?? {};
     await db.q(`UPDATE notifications SET read_at = clock_timestamp() WHERE principal_id = $1 AND read_at IS NULL ${ids ? "AND id = ANY($2)" : ""}`, ids ? [req.principal!.id, ids] : [req.principal!.id]);
     return { ok: true };
   });
 
   // ── Saved replies ──
-  const Reply = z.strictObject({ title: z.string().trim().min(1).max(120), team: z.string().max(40).nullable(), body: z.strictObject({ fa: z.string().max(10_000).optional(), en: z.string().max(10_000).optional(), tr: z.string().max(10_000).optional() }) });
+  const Reply = SavedReplyBody;
   app.get("/v1/manage/saved-replies", { preHandler: agent }, async () => db.q(`SELECT s.id, s.title, s.team_id AS team, s.body, s.created_by, s.created_at FROM saved_replies s WHERE s.tenant_id = $1 ORDER BY s.title`, [tenant]));
   app.post("/v1/manage/saved-replies", { preHandler: agent }, async (req) => {
     const b = Reply.parse(req.body);

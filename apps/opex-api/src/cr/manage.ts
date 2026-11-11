@@ -1,3 +1,4 @@
+import { CR, GrantBody, PolicyBody } from "./contract.ts";
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { getAt } from "@arapoush/schema";
 import { z } from "zod";
@@ -12,43 +13,6 @@ import { token, ulid } from "../ids.ts";
 import { evaluatePolicies, type Policy } from "./policy.ts";
 import { amendCr, approveCr, itemsOf, publishCr, rejectCr } from "./service.ts";
 
-const Glob = z.string().min(1).max(120);
-const GrantBody = z.strictObject({
-  subject_kind: z.enum(["partner_role", "partner_user", "partner_client"]),
-  subject_id: z.string().min(2).max(80),
-  scope: z.strictObject({ types: z.array(Glob).min(1).max(50), fields: z.array(Glob).max(100).optional(), exclude: z.array(Glob).max(100).optional(), locales: z.array(z.enum(["fa", "en", "tr"])).max(3).optional() }),
-  actions: z.array(z.enum(GRANT_ACTIONS)).min(1),
-  expires_at: z.string().datetime().nullable().optional(),
-});
-const PolicyBody = z.strictObject({
-  name: z.string().min(2).max(160),
-  priority: z.number().int().min(0).max(10000).default(100),
-  scope: z.strictObject({ partners: z.array(z.string().max(80)).optional(), types: z.array(Glob).optional(), fields: z.array(Glob).optional(), locales: z.array(z.enum(["fa", "en", "tr"])).optional() }),
-  conditions: z
-    .strictObject({
-      maxItems: z.number().int().min(1).max(50).optional(),
-      textEditDistanceRatio: z.strictObject({ lte: z.number().min(0).max(1) }).optional(),
-      maxLengthDelta: z.number().int().min(0).optional(),
-      noNewAssets: z.boolean().optional(),
-      assetsOnly: z.boolean().optional(),
-      noLinks: z.boolean().optional(),
-      locales: z.array(z.enum(["fa", "en", "tr"])).optional(),
-      principalRoles: z.array(z.string().max(40)).optional(),
-      principals: z.array(z.string().max(40)).optional(),
-      timeWindow: z.strictObject({ tz: z.string().max(60), days: z.array(z.enum(["sat", "sun", "mon", "tue", "wed", "thu", "fri"])).optional(), from: z.string().regex(/^\d\d:\d\d$/).optional(), to: z.string().regex(/^\d\d:\d\d$/).optional() }).optional(),
-      entryCreate: z.boolean().optional(),
-      entryDelete: z.boolean().optional(),
-      requiresSecondApprover: z.boolean().optional(),
-      cooldown: z.strictObject({ maxPerHour: z.number().int().min(1).max(1000) }).optional(),
-    })
-    .default({}),
-  effect: z.enum(["auto_approve", "require_review", "deny"]),
-  auto_publish: z.boolean().default(false),
-  enabled: z.boolean().default(true),
-});
-const SimItem = z.strictObject({ type: z.string().max(80), path: z.string().max(300), op: z.enum(["set", "insert", "remove"]).default("set"), old: z.unknown().optional(), value: z.unknown().optional(), newAssets: z.array(z.string()).optional() });
-
-/** Operator side of change requests (review, partial approval, amendments), grants, policies, webhooks. */
 export async function crManageModule(app: FastifyInstance, deps: Deps) {
   const { db, config } = deps;
   const tenant = config.TENANT;
@@ -58,7 +22,7 @@ export async function crManageModule(app: FastifyInstance, deps: Deps) {
   const who = (req: FastifyRequest) => ({ actor: actorOf(req), request: req.info, operatorId: req.principal!.id });
 
   app.get("/v1/manage/change-requests", { preHandler: read }, async (req) => {
-    const { state } = z.object({ state: z.string().max(20).optional() }).parse(req.query);
+    const { state } = CR.list.query.parse(req.query);
     return db.q(
       `SELECT cr.id, cr.title, cr.state, cr.created_at, cr.updated_at, cr.four_eyes, jsonb_array_length(cr.approvals) AS approvals, cr.decision->>'effect' AS effect,
               p.display_name AS author, c.name AS partner, (SELECT count(*)::int FROM change_items ci WHERE ci.cr_id = cr.id) AS items,
@@ -86,10 +50,9 @@ export async function crManageModule(app: FastifyInstance, deps: Deps) {
     return { ...cr, items: items.map((i) => ({ ...i, current: getAt(drafts.get(i.type_key), i.path) ?? null, stale: JSON.stringify(getAt(drafts.get(i.type_key), i.path) ?? null) !== JSON.stringify(i.old_value ?? null) })) };
   });
 
-  const Decisions = z.record(z.string().max(40), z.strictObject({ decision: z.enum(["approved", "rejected"]), reason: z.string().max(500).optional() }));
   app.post("/v1/manage/change-requests/:id/approve", { preHandler: write }, async (req) => {
     const { id } = req.params as { id: string };
-    const body = z.strictObject({ publish: z.boolean().default(false), decisions: Decisions.optional() }).parse(req.body ?? {});
+    const body = CR.approve.body.parse(req.body ?? {}) ?? { publish: false };
     if (body.publish) {
       // Publishing site-wide content needs a fresh second factor, as in the content editor.
       const types = (await itemsOf(db.q, id)).map((i) => i.type_key);
@@ -98,11 +61,11 @@ export async function crManageModule(app: FastifyInstance, deps: Deps) {
     return approveCr(deps, id, who(req), body);
   });
   app.post("/v1/manage/change-requests/:id/reject", { preHandler: write }, async (req) => {
-    const { reason } = z.strictObject({ reason: z.string().min(3).max(500) }).parse(req.body);
+    const { reason } = CR.reject.body.parse(req.body);
     return rejectCr(deps, (req.params as { id: string }).id, who(req), reason);
   });
   app.post("/v1/manage/change-requests/:id/amend", { preHandler: write }, async (req) => {
-    const { item, value } = z.strictObject({ item: z.string().max(40), value: z.unknown() }).parse(req.body);
+    const { item, value } = CR.amend.body.parse(req.body);
     return amendCr(deps, (req.params as { id: string }).id, who(req), item, value);
   });
   app.post("/v1/manage/change-requests/:id/publish", { preHandler: write }, async (req) => {
@@ -137,7 +100,7 @@ export async function crManageModule(app: FastifyInstance, deps: Deps) {
 
   // Simulator: what would happen to these items with the current policies (plus an optional draft policy)?
   app.post("/v1/manage/policies/simulate", { preHandler: read }, async (req) => {
-    const b = z.strictObject({ items: z.array(SimItem).min(1).max(200), policy: PolicyBody.optional(), partner: z.string().max(80).default(""), role: z.string().max(40).nullable().default(null), principal: z.string().max(40).default("simulated"), at: z.string().datetime().optional() }).parse(req.body);
+    const b = CR.simulate.body.parse(req.body);
     const policies = await db.q<Policy>(`SELECT id, name, priority, scope, conditions, effect, auto_publish, enabled FROM approval_policies WHERE tenant_id = $1 AND enabled`, [tenant]);
     if (b.policy) policies.push({ ...b.policy, id: "draft" } as Policy);
     return evaluatePolicies(b.items as never, policies, { partner: b.partner, principal: b.principal, role: b.role, now: b.at ? new Date(b.at) : new Date(), autoApprovedLastHour: 0, assetsPending: false });
@@ -169,7 +132,7 @@ export async function crManageModule(app: FastifyInstance, deps: Deps) {
   // ── AraCMS webhook endpoint (the secret is shown once) ──
   app.put("/v1/manage/partners/:id/webhook", { preHandler: admin }, async (req) => {
     const { id } = req.params as { id: string };
-    const { url } = z.strictObject({ url: z.string().url().refine((u) => u.startsWith("https://") || (!config.isProd && u.startsWith("http://")), "https only").nullable() }).parse(req.body);
+    const { url } = z.strictObject({ url: CR.setWebhook.body.shape.url.refine((u) => !u || u.startsWith("https://") || (!config.isProd && u.startsWith("http://")), "https only") }).parse(req.body);
     const secret = url ? token(32) : null;
     await db.tx(async (q) => {
       const [c] = await q(`UPDATE partner_clients SET webhook_url = $3, webhook_secret = $4 WHERE id = $1 AND tenant_id = $2 RETURNING id`, [id, tenant, url, secret]);

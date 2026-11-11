@@ -1,3 +1,4 @@
+import { AUDIT, AuditFilters } from "./contract.ts";
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import type { Deps } from "../app.ts";
@@ -5,19 +6,7 @@ import { auditNow, verifyChain } from "./audit.ts";
 import { requireOperator, requireStepUp } from "../auth/guards.ts";
 import { actorOf } from "../auth/principal.ts";
 
-const Filters = z.object({
-  action: z.string().max(80).optional(),
-  actor: z.string().max(80).optional(),
-  client: z.string().max(80).optional(),
-  ip: z.string().max(64).optional(),
-  resource: z.string().max(120).optional(),
-  path: z.string().max(200).optional(),
-  result: z.enum(["success", "failure", "denied"]).optional(),
-  from: z.string().datetime().optional(),
-  to: z.string().datetime().optional(),
-  before: z.coerce.number().int().optional(),
-  limit: z.coerce.number().int().min(1).max(500).default(100),
-});
+const Filters = AuditFilters;
 
 function where(f: z.infer<typeof Filters>, tenant: string) {
   const conds = ["tenant_id = $1"];
@@ -52,7 +41,7 @@ export async function auditModule(app: FastifyInstance, deps: Deps) {
   });
 
   app.get("/v1/manage/audit/verify", { preHandler: requireOperator(deps, "auditor") }, async (req) => {
-    const { from, to } = z.object({ from: z.coerce.number().int().min(1).default(1), to: z.coerce.number().int().optional() }).parse(req.query);
+    const { from, to } = AUDIT.verify.query.parse(req.query);
     const r = await verifyChain(db, tenant, from, to);
     await auditNow(db, tenant, { action: "audit.verify", result: r.ok ? "success" : "failure", actor: actorOf(req), request: req.info, resource: { from, to: to ?? null, checked: r.checked, firstBad: r.firstBad ?? null } });
     return r;

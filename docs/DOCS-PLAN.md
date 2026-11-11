@@ -2,6 +2,10 @@
 
 Status: **agreed 2026-11-12**. Build order is D1 → D6, one commit per phase.
 
+Progress: **D1 done**.
+- 127 OPEX operations, 3 webhooks and 7 website routes are generated into `docs/api/` and pass Redocly lint (0 problems).
+- Tests enforce route coverage and that the committed specs match the code.
+
 ## What exists today (facts from the repo)
 
 | Surface | Where | Count | Today |

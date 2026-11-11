@@ -1,3 +1,4 @@
+import { CrInputSchema, ItemInputSchema } from "../partner/contract.ts";
 import { fieldAt, getAt, isLocalizedText, LOCALES, setAt, type GroupField } from "@arapoush/schema";
 import { z } from "zod";
 import type { Deps } from "../app.ts";
@@ -33,15 +34,9 @@ export type CrRow = {
 };
 export type ItemRow = { id: string; cr_id: string; entry_id: string; type_key: string; base_revision_id: string; path: string; op: Item["op"]; old_value: unknown; new_value: unknown; decision: "approved" | "rejected" | null; decision_reason: string | null; added_by: string | null; position: number };
 
-export const ItemInput = z.strictObject({
-  entry: z.string().max(80),
-  base_revision_id: z.string().max(40),
-  path: z.string().startsWith("/").max(300),
-  locale: z.enum(["fa", "en", "tr"]).optional(),
-  op: z.enum(["set", "insert", "remove"]).default("set"),
-  value: z.unknown().optional(),
-});
-export const CrInput = z.strictObject({ title: z.string().min(2).max(200), note: z.string().max(2000).optional(), items: z.array(ItemInput).min(1).max(200) });
+// Request shapes live in the API contract (documented in OpenAPI); re-exported for the service.
+export const ItemInput = ItemInputSchema;
+export const CrInput = CrInputSchema;
 
 type Author = { actor: Actor; request: RequestInfo; principalId: string; role: string | null; partnerClientId: string | null; partnerClientKey: string; grants: Grant[] | null };
 

@@ -1,0 +1,3580 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "OPEX Partner API",
+    "version": "1.11.0",
+    "description": "Read the website content you are granted and propose changes as change requests; OPEX's policy engine and operators decide.\n\n**Sign-in.** OAuth 2.1: authorization code with PKCE for AraCMS staff (they sign in on OPEX, never in AraCMS), or client credentials for the AraCMS server itself. Clients authenticate with `private_key_jwt` (ES256). Every access token is DPoP-bound: send `Authorization: DPoP <token>` and a fresh `DPoP` proof on each request.\n\n**Writes** (uploads, change requests, withdraw, resubmit, previews) also need an `Idempotency-Key` and an RFC 9421 HTTP message signature (alg ecdsa-p256-sha256) covering `@method`, `@path`, `idempotency-key`, `content-digest` (with a body) and `x-end-user-ip` (when sent), created within ±60 s, with a single-use nonce. The PHP reference client (clients/php-reference) does all of this.\n\n**Webhooks** tell you when your change requests move and when content is published; verify `OPEX-Signature` on the raw body.\n\n**Errors** are RFC 9457 `application/problem+json` with a stable `code` (the OAuth token endpoint uses RFC 6749 errors instead). Validation errors list `issues` (path + message). Every answer carries `X-Request-Id`; quote it when reporting a problem.\n\n**Rate limits** default to 600 requests per minute per IP; routes that differ say so. Over the limit: 429 `RATE_LIMITED` with `Retry-After`.\n\n**Timestamps** are ISO 8601 UTC. **Ids** are prefixed ULIDs (`cr_`, `ast_`, `rev_`, `tkt_`…): sortable by creation time.",
+    "license": {
+      "name": "Proprietary",
+      "url": "https://arapoush.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://opex.arapoush.com"
+    }
+  ],
+  "tags": [
+    {
+      "name": "OAuth",
+      "description": "OAuth 2.1 for AraCMS: metadata, keys, sign-in, tokens, revocation."
+    },
+    {
+      "name": "Partner",
+      "description": "What AraCMS calls with a DPoP-bound token: schema, content, uploads, change requests, previews."
+    }
+  ],
+  "x-tagGroups": [
+    {
+      "name": "OAuth 2.1 (partner sign-in)",
+      "tags": [
+        "OAuth"
+      ]
+    },
+    {
+      "name": "Partner API (AraCMS)",
+      "tags": [
+        "Partner"
+      ]
+    }
+  ],
+  "paths": {
+    "/.well-known/jwks.json": {
+      "get": {
+        "operationId": "oauthJwks",
+        "summary": "Public keys that sign OPEX tokens and audit archives",
+        "description": "**Source:** `apps/opex-api/src/oauth/routes.ts`",
+        "tags": [
+          "OAuth"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "JWK Set (current and previous keys during a rotation). Cached 5 minutes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "keys": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string"
+                        },
+                        "additionalProperties": {}
+                      }
+                    }
+                  },
+                  "required": [
+                    "keys"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "oauth"
+      }
+    },
+    "/.well-known/oauth-authorization-server": {
+      "get": {
+        "operationId": "oauthMetadata",
+        "summary": "Authorization server metadata (RFC 8414)",
+        "description": "**Source:** `apps/opex-api/src/oauth/routes.ts`",
+        "tags": [
+          "OAuth"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Endpoints and supported features.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "issuer": {
+                      "type": "string"
+                    },
+                    "authorization_endpoint": {
+                      "type": "string"
+                    },
+                    "token_endpoint": {
+                      "type": "string"
+                    },
+                    "revocation_endpoint": {
+                      "type": "string"
+                    },
+                    "jwks_uri": {
+                      "type": "string"
+                    },
+                    "grant_types_supported": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "response_types_supported": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "code_challenge_methods_supported": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "token_endpoint_auth_methods_supported": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "dpop_signing_alg_values_supported": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "scopes_supported": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "issuer",
+                    "authorization_endpoint",
+                    "token_endpoint",
+                    "revocation_endpoint",
+                    "jwks_uri",
+                    "grant_types_supported",
+                    "response_types_supported",
+                    "code_challenge_methods_supported",
+                    "token_endpoint_auth_methods_supported",
+                    "dpop_signing_alg_values_supported",
+                    "scopes_supported"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "oauth"
+      }
+    },
+    "/oauth/authorize": {
+      "get": {
+        "operationId": "oauthAuthorize",
+        "summary": "Sign-in page for AraCMS staff (start of the authorization code flow)",
+        "description": "AraCMS redirects the user here; the user signs in with their OPEX partner account (password, then authenticator code) and is sent back to `redirect_uri` with `code` and `state`.\n\n**Rate limit:** 30 per minute per IP.\n\n**Source:** `apps/opex-api/src/oauth/routes.ts`",
+        "tags": [
+          "OAuth"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "response_type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "const": "code"
+            }
+          },
+          {
+            "name": "client_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "redirect_uri",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 500,
+              "format": "uri"
+            },
+            "description": "Must exactly match a registered redirect URI."
+          },
+          {
+            "name": "code_challenge",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{43,128}$"
+            },
+            "description": "PKCE: BASE64URL(SHA256(code_verifier))."
+          },
+          {
+            "name": "code_challenge_method",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "const": "S256"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "description": "Returned unchanged on the redirect; use it against CSRF."
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": "content:read",
+              "type": "string",
+              "maxLength": 300
+            },
+            "description": "Space-separated: content:read content:propose media:upload cr:read cr:withdraw"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "HTML sign-in page (CSP-locked)."
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`INVALID_REQUEST`: Missing or malformed parameters.\n\n`INVALID_CLIENT`: Unknown client, or redirect_uri not registered.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 30 per minute per IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "oauth"
+      },
+      "post": {
+        "operationId": "oauthAuthorizeSubmit",
+        "summary": "Sign-in form steps (password, then authenticator code)",
+        "description": "Posted by the sign-in page itself (`stage` = password | code). On success: 303 to `redirect_uri?code=…&state=…`.\n\n**Rate limit:** 10 per minute per IP.\n\n**Audit:** records `oauth.login.success`, `oauth.login.failure`, `oauth.mfa.failure`.\n\n**Source:** `apps/opex-api/src/oauth/routes.ts`",
+        "tags": [
+          "OAuth"
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "response_type": {
+                    "type": "string",
+                    "const": "code"
+                  },
+                  "client_id": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "redirect_uri": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "format": "uri",
+                    "description": "Must exactly match a registered redirect URI."
+                  },
+                  "code_challenge": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_-]{43,128}$",
+                    "description": "PKCE: BASE64URL(SHA256(code_verifier))."
+                  },
+                  "code_challenge_method": {
+                    "type": "string",
+                    "const": "S256"
+                  },
+                  "state": {
+                    "description": "Returned unchanged on the redirect; use it against CSRF.",
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "scope": {
+                    "default": "content:read",
+                    "description": "Space-separated: content:read content:propose media:upload cr:read cr:withdraw",
+                    "type": "string",
+                    "maxLength": 300
+                  },
+                  "stage": {
+                    "type": "string",
+                    "enum": [
+                      "password",
+                      "code"
+                    ]
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "challenge": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "response_type",
+                  "client_id",
+                  "redirect_uri",
+                  "code_challenge",
+                  "code_challenge_method",
+                  "stage"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Next step of the form (HTML)."
+          },
+          "303": {
+            "description": "Signed in: redirect to the client with `code` (single use, 60 s) and `state`.",
+            "headers": {
+              "Location": {
+                "description": "redirect_uri?code=…&state=…",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`INVALID_REQUEST`: Bad parameters or unknown stage.\n\n`INVALID_CLIENT`: Unknown client, or redirect_uri not registered.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Wrong password or code (the HTML form again, with an error); or the sign-in step expired."
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 10 per minute per IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "oauth"
+      }
+    },
+    "/oauth/revoke": {
+      "post": {
+        "operationId": "oauthRevoke",
+        "summary": "Revoke a refresh token (RFC 7009)",
+        "description": "Answers 200 with `{}` for unknown clients and unknown tokens (no token probing). A known client must authenticate (private_key_jwt).\n\n**Audit:** records `oauth.token.revoked`.\n\n**Source:** `apps/opex-api/src/oauth/routes.ts`",
+        "tags": [
+          "OAuth"
+        ],
+        "security": [
+          {
+            "client": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  },
+                  "client_id": {
+                    "type": "string"
+                  },
+                  "client_assertion_type": {
+                    "type": "string"
+                  },
+                  "client_assertion": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "token",
+                  "client_id",
+                  "client_assertion_type",
+                  "client_assertion"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Done (or nothing to do).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: The client assertion is missing, expired, replayed or does not verify.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "oauth"
+      }
+    },
+    "/oauth/token": {
+      "post": {
+        "operationId": "oauthToken",
+        "summary": "Get tokens (authorization_code, refresh_token, client_credentials)",
+        "description": "Client authentication is private_key_jwt only (`client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer`, ES256, aud = this URL, single-use jti). Every request needs a `DPoP` proof header; tokens are bound to that key. Errors follow RFC 6749 (`error`, `error_description`), not problem+json.\n\n**Rate limit:** 60 per minute per IP.\n\n**Audit:** records `oauth.token.issued`, `oauth.token.refreshed`, `oauth.token.failure`, `oauth.refresh.reuse_detected`.\n\n**Source:** `apps/opex-api/src/oauth/routes.ts`",
+        "tags": [
+          "OAuth"
+        ],
+        "security": [
+          {
+            "client": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "DPoP",
+            "in": "header",
+            "required": true,
+            "description": "DPoP proof for POST to this URL.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "grant_type": {
+                    "type": "string",
+                    "enum": [
+                      "authorization_code",
+                      "refresh_token",
+                      "client_credentials"
+                    ]
+                  },
+                  "client_id": {
+                    "type": "string"
+                  },
+                  "client_assertion_type": {
+                    "type": "string",
+                    "const": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+                  },
+                  "client_assertion": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "description": "authorization_code",
+                    "type": "string"
+                  },
+                  "redirect_uri": {
+                    "description": "authorization_code: the same URI as in /oauth/authorize",
+                    "type": "string"
+                  },
+                  "code_verifier": {
+                    "description": "authorization_code: the PKCE verifier",
+                    "type": "string"
+                  },
+                  "refresh_token": {
+                    "description": "refresh_token",
+                    "type": "string"
+                  },
+                  "scope": {
+                    "description": "client_credentials: space-separated; limited to the client's scopes",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "grant_type",
+                  "client_id",
+                  "client_assertion_type",
+                  "client_assertion"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tokens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": {
+                      "type": "string",
+                      "description": "JWT (ES256), bound to the DPoP key (cnf.jkt)."
+                    },
+                    "token_type": {
+                      "type": "string",
+                      "const": "DPoP"
+                    },
+                    "expires_in": {
+                      "type": "number",
+                      "description": "Seconds (300)."
+                    },
+                    "scope": {
+                      "type": "string"
+                    },
+                    "refresh_token": {
+                      "description": "Single use; rotated on every refresh. Presenting a used one revokes the whole session.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "access_token",
+                    "token_type",
+                    "expires_in",
+                    "scope"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "access_token": "eyJhbGciOiJFUzI1NiIs…",
+                  "token_type": "DPoP",
+                  "expires_in": 300,
+                  "scope": "content:read content:propose",
+                  "refresh_token": "rt_…"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "invalid_client, invalid_grant (bad/expired/reused code, PKCE mismatch, refresh reuse — which revokes the session), invalid_dpop_proof, unauthorized_client, unsupported_grant_type.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "access_denied: the call is not from the client's allowed network.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 60 per minute per IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "oauth"
+      }
+    },
+    "/v1/partner/change-requests": {
+      "get": {
+        "operationId": "partnerListChangeRequests",
+        "summary": "Your change requests (your partner's, with cr.read_all)",
+        "description": "**Source:** `apps/opex-api/src/partner/routes.ts`",
+        "tags": [
+          "Partner"
+        ],
+        "security": [
+          {
+            "partner": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 20
+            },
+            "description": "Filter by state (see CrState)."
+          },
+          {
+            "$ref": "#/components/parameters/DPoP"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Newest 200.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "$ref": "#/components/schemas/CrState"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                        "description": "ISO 8601 timestamp"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                        "description": "ISO 8601 timestamp"
+                      },
+                      "effect": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "title",
+                      "state",
+                      "created_at",
+                      "updated_at",
+                      "effect"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: Missing, expired or revoked access token, or a bad DPoP proof.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`SCOPE_DENIED`: The token lacks the scope this route needs.\n\n`NETWORK_DENIED`: The call does not come from the partner's allowed network (or mTLS certificate, when configured).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "SCOPE_DENIED",
+                  "status": 403,
+                  "code": "SCOPE_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "partner"
+      },
+      "post": {
+        "operationId": "partnerCreateChangeRequest",
+        "summary": "Propose changes (the policy engine decides at once)",
+        "description": "Every item is checked against your grants and the schema. The policy engine then auto-approves (and may publish), sends to review, or denies. Watch `cr.state_changed` webhooks or poll GET /v1/partner/change-requests/{id}.\n\n**Signed write:** Idempotency-Key and an RFC 9421 HTTP message signature are required (see the partner guide).\n\n**Rate limit:** 300 per hour per IP.\n\n**Audit:** records `cr.submitted`, `cr.policy_decision`, `cr.approved`, `cr.published`, `cr.rejected`.\n\n**Source:** `apps/opex-api/src/partner/routes.ts`",
+        "tags": [
+          "Partner"
+        ],
+        "security": [
+          {
+            "partner": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/SignatureInput"
+          },
+          {
+            "$ref": "#/components/parameters/Signature"
+          },
+          {
+            "$ref": "#/components/parameters/EndUserIp"
+          },
+          {
+            "$ref": "#/components/parameters/DPoP"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeRequestInput"
+              },
+              "example": {
+                "title": "Fix flexo summary",
+                "items": [
+                  {
+                    "entry": "page.printing",
+                    "base_revision_id": "rev_01JD…",
+                    "path": "/tech/items[id=flexo]/summary",
+                    "locale": "en",
+                    "value": "Fast, economical flexographic printing."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created and decided.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "$ref": "#/components/schemas/CrState"
+                    },
+                    "decision": {
+                      "$ref": "#/components/schemas/PolicyDecision"
+                    },
+                    "conflicts": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Conflict"
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "state"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "id": "cr_01JD…",
+                  "state": "pending_review",
+                  "decision": {
+                    "effect": "require_review",
+                    "autoPublish": false,
+                    "fourEyes": false,
+                    "policy": null,
+                    "reasons": [
+                      "default: review"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`IDEMPOTENCY_KEY_REQUIRED`: No Idempotency-Key header.\n\n`PATH_NOT_FOUND`: An item path does not exist in the draft.\n\n`UNKNOWN_ASSET`: A value names an asset that is not yours and not public.\n\n`BAD_BASE_REVISION`: A base_revision_id does not belong to the item's entry.\n\n`VALUE_REQUIRED`: A set or insert item has no value.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: Missing, expired or revoked access token, or a bad DPoP proof. Or: Bad request signature (`detail` says why): missing or malformed, not covering the required components, wrong alg, `created` outside ±60 s, content digest mismatch, unknown keyid, does not verify, or a replayed nonce.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`SCOPE_DENIED`: The token lacks the scope this route needs.\n\n`NETWORK_DENIED`: The call does not come from the partner's allowed network (or mTLS certificate, when configured).\n\n`GRANT_DENIED`: An item touches a field, locale or action you have no grant for.\n\n`FIELD_LOCKED`: An item touches a locked or operator-only field.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "SCOPE_DENIED",
+                  "status": 403,
+                  "code": "SCOPE_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: Unknown content type in an item.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`IDEMPOTENCY_KEY_REUSED`: The same Idempotency-Key with a different request.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "IDEMPOTENCY_KEY_REUSED",
+                  "status": 409,
+                  "code": "IDEMPOTENCY_KEY_REUSED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 300 per hour per IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "partner"
+      }
+    },
+    "/v1/partner/change-requests/{id}": {
+      "get": {
+        "operationId": "partnerGetChangeRequest",
+        "summary": "One change request with per-item decisions",
+        "description": "**Source:** `apps/opex-api/src/partner/routes.ts`",
+        "tags": [
+          "Partner"
+        ],
+        "security": [
+          {
+            "partner": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 40
+            }
+          },
+          {
+            "$ref": "#/components/parameters/DPoP"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The change request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "note": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "state": {
+                      "$ref": "#/components/schemas/CrState"
+                    },
+                    "decision": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/components/schemas/PolicyDecision"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "conflicts": {
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Conflict"
+                          }
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                      "description": "ISO 8601 timestamp"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                      "description": "ISO 8601 timestamp"
+                    },
+                    "decided_at": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                          "description": "ISO 8601 timestamp"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "published_at": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                          "description": "ISO 8601 timestamp"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "decision_reason": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "mine": {
+                      "type": "boolean"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "entry": {
+                            "type": "string"
+                          },
+                          "path": {
+                            "type": "string"
+                          },
+                          "op": {
+                            "type": "string",
+                            "enum": [
+                              "set",
+                              "insert",
+                              "remove"
+                            ]
+                          },
+                          "old": {},
+                          "value": {},
+                          "base_revision_id": {
+                            "type": "string"
+                          },
+                          "decision": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "approved",
+                                  "rejected"
+                                ]
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "reason": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "by_operator": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "entry",
+                          "path",
+                          "op",
+                          "old",
+                          "value",
+                          "base_revision_id",
+                          "decision",
+                          "reason",
+                          "by_operator"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "title",
+                    "note",
+                    "state",
+                    "decision",
+                    "conflicts",
+                    "created_at",
+                    "updated_at",
+                    "decided_at",
+                    "published_at",
+                    "decision_reason",
+                    "mine",
+                    "items"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: Missing, expired or revoked access token, or a bad DPoP proof.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`SCOPE_DENIED`: The token lacks the scope this route needs.\n\n`NETWORK_DENIED`: The call does not come from the partner's allowed network (or mTLS certificate, when configured).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "SCOPE_DENIED",
+                  "status": 403,
+                  "code": "SCOPE_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: Not yours (or not your partner's with cr.read_all).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "partner"
+      }
+    },
+    "/v1/partner/change-requests/{id}/resubmit": {
+      "post": {
+        "operationId": "partnerResubmitChangeRequest",
+        "summary": "After needs_rebase: confirm items against the newest revisions",
+        "description": "**Signed write:** Idempotency-Key and an RFC 9421 HTTP message signature are required (see the partner guide).\n\n**Audit:** records `cr.submitted`, `cr.policy_decision`.\n\n**Source:** `apps/opex-api/src/partner/routes.ts`",
+        "tags": [
+          "Partner"
+        ],
+        "security": [
+          {
+            "partner": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 40
+            }
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/SignatureInput"
+          },
+          {
+            "$ref": "#/components/parameters/Signature"
+          },
+          {
+            "$ref": "#/components/parameters/EndUserIp"
+          },
+          {
+            "$ref": "#/components/parameters/DPoP"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "base_revision_ids": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "additionalProperties": {
+                      "type": "string",
+                      "maxLength": 40
+                    },
+                    "description": "Content type key → the draft revision id you checked against."
+                  }
+                },
+                "required": [
+                  "base_revision_ids"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Re-decided by the policy engine.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "$ref": "#/components/schemas/CrState"
+                    },
+                    "decision": {
+                      "$ref": "#/components/schemas/PolicyDecision"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "state",
+                    "decision"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`IDEMPOTENCY_KEY_REQUIRED`: No Idempotency-Key header.\n\n`BASE_REQUIRED`: No new base revision for one of the entries.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: Missing, expired or revoked access token, or a bad DPoP proof. Or: Bad request signature (`detail` says why): missing or malformed, not covering the required components, wrong alg, `created` outside ±60 s, content digest mismatch, unknown keyid, does not verify, or a replayed nonce.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`SCOPE_DENIED`: The token lacks the scope this route needs.\n\n`NETWORK_DENIED`: The call does not come from the partner's allowed network (or mTLS certificate, when configured).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "SCOPE_DENIED",
+                  "status": 403,
+                  "code": "SCOPE_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: Not yours.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`IDEMPOTENCY_KEY_REUSED`: The same Idempotency-Key with a different request.\n\n`CR_STATE`: Not in needs_rebase.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "IDEMPOTENCY_KEY_REUSED",
+                  "status": 409,
+                  "code": "IDEMPOTENCY_KEY_REUSED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "partner"
+      }
+    },
+    "/v1/partner/change-requests/{id}/withdraw": {
+      "post": {
+        "operationId": "partnerWithdrawChangeRequest",
+        "summary": "Withdraw an open change request",
+        "description": "**Signed write:** Idempotency-Key and an RFC 9421 HTTP message signature are required (see the partner guide).\n\n**Audit:** records `cr.withdrawn`.\n\n**Source:** `apps/opex-api/src/partner/routes.ts`",
+        "tags": [
+          "Partner"
+        ],
+        "security": [
+          {
+            "partner": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 40
+            }
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/SignatureInput"
+          },
+          {
+            "$ref": "#/components/parameters/Signature"
+          },
+          {
+            "$ref": "#/components/parameters/EndUserIp"
+          },
+          {
+            "$ref": "#/components/parameters/DPoP"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Withdrawn.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "$ref": "#/components/schemas/CrState"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "state"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`IDEMPOTENCY_KEY_REQUIRED`: No Idempotency-Key header.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: Missing, expired or revoked access token, or a bad DPoP proof. Or: Bad request signature (`detail` says why): missing or malformed, not covering the required components, wrong alg, `created` outside ±60 s, content digest mismatch, unknown keyid, does not verify, or a replayed nonce.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`SCOPE_DENIED`: The token lacks the scope this route needs.\n\n`NETWORK_DENIED`: The call does not come from the partner's allowed network (or mTLS certificate, when configured).\n\n`GRANT_DENIED`: No cr.withdraw grant.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "SCOPE_DENIED",
+                  "status": 403,
+                  "code": "SCOPE_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: Not yours.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`IDEMPOTENCY_KEY_REUSED`: The same Idempotency-Key with a different request.\n\n`CR_STATE`: Already decided, published or withdrawn.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "IDEMPOTENCY_KEY_REUSED",
+                  "status": 409,
+                  "code": "IDEMPOTENCY_KEY_REUSED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "partner"
+      }
+    },
+    "/v1/partner/content/{type}": {
+      "get": {
+        "operationId": "partnerGetContent",
+        "summary": "Current draft of a type, projected to your grants",
+        "description": "**Source:** `apps/opex-api/src/partner/routes.ts`",
+        "tags": [
+          "Partner"
+        ],
+        "security": [
+          {
+            "partner": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "description": "Content type key, e.g. page.printing"
+          },
+          {
+            "$ref": "#/components/parameters/DPoP"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The draft (fields you may not read are removed). Use `base_revision_id` in change request items.",
+            "headers": {
+              "ETag": {
+                "description": "The draft revision id.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "base_revision_id": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "number": {
+                      "type": "number"
+                    },
+                    "updated_at": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                          "description": "ISO 8601 timestamp"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "published_revision_id": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "base_revision_id",
+                    "number",
+                    "updated_at",
+                    "published_revision_id",
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: Missing, expired or revoked access token, or a bad DPoP proof.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`SCOPE_DENIED`: The token lacks the scope this route needs.\n\n`NETWORK_DENIED`: The call does not come from the partner's allowed network (or mTLS certificate, when configured).\n\n`GRANT_DENIED`: No read grant on this type.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "SCOPE_DENIED",
+                  "status": 403,
+                  "code": "SCOPE_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: Unknown content type.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "partner"
+      }
+    },
+    "/v1/partner/content/{type}/history": {
+      "get": {
+        "operationId": "partnerContentHistory",
+        "summary": "Revisions of a type (or one revision's projected data)",
+        "description": "**Source:** `apps/opex-api/src/partner/routes.ts`",
+        "tags": [
+          "Partner"
+        ],
+        "security": [
+          {
+            "partner": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "description": "Content type key, e.g. page.printing"
+          },
+          {
+            "name": "revision",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "description": "Return this revision's data instead of the list."
+          },
+          {
+            "$ref": "#/components/parameters/DPoP"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Without `revision`: the newest 100 revisions. With it: that revision's projected data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "number": {
+                            "type": "number"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                            "description": "ISO 8601 timestamp"
+                          },
+                          "via_cr_id": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "author_kind": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "is_draft": {
+                            "type": "boolean"
+                          },
+                          "is_published": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "number",
+                          "created_at",
+                          "via_cr_id",
+                          "author_kind",
+                          "is_draft",
+                          "is_published"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "number": {
+                          "type": "number"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                          "description": "ISO 8601 timestamp"
+                        },
+                        "data": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "number",
+                        "created_at",
+                        "data"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: Missing, expired or revoked access token, or a bad DPoP proof.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`SCOPE_DENIED`: The token lacks the scope this route needs.\n\n`NETWORK_DENIED`: The call does not come from the partner's allowed network (or mTLS certificate, when configured).\n\n`GRANT_DENIED`: No read grant on this type.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "SCOPE_DENIED",
+                  "status": 403,
+                  "code": "SCOPE_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: Unknown type, or the revision belongs to another entry.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "partner"
+      }
+    },
+    "/v1/partner/me": {
+      "get": {
+        "operationId": "partnerMe",
+        "summary": "Who am I: principal, scopes and grants",
+        "description": "**Source:** `apps/opex-api/src/partner/routes.ts`",
+        "tags": [
+          "Partner"
+        ],
+        "security": [
+          {
+            "partner": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/DPoP"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The calling AraCMS user and what they may do.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string"
+                    },
+                    "display": {
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "client": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "scopes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "grants": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "subject": {
+                            "type": "string"
+                          },
+                          "scope": {
+                            "type": "object",
+                            "propertyNames": {
+                              "type": "string"
+                            },
+                            "additionalProperties": {}
+                          },
+                          "actions": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "expires_at": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date-time",
+                                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                                "description": "ISO 8601 timestamp"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "subject",
+                          "scope",
+                          "actions",
+                          "expires_at"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "display",
+                    "role",
+                    "client",
+                    "scopes",
+                    "grants"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "id": "prn_01JD…",
+                  "kind": "partner_user",
+                  "display": "AraCMS: Sara",
+                  "role": "editor",
+                  "client": "aracms",
+                  "scopes": [
+                    "content:read",
+                    "content:propose"
+                  ],
+                  "grants": [
+                    {
+                      "id": "grt_01JD…",
+                      "subject": "partner_role:editor",
+                      "scope": {
+                        "types": [
+                          "page.printing"
+                        ]
+                      },
+                      "actions": [
+                        "read",
+                        "propose"
+                      ],
+                      "expires_at": null
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: Missing, expired or revoked access token, or a bad DPoP proof.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`SCOPE_DENIED`: The token lacks the scope this route needs.\n\n`NETWORK_DENIED`: The call does not come from the partner's allowed network (or mTLS certificate, when configured).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "SCOPE_DENIED",
+                  "status": 403,
+                  "code": "SCOPE_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "partner"
+      }
+    },
+    "/v1/partner/media": {
+      "post": {
+        "operationId": "partnerUploadMedia",
+        "summary": "Upload a file (raw bytes)",
+        "description": "Raster images are re-encoded to WebP (metadata stripped); SVG and PDF are checked for active content; everything is virus-scanned. Use the returned `asset` id in a change request value. Max 25 MB.\n\n**Signed write:** Idempotency-Key and an RFC 9421 HTTP message signature are required (see the partner guide).\n\n**Rate limit:** 120 uploads per hour per IP.\n\n**Audit:** records `media.upload`, `media.rejected`.\n\n**Source:** `apps/opex-api/src/partner/routes.ts`",
+        "tags": [
+          "Partner"
+        ],
+        "security": [
+          {
+            "partner": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Filename",
+            "in": "header",
+            "required": false,
+            "description": "Original file name (sanitized; `.ai` files must be PDF-compatible).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/SignatureInput"
+          },
+          {
+            "$ref": "#/components/parameters/Signature"
+          },
+          {
+            "$ref": "#/components/parameters/EndUserIp"
+          },
+          {
+            "$ref": "#/components/parameters/DPoP"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "description": "The file bytes",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Stored (or an identical file already existed).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "asset": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "clean | rejected | pending"
+                    },
+                    "mime": {
+                      "type": "string"
+                    },
+                    "width": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "height": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "bytes": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "asset",
+                    "status",
+                    "mime",
+                    "width",
+                    "height",
+                    "bytes"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`IDEMPOTENCY_KEY_REQUIRED`: No Idempotency-Key header.\n\n`NO_FILE`: Body is not application/octet-stream.\n\n`MEDIA_REJECTED`: Type not allowed, active content, unreadable file or malware (`detail` says which).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: Missing, expired or revoked access token, or a bad DPoP proof. Or: Bad request signature (`detail` says why): missing or malformed, not covering the required components, wrong alg, `created` outside ±60 s, content digest mismatch, unknown keyid, does not verify, or a replayed nonce.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`SCOPE_DENIED`: The token lacks the scope this route needs.\n\n`NETWORK_DENIED`: The call does not come from the partner's allowed network (or mTLS certificate, when configured).\n\n`GRANT_DENIED`: No media.upload grant.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "SCOPE_DENIED",
+                  "status": 403,
+                  "code": "SCOPE_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`IDEMPOTENCY_KEY_REUSED`: The same Idempotency-Key with a different request.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "IDEMPOTENCY_KEY_REUSED",
+                  "status": 409,
+                  "code": "IDEMPOTENCY_KEY_REUSED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 120 uploads per hour per IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "partner"
+      }
+    },
+    "/v1/partner/media/{id}": {
+      "get": {
+        "operationId": "partnerGetMedia",
+        "summary": "Status of one of your uploads",
+        "description": "**Source:** `apps/opex-api/src/partner/routes.ts`",
+        "tags": [
+          "Partner"
+        ],
+        "security": [
+          {
+            "partner": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 40
+            }
+          },
+          {
+            "$ref": "#/components/parameters/DPoP"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The asset.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "asset": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "clean | rejected | pending"
+                    },
+                    "mime": {
+                      "type": "string"
+                    },
+                    "width": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "height": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "bytes": {
+                      "type": "number"
+                    },
+                    "scan": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "public": {
+                      "type": "boolean"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                      "description": "ISO 8601 timestamp"
+                    }
+                  },
+                  "required": [
+                    "asset",
+                    "status",
+                    "mime",
+                    "width",
+                    "height",
+                    "bytes",
+                    "scan",
+                    "public",
+                    "created_at"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: Missing, expired or revoked access token, or a bad DPoP proof.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`SCOPE_DENIED`: The token lacks the scope this route needs.\n\n`NETWORK_DENIED`: The call does not come from the partner's allowed network (or mTLS certificate, when configured).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "SCOPE_DENIED",
+                  "status": 403,
+                  "code": "SCOPE_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: No such asset uploaded by your partner client.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "partner"
+      }
+    },
+    "/v1/partner/openapi.json": {
+      "get": {
+        "operationId": "partnerOpenApi",
+        "summary": "This API description (OpenAPI 3.1, partner view)",
+        "description": "**Source:** `apps/opex-api/src/partner/openapi.ts`",
+        "tags": [
+          "Partner"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "The partner OpenAPI document (generated from the route contracts).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "partner"
+      }
+    },
+    "/v1/partner/previews": {
+      "post": {
+        "operationId": "partnerCreatePreview",
+        "summary": "A 30-minute website link with your change request applied",
+        "description": "**Signed write:** Idempotency-Key and an RFC 9421 HTTP message signature are required (see the partner guide).\n\n**Audit:** records `content.preview`.\n\n**Source:** `apps/opex-api/src/partner/routes.ts`",
+        "tags": [
+          "Partner"
+        ],
+        "security": [
+          {
+            "partner": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/SignatureInput"
+          },
+          {
+            "$ref": "#/components/parameters/Signature"
+          },
+          {
+            "$ref": "#/components/parameters/EndUserIp"
+          },
+          {
+            "$ref": "#/components/parameters/DPoP"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cr": {
+                    "type": "string",
+                    "maxLength": 40
+                  },
+                  "locale": {
+                    "default": "fa",
+                    "type": "string",
+                    "enum": [
+                      "fa",
+                      "en",
+                      "tr"
+                    ]
+                  }
+                },
+                "required": [
+                  "cr"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Open `url` in a browser; it works for 30 minutes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    },
+                    "expiresIn": {
+                      "type": "number",
+                      "description": "Seconds"
+                    }
+                  },
+                  "required": [
+                    "url",
+                    "expiresIn"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`IDEMPOTENCY_KEY_REQUIRED`: No Idempotency-Key header.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: Missing, expired or revoked access token, or a bad DPoP proof. Or: Bad request signature (`detail` says why): missing or malformed, not covering the required components, wrong alg, `created` outside ±60 s, content digest mismatch, unknown keyid, does not verify, or a replayed nonce.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`SCOPE_DENIED`: The token lacks the scope this route needs.\n\n`NETWORK_DENIED`: The call does not come from the partner's allowed network (or mTLS certificate, when configured).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "SCOPE_DENIED",
+                  "status": 403,
+                  "code": "SCOPE_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: Not your change request.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`IDEMPOTENCY_KEY_REUSED`: The same Idempotency-Key with a different request.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "IDEMPOTENCY_KEY_REUSED",
+                  "status": 409,
+                  "code": "IDEMPOTENCY_KEY_REUSED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "partner"
+      }
+    },
+    "/v1/partner/schema": {
+      "get": {
+        "operationId": "partnerSchema",
+        "summary": "Content types and fields you may read and propose",
+        "description": "AraCMS builds its edit forms from this: `schema` is what the caller may read, `proposable` what it may change (both projected to the caller's grants). Locked and operator-only fields are never proposable.\n\n**Source:** `apps/opex-api/src/partner/routes.ts`",
+        "tags": [
+          "Partner"
+        ],
+        "security": [
+          {
+            "partner": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/DPoP"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One item per readable type.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "key": {
+                        "type": "string"
+                      },
+                      "label": {
+                        "type": "string"
+                      },
+                      "version": {
+                        "type": "number"
+                      },
+                      "schema": {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string"
+                        },
+                        "additionalProperties": {},
+                        "description": "Field definition (kind, localized, max, required, locked, operatorOnly, fields/of…), see @arapoush/schema fields.ts"
+                      },
+                      "proposable": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "propertyNames": {
+                              "type": "string"
+                            },
+                            "additionalProperties": {},
+                            "description": "Field definition (kind, localized, max, required, locked, operatorOnly, fields/of…), see @arapoush/schema fields.ts"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "key",
+                      "label",
+                      "version",
+                      "schema",
+                      "proposable"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: Missing, expired or revoked access token, or a bad DPoP proof.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`SCOPE_DENIED`: The token lacks the scope this route needs.\n\n`NETWORK_DENIED`: The call does not come from the partner's allowed network (or mTLS certificate, when configured).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "SCOPE_DENIED",
+                  "status": 403,
+                  "code": "SCOPE_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "partner"
+      }
+    }
+  },
+  "webhooks": {
+    "partnerCrStateChanged": {
+      "post": {
+        "operationId": "webhookPartnerCrStateChanged",
+        "summary": "Partner: change request state changed",
+        "security": [
+          {
+            "opexSignature": []
+          }
+        ],
+        "description": "Sent to the partner client's webhook URL when one of its change requests moves (auto-approved, approved, published, rejected, needs_rebase, expired…). Secret: the partner's webhook secret.",
+        "parameters": [
+          {
+            "name": "OPEX-Signature",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "t=<unix seconds>, v1=<hex HMAC-SHA256(secret, t + '.' + raw body)>"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "Event id (evt_…); unique, use it to drop duplicates."
+                  },
+                  "event": {
+                    "type": "string",
+                    "const": "cr.state_changed"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "cr": {
+                        "type": "string",
+                        "description": "Change request id (cr_…)"
+                      },
+                      "state": {
+                        "type": "string",
+                        "enum": [
+                          "submitted",
+                          "pending_review",
+                          "approved",
+                          "published",
+                          "rejected",
+                          "withdrawn",
+                          "needs_rebase",
+                          "expired"
+                        ]
+                      },
+                      "conflicts": {
+                        "description": "With needs_rebase: what changed under your items.",
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "item": {
+                              "type": "string"
+                            },
+                            "path": {
+                              "type": "string"
+                            },
+                            "expected": {},
+                            "current": {}
+                          },
+                          "required": [
+                            "item",
+                            "path",
+                            "expected",
+                            "current"
+                          ],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": [
+                      "cr",
+                      "state"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "created": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                    "description": "ISO 8601 timestamp"
+                  }
+                },
+                "required": [
+                  "id",
+                  "event",
+                  "data",
+                  "created"
+                ],
+                "additionalProperties": false
+              },
+              "example": {
+                "id": "evt_01JD9A…",
+                "event": "cr.state_changed",
+                "data": {
+                  "cr": "cr_01JD99…",
+                  "state": "published"
+                },
+                "created": "2026-11-12T09:31:00.000Z"
+              }
+            }
+          }
+        },
+        "responses": {
+          "2XX": {
+            "description": "Received. Anything else is retried with backoff (at least once)."
+          }
+        }
+      }
+    },
+    "partnerContentPublished": {
+      "post": {
+        "operationId": "webhookPartnerContentPublished",
+        "summary": "Partner: content published",
+        "security": [
+          {
+            "opexSignature": []
+          }
+        ],
+        "description": "Sent to every active partner with a webhook URL when content is published, so a partner can refresh what it shows.",
+        "parameters": [
+          {
+            "name": "OPEX-Signature",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "t=<unix seconds>, v1=<hex HMAC-SHA256(secret, t + '.' + raw body)>"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "Event id (evt_…); unique, use it to drop duplicates."
+                  },
+                  "event": {
+                    "type": "string",
+                    "const": "content.published"
+                  },
+                  "data": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "entry": {
+                            "type": "string",
+                            "description": "Content type key, e.g. page.printing"
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "revision": {
+                            "type": "string"
+                          },
+                          "publication": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "entry",
+                          "slug",
+                          "revision",
+                          "publication"
+                        ],
+                        "additionalProperties": false,
+                        "description": "One entry was published."
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "types": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Changed keys, e.g. form.sample-request"
+                          }
+                        },
+                        "required": [
+                          "types"
+                        ],
+                        "additionalProperties": false,
+                        "description": "A form was published, archived or restored."
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "all": {
+                            "type": "boolean",
+                            "const": true
+                          },
+                          "reason": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "all",
+                          "reason"
+                        ],
+                        "additionalProperties": false,
+                        "description": "Refresh everything (CLI site:revalidate after a deploy or restore)."
+                      }
+                    ]
+                  },
+                  "created": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                    "description": "ISO 8601 timestamp"
+                  }
+                },
+                "required": [
+                  "id",
+                  "event",
+                  "data",
+                  "created"
+                ],
+                "additionalProperties": false
+              },
+              "example": {
+                "id": "evt_01JD8Z…",
+                "event": "content.published",
+                "data": {
+                  "entry": "page.printing",
+                  "slug": "main",
+                  "revision": "rev_01JD8Y…",
+                  "publication": "pub_01JD8Z…"
+                },
+                "created": "2026-11-12T09:30:00.000Z"
+              }
+            }
+          }
+        },
+        "responses": {
+          "2XX": {
+            "description": "Received. Anything else is retried with backoff (at least once)."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "client": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "OAuth client authentication: `client_assertion` (private_key_jwt, ES256) in the form body."
+      },
+      "partner": {
+        "type": "http",
+        "scheme": "DPoP",
+        "description": "`Authorization: DPoP <access token>` plus a `DPoP` proof JWT (htm, htu, ath, fresh jti) on every request. Tokens come from POST /oauth/token (private_key_jwt + PKCE)."
+      },
+      "opexSignature": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "OPEX-Signature",
+        "description": "Webhooks OPEX sends: t=<unix seconds>, v1=<hex HMAC-SHA256(secret, t + '.' + raw body)>. Verify it, reject t older than 5 minutes, and drop repeated event ids."
+      }
+    },
+    "schemas": {
+      "ChangeItemInput": {
+        "type": "object",
+        "properties": {
+          "entry": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Content type key, e.g. page.printing"
+          },
+          "base_revision_id": {
+            "type": "string",
+            "maxLength": 40,
+            "description": "The draft revision you read (GET /v1/partner/content/{type} → base_revision_id)."
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 300,
+            "format": "starts_with",
+            "pattern": "^\\/.*",
+            "description": "Field path; list items by key [id=…] or index [n], e.g. /tech/items[id=flexo]/summary"
+          },
+          "locale": {
+            "description": "For localized text: the one language this item changes.",
+            "type": "string",
+            "enum": [
+              "fa",
+              "en",
+              "tr"
+            ]
+          },
+          "op": {
+            "default": "set",
+            "description": "insert appends to the list at path (grant entry.create); remove deletes the item (grant entry.delete).",
+            "type": "string",
+            "enum": [
+              "set",
+              "insert",
+              "remove"
+            ]
+          },
+          "value": {
+            "description": "New value. Images: { asset: 'ast_…', alt?: {fa,en,tr} } with an id from POST /v1/partner/media."
+          }
+        },
+        "required": [
+          "entry",
+          "base_revision_id",
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "ChangeRequestInput": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "items": {
+            "minItems": 1,
+            "maxItems": 200,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChangeItemInput"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "Conflict": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "expected": {},
+          "current": {}
+        },
+        "required": [
+          "item",
+          "path",
+          "expected",
+          "current"
+        ],
+        "additionalProperties": false
+      },
+      "CrState": {
+        "type": "string",
+        "enum": [
+          "submitted",
+          "pending_review",
+          "approved",
+          "published",
+          "rejected",
+          "withdrawn",
+          "needs_rebase",
+          "expired"
+        ]
+      },
+      "OAuthError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "invalid_client | invalid_grant | invalid_dpop_proof | unauthorized_client | unsupported_grant_type | access_denied"
+          },
+          "error_description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "error",
+          "error_description"
+        ],
+        "additionalProperties": false
+      },
+      "PolicyDecision": {
+        "type": "object",
+        "properties": {
+          "effect": {
+            "type": "string",
+            "enum": [
+              "auto_approve",
+              "require_review",
+              "deny"
+            ]
+          },
+          "autoPublish": {
+            "type": "boolean"
+          },
+          "fourEyes": {
+            "type": "boolean",
+            "description": "Two different operators must approve."
+          },
+          "policy": {
+            "description": "The policy that decided (null: the default).",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "effect",
+          "autoPublish",
+          "fourEyes",
+          "policy",
+          "reasons"
+        ],
+        "additionalProperties": false
+      },
+      "Problem": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "code": {
+            "type": "string",
+            "description": "Stable machine code, e.g. VALIDATION_FAILED, CONFLICT_BASE_REVISION."
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string",
+            "description": "The request id (also in the X-Request-Id header)."
+          },
+          "issues": {
+            "description": "Field problems, for VALIDATION_FAILED and form submissions.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path",
+                "message"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "title",
+          "status",
+          "code",
+          "instance"
+        ],
+        "additionalProperties": {}
+      }
+    },
+    "parameters": {
+      "IdempotencyKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 16,
+          "maxLength": 80
+        },
+        "description": "A UUID per logical write. The same key and body replay the first answer (`Idempotent-Replayed: true`); the same key with another body is refused (409 IDEMPOTENCY_KEY_REUSED). Kept 24 hours."
+      },
+      "SignatureInput": {
+        "name": "Signature-Input",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "RFC 9421, label `sig1`, alg `ecdsa-p256-sha256`, covering `\"@method\" \"@path\" \"idempotency-key\"`, plus `\"content-digest\"` with a body and `\"x-end-user-ip\"` when sent; `created` within ±60 s; single-use `nonce`; `keyid` = your client key id."
+      },
+      "Signature": {
+        "name": "Signature",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "RFC 9421 signature `sig1=:<base64>:` over the signature base."
+      },
+      "EndUserIp": {
+        "name": "X-End-User-IP",
+        "in": "header",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "description": "The AraCMS user's IP, recorded in the audit log. Must be covered by the signature when sent."
+      },
+      "DPoP": {
+        "name": "DPoP",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "DPoP proof JWT (RFC 9449) for this request: htm, htu, iat, jti, ath (hash of the access token), signed with the key the token is bound to."
+      }
+    }
+  }
+}

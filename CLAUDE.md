@@ -30,6 +30,16 @@ via `lib/sections.tsx`; copy lives in `lib/i18n/dictionaries/`. The OPEX content
 - A new block kind needs all three: the schema in blocks.ts, the render in Block.tsx and the console
   label in the visual editor. Then regenerate the schema.
 
+## API contracts (D1)
+
+- Every HTTP route has a contract in its module's `contract.ts` (`apps/opex-api/src/**`). Website
+  routes have theirs in `apps/opex-api/src/openapi/site.ts`.
+- Handlers parse their input with the contract's schemas.
+- A new or changed route updates its contract (responses, error codes, examples). Then run
+  `pnpm docs:api` and commit `docs/api/*.openapi.json` with the code. Tests fail when a route has no
+  contract or the committed spec is stale.
+- See `docs/api/README.md` and `docs/DOCS-PLAN.md`.
+
 ## SEO, AI indexing and speed are checked on EVERY change (client requirement)
 
 Before calling any change done:

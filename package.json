@@ -12,7 +12,9 @@
     "lint": "turbo run lint",
     "test": "turbo run test",
     "check": "turbo run typecheck lint test build",
-    "audit:lighthouse": "bash .lighthouse/run.sh /fa audit-mobile && bash .lighthouse/run.sh /fa audit-desktop desktop"
+    "audit:lighthouse": "bash .lighthouse/run.sh /fa audit-mobile && bash .lighthouse/run.sh /fa audit-desktop desktop",
+    "docs:api": "pnpm --filter @arapoush/opex-api docs:api",
+    "docs:api:check": "pnpm --filter @arapoush/opex-api docs:api:check"
   },
   "devDependencies": {
     "turbo": "2.11.10"
