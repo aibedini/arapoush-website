@@ -4,10 +4,11 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import RollText from "@/components/ui/RollText";
 import { quoteMailto } from "@/lib/configurator/quote";
-import { contact, siteUrl } from "@/lib/site";
+import { contact as fileContact, siteUrl, type Contact } from "@/lib/site";
 import { t, type L, type Printing, type Tech, type TechId } from "@/lib/printingText";
 import { AskIcon, CheckIcon, CrossIcon } from "./PrintIcons";
 import styles from "./Printing.module.css";
+import type { Media } from "@/lib/content/media";
 
 type Answers = Record<string, string[]>;
 type Status = "fits" | "check" | "no";
@@ -38,7 +39,7 @@ export function rank(questions: Printing["guide"]["questions"], answers: Answers
     .sort((a, b) => order[a.status] - order[b.status] || b.score - a.score);
 }
 
-export default function SelectionGuide({ c, techs, locale }: { c: Printing["guide"]; techs: Tech[]; locale: string }) {
+export default function SelectionGuide({ c, techs, locale, images, contact = fileContact }: { c: Printing["guide"]; techs: Tech[]; locale: string; images: Media["printing"]; contact?: Contact }) {
   const [answers, setAnswers] = useState<Answers>({});
   const picked = Object.values(answers).some((a) => a.length);
   const ranked = useMemo(() => rank(c.questions, answers, techs), [c.questions, answers, techs]);
@@ -64,12 +65,12 @@ export default function SelectionGuide({ c, techs, locale }: { c: Printing["guid
   return (
     <section id="guide" className={`${styles.guide} ${styles.onDark}`} aria-labelledby="guide-title">
       <div className={styles.navyBg} aria-hidden="true">
-        <Image src="/images/printing/bg-navy.webp" alt="" fill sizes="100vw" quality={70} data-no-mirror />
+        <Image src={images.bgNavy.src} alt="" fill sizes="100vw" quality={70} data-no-mirror />
       </div>
       <div className={styles.inner}>
         <div className={styles.guideTop}>
           <div className={styles.layers} aria-hidden="true">
-            <Image src="/images/printing/layers.webp" alt="" fill sizes="(max-width: 767px) 90vw, 30vw" data-no-mirror />
+            <Image src={images.layers.src} alt="" fill sizes="(max-width: 767px) 90vw, 30vw" data-no-mirror />
           </div>
           <div className={styles.guideIntro} data-reveal>
             <p className={styles.kicker} lang={locale === "fa" ? "en" : undefined}>

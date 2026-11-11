@@ -1,15 +1,17 @@
 import Image from "next/image";
 import { links } from "@/lib/site";
 import type { SectionProps } from "@/lib/sections";
+import { byId } from "@/lib/content/pick";
 import MaybeLink from "@/components/ui/MaybeLink";
 import { ArrowRight, ChevronRightBold, Layers, Leaf, ShieldCheck } from "@/components/ui/icons";
 import styles from "./Certifications.module.css";
 
+/** Seal slots; images come from content (t.media.certifications) by id. */
 const certs = [
-  { code: "GMP", img: "/images/cert-gmp.webp" },
-  { code: "ISO 9001", img: "/images/cert-iso.webp" },
-  { code: "IFDA", img: "/images/cert-ifda.webp" },
-  { code: "INSO", img: "/images/cert-inso.webp" },
+  { code: "GMP", id: "gmp" },
+  { code: "ISO 9001", id: "iso" },
+  { code: "IFDA", id: "ifda" },
+  { code: "INSO", id: "inso" },
 ];
 
 const featureIcons = [
@@ -25,7 +27,7 @@ export default function Certifications({ t }: SectionProps) {
       <div className="canvas" style={{ "--h": 1228 } as React.CSSProperties}>
         <div className={`at ${styles.ribbon}`} style={{ "--x": 0, "--y": 122, "--w": 1430 } as React.CSSProperties} aria-hidden="true">
           <div data-parallax="30">
-            <Image src="/images/cert-bg.webp" alt="" width={1430} height={1045} sizes="75vw" />
+            <Image src={t.media.certifications.background.src} alt="" width={t.media.certifications.background.width} height={t.media.certifications.background.height} sizes="75vw" />
           </div>
         </div>
 
@@ -54,7 +56,7 @@ export default function Certifications({ t }: SectionProps) {
               <li key={cert.code} className={styles.slot} data-reveal-item>
                 <article className={styles.card} tabIndex={links.certificates ? undefined : 0} aria-label={`${cert.code} — ${item.name}`}>
                   <div className={styles.badge}>
-                    <Image src={cert.img} alt={`${cert.code} ${c.seal}`} data-no-mirror fill sizes="(max-width: 767px) 24vw, 13vw" />
+                    <Image src={byId(t.media.certifications.seals, cert.id)?.image.src ?? ""} alt={`${cert.code} ${c.seal}`} data-no-mirror fill sizes="(max-width: 767px) 24vw, 13vw" />
                   </div>
                   <div className={styles.copy}>
                     <h3 className={`${styles.code} ltr`}>{cert.code}</h3>

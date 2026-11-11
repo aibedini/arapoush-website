@@ -15,6 +15,7 @@ import { getDictionary, isLocale, localeMeta, locales } from "@/lib/i18n";
 import { languageAlternates, pageUrl, printingJsonLd } from "@/lib/seo";
 import { printingPath } from "@/lib/site";
 import { getPrinting, t } from "@/lib/printing";
+import { ensureContent } from "@/lib/content";
 
 const PATH = printingPath;
 type Params = Promise<{ locale: string }>;
@@ -24,13 +25,15 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  await ensureContent();
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const p = getPrinting();
   const title = t(p.meta.title, locale);
   const description = t(p.meta.description, locale);
   const url = pageUrl(locale, PATH);
-  const og = { url: "/images/printing/tube-gold.webp", width: 1086, height: 1448, alt: t(p.hero.tubesAlt, locale) };
+  const gold = getDictionary(locale).media.printing.tubeGold;
+  const og = { url: gold.src, width: gold.width, height: gold.height, alt: t(p.hero.tubesAlt, locale) };
   return {
     title,
     description,
@@ -42,6 +45,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 /** Printing technologies: the five methods, a selection guide, samples, resources and a comparison. */
 export default async function PrintingPage({ params }: { params: Params }) {
+  await ensureContent();
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const dict = getDictionary(locale);
@@ -56,13 +60,13 @@ export default async function PrintingPage({ params }: { params: Params }) {
       />
       <Header t={dict} locale={locale} path={PATH} />
       <main id="main" className={styles.page}>
-        <PrintHero c={p.hero} locale={locale} />
-        <TechExplorer c={p.tech} locale={locale} />
-        <SelectionGuide c={p.guide} techs={p.tech.items} locale={locale} />
+        <PrintHero c={p.hero} locale={locale} images={dict.media.printing} />
+        <TechExplorer c={p.tech} locale={locale} contact={dict.site.contact} />
+        <SelectionGuide c={p.guide} techs={p.tech.items} locale={locale} images={dict.media.printing} contact={dict.site.contact} />
         <SampleCarousel c={p.samples} techs={p.tech.items} locale={locale} />
-        <Downloads c={p.downloads} locale={locale} />
-        <Comparison c={p.compare} techs={p.tech.items} locale={locale} />
-        <PrintCta c={p.cta} locale={locale} />
+        <Downloads c={p.downloads} locale={locale} images={dict.media.printing} contact={dict.site.contact} />
+        <Comparison c={p.compare} techs={p.tech.items} locale={locale} contact={dict.site.contact} />
+        <PrintCta c={p.cta} locale={locale} images={dict.media.printing} contact={dict.site.contact} />
       </main>
       <ContactCTA t={dict} locale={locale} footerOnly />
       <Reveals />

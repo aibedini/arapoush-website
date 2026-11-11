@@ -12,6 +12,7 @@ import { getDictionary, isLocale, localeMeta, locales } from "@/lib/i18n";
 import { languageAlternates, pageUrl, productTubeJsonLd } from "@/lib/seo";
 import { productPaths } from "@/lib/site";
 import { getTubeProduct } from "@/lib/products";
+import { ensureContent } from "@/lib/content";
 
 const PATH = productPaths.tube;
 type Params = Promise<{ locale: string }>;
@@ -21,6 +22,7 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  await ensureContent();
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const m = getDictionary(locale).productTube.meta;
@@ -44,6 +46,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 }
 
 export default async function MultiLayerTubePage({ params }: { params: Params }) {
+  await ensureContent();
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = getDictionary(locale);
@@ -61,7 +64,7 @@ export default async function MultiLayerTubePage({ params }: { params: Params })
       <main id="main" className={styles.page}>
         <div className={styles.wrap}>
           <ProductHero t={t.productTube} video={null} image={product.images.hero} locale={locale} dir={dir} />
-          <Configurator t={t.productTube} locale={locale} product={product} />
+          <Configurator t={t.productTube} locale={locale} product={product} contact={t.site.contact} />
           <div className={styles.lower}>
             <LayerStructure t={t.productTube} structure={product.structures[0]} image={product.images.layers} locale={locale} dir={dir} />
           </div>

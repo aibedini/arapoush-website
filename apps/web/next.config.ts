@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
   // Monorepo: trace from the workspace root so pnpm-linked dependencies land in the bundle
   // (the server ends up at .next/standalone/apps/web/server.js).
   outputFileTracingRoot: path.join(__dirname, "../.."),
+  // Shared OPEX content types (TypeScript source).
+  transpilePackages: ["@arapoush/schema"],
   images: {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [480, 768, 1024, 1280, 1440, 1920, 2560, 3840],
@@ -20,10 +22,16 @@ const nextConfig: NextConfig = {
     inlineCss: true,
     optimizePackageImports: ["@animate-ui/react", "radix-ui", "motion"],
   },
+  // Media uploaded in OPEX is served same-origin (no third-party host in CSP, no cookies sent to OPEX).
+  async rewrites() {
+    const opex = process.env.OPEX_DELIVERY_URL?.replace(/\/$/, "");
+    return opex ? [{ source: "/media/:path*", destination: `${opex}/media/:path*` }] : [];
+  },
   async headers() {
     return [
       { source: "/images/:path*", headers: [{ key: "Cache-Control", value: year }] },
       { source: "/files/:path*", headers: [{ key: "Cache-Control", value: "public, max-age=86400" }] },
+      { source: "/api/opex/:path*", headers: [{ key: "Cache-Control", value: "no-store" }, { key: "X-Robots-Tag", value: "noindex" }] },
       {
         source: "/:path*",
         headers: [

@@ -2,15 +2,17 @@ import Image from "next/image";
 import RollText from "@/components/ui/RollText";
 import { links } from "@/lib/site";
 import type { SectionProps } from "@/lib/sections";
+import { byId } from "@/lib/content/pick";
 import { CircleArrow } from "@/components/ui/icons";
 import Glow from "@/components/ui/Glow";
 import styles from "./Applications.module.css";
 
+/** Design slots; each photo comes from content (t.media.applications) by id. */
 const visuals = [
-  { img: "/images/app-cosmetics.webp", h: 505, x: 117 },
-  { img: "/images/app-pharma.webp", h: 465, x: 578 },
-  { img: "/images/app-hygienic.webp", h: 455, x: 1039 },
-  { img: "/images/app-food.webp", h: 465, x: 1500 },
+  { id: "cosmetics", h: 505, x: 117 },
+  { id: "pharma", h: 465, x: 578 },
+  { id: "hygienic", h: 455, x: 1039 },
+  { id: "food", h: 465, x: 1500 },
 ];
 
 export default function Applications({ t }: SectionProps) {
@@ -45,11 +47,11 @@ export default function Applications({ t }: SectionProps) {
             const item = a.items[i];
             if (!item) return null;
             return (
-              <li key={v.img} className={`at ${styles.slot}`} style={{ "--x": v.x, "--y": 259, "--w": 356 } as React.CSSProperties} data-reveal-item>
+              <li key={v.id} className={`at ${styles.slot}`} style={{ "--x": v.x, "--y": 259, "--w": 356 } as React.CSSProperties} data-reveal-item>
                 <a href={links.applications} className={styles.card} aria-label={`${item.title} — ${item.text}`}>
                   <div className={styles.media} style={{ "--ih": v.h } as React.CSSProperties} data-reveal-media>
                     <div className={styles.mediaInner}>
-                      <Image src={v.img} alt="" fill sizes="(max-width: 767px) 46vw, (max-width: 1099px) 46vw, 19vw" />
+                      <Image src={byId(t.media.applications.items, v.id)?.image.src ?? ""} alt="" fill sizes="(max-width: 767px) 46vw, (max-width: 1099px) 46vw, 19vw" />
                     </div>
                   </div>
                   <span className={styles.fade} aria-hidden="true" />

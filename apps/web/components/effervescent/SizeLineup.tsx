@@ -5,11 +5,11 @@ import Image from "next/image";
 import RollText from "@/components/ui/RollText";
 import type { Dictionary } from "@/lib/i18n";
 import type { EffProduct } from "@/lib/products";
-import { contact } from "@/lib/site";
+import { contact as fileContact, type Contact } from "@/lib/site";
 import QuoteSheet from "./QuoteSheet";
 import styles from "./Effervescent.module.css";
 
-type Props = { t: Dictionary["productEff"]["sizes"]; product: EffProduct; locale: string };
+type Props = { t: Dictionary["productEff"]["sizes"]; product: EffProduct; locale: string; contact?: Contact };
 
 const fill = (s: string, vars: Record<string, string | number>) => s.replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? ""));
 
@@ -17,7 +17,7 @@ const fill = (s: string, vars: Record<string, string | number>) => s.replace(/\{
  * The five standard sizes side by side at true relative scale (renders from the parametric model,
  * one shared px-per-mm), with the selected size's dimensions and a quote form that unfolds in place.
  */
-export default function SizeLineup({ t, product, locale }: Props) {
+export default function SizeLineup({ t, product, locale, contact = fileContact }: Props) {
   const [id, setId] = useState(product.defaultSize);
   const [sheet, setSheet] = useState<{ x: number; y: number } | null>(null);
   const group = useRef<HTMLDivElement>(null);

@@ -14,6 +14,7 @@ import { getDictionary, isLocale, localeMeta, locales } from "@/lib/i18n";
 import { languageAlternates, pageUrl, productEffJsonLd } from "@/lib/seo";
 import { productPaths } from "@/lib/site";
 import { getEffervescentProduct } from "@/lib/products";
+import { ensureContent } from "@/lib/content";
 
 const PATH = productPaths.effervescent;
 type Params = Promise<{ locale: string }>;
@@ -23,6 +24,7 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  await ensureContent();
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const m = getDictionary(locale).productEff.meta;
@@ -45,6 +47,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 }
 
 export default async function EffervescentTubePage({ params }: { params: Params }) {
+  await ensureContent();
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = getDictionary(locale);
@@ -61,10 +64,10 @@ export default async function EffervescentTubePage({ params }: { params: Params 
       <Header t={t} locale={locale} path={PATH} />
       <main id="main" className={styles.page}>
         <EffStage t={t.productEff} product={product} size={hero} dir={localeMeta[locale].dir} locale={locale} />
-        <SizeLineup t={t.productEff.sizes} product={product} locale={locale} />
+        <SizeLineup t={t.productEff.sizes} product={product} locale={locale} contact={t.site.contact} />
         <CapCompare t={t.productEff.caps} caps={product.caps} locale={locale} />
         <Uses t={t.productEff.uses} photo={product.images.usesPhoto} bg={product.images.usesBg} locale={locale} />
-        <Making t={t.productEff.make} product={product} locale={locale} />
+        <Making t={t.productEff.make} product={product} locale={locale} seals={t.media.certifications.seals} />
       </main>
       <ContactCTA t={t} locale={locale} blend="navy" />
       <Reveals />

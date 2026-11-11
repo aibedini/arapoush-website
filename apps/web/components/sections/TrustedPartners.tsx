@@ -18,17 +18,17 @@ const stats = [
   { value: 99, suffix: "%", w: 176 },
 ];
 
-const logos = [
-  { src: "/images/logo-hydroderm.svg", alt: "Hydroderm", w: 189, h: 81 },
-  { src: "/images/logo-cerita.png", alt: "Cerita Hair Care", w: 146, h: 97 },
-  { src: "/images/logo-jute.png", alt: "Jute Cosmetics", w: 97, h: 97 },
-  { src: "/images/logo-prime.png", alt: "Prime", w: 146, h: 97 },
-  { src: "/images/logo-cerita.png", alt: "Cerita Hair Care", w: 146, h: 97 },
-  { src: "/images/logo-hydroderm.svg", alt: "Hydroderm", w: 189, h: 81 },
-];
+/** Logos (from content) are fitted into the design's 190 × 97 slot. */
+const fit = (img: { width: number; height: number }) => {
+  const k = Math.min(190 / img.width, 97 / img.height, 1);
+  return { w: Math.round(img.width * k), h: Math.round(img.height * k) };
+};
 
-export default function TrustedPartners({ t, locale }: SectionProps) {
+export default function TrustedPartners({ t }: SectionProps) {
   const p = t.partners;
+  // The track needs more logos than fit on screen: the list plus the first two again, mirrored.
+  const list = t.media.partners.logos.map((l) => ({ src: l.image.src, alt: l.name, ...fit(l.image) }));
+  const logos = list.length > 2 ? [...list, ...list.slice(0, 2).reverse()] : list;
   const track = useRef<HTMLUListElement>(null);
   const busy = useRef(false);
   const [start, setStart] = useState(0);
@@ -76,7 +76,7 @@ export default function TrustedPartners({ t, locale }: SectionProps) {
     <section id="partners" className={styles.section} aria-labelledby="partners-title">
       <div className={styles.bg} aria-hidden="true">
         <div className={styles.bgInner} data-parallax="40">
-          <Image src={locale === "fa" ? "/images/fa/partners-bg.webp" : "/images/partners-bg.webp"} alt="" fill sizes="100vw" className={styles.bgImg} data-no-mirror />
+          <Image src={t.media.partners.background.src} alt="" fill sizes="100vw" className={styles.bgImg} data-no-mirror />
         </div>
       </div>
 

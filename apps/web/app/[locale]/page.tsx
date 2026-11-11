@@ -9,13 +9,15 @@ import { getDictionary, isLocale } from "@/lib/i18n";
 import { Sections, normalizeLayout } from "@/lib/sections";
 import homeLayout from "@/content/home-layout.json";
 import { homeJsonLd } from "@/lib/seo";
+import { ensureContent, entry } from "@/lib/content";
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+  await ensureContent();
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = getDictionary(locale);
-  // Swap this import for a CMS fetch to drive section order from the backend.
-  const layout = normalizeLayout(homeLayout);
+  // Section order and visibility: OPEX page.home.layout (or content/home-layout.json without OPEX).
+  const layout = normalizeLayout(entry<typeof homeLayout>("page.home.layout") ?? homeLayout);
 
   return (
     <>
@@ -24,7 +26,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         // `<` is escaped so dictionary text can never close the script tag.
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd(t, locale)).replace(/</g, "\\u003c") }}
       />
-      <PageLoader />
+      <PageLoader logo={t.media.site.logo.src} />
       <Header t={t} locale={locale} />
       <main id="main">
         <Sections layout={layout} t={t} locale={locale} />

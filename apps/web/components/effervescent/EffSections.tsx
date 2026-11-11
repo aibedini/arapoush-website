@@ -51,10 +51,10 @@ export function Uses({ t, photo, bg, locale }: { t: Dictionary["productEff"]["us
   );
 }
 
-const SEALS = ["/images/cert-inso.webp", "/images/cert-gmp.webp", "/images/cert-ifda.webp"];
+const SEALS = ["inso", "gmp", "ifda"];
 
 /** Manufacturing: the published figures (first domestic line, daily capacity, imports) and standards. */
-export function Making({ t, product, locale }: { t: Dictionary["productEff"]["make"]; product: EffProduct; locale: string }) {
+export function Making({ t, product, locale, seals }: { t: Dictionary["productEff"]["make"]; product: EffProduct; locale: string; seals: { id: string; image: Img }[] }) {
   const nf = new Intl.NumberFormat(locale);
   const since = product.since[locale] ?? product.since.en!;
   const stats = [
@@ -83,9 +83,9 @@ export function Making({ t, product, locale }: { t: Dictionary["productEff"]["ma
         </dl>
         <div className={styles.standards} data-reveal>
           <ul>
-            {SEALS.map((src, i) => (
-              <li key={src}>
-                <Image src={src} alt={t.seals[i] ?? ""} width={480} height={480} sizes="72px" data-no-mirror />
+            {SEALS.map((id, i) => ({ id, i, img: seals.find((s) => s.id === id)?.image })).filter((s) => s.img).map(({ id, i, img }) => (
+              <li key={id}>
+                <Image src={img!.src} alt={t.seals[i] ?? ""} width={img!.width} height={img!.height} sizes="72px" data-no-mirror />
               </li>
             ))}
           </ul>

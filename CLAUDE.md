@@ -5,6 +5,17 @@ Monorepo (pnpm + Turborepo). The site is `apps/web`: Next.js 15 App Router, loca
 via `lib/sections.tsx`; copy lives in `lib/i18n/dictionaries/`. The OPEX content platform plan is
 `docs/opex/OPEX-PLAN.md`.
 
+## Content comes from OPEX (lib/content)
+
+- Pages, `generateMetadata`, the sitemap and llms routes call `await ensureContent()` before the sync
+  loaders (`getDictionary`, `getTubeProduct`, `getEffervescentProduct`, `getPrinting`).
+- No hard-coded image paths in components: images come from `t.media` (per-locale variants already
+  picked), and contact details from `t.site`. A new image or text gets a field in the content: add it to
+  `packages/schema/scripts/generate.ts`, then run `pnpm --filter @arapoush/schema generate`.
+- After changing dictionaries or `content/*.json`, regenerate the snapshot (same command).
+- Locked content (3D geometry, sizes, cap marker positions, renders) stays locked in
+  `packages/schema/src/overrides.ts`.
+
 ## SEO, AI indexing and speed are checked on EVERY change (client requirement)
 
 Before calling any change done:

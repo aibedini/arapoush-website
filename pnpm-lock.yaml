@@ -109,6 +109,9 @@ importers:
       '@animate-ui/react':
         specifier: 2.4.1
         version: 2.4.1(motion@14.9.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(radix-ui@1.8.1(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@arapoush/schema':
+        specifier: workspace:*
+        version: link:../../packages/schema
       gsap:
         specifier: 3.13.0
         version: 3.13.0

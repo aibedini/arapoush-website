@@ -1,14 +1,16 @@
 import Image from "next/image";
 import { links } from "@/lib/site";
 import type { SectionProps } from "@/lib/sections";
+import { byId } from "@/lib/content/pick";
 import { CircleArrow } from "@/components/ui/icons";
 import Glow from "@/components/ui/Glow";
 import styles from "./Products.module.css";
 
-const visuals = (locale: string) =>
+/** Card slots of the design; their photos come from content (t.media, Persian artwork already picked). */
+const visuals = (media: SectionProps["t"]["media"]) =>
   [
-    { n: "01", img: locale === "fa" ? "/images/fa/product-tube.webp" : "/images/product-tube.webp", href: links.products.tube, tone: "light" as const, x: 634 },
-    { n: "02", img: locale === "fa" ? "/images/fa/product-effervescent.webp" : "/images/product-effervescent.webp", href: links.products.effervescent, tone: "dark" as const, x: 1243 },
+    { n: "01", img: byId(media.products.cards, "tube")?.image.src ?? "", href: links.products.tube, tone: "light" as const, x: 634 },
+    { n: "02", img: byId(media.products.cards, "effervescent")?.image.src ?? "", href: links.products.effervescent, tone: "dark" as const, x: 1243 },
   ] as const;
 
 type CardProps = { n: string; img: string; href: string; dark: boolean; title: string[]; text: string; label: string };
@@ -74,7 +76,7 @@ export default function Products({ t, locale }: SectionProps) {
         </div>
 
         <div className={styles.cards} data-reveal-stagger>
-          {visuals(locale).map((v, i) => {
+          {visuals(t.media).map((v, i) => {
             const card = p.cards[i];
             if (!card) return null;
             return (
@@ -95,7 +97,7 @@ export default function Products({ t, locale }: SectionProps) {
 
         <div className={`at ${styles.tablets}`} style={{ "--x": 1701, "--y": 84, "--w": 243 } as React.CSSProperties} aria-hidden="true">
           <div data-parallax="70">
-            <Image src="/images/tablets.webp" alt="" width={243} height={303} sizes="13vw" style={{ width: "100%", height: "auto" }} />
+            <Image src={t.media.products.tablets.src} alt="" width={t.media.products.tablets.width} height={t.media.products.tablets.height} sizes="13vw" style={{ width: "100%", height: "auto" }} />
           </div>
         </div>
       </div>

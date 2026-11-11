@@ -1,17 +1,25 @@
+import { ensureContent } from "@/lib/content";
 import type { MetadataRoute } from "next";
-import { locales } from "@/lib/i18n";
+import { getDictionary, locales } from "@/lib/i18n";
+import { getPrinting } from "@/lib/printing";
+import { getEffervescentProduct, getTubeProduct } from "@/lib/products";
 import { languageAlternates, pageUrl } from "@/lib/seo";
 import { printingPath, productPaths, siteUrl } from "@/lib/site";
 
-// Every public page, once per locale, with its hreflang alternates and key images.
-const pages = [
-  { path: "", priority: 1, images: ["/images/hero-products.webp", "/images/product-tube.webp", "/images/product-effervescent.webp"] },
-  { path: productPaths.tube, priority: 0.9, images: ["/images/product-tube.webp", "/images/cta-tube.webp"] },
-  { path: printingPath, priority: 0.8, images: ["/images/printing/tube-gold.webp", "/images/printing/tube-colour.webp", "/images/printing/layers.webp", "/images/printing/macro-flexo.webp", "/images/printing/macro-offset.webp", "/images/printing/macro-silk.webp", "/images/printing/macro-hotstamp.webp", "/images/printing/macro-combination.webp"] },
-  { path: productPaths.effervescent, priority: 0.9, images: ["/images/eff/uses-products.webp", "/images/eff/cap-plain-photo.webp", "/images/eff/uses-tablets.webp", "/images/eff/cap-spiral.webp", "/images/eff/cap-plain.webp"] },
-];
-
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  await ensureContent();
+  // Key images per page come from content, so a replaced photo is announced to search engines too.
+  const { media } = getDictionary("en");
+  const tube = getTubeProduct();
+  const eff = getEffervescentProduct();
+  const printing = getPrinting();
+  const src = (list: ({ src: string } | undefined | null)[]) => [...new Set(list.filter((x): x is { src: string } => !!x?.src).map((x) => x.src))];
+  const pages = [
+    { path: "", priority: 1, images: src([media.hero.slides[0]?.product, ...media.products.cards.map((c) => c.image)]) },
+    { path: productPaths.tube, priority: 0.9, images: src([media.products.cards[0]?.image, media.site.ctaTube, tube.images?.hero ? { src: tube.images.hero.ltr } : null]) },
+    { path: printingPath, priority: 0.8, images: src([media.printing.tubeGold, media.printing.tubeColour, media.printing.layers, ...printing.tech.items.map((m) => m.macro)]) },
+    { path: productPaths.effervescent, priority: 0.9, images: src([eff.images.uses, ...eff.caps.variants.flatMap((v) => [v.photo, v.image]), eff.images.usesPhoto]) },
+  ];
   return pages.flatMap((p) =>
     locales.map((l) => ({
       url: pageUrl(l, p.path),
@@ -19,7 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: l === "fa" ? p.priority : p.priority - 0.1,
       alternates: { languages: languageAlternates(p.path) },
-      images: p.images.map((i) => `${siteUrl}${i}`),
+      images: p.images.map((i) => (i.startsWith("http") ? i : `${siteUrl}${i}`)),
     })),
   );
 }

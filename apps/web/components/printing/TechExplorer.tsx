@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import RollText from "@/components/ui/RollText";
 import { quoteMailto } from "@/lib/configurator/quote";
-import { contact, siteUrl } from "@/lib/site";
+import { contact as fileContact, siteUrl, type Contact } from "@/lib/site";
 import { t, type Printing, type TechId } from "@/lib/printingText";
 import { ArrowIcon, CheckIcon, ChevronIcon } from "./PrintIcons";
 import styles from "./Printing.module.css";
@@ -16,7 +16,7 @@ export const SHOW_SAMPLE = "printing:show-sample";
  * The five methods as cards; choosing one opens its detail panel below the grid (macro image,
  * process, capabilities, best use) with a way to its sample design and to ask about it.
  */
-export default function TechExplorer({ c, locale }: { c: Printing["tech"]; locale: string }) {
+export default function TechExplorer({ c, locale, contact = fileContact }: { c: Printing["tech"]; locale: string; contact?: Contact }) {
   const [id, setId] = useState<TechId>(c.items[0]!.id);
   const panel = useRef<HTMLDivElement>(null);
   const tech = c.items.find((i) => i.id === id)!;

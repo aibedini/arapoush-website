@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@animate-ui/react": "2.4.1",
+    "@arapoush/schema": "workspace:*",
     "gsap": "3.13.0",
     "motion": "14.9.0",
     "next": "15.3.3",

@@ -1,13 +1,17 @@
 import tube from "@/content/products/multi-layer-tube.json";
 import effervescent from "@/content/products/effervescent-tube.json";
 import type { TubeProduct } from "@/lib/configurator/model";
+import { entry } from "@/lib/content";
 
 /**
- * Product content managed in the admin panel. Today it is read from content/products/*.json at build
- * time; when the backend serves it, fetch the same shape here (and revalidate) — nothing else changes.
+ * Product content, edited in OPEX (product.tube.catalogue + the page images in product.tube.page).
+ * Without OPEX it is content/products/*.json, as before. Call ensureContent() earlier in the request.
  */
 export function getTubeProduct(): TubeProduct {
-  return tube as unknown as TubeProduct;
+  const catalogue = entry<Record<string, unknown>>("product.tube.catalogue");
+  if (!catalogue) return tube as unknown as TubeProduct;
+  const page = entry<{ images?: unknown }>("product.tube.page");
+  return { ...tube, ...catalogue, images: page?.images ?? tube.images } as unknown as TubeProduct;
 }
 
 
@@ -37,5 +41,5 @@ export type CapPart = "cap" | "structure" | "chamber" | "mouth";
 
 /** Effervescent tube content (sizes, caps, figures, photos); same admin/backend contract as getTubeProduct. */
 export function getEffervescentProduct(): EffProduct {
-  return effervescent as unknown as EffProduct;
+  return (entry<{ data?: EffProduct }>("product.effervescent.page")?.data ?? effervescent) as unknown as EffProduct;
 }

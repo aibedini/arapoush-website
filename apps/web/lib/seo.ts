@@ -1,4 +1,4 @@
-import { contact, printingPath, productPaths, siteUrl, social } from "@/lib/site";
+import { printingPath, productPaths, siteUrl } from "@/lib/site";
 import { getPrinting, t as pt, type Printing } from "@/lib/printing";
 import { getEffervescentProduct, getTubeProduct, type EffProduct } from "@/lib/products";
 import { diametersFor, loc, type TubeProduct } from "@/lib/configurator/model";
@@ -12,10 +12,9 @@ export const languageAlternates = (path = "") => ({
   "x-default": pageUrl(defaultLocale, path),
 });
 
-const productImages = ["/images/product-tube.webp", "/images/product-effervescent.webp"];
-
 /** schema.org graph for the home page: who we are, the site, the page and what we make. */
 export function homeJsonLd(t: Dictionary, locale: Locale) {
+  const { contact, social } = t.site;
   const url = pageUrl(locale);
   const lang = localeMeta[locale].intl;
   const org = `${siteUrl}/#organization`;
@@ -28,7 +27,7 @@ export function homeJsonLd(t: Dictionary, locale: Locale) {
         name: "Arapoush Gostar",
         alternateName: ["آراپوش گستر", "ARAPOUSH"],
         url: siteUrl,
-        logo: `${siteUrl}/images/logo.png`,
+        logo: `${siteUrl}${t.media.site.logo.src}`,
         email: contact.email,
         telephone: contact.phone,
         address: {
@@ -63,7 +62,7 @@ export function homeJsonLd(t: Dictionary, locale: Locale) {
         inLanguage: lang,
         isPartOf: { "@id": `${siteUrl}/#website` },
         about: { "@id": org },
-        primaryImageOfPage: `${siteUrl}/images/hero-products.webp`,
+        primaryImageOfPage: `${siteUrl}${t.media.hero.slides[0]?.product?.src ?? t.media.site.og.src}`,
       },
       {
         "@type": "ItemList",
@@ -76,7 +75,7 @@ export function homeJsonLd(t: Dictionary, locale: Locale) {
             "@type": "Product",
             name: c.title.join(" "),
             description: c.text,
-            image: `${siteUrl}${productImages[i]}`,
+            image: `${siteUrl}${t.media.products.cards[i]?.image.src ?? t.media.site.og.src}`,
             brand: { "@id": org },
             category: t.applications.items.map((a) => a.title).join(", "),
           },
@@ -89,6 +88,7 @@ export function homeJsonLd(t: Dictionary, locale: Locale) {
 /** Plain-text summaries for AI assistants and answer engines (llms.txt convention). */
 export function llmsText(full: boolean) {
   const en = getDictionary("en");
+  const { contact, social } = en.site;
   const lines = [
     "# Arapoush Gostar (آراپوش گستر)",
     "",
@@ -278,7 +278,7 @@ export function printingJsonLd(t: Dictionary, p: Printing, locale: Locale, path:
         description: tx(p.meta.description),
         inLanguage: locale,
         isPartOf: { "@id": `${siteUrl}/#website` },
-        primaryImageOfPage: `${siteUrl}/images/printing/tube-gold.webp`,
+        primaryImageOfPage: `${siteUrl}${t.media.printing.tubeGold.src}`,
         mainEntity: {
           "@type": "ItemList",
           itemListElement: p.tech.items.map((m, i) => ({

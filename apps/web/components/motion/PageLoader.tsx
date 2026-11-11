@@ -16,7 +16,7 @@ function waitForImage(img: HTMLImageElement) {
   });
 }
 
-export default function PageLoader() {
+export default function PageLoader({ logo = "/images/logo.png" }: { logo?: string }) {
   const root = useRef<HTMLDivElement>(null);
   const bar = useRef<HTMLSpanElement>(null);
   // Discrete real progress (one step per finished asset); the odometer rolls between steps.
@@ -105,7 +105,7 @@ export default function PageLoader() {
     <div ref={root} className={styles.loader} aria-hidden="true">
       <div className={styles.inner}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className={styles.logo} src="/images/logo.png" alt="" width={266} height={96} data-no-mirror />
+        <img className={styles.logo} src={logo} alt="" width={266} height={96} data-no-mirror />
         <div className={styles.meter}>
           <span ref={bar} className={styles.bar} />
         </div>

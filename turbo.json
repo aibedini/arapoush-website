@@ -5,7 +5,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "env": ["NEXT_PUBLIC_SITE_URL"],
+      "env": ["NEXT_PUBLIC_SITE_URL", "OPEX_DELIVERY_URL", "OPEX_API_URL", "SITE_URL"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "typecheck": {

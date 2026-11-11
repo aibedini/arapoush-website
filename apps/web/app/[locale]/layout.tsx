@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import { getDictionary, isLocale, localeMeta, locales } from "@/lib/i18n";
 import { languageAlternates, pageUrl } from "@/lib/seo";
 import { siteUrl } from "@/lib/site";
 import "../globals.css";
+import { ensureContent } from "@/lib/content";
 
 // Primary Latin typeface of the design (licensed files supplied by the client, subset to Latin).
 const helvetica = localFont({
@@ -62,11 +64,13 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  await ensureContent();
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const t = getDictionary(locale);
   const url = pageUrl(locale);
-  const image = { url: "/images/og.jpg", width: 1200, height: 630, alt: t.common.brand };
+  const og = t.media.site.og;
+  const image = { url: og.src, width: og.width, height: og.height, alt: t.common.brand };
   return {
     metadataBase: new URL(siteUrl),
     title: t.meta.title,
@@ -84,7 +88,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       images: [image],
     },
     twitter: { card: "summary_large_image", title: t.meta.title, description: t.meta.description, images: [image.url] },
-    robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
+    // Draft previews from the OPEX console are never indexed.
+    robots: (await draftMode()).isEnabled ? { index: false, follow: false } : { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
     formatDetection: { telephone: false, email: false, address: false },
   };
 }
@@ -96,6 +101,7 @@ export const viewport: Viewport = {
 };
 
 export default async function LocaleLayout({ children, params }: { children: React.ReactNode; params: Params }) {
+  await ensureContent();
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = getDictionary(locale);

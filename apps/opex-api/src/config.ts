@@ -23,6 +23,8 @@ const Env = z.object({
   /** Website revalidation webhook (content.published). */
   SITE_WEBHOOK_URL: z.string().url().optional(),
   SITE_WEBHOOK_SECRET: z.string().min(24).default("dev-only-webhook-secret-change-me-0123"),
+  /** Public origin of the website, for draft preview links. */
+  SITE_URL: z.string().url().default("http://localhost:3210"),
   /** Where uploaded media is stored (filesystem driver). */
   MEDIA_DIR: z.string().default("./data/media"),
   /** Optional ClamAV daemon for upload scanning (host:port). Unset in dev: scanning is skipped and flagged. */

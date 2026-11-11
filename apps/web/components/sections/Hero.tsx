@@ -13,13 +13,6 @@ import type { SectionProps } from "@/lib/sections";
 import { ArrowRightCircle, ChevronLeftBold, ChevronRightBold, ChevronRightSoft, PlayCircle } from "@/components/ui/icons";
 import styles from "./Hero.module.css";
 
-/** Visual layers per slide. Copy comes from the dictionary (t.hero.slides), in the same order. */
-const visuals = [
-  { bg: "/images/hero-bg.webp", product: { src: "/images/hero-products.webp", w: 1070, h: 713 }, tone: "light" },
-  { bg: "/images/hero-packaging-ltr.webp", product: null, tone: "light" },
-  { bg: "/images/cta-bg.webp", product: { src: "/images/cta-tube.webp", w: 941, h: 706 }, tone: "dark" },
-  { bg: "/images/partners-bg.webp", product: null, tone: "light" },
-] as const;
 
 const AUTOPLAY_S = 7;
 const LOAD_SLIDES = "arapoush:hero-slides";
@@ -48,7 +41,7 @@ function AfterLoad({ now, children }: { now: boolean; children: React.ReactNode 
   return on ? children : null;
 }
 
-export default function Hero({ t, locale }: SectionProps) {
+export default function Hero({ t }: SectionProps) {
   const root = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -57,6 +50,13 @@ export default function Hero({ t, locale }: SectionProps) {
   const busy = useRef(false);
   const introDone = useRef(false);
   const progress = useRef<gsap.core.Tween | null>(null);
+  // Visual layers per slide from content (t.media); copy from t.hero.slides, in the same order.
+  const visuals = t.media.hero.slides.map((s) => ({
+    bg: s.background.src,
+    mobile: s.backgroundMobile?.src,
+    product: s.product ? { src: s.product.src, w: s.product.width, h: s.product.height } : null,
+    tone: s.tone,
+  }));
   const slides = t.hero.slides.slice(0, visuals.length);
   const count = slides.length;
 
@@ -249,9 +249,9 @@ export default function Hero({ t, locale }: SectionProps) {
           <div key={v.bg} className={styles.bg} data-slide-bg data-index={i} aria-hidden="true">
             <AfterLoad now={i === 0}>
               <picture>
-                {i === 1 && <source media="(max-width: 767px)" srcSet="/images/hero-packaging-mobile.webp" />}
+                {v.mobile && <source media="(max-width: 767px)" srcSet={v.mobile} />}
                 <Image
-                  src={i === 1 && locale === "fa" ? "/images/hero-packaging-rtl.webp" : v.bg}
+                  src={v.bg}
                   alt=""
                   fill
                   priority={i === 0}

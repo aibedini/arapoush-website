@@ -6,16 +6,17 @@ import RollText from "@/components/ui/RollText";
 import { links } from "@/lib/site";
 import { localeMeta } from "@/lib/i18n/config";
 import type { SectionProps } from "@/lib/sections";
+import { byId } from "@/lib/content/pick";
 import MaybeLink from "@/components/ui/MaybeLink";
 import Glow from "@/components/ui/Glow";
 import { ArrowRightCircle, ChevronLeftBold, ChevronRightBold } from "@/components/ui/icons";
 import styles from "./Insights.module.css";
 
-/** Non-text article data; copy lives in t.insights.articles (same order). */
+/** Non-text article data; copy lives in t.insights.articles (same order), photos in t.media.insights. */
 const visuals = [
-  { date: "2026-09-22", tagBg: "#e5ebe4", img: "/images/journal-1.webp", pos: "50% 46%" },
-  { date: "2026-09-15", tagBg: "#e1edf4", img: "/images/journal-2.webp", pos: "50% 40%" },
-  { date: "2026-09-10", tagBg: "#f4e8df", img: "/images/journal-3.webp", pos: "50% 30%" },
+  { id: "journal-1", date: "2026-09-22", tagBg: "#e5ebe4", pos: "50% 46%" },
+  { id: "journal-2", date: "2026-09-15", tagBg: "#e1edf4", pos: "50% 40%" },
+  { id: "journal-3", date: "2026-09-10", tagBg: "#f4e8df", pos: "50% 30%" },
 ];
 
 export default function Insights({ t, locale }: SectionProps) {
@@ -133,11 +134,11 @@ export default function Insights({ t, locale }: SectionProps) {
               const a = ins.articles[i];
               if (!a) return null;
               return (
-                <li key={v.img} className={styles.slide} data-reveal-item>
+                <li key={v.id} className={styles.slide} data-reveal-item>
                   <article className={styles.card}>
                     <div className={`zoom-mask ${styles.media}`} data-reveal-media>
                       <div className={styles.mediaInner}>
-                        <Image src={v.img} alt="" fill sizes="(max-width: 767px) 46vw, (max-width: 1099px) 46vw, 25vw" style={{ objectPosition: v.pos }} draggable={false} />
+                        <Image src={byId(t.media.insights.articles, v.id)?.image.src ?? ""} alt="" fill sizes="(max-width: 767px) 46vw, (max-width: 1099px) 46vw, 25vw" style={{ objectPosition: v.pos }} draggable={false} />
                       </div>
                       <span className={styles.category}>{a.category}</span>
                     </div>

@@ -95,6 +95,16 @@ export default function EditEntry() {
       setSchedule("");
       refresh();
     }, at ? "انتشار زمان‌بندی شد." : "زمان‌بندی لغو شد.");
+  // Opens the website with this entry's draft (and every other draft). The tab opens first so the
+  // browser does not block it as a pop-up; it is cut off from this window before navigating.
+  const preview = async (locale: "fa" | "en" | "tr") => {
+    const w = window.open("", "_blank");
+    const r = await act.run(() => api<{ url: string }>("/v1/manage/preview", { body: { type: key, locale } }));
+    if (!w) return;
+    if (!r) return w.close();
+    w.opener = null;
+    w.location.href = r.url;
+  };
   const compare = async (r: Rev) => {
     if (!view.data?.draft) return;
     const list = await act.run(() => api<Change[]>(`/v1/manage/diff?from=${r.id}&to=${view.data!.draft!.id}`));
@@ -172,6 +182,14 @@ export default function EditEntry() {
                   )}
                 </>
               )}
+              <div className="row">
+                <span className="small muted">پیش‌نمایش پیش‌نویس روی سایت:</span>
+                {(["fa", "en", "tr"] as const).map((l) => (
+                  <button key={l} type="button" className="btn sm" disabled={dirty || act.busy} onClick={() => preview(l)} title={dirty ? "اول ذخیره کنید" : undefined}>
+                    {l.toUpperCase()}
+                  </button>
+                ))}
+              </div>
               {v.changesSincePublish.length > 0 && (
                 <button type="button" className="btn sm ghost" onClick={() => setDiff({ title: "تغییرات از آخرین انتشار", list: v.changesSincePublish })}>
                   {num(v.changesSincePublish.length)} تغییر نسبت به نسخهٔ منتشرشده

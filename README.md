@@ -123,6 +123,20 @@ pnpm --filter @arapoush/opex-console dev    # sign in, then set up the authentic
 
 The console reads `OPEX_API_URL` (default `http://127.0.0.1:4000`) and `SITE_URL` for site image previews.
 
+The website reads its content from OPEX when these are set (otherwise it renders from its own files, as
+before):
+
+| Variable | What |
+|---|---|
+| `OPEX_DELIVERY_URL` | OPEX API origin, e.g. `http://127.0.0.1:4000`; `/media/*` is proxied there |
+| `OPEX_DELIVERY_TOKEN` | Same value as the API's `DELIVERY_TOKEN` |
+| `OPEX_WEBHOOK_SECRET` | Same value as the API's `SITE_WEBHOOK_SECRET`; OPEX posts to `/api/opex/revalidate` after a publish |
+
+If OPEX is down, the site keeps the last content it loaded, or falls back to the snapshot
+(`packages/schema/src/generated/seed.json`). Previews open through `/api/opex/preview`, a link
+OPEX signs (30 minutes). After changing the dictionaries or `content/*.json`, regenerate the
+snapshot with `pnpm --filter @arapoush/schema generate`.
+
 | Folder | What |
 |---|---|
 | `apps/web` | The website (Next.js). Paths below are relative to it. |

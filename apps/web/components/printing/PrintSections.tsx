@@ -1,10 +1,11 @@
 import Image from "next/image";
 import RollText from "@/components/ui/RollText";
 import { quoteMailto } from "@/lib/configurator/quote";
-import { contact, siteUrl } from "@/lib/site";
+import { contact as fileContact, siteUrl, type Contact } from "@/lib/site";
 import { t, type Printing, type Tech } from "@/lib/printing";
 import { ArrowIcon, DownloadIcon, EyeIcon, MailIcon, PhoneIcon } from "./PrintIcons";
 import styles from "./Printing.module.css";
+import type { Media } from "@/lib/content/media";
 
 const fill = (s: string, vars: Record<string, string>) => s.replace(/\{(\w+)\}/g, (_, k: string) => vars[k] ?? "");
 
@@ -17,11 +18,11 @@ function fileSize(bytes: number, locale: string) {
  * Printing resources. A card offers Download (and Preview for PDFs) only when its file exists on
  * disk; until then it says "coming soon" and the file can be requested by email.
  */
-export function Downloads({ c, locale }: { c: Printing["downloads"]; locale: string }) {
+export function Downloads({ c, locale, images, contact = fileContact }: { c: Printing["downloads"]; locale: string; images: Media["printing"]; contact?: Contact }) {
   return (
     <section id="downloads" className={`${styles.downloads} ${styles.onDark}`} aria-labelledby="downloads-title">
       <div className={styles.navyBg} aria-hidden="true">
-        <Image src="/images/printing/bg-navy.webp" alt="" fill sizes="100vw" quality={70} data-no-mirror />
+        <Image src={images.bgNavy.src} alt="" fill sizes="100vw" quality={70} data-no-mirror />
       </div>
       <div className={styles.inner}>
         <div className={styles.dlGrid}>
@@ -98,7 +99,7 @@ export function Downloads({ c, locale }: { c: Printing["downloads"]; locale: str
 }
 
 /** Comparison: a table on wide screens, one card per method on phones. A dash means "not stated". */
-export function Comparison({ c, techs, locale }: { c: Printing["compare"]; techs: Tech[]; locale: string }) {
+export function Comparison({ c, techs, locale, contact = fileContact }: { c: Printing["compare"]; techs: Tech[]; locale: string; contact?: Contact }) {
   const cell = (id: Tech["id"], col: string) => {
     const v = c.rows[id]?.[col];
     return v ? t(v, locale) : null;
@@ -178,17 +179,17 @@ export function Comparison({ c, techs, locale }: { c: Printing["compare"]; techs
 }
 
 /** Closing consultation, right before the shared footer. Carries #contact for the header's quote button. */
-export function PrintCta({ c, locale }: { c: Printing["cta"]; locale: string }) {
+export function PrintCta({ c, locale, images, contact = fileContact }: { c: Printing["cta"]; locale: string; images: Media["printing"]; contact?: Contact }) {
   const mail = quoteMailto({ to: contact.email, subject: t(c.subject, locale), spec: [t(c.title, locale)], fields: [], link: `${siteUrl}/${locale}/printing` });
   return (
     <section id="contact" className={styles.cta} aria-labelledby="print-cta-title">
       <div className={styles.heroBg} aria-hidden="true">
-        <Image src="/images/printing/bg-light.webp" alt="" fill sizes="100vw" quality={70} data-no-mirror />
+        <Image src={images.bgLight.src} alt="" fill sizes="100vw" quality={70} data-no-mirror />
       </div>
       <div className={styles.inner}>
         <div className={styles.ctaGrid}>
           <div className={styles.ctaArt} data-parallax="40">
-            <Image src="/images/printing/cta-tube.webp" alt={t(c.tubeAlt, locale)} width={1447} height={1087} sizes="(max-width: 1099px) 92vw, 46vw" data-no-mirror />
+            <Image src={images.ctaTube.src} alt={t(c.tubeAlt, locale)} width={images.ctaTube.width} height={images.ctaTube.height} sizes="(max-width: 1099px) 92vw, 46vw" data-no-mirror />
           </div>
           <div className={styles.ctaCopy} data-reveal>
             <h2 id="print-cta-title" className={styles.h2}>

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import RollText from "@/components/ui/RollText";
-import { contact, links, productPaths, social } from "@/lib/site";
+import { productPaths } from "@/lib/site";
 import type { Dictionary } from "@/lib/i18n";
 import MaybeLink from "@/components/ui/MaybeLink";
 import { Call, Instagram, LinkedIn, Location, Mail, PaperDownload } from "@/components/ui/icons";
@@ -10,6 +10,7 @@ import styles from "./Footer.module.css";
 const exploreHrefs = ["#applications", "/about", "#insights", "#certifications"];
 
 export default function Footer({ t, locale }: { t: Dictionary; locale: string }) {
+  const { contact, links, social } = t.site;
   const home = `/${locale}`;
   // Absolute links so the footer is identical (and correct) on every page.
   const productHrefs = [`${home}${productPaths.tube}`, `${home}${productPaths.effervescent}`];
@@ -18,7 +19,7 @@ export default function Footer({ t, locale }: { t: Dictionary; locale: string })
   return (
     <footer className={styles.footer}>
       <div className={styles.brand} data-reveal>
-        <Image src="/images/logo-white.png" alt={t.common.brand} width={266} height={96} className={styles.logo} sizes="200px" data-no-mirror style={{ height: "auto" }} />
+        <Image src={t.media.site.logoWhite.src} alt={t.common.brand} width={t.media.site.logoWhite.width} height={t.media.site.logoWhite.height} className={styles.logo} sizes="200px" data-no-mirror style={{ height: "auto" }} />
         <p className={styles.tagline}>
           {f.tagline[0]}
           <br />

@@ -135,3 +135,30 @@ test("media: re-encoded on upload, private until published, active content rejec
     await t.close();
   }
 });
+
+test("preview: the console gets a signed link; the site reads drafts only with it", async () => {
+  const t = await testApp({ ...env(), SITE_URL: "https://site.test" }, { seed: true });
+  try {
+    const op = await signIn(t.app, t, "operator");
+    const e = (await t.app.inject({ method: "GET", url: "/v1/manage/entries/page.printing", headers: { cookie: op.cookie } })).json();
+    await t.app.inject({ method: "PATCH", url: "/v1/manage/entries/page.printing", headers: as(op), payload: { base_revision_id: e.draft.id, ops: [{ path: "/hero/title@en", value: "Draft title" }] } });
+    const link = await t.app.inject({ method: "POST", url: "/v1/manage/preview", headers: as(op), payload: { type: "page.printing", locale: "en" } });
+    assert.equal(link.statusCode, 200, link.body);
+    const url = new URL(link.json().url);
+    assert.equal(url.origin + url.pathname, "https://site.test/api/opex/preview");
+    assert.equal(url.searchParams.get("path"), "/en/printing");
+    const tok = url.searchParams.get("token")!;
+
+    const preview = (h: Record<string, string>) => t.app.inject({ method: "GET", url: "/v1/delivery/preview", headers: { ...bearer, ...h } });
+    const ok = await preview({ "opex-preview": tok });
+    assert.equal(ok.statusCode, 200);
+    assert.equal(getAt(ok.json().entries["page.printing"].data, "/hero/title@en"), "Draft title");
+    assert.equal((await preview({ "opex-preview": tok.slice(0, -2) + "xx" })).statusCode, 401);
+    assert.equal((await t.app.inject({ method: "GET", url: "/v1/delivery/preview", headers: { "opex-preview": tok } })).statusCode, 401, "the delivery token is still required");
+    // Published content is unchanged.
+    const live = await t.app.inject({ method: "GET", url: "/v1/delivery/content/page.printing", headers: bearer });
+    assert.equal(getAt(live.json().data, "/hero/title@en"), "ARAPOUSH Tube Printing Technologies");
+  } finally {
+    await t.close();
+  }
+});

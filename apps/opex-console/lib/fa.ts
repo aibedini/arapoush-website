@@ -45,6 +45,7 @@ export const ACTION: Record<string, string> = {
   "content.rollback": "بازگشت به نسخهٔ قبل",
   "content.schedule": "زمان‌بندی انتشار",
   "content.unschedule": "لغو زمان‌بندی",
+  "content.preview": "پیش‌نمایش پیش‌نویس",
   "content.entry.create": "ساخت محتوا",
   "oauth.login.success": "ورود از آراسی‌ام‌اس",
   "oauth.login.failure": "ورود ناموفق آراسی‌ام‌اس",

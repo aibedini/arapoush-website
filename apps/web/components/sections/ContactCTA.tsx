@@ -18,7 +18,7 @@ export default function ContactCTA({ t, locale, blend, footerOnly }: SectionProp
       <div className={`${styles.closing} ${styles.footerOnly}`}>
         <div className={styles.bg} aria-hidden="true">
           <div className={styles.bgFooter}>
-            <Image src="/images/footer-bg.webp" alt="" fill sizes="100vw" />
+            <Image src={t.media.site.footerBg.src} alt="" fill sizes="100vw" />
           </div>
         </div>
         <Footer t={t} locale={locale} />
@@ -28,17 +28,17 @@ export default function ContactCTA({ t, locale, blend, footerOnly }: SectionProp
     <div className={styles.closing} data-blend={blend}>
       <div className={styles.bg} aria-hidden="true">
         <div className={styles.bgTop} data-parallax="24">
-          <Image src="/images/cta-bg.webp" alt="" fill sizes="100vw" />
+          <Image src={t.media.site.ctaBg.src} alt="" fill sizes="100vw" />
         </div>
         <div className={styles.bgBottom}>
-          <Image src="/images/footer-bg.webp" alt="" fill sizes="100vw" />
+          <Image src={t.media.site.footerBg.src} alt="" fill sizes="100vw" />
         </div>
       </div>
 
       <section id="contact" className={styles.cta} aria-labelledby="cta-title">
         <div className={styles.tube} aria-hidden="true">
           <div data-parallax="50">
-            <Image src={locale === "fa" ? "/images/fa/cta-tube.webp" : "/images/cta-tube.webp"} alt="" width={941} height={706} sizes="(max-width: 767px) 62vw, (max-width: 1099px) 70vw, 49vw" data-no-mirror />
+            <Image src={t.media.site.ctaTube.src} alt="" width={t.media.site.ctaTube.width} height={t.media.site.ctaTube.height} sizes="(max-width: 767px) 62vw, (max-width: 1099px) 70vw, 49vw" data-no-mirror />
           </div>
         </div>
 

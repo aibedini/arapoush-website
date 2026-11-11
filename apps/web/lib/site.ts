@@ -34,6 +34,9 @@ export const social = {
   linkedin: "https://www.linkedin.com/company/arapoush",
 };
 
+/** Contact details as components take them (from OPEX global.site, or the defaults below). */
+export type Contact = { office: string; address: readonly string[]; phone: string; phoneHref: string; email: string };
+
 export const contact = {
   office: "Tehran Office",
   address: ["No3,Gooyabadi St,Zafar Ave,", "Tehran,Iran"],

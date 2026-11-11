@@ -13,5 +13,6 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next|images|favicon|.*\\..*).*)"],
+  // /api (OPEX webhooks, preview) and /media (OPEX uploads) are not localized pages.
+  matcher: ["/((?!_next|images|media/|api/|favicon|.*\\..*).*)"],
 };
