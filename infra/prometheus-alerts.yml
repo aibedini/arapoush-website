@@ -1,0 +1,44 @@
+# Prometheus alert rules for OPEX (docs/opex/runbooks/alerts.md).
+groups:
+  - name: opex
+    rules:
+      - alert: OpexDown
+        expr: up{job="opex"} == 0
+        for: 2m
+        labels: { severity: page }
+        annotations: { summary: "OPEX API is not answering" }
+      - alert: OpexAuditChainBroken
+        expr: opex_audit_chain_ok == 0
+        labels: { severity: page }
+        annotations: { summary: "Audit chain verification failed: rows changed outside OPEX" }
+      - alert: OpexRefreshTokenReuse
+        expr: opex_refresh_reuse_24h > 0
+        labels: { severity: page }
+        annotations: { summary: "A rotated AraCMS refresh token was reused (possible theft)" }
+      - alert: OpexLoginFailures
+        expr: opex_failed_logins_1h > 20
+        labels: { severity: warn }
+        annotations: { summary: "Many failed sign-ins in the last hour" }
+      - alert: OpexDeniedSpike
+        expr: opex_denied_1h > 50
+        labels: { severity: warn }
+        annotations: { summary: "Many denied requests in the last hour" }
+      - alert: OpexWebhooksDead
+        expr: opex_webhooks_dead > 0
+        for: 10m
+        labels: { severity: warn }
+        annotations: { summary: "Webhook deliveries gave up (site or AraCMS)" }
+      - alert: OpexEmailsDead
+        expr: opex_emails_dead > 0
+        for: 10m
+        labels: { severity: warn }
+        annotations: { summary: "Inquiry emails could not be sent" }
+      - alert: OpexReviewBacklog
+        expr: opex_cr_pending_review > 0
+        for: 24h
+        labels: { severity: info }
+        annotations: { summary: "Change requests have waited for review for over a day" }
+      - alert: OpexAuditStale
+        expr: opex_audit_head_age_seconds > 86400 and on() day_of_week() >= 0 and on() day_of_week() <= 3
+        labels: { severity: info }
+        annotations: { summary: "No audit events for 24 hours on a working day" }

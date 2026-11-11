@@ -41,6 +41,10 @@ const Env = z.object({
   CLAMAV: z.string().optional(),
   /** Operators allowed to sign in to the console only from these CIDRs (empty = anywhere). */
   CONSOLE_ALLOWED_CIDRS: z.string().default(""),
+  /** Write-once audit archive directory (mount WORM storage here). Unset: no archive job. */
+  AUDIT_ARCHIVE_DIR: z.string().optional(),
+  /** Bearer token for GET /metrics (Prometheus). Unset: metrics are off. */
+  METRICS_TOKEN: z.string().min(24).optional(),
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]).default("info"),
 });
 

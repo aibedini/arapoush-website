@@ -151,6 +151,9 @@ snapshot with `pnpm --filter @arapoush/schema generate`.
 | `apps/opex-console` | OPEX operator console (Next.js, Persian RTL) on port 3300; it reaches the API through same-origin rewrites |
 | `packages/schema` | Content types, validation and field paths shared by the site, the API and the console |
 | `packages/config` | Shared TypeScript and ESLint presets |
+| `clients/php-reference` | PHP client for AraCMS (OAuth + DPoP, request signing, change requests, webhooks) |
+| `infra` | Production stack: compose (Caddy, Postgres, ClamAV, API, console, site), backups, alerts, load test |
+| `docs/opex/runbooks` | Deploy, backup/restore drill, key rotation, incidents, alerts, AraCMS go-live, security testing |
 | `docs/opex` | OPEX content platform plan (admin, API, audit) |
 | `.github/workflows/ci.yml` | CI: checks, Lighthouse budgets, Docker image, installer upgrade and rollback test |
 

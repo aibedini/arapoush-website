@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@eslint/eslintrc": "3.3.7",
-    "eslint-config-next": "15.3.3"
+    "eslint-config-next": "15.5.28"
   },
   "peerDependencies": {
     "eslint": "^9"

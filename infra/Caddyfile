@@ -1,0 +1,50 @@
+# TLS (Let's Encrypt), HTTP/3, security headers and routing for the three public names.
+{
+	email {$ACME_EMAIL}
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+
+(common) {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+		-Server
+	}
+}
+
+# The website.
+{$SITE_DOMAIN}, www.{$SITE_DOMAIN} {
+	import common
+	@www host www.{$SITE_DOMAIN}
+	redir @www https://{$SITE_DOMAIN}{uri} permanent
+	reverse_proxy web:3000
+}
+
+# OPEX API: Partner API (AraCMS), OAuth, public media. Partners may present a client certificate
+# (mTLS); its SHA-256 is passed on and checked against the partner's registered fingerprint.
+{$OPEX_DOMAIN} {
+	import common
+	# Optional mTLS (mount partner-ca.pem in the compose file first):
+	# tls {
+	# 	client_auth {
+	# 		mode verify_if_given
+	# 		trust_pool file /etc/caddy/partner-ca.pem
+	# 	}
+	# }
+	# The console API and delivery API are internal: the console and site reach the API directly.
+	@internal path /v1/manage/* /v1/delivery/* /metrics
+	respond @internal 404
+	reverse_proxy opex-api:4000 {
+		header_up X-Client-Cert-Sha256 {http.request.tls.client.fingerprint}
+	}
+}
+
+# Operator console: only from the office / VPN ranges (CONSOLE_ALLOW, space separated CIDRs).
+{$CONSOLE_DOMAIN} {
+	import common
+	@outside not remote_ip {$CONSOLE_ALLOW}
+	respond @outside 403
+	reverse_proxy opex-console:3300
+}

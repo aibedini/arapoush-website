@@ -12,3 +12,7 @@ docs
 .claude
 **/.env*
 !**/.env.example
+apps/opex-api/data
+clients
+0.3)
+min

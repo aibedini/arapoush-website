@@ -1,0 +1,133 @@
+# Arapoush + OPEX production stack (one host). See docs/opex/runbooks/deploy.md.
+#   cp infra/.env.example infra/.env   # fill in every value
+#   docker compose -f infra/docker-compose.prod.yml --env-file infra/.env up -d --build
+#
+# Only Caddy is published. The API, console, database and scanner are on the internal network.
+name: arapoush
+
+x-restart: &restart
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options: { max-size: "20m", max-file: "5" }
+
+services:
+  caddy:
+    <<: *restart
+    image: caddy:2.10-alpine
+    ports: ["80:80", "443:443", "443:443/udp"]
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN}
+      OPEX_DOMAIN: ${OPEX_DOMAIN}
+      CONSOLE_DOMAIN: ${CONSOLE_DOMAIN}
+      CONSOLE_ALLOW: ${CONSOLE_ALLOW:-0.0.0.0/0 ::/0}
+      ACME_EMAIL: ${ACME_EMAIL}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # mTLS for AraCMS (optional): uncomment with the CA that issues AraCMS client certificates.
+      # - ./partner-ca.pem:/etc/caddy/partner-ca.pem:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [web, opex-api, opex-console]
+    networks: [edge, internal]
+
+  web:
+    <<: *restart
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        SITE_URL: https://${SITE_DOMAIN}
+        OPEX_DELIVERY_URL: http://opex-api:4000
+        OPEX_CONSOLE_ORIGIN: https://${CONSOLE_DOMAIN}
+    environment:
+      OPEX_DELIVERY_URL: http://opex-api:4000
+      OPEX_DELIVERY_TOKEN: ${DELIVERY_TOKEN}
+      OPEX_WEBHOOK_SECRET: ${SITE_WEBHOOK_SECRET}
+    # Not read-only: Next writes regenerated pages (after a publish) next to the build.
+    networks: [internal]
+
+  opex-api:
+    <<: *restart
+    build:
+      context: ..
+      dockerfile: apps/opex-api/Dockerfile
+    environment:
+      NODE_ENV: production
+      PUBLIC_URL: https://${OPEX_DOMAIN}
+      SITE_URL: https://${SITE_DOMAIN}
+      DATABASE_URL: postgres://opex:${POSTGRES_PASSWORD}@postgres:5432/opex
+      TENANT: ${TENANT:-arapoush}
+      # Caddy's internal address is the only trusted proxy (X-Forwarded-For, client-cert header).
+      TRUSTED_PROXIES: 172.30.0.0/24
+      SESSION_SECRET: ${SESSION_SECRET}
+      DELIVERY_TOKEN: ${DELIVERY_TOKEN}
+      SITE_WEBHOOK_URL: http://web:3000/api/opex/revalidate
+      SITE_WEBHOOK_SECRET: ${SITE_WEBHOOK_SECRET}
+      OPEX_JWT_PRIVATE_JWK: ${OPEX_JWT_PRIVATE_JWK}
+      OPEX_JWT_PREVIOUS_JWKS: ${OPEX_JWT_PREVIOUS_JWKS:-}
+      INQUIRY_KEY: ${INQUIRY_KEY}
+      INQUIRY_KEYS_OLD: ${INQUIRY_KEYS_OLD:-}
+      INQUIRY_TO: ${INQUIRY_TO:-sales@arapoush.com}
+      SMTP_URL: ${SMTP_URL}
+      MAIL_FROM: ${MAIL_FROM:-OPEX <no-reply@arapoush.com>}
+      TURNSTILE_SECRET: ${TURNSTILE_SECRET:-}
+      CLAMAV: clamav:3310
+      CONSOLE_ALLOWED_CIDRS: ${CONSOLE_ALLOWED_CIDRS:-}
+      AUDIT_ARCHIVE_DIR: /archive
+      METRICS_TOKEN: ${METRICS_TOKEN}
+    volumes:
+      - opex_data:/data
+      - ${AUDIT_ARCHIVE_PATH:-./audit-archive}:/archive
+    read_only: true
+    tmpfs: ["/tmp"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      clamav: { condition: service_started }
+    networks: [internal]
+
+  opex-console:
+    <<: *restart
+    build:
+      context: ..
+      dockerfile: apps/opex-console/Dockerfile
+      args:
+        OPEX_API_URL: http://opex-api:4000
+        SITE_URL: https://${SITE_DOMAIN}
+    read_only: true
+    tmpfs: ["/tmp"]
+    networks: [internal]
+
+  postgres:
+    <<: *restart
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: opex
+      POSTGRES_USER: opex
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes: [pg_data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U opex -d opex"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [internal]
+
+  clamav:
+    <<: *restart
+    image: clamav/clamav:1.4
+    volumes: [clamav_db:/var/lib/clamav]
+    networks: [internal]
+
+networks:
+  edge: {}
+  internal:
+    ipam:
+      config: [{ subnet: 172.30.0.0/24 }]
+
+volumes:
+  caddy_data: {}
+  caddy_config: {}
+  opex_data: {}
+  pg_data: {}
+  clamav_db: {}

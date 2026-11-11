@@ -23,3 +23,7 @@ import { deliverEmails, purgeOld } from "../inquiries/routes.ts";
 /** Inquiry emails to sales, and the two-year retention purge. */
 export const inquiryEmails: Job = { name: "inquiry-emails", everyMs: 15_000, run: (deps, log) => deliverEmails(deps, log) };
 export const inquiryRetention: Job = { name: "inquiry-retention", everyMs: 6 * 3_600_000, run: (deps) => purgeOld(deps) };
+
+import { exportArchive } from "../audit/archive.ts";
+/** Hourly write-once audit archive, when AUDIT_ARCHIVE_DIR is set. */
+export const auditArchive: Job = { name: "audit-archive", everyMs: 3_600_000, run: async (deps) => void (deps.config.AUDIT_ARCHIVE_DIR && (await exportArchive(deps, deps.config.AUDIT_ARCHIVE_DIR))) };
