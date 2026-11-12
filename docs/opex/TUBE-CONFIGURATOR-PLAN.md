@@ -4,6 +4,10 @@ Status: **agreed 2026-11-12**. Build order is T1 → T6, one commit per phase, a
 
 Progress: **T1–T5 done**. T6 (photo-to-3D) was dropped in favour of factory CAD (ADR 0006).
 
+After T5 (2026-11-13): the catalogue manager. Everything in the catalogue is edited in the console
+(`/catalogue`): shapes and sizes, closures with their fits and colours, colours, prints, structures and
+samples. Excel is the bulk import, one tab of it. See OPEX-PLAN.md, "Catalogue manager".
+
 T5 (2026-11-12): the quote.
 - **Form:** the OPEX system form `tube-quote`, editable in the form builder. Fields: name, company,
   phone, email and contact method:

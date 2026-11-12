@@ -667,8 +667,39 @@ so the site renders them even when OPEX is off.
 `map` fields take their keys from the data (`packages/schema/src/fields.ts`). A chart can therefore
 add a diameter, shape or closure without a schema change.
 
+**Catalogue manager (console `/catalogue`).** The catalogue is edited in the console, not only by import.
+`components/catalogue/CatalogueManager.tsx` edits one local copy of the draft. Its tabs are addressable by
+URL hash:
+- overview: counts, issues and a closure × diameter coverage map;
+- shapes and sizes: per-diameter length, volume and source table;
+- closures: identity, a fit and colour matrix per shape, the parametric 3D shape and the factory model status;
+- colours: cap colour families and body colours;
+- prints, wall structures and samples;
+- Excel import;
+- 3D models.
+
+Saving `PUT`s the whole entry against the draft it was loaded from, so a concurrent change is a 412.
+Publishing uses the normal entry publish.
+
+Ids are renamed or removed with their references (`components/catalogue/model.ts`):
+- shape → closure fits and colours, print and structure limits, samples;
+- closure → structure limits, samples;
+- print → samples.
+
+Checks flag:
+- duplicate or malformed ids;
+- empty diameters, bad lengths;
+- fits to shapes or diameters that no longer exist;
+- invalid hex colours;
+- broken sample tags.
+
+Errors block publishing. Unsaved edits are kept in the browser.
+
+Excel import and model approval write drafts on the server. They ask for a saved copy first and reload
+the draft after.
+
 The size charts (`.xlsx`) are applied in three ways:
-- in the console: **Catalogue** (`/catalogue`): preview, warnings, a change list, then save as a draft;
+- in the console: **Catalogue → ورود از اکسل** (`/catalogue#import`): preview, warnings, a change list, then save as a draft;
 - through `POST /v1/manage/catalogue/tube/import`;
 - for the repository seed: `pnpm --filter @arapoush/opex-api tube:chart`.
 

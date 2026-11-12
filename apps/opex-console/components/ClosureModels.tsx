@@ -52,8 +52,9 @@ const toBase64 = (f: File) =>
 /**
  * Factory CAD for closures (T2): upload STEP/STP or GLB, see what the conversion produced, set how
  * it sits on the neck, approve into the catalogue draft, then preview it on the website.
+ * Approving saves a new draft; `onApproved` lets the catalogue manager load it.
  */
-export function ClosureModels() {
+export function ClosureModels({ onApproved }: { onApproved?: () => void } = {}) {
   const [closures, setClosures] = useState<Closure[] | null>(null);
   const [draftId, setDraftId] = useState<string | null>(null);
   const [models, setModels] = useState<Model[]>([]);
@@ -136,14 +137,14 @@ export function ClosureModels() {
       {models.length === 0 ? (
         <p className="small muted">هنوز مدلی بارگذاری نشده است. تا آن زمان درب‌ها با شکل پارامتریک نمایش داده می‌شوند.</p>
       ) : (
-        models.map((m) => <ModelCard key={m.id} m={m} name={nameOf(m.closure_id)} busy={busy} draftId={draftId} run={run} onPreview={() => setPreview(m.closure_id)} />)
+        models.map((m) => <ModelCard key={m.id} m={m} name={nameOf(m.closure_id)} busy={busy} draftId={draftId} run={run} onApproved={onApproved} onPreview={() => setPreview(m.closure_id)} />)
       )}
       <PreviewFrames open={!!preview} onClose={() => setPreview(null)} type="product.tube.catalogue" query={preview ? `cap=${preview}` : undefined} />
     </div>
   );
 }
 
-function ModelCard({ m, name, busy, draftId, run, onPreview }: { m: Model; name: string; busy: string; draftId: string | null; run: (label: string, fn: () => Promise<unknown>) => Promise<void>; onPreview: () => void }) {
+function ModelCard({ m, name, busy, draftId, run, onApproved, onPreview }: { m: Model; name: string; busy: string; draftId: string | null; run: (label: string, fn: () => Promise<unknown>) => Promise<void>; onApproved?: () => void; onPreview: () => void }) {
   const [axis, setAxis] = useState<Axis>(m.mounting?.axis ?? "+Y");
   const [anchor, setAnchor] = useState<[number, number, number]>(m.mounting?.anchorMm ?? suggestAnchor(m, m.mounting?.axis ?? "+Y"));
   const [neck, setNeck] = useState<number | "">(m.mounting?.neckDiameterMm ?? "");
@@ -211,7 +212,7 @@ function ModelCard({ m, name, busy, draftId, run, onPreview }: { m: Model; name:
         </fieldset>
         <div className="row">
           {m.status !== "approved" && (
-            <button type="button" className="btn" disabled={!m.mounting || !saved || !!busy} onClick={() => run("approve", () => api(`/v1/manage/catalogue/tube/models/${m.id}/approve`, { body: { base_revision_id: draftId } }))}>
+            <button type="button" className="btn" disabled={!m.mounting || !saved || !!busy} onClick={() => run("approve", async () => (await api(`/v1/manage/catalogue/tube/models/${m.id}/approve`, { body: { base_revision_id: draftId } }), onApproved?.()))}>
               <CheckCircle size={18} aria-hidden /> تأیید و استفاده برای این درب
             </button>
           )}
