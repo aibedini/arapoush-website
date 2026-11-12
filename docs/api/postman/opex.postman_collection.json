@@ -474,6 +474,51 @@
       ]
     },
     {
+      "name": "Catalogue",
+      "item": [
+        {
+          "name": "Import Arapoush size charts into the tube catalogue",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/catalogue/tube/import",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "catalogue",
+                "tube",
+                "import"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"files\": [\n    {\n      \"name\": \"round.xlsx\",\n      \"data\": \"UEsDBBQABgAIAAAAIQ…\"\n    }\n  ],\n  \"keep_missing\": true,\n  \"apply\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Reads one or more size charts (.xlsx, one cross-section per file) and applies them to the current draft of `product.tube.catalogue`: sizes and volumes per diameter, which closures fit, and the colour families each closure comes in. Closures are matched by id, Persian name or `aliases`; unknown ones are added with a warning. Without `apply` it only previews (the changes against the draft). With `apply` it saves a new draft revision, which is published the normal way.\n\nSource: catalogue/routes.ts"
+          }
+        }
+      ]
+    },
+    {
       "name": "Change requests",
       "item": [
         {

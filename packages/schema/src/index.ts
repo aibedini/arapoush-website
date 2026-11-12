@@ -18,3 +18,4 @@ export function contentType(key: string): ContentType | undefined {
 export * from "./forms.ts";
 export * from "./blocks.ts";
 export * from "./systemForms.ts";
+export * from "./tubeChart.ts";

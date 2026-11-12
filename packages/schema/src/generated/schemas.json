@@ -1648,157 +1648,40 @@
         "path": true
        },
        "sizes": {
-        "kind": "group",
-        "fields": {
-         "19": {
-          "kind": "list",
-          "of": {
-           "kind": "group",
-           "fields": {
-            "l": {
-             "kind": "number",
-             "integer": true
-            },
-            "ml": {
-             "kind": "number",
-             "integer": true
-            },
-            "status": {
-             "kind": "text",
-             "localized": false,
-             "multiline": false
-            }
-           }
-          }
-         },
-         "25": {
-          "kind": "list",
-          "of": {
-           "kind": "group",
-           "fields": {
-            "l": {
-             "kind": "number",
-             "integer": true
-            },
-            "ml": {
-             "kind": "number",
-             "integer": true
-            },
-            "status": {
-             "kind": "text",
-             "localized": false,
-             "multiline": false
-            }
-           }
-          }
-         },
-         "30": {
-          "kind": "list",
-          "of": {
-           "kind": "group",
-           "fields": {
-            "l": {
-             "kind": "number",
-             "integer": true
-            },
-            "ml": {
-             "kind": "number",
-             "integer": true
-            },
-            "status": {
-             "kind": "text",
-             "localized": false,
-             "multiline": false
-            }
-           }
-          }
-         },
-         "35": {
-          "kind": "list",
-          "of": {
-           "kind": "group",
-           "fields": {
-            "l": {
-             "kind": "number",
-             "integer": true
-            },
-            "ml": {
-             "kind": "number",
-             "integer": true
-            },
-            "status": {
-             "kind": "text",
-             "localized": false,
-             "multiline": false
-            }
-           }
-          }
-         },
-         "40": {
-          "kind": "list",
-          "of": {
-           "kind": "group",
-           "fields": {
-            "l": {
-             "kind": "number",
-             "integer": true
-            },
-            "ml": {
-             "kind": "number",
-             "integer": true
-            },
-            "status": {
-             "kind": "text",
-             "localized": false,
-             "multiline": false
-            }
-           }
-          }
-         },
-         "50": {
-          "kind": "list",
-          "of": {
-           "kind": "group",
-           "fields": {
-            "l": {
-             "kind": "number",
-             "integer": true
-            },
-            "ml": {
-             "kind": "number",
-             "integer": true
-            },
-            "status": {
-             "kind": "text",
-             "localized": false,
-             "multiline": false
-            }
-           }
-          }
-         },
-         "60": {
-          "kind": "list",
-          "of": {
-           "kind": "group",
-           "fields": {
-            "l": {
-             "kind": "number",
-             "integer": true
-            },
-            "ml": {
-             "kind": "number",
-             "integer": true
-            },
-            "status": {
-             "kind": "text",
-             "localized": false,
-             "multiline": false
-            }
+        "kind": "map",
+        "keyPattern": "^[0-9]{1,3}$",
+        "keyLabel": "Diameter (mm)",
+        "label": "Sizes per diameter",
+        "of": {
+         "kind": "list",
+         "of": {
+          "kind": "group",
+          "fields": {
+           "l": {
+            "kind": "number",
+            "integer": true
+           },
+           "ml": {
+            "kind": "number",
+            "integer": true
+           },
+           "status": {
+            "kind": "text",
+            "localized": false,
+            "multiline": false
            }
           }
          }
+        }
+       },
+       "aliases": {
+        "kind": "list",
+        "of": {
+         "kind": "text",
+         "localized": false,
+         "multiline": false
         },
-        "locked": true
+        "label": "Chart wordings"
        }
       }
      },
@@ -1815,7 +1698,92 @@
         "multiline": false,
         "locked": true
        },
+       "aliases": {
+        "kind": "list",
+        "of": {
+         "kind": "text",
+         "localized": false,
+         "multiline": false
+        },
+        "label": "Chart wordings"
+       },
+       "name": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       },
        "model": {
+        "kind": "text",
+        "localized": false,
+        "multiline": false,
+        "locked": true
+       },
+       "image": {
+        "kind": "image",
+        "path": true
+       },
+       "compat": {
+        "kind": "map",
+        "keyPattern": "^[A-Za-z][A-Za-z0-9-]{0,39}$",
+        "keyLabel": "Shape id",
+        "label": "Fits (shape → diameter)",
+        "of": {
+         "kind": "map",
+         "keyPattern": "^[0-9]{1,3}$",
+         "keyLabel": "Diameter (mm)",
+         "of": {
+          "kind": "enum",
+          "values": [
+           "chart",
+           "confirm"
+          ]
+         }
+        }
+       },
+       "colours": {
+        "kind": "map",
+        "keyPattern": "^[A-Za-z][A-Za-z0-9-]{0,39}$",
+        "keyLabel": "Shape id",
+        "label": "Colours (shape → diameter)",
+        "of": {
+         "kind": "map",
+         "keyPattern": "^[0-9]{1,3}$",
+         "keyLabel": "Diameter (mm)",
+         "of": {
+          "kind": "list",
+          "of": {
+           "kind": "enum",
+           "values": [
+            "white",
+            "coloured",
+            "clear",
+            "metallicSilver",
+            "metallicGold"
+           ]
+          }
+         }
+        }
+       },
+       "shoulder": {
+        "kind": "enum",
+        "values": [
+         "circular",
+         "oval",
+         "eyeNozzle"
+        ],
+        "label": "Tube shoulder (3D)",
+        "locked": true
+       }
+      }
+     },
+     "key": "id"
+    },
+    "colourFamilies": {
+     "kind": "list",
+     "of": {
+      "kind": "group",
+      "fields": {
+       "id": {
         "kind": "text",
         "localized": false,
         "multiline": false,
@@ -1826,90 +1794,14 @@
         "localized": true,
         "multiline": false
        },
-       "image": {
-        "kind": "image",
-        "path": true
+       "kind": {
+        "kind": "text",
+        "localized": false,
+        "multiline": false
        },
-       "compat": {
-        "kind": "group",
-        "fields": {
-         "circular": {
-          "kind": "group",
-          "fields": {
-           "19": {
-            "kind": "text",
-            "localized": false,
-            "multiline": false
-           },
-           "25": {
-            "kind": "text",
-            "localized": false,
-            "multiline": false
-           },
-           "30": {
-            "kind": "text",
-            "localized": false,
-            "multiline": false
-           },
-           "35": {
-            "kind": "text",
-            "localized": false,
-            "multiline": false
-           },
-           "40": {
-            "kind": "text",
-            "localized": false,
-            "multiline": false
-           },
-           "50": {
-            "kind": "text",
-            "localized": false,
-            "multiline": false
-           },
-           "60": {
-            "kind": "text",
-            "localized": false,
-            "multiline": false
-           }
-          }
-         },
-         "oval": {
-          "kind": "group",
-          "fields": {
-           "30": {
-            "kind": "text",
-            "localized": false,
-            "multiline": false
-           },
-           "35": {
-            "kind": "text",
-            "localized": false,
-            "multiline": false
-           },
-           "40": {
-            "kind": "text",
-            "localized": false,
-            "multiline": false
-           }
-          }
-         },
-         "eyeNozzle": {
-          "kind": "group",
-          "fields": {
-           "19": {
-            "kind": "text",
-            "localized": false,
-            "multiline": false
-           },
-           "25": {
-            "kind": "text",
-            "localized": false,
-            "multiline": false
-           }
-          }
-         }
-        },
-        "locked": true
+       "swatch": {
+        "kind": "url",
+        "internal": true
        }
       }
      },
@@ -1961,6 +1853,23 @@
         },
         "key": "id",
         "locked": true
+       },
+       "diameters": {
+        "kind": "list",
+        "label": "Only these diameters (empty: all)",
+        "of": {
+         "kind": "number",
+         "integer": true
+        }
+       },
+       "closures": {
+        "kind": "list",
+        "of": {
+         "kind": "text",
+         "localized": false,
+         "multiline": false
+        },
+        "label": "Only with these closures (empty: all)"
        }
       }
      },
@@ -1984,14 +1893,12 @@
        "shape": {
         "kind": "text",
         "localized": false,
-        "multiline": false,
-        "locked": true
+        "multiline": false
        },
        "closure": {
         "kind": "text",
         "localized": false,
-        "multiline": false,
-        "locked": true
+        "multiline": false
        },
        "title": {
         "kind": "text",

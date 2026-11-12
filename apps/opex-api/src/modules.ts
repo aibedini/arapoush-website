@@ -15,6 +15,7 @@ import { ticketsModule } from "./tickets/routes.ts";
 import { metricsModule } from "./ops/metrics.ts";
 import { renderModule } from "./render/routes.ts";
 import { docsModule } from "./docs/routes.ts";
+import { catalogueModule } from "./catalogue/routes.ts";
 
 /** Route modules, in registration order. Each phase adds its module here. */
-export const MODULES: Module[] = [authModule, oauthModule, partnerAdminModule, partnerModule, contentModule, deliveryModule, mediaModule, auditModule, previewModule, crManageModule, openApiModule, formsModule, ticketsModule, metricsModule, renderModule, docsModule];
+export const MODULES: Module[] = [authModule, oauthModule, partnerAdminModule, partnerModule, contentModule, deliveryModule, mediaModule, auditModule, previewModule, crManageModule, openApiModule, formsModule, ticketsModule, metricsModule, renderModule, docsModule, catalogueModule];

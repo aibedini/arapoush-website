@@ -28,6 +28,10 @@
       "description": "The tamper-evident audit log: search, chain verification and export."
     },
     {
+      "name": "Catalogue",
+      "description": "Catalogue"
+    },
+    {
       "name": "Change requests",
       "description": "The review queue for partner proposals: approve (per item, four-eyes), reject, amend, publish."
     },
@@ -129,6 +133,7 @@
         "Access",
         "Approval policies",
         "Audit",
+        "Catalogue",
         "Change requests",
         "Content",
         "Dashboard",
@@ -3392,6 +3397,350 @@
           },
           "429": {
             "description": "`RATE_LIMITED`: More than 10 per minute per IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "manage"
+      }
+    },
+    "/v1/manage/catalogue/tube/import": {
+      "post": {
+        "operationId": "importTubeCharts",
+        "summary": "Import Arapoush size charts into the tube catalogue",
+        "description": "Reads one or more size charts (.xlsx, one cross-section per file) and applies them to the current draft of `product.tube.catalogue`: sizes and volumes per diameter, which closures fit, and the colour families each closure comes in. Closures are matched by id, Persian name or `aliases`; unknown ones are added with a warning. Without `apply` it only previews (the changes against the draft). With `apply` it saves a new draft revision, which is published the normal way.\n\n**Console role:** operator or above.\n\n**Audit:** records `content.revision.create`.\n\n**Source:** `apps/opex-api/src/catalogue/routes.ts`",
+        "tags": [
+          "Catalogue"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "files": {
+                    "minItems": 1,
+                    "maxItems": 6,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 200,
+                          "description": "File name, for the report."
+                        },
+                        "data": {
+                          "type": "string",
+                          "maxLength": 2796207,
+                          "description": "The .xlsx file, base64 (2 MB at most)."
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "data"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "keep_missing": {
+                    "default": true,
+                    "description": "Keep diameters and closures a chart does not mention (charts are often partial).",
+                    "type": "boolean"
+                  },
+                  "apply": {
+                    "default": false,
+                    "description": "false: preview only. true: save the result as a new draft.",
+                    "type": "boolean"
+                  },
+                  "base_revision_id": {
+                    "description": "The draft you previewed against; required with apply.",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 40
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "note": {
+                    "type": "string",
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "files"
+                ],
+                "additionalProperties": false
+              },
+              "example": {
+                "files": [
+                  {
+                    "name": "round.xlsx",
+                    "data": "UEsDBBQABgAIAAAAIQ…"
+                  }
+                ],
+                "keep_missing": true,
+                "apply": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Preview (or saved draft) with what the charts change.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "charts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "file": {
+                            "type": "string"
+                          },
+                          "shape": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "diameters": {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            }
+                          },
+                          "sizes": {
+                            "type": "number"
+                          },
+                          "closures": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "required": [
+                          "file",
+                          "shape",
+                          "diameters",
+                          "sizes",
+                          "closures"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Things to check: unknown wording, kept diameters, likely typos in the chart."
+                    },
+                    "added": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Ids of closures the charts introduced."
+                    },
+                    "changes": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "op": {
+                            "type": "string",
+                            "enum": [
+                              "add",
+                              "remove",
+                              "replace"
+                            ]
+                          },
+                          "path": {
+                            "type": "string"
+                          },
+                          "old": {},
+                          "new": {}
+                        },
+                        "required": [
+                          "op",
+                          "path"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "description": "Changes against the current draft."
+                    },
+                    "base_revision_id": {
+                      "description": "The draft this preview was computed against.",
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "revision": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "number": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "number"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "description": "The saved draft (apply only)."
+                    }
+                  },
+                  "required": [
+                    "charts",
+                    "warnings",
+                    "added",
+                    "changes",
+                    "base_revision_id",
+                    "revision"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "charts": [
+                    {
+                      "file": "round.xlsx",
+                      "shape": "circular",
+                      "diameters": [
+                        19,
+                        25,
+                        30,
+                        35,
+                        40,
+                        50
+                      ],
+                      "sizes": 46,
+                      "closures": [
+                        "اسکرو",
+                        "فیلیپ تاپ پیچی"
+                      ]
+                    }
+                  ],
+                  "warnings": [
+                    "round.xlsx: circular Ø60 is not in the chart and was kept"
+                  ],
+                  "added": [],
+                  "changes": [
+                    {
+                      "op": "replace",
+                      "path": "/shapes[id=circular]/sizes/50[2]/status",
+                      "old": "estimate",
+                      "new": "chart"
+                    }
+                  ],
+                  "base_revision_id": "rev_01JD…",
+                  "revision": null
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field. Or: The result does not match the catalogue schema (`issues`).\n\n`NO_CHART`: None of the files could be read as a size chart (`warnings` says why).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: No valid console session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: Role below operator (auditors never write).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NETWORK_DENIED",
+                  "status": 403,
+                  "code": "NETWORK_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "`CONFLICT_BASE_REVISION`: With apply: the draft changed since the preview; preview again.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "CONFLICT_BASE_REVISION",
+                  "status": 412,
+                  "code": "CONFLICT_BASE_REVISION",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
             "content": {
               "application/problem+json": {
                 "schema": {

@@ -6,6 +6,9 @@ Generated from the commit history by `pnpm changelog` (Conventional Commits). Ph
 
 ### Features
 
+- **web:** "extrusion" page loader, correct in Persian (`1bda2ce`, 2026-11-12)
+- **web:** contact page (/contact) merging eight arapoush.com pages (`c5603f1`, 2026-11-12)
+- **web:** About Arapoush page (/about) with factory film, story timeline, gallery and honours (`ed85f9e`, 2026-11-12)
 - **D5:** Storybook catalogue for the site and console, tested in CI (`23b40d4`, 2026-11-12)
 - **D4:** continuous documentation (hooks, CI, skill, PR template, changelog) (`9489f10`, 2026-11-12)
 - **D3:** readable API references, guides and Postman (`582a4b5`, 2026-11-12)
@@ -41,6 +44,7 @@ Generated from the commit history by `pnpm changelog` (Conventional Commits). Ph
 
 ### Documentation
 
+- regenerate changelog for D4-D6 (`9d0fe50`, 2026-11-12)
 - **D6:** architecture docs - topology, data flow, security model, ADRs (`cddee40`, 2026-11-12)
 - documentation system plan (D1–D6) with agreed decisions (`7afe794`, 2026-11-12)
 

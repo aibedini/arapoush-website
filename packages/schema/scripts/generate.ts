@@ -12,7 +12,8 @@ import sharp from "sharp";
 import { asGroup, infer } from "../src/infer.ts";
 import { mergeLocales } from "../src/localize.ts";
 import { applyOverrides } from "../src/overrides.ts";
-import type { ContentType, GroupField, ListField } from "../src/fields.ts";
+import type { ContentType, Field, GroupField, ListField, MapField } from "../src/fields.ts";
+import { COLOUR_IDS } from "../src/tubeChart.ts";
 import { BLOCK_KINDS, BLOCK_PROPS, SECTION_TYPES } from "../src/blocks.ts";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -190,7 +191,30 @@ const defs: Def[] = [
 ];
 
 /** Shapes inference cannot see in the seed data (P12: page-builder blocks in the home layout). */
+const DIAMETER: Pick<MapField, "keyPattern" | "keyLabel"> = { keyPattern: "^[0-9]{1,3}$", keyLabel: "Diameter (mm)" };
+const SHAPE: Pick<MapField, "keyPattern" | "keyLabel"> = { keyPattern: "^[A-Za-z][A-Za-z0-9-]{0,39}$", keyLabel: "Shape id" };
+const plainList: Field = { kind: "list", of: { kind: "text", localized: false, multiline: false } };
+
+/** Tube catalogue v3: keyed-by-data maps (shape → diameter) that inference reads as fixed groups. */
+function tubeCatalogue(g: GroupField): GroupField {
+  const item = (name: string) => (g.fields[name] as ListField).of as GroupField;
+  const shape = item("shapes");
+  const sizes = shape.fields.sizes as GroupField;
+  const closure = item("closures");
+  const structure = item("structures");
+  shape.fields.sizes = { kind: "map", ...DIAMETER, label: "Sizes per diameter", of: Object.values(sizes.fields)[0]! };
+  shape.fields.aliases = { ...plainList, label: "Chart wordings" };
+  closure.fields.compat = { kind: "map", ...SHAPE, label: "Fits (shape → diameter)", of: { kind: "map", ...DIAMETER, of: { kind: "enum", values: ["chart", "confirm"] } } };
+  closure.fields.colours = { kind: "map", ...SHAPE, label: "Colours (shape → diameter)", of: { kind: "map", ...DIAMETER, of: { kind: "list", of: { kind: "enum", values: [...COLOUR_IDS] } } } };
+  closure.fields.shoulder = { kind: "enum", values: ["circular", "oval", "eyeNozzle"], label: "Tube shoulder (3D)" };
+  closure.fields.aliases = { ...plainList, label: "Chart wordings" };
+  structure.fields.diameters = { kind: "list", label: "Only these diameters (empty: all)", of: { kind: "number", integer: true } };
+  structure.fields.closures = { ...plainList, label: "Only with these closures (empty: all)" };
+  return g;
+}
+
 function extend(key: string, g: GroupField): GroupField {
+  if (key === "product.tube.catalogue") return tubeCatalogue(g);
   if (key !== "page.home.layout") return g;
   const sections = g.fields.sections as ListField;
   const item = sections.of as GroupField;

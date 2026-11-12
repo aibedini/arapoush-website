@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState } from "react";
 import { ArrowDown, ArrowUp, CaretDown, Plus, Trash } from "@phosphor-icons/react";
-import type { Field, GroupField, ImageValue, ListField, Localized } from "@arapoush/schema";
+import type { Field, GroupField, ImageValue, ListField, Localized, MapField } from "@arapoush/schema";
 import { previewSrc } from "@/lib/api";
 import { LOCALE_LABEL, num } from "@/lib/fa";
 import { MediaLibrary, assetUrl, type Asset } from "./MediaLibrary";
@@ -60,7 +60,55 @@ export function blank(f: Field): unknown {
       return [];
     case "group":
       return Object.fromEntries(Object.entries(f.fields).map(([k, c]) => [k, blank(c)]));
+    case "map":
+      return {};
   }
+}
+
+/** Entries keyed by data (diameters, shape ids): one nested editor per key, add and remove keys. */
+function MapEditor({ f, value, orig, onChange, path, ctx, disabled, name }: { f: MapField; value: unknown; orig: unknown; onChange: (v: unknown) => void; path: string; ctx: Ctx; disabled: boolean; name: string }) {
+  const v = obj(value);
+  const o = obj(orig);
+  const [key, setKey] = useState("");
+  const re = f.keyPattern ? new RegExp(f.keyPattern) : null;
+  const keys = Object.keys(v).sort((a, b) => (/^\d+$/.test(a) && /^\d+$/.test(b) ? Number(a) - Number(b) : a.localeCompare(b)));
+  const valid = !!key && !(key in v) && (!re || re.test(key));
+  const keyName = f.keyLabel ?? "کلید";
+  return (
+    <div className="stack" style={{ gap: 6 }}>
+      {keys.length === 0 && <span className="small muted">خالی</span>}
+      {keys.map((k) => (
+        <details key={k} className="list-item">
+          <summary className="li-head">
+            <span>
+              {keyName}: <code dir="ltr">{k}</code>
+            </span>
+            {!same(v[k], o[k]) && <span className="badge warn">تغییر کرده</span>}
+          </summary>
+          <div className="li-body">
+            <FieldEditor field={f.of} value={v[k]} orig={o[k]} name={k} path={`${path}/${k}`} ctx={ctx} inList onChange={(x) => onChange({ ...v, [k]: x })} />
+            {!disabled && (
+              <button
+                type="button"
+                className="btn ghost small"
+                onClick={() => onChange(Object.fromEntries(Object.entries(v).filter(([x]) => x !== k)))}
+              >
+                <Trash size={14} aria-hidden /> حذف {keyName} {k}
+              </button>
+            )}
+          </div>
+        </details>
+      ))}
+      {!disabled && (
+        <div className="row" style={{ gap: 8 }}>
+          <input dir="ltr" style={{ maxInlineSize: 160 }} value={key} aria-label={`${keyName} تازه برای ${name}`} placeholder={keyName} onChange={(e) => setKey(e.target.value.trim())} />
+          <button type="button" className="btn ghost small" disabled={!valid} onClick={() => (onChange({ ...v, [key]: blank(f.of) }), setKey(""))}>
+            <Plus size={14} aria-hidden /> افزودن
+          </button>
+        </div>
+      )}
+    </div>
+  );
 }
 
 function Badges({ f }: { f: Field }) {
@@ -314,6 +362,9 @@ export function FieldEditor({ field: f, value, orig, onChange, name, path, ctx, 
       break;
     case "list":
       input = <ListEditor f={f} value={value} orig={orig} onChange={onChange} name={label} path={path} ctx={ctx} field={f} disabled={disabled} />;
+      break;
+    case "map":
+      input = <MapEditor f={f} value={value} orig={orig} onChange={onChange} path={path} ctx={ctx} disabled={disabled} name={label} />;
       break;
   }
 

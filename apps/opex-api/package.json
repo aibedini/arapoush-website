@@ -17,7 +17,8 @@
     "docs:api:check": "node --no-warnings src/openapi/cli.ts --check",
     "docs:coverage": "node --no-warnings src/openapi/coverage.ts",
     "docs:lint": "npx -y @redocly/cli@2.72.0 lint --config ../../redocly.yaml",
-    "docs:breaking": "node --no-warnings src/openapi/breaking.ts"
+    "docs:breaking": "node --no-warnings src/openapi/breaking.ts",
+    "tube:chart": "node --no-warnings src/catalogue/cli.ts"
   },
   "dependencies": {
     "@arapoush/schema": "workspace:*",
@@ -30,6 +31,7 @@
     "@node-rs/argon2": "2.2.2",
     "@scalar/api-reference": "1.76.2",
     "fastify": "5.12.7",
+    "fflate": "0.8.3",
     "imapflow": "2.9.1",
     "jose": "6.2.13",
     "mailparser": "3.12.4",

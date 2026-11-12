@@ -1791,8 +1791,8 @@
   }
  },
  "product.tube.catalogue": {
-  "version": 2,
-  "updated": "2026-11-02",
+  "version": 3,
+  "updated": "2026-11-12",
   "shapes": [
    {
     "id": "circular",
@@ -2003,22 +2003,22 @@
       {
        "l": 110,
        "ml": 130,
-       "status": "estimate"
+       "status": "chart"
       },
       {
        "l": 115,
        "ml": 140,
-       "status": "estimate"
+       "status": "chart"
       },
       {
        "l": 118,
        "ml": 150,
-       "status": "estimate"
+       "status": "chart"
       },
       {
        "l": 132,
        "ml": 175,
-       "status": "estimate"
+       "status": "chart"
       },
       {
        "l": 147,
@@ -2078,7 +2078,11 @@
        "status": "chart"
       }
      ]
-    }
+    },
+    "aliases": [
+     "دایره",
+     "گرد"
+    ]
    },
    {
     "id": "oval",
@@ -2092,143 +2096,257 @@
     "sizes": {
      "30": [
       {
-       "l": 80
+       "l": 72,
+       "ml": 20,
+       "status": "chart"
       },
       {
-       "l": 85
+       "l": 80,
+       "ml": 25,
+       "status": "chart"
       },
       {
-       "l": 95
+       "l": 90,
+       "ml": 30,
+       "status": "chart"
       },
       {
-       "l": 110
+       "l": 96,
+       "ml": 35,
+       "status": "chart"
       },
       {
-       "l": 124
+       "l": 102,
+       "ml": 40,
+       "status": "chart"
       },
       {
-       "l": 142
-      },
-      {
-       "l": 149
+       "l": 120,
+       "ml": 50,
+       "status": "chart"
       }
      ],
      "35": [
       {
-       "l": 82
+       "l": 70,
+       "ml": 30,
+       "status": "chart"
       },
       {
-       "l": 90
+       "l": 78,
+       "ml": 35,
+       "status": "chart"
       },
       {
-       "l": 100
+       "l": 86,
+       "ml": 40,
+       "status": "chart"
       },
       {
-       "l": 120
+       "l": 100,
+       "ml": 50,
+       "status": "chart"
       },
       {
-       "l": 125
+       "l": 112,
+       "ml": 60,
+       "status": "chart"
       },
       {
-       "l": 137
+       "l": 135,
+       "ml": 75,
+       "status": "chart"
       },
       {
-       "l": 147
+       "l": 142,
+       "ml": 80,
+       "status": "chart"
       }
      ],
      "40": [
       {
-       "l": 85
+       "l": 94,
+       "ml": 50,
+       "status": "chart"
       },
       {
-       "l": 98
+       "l": 102,
+       "ml": 60,
+       "status": "chart"
       },
       {
-       "l": 102
+       "l": 117,
+       "ml": 75,
+       "status": "chart"
       },
       {
-       "l": 110
+       "l": 122,
+       "ml": 80,
+       "status": "chart"
       },
       {
-       "l": 120
+       "l": 132,
+       "ml": 90,
+       "status": "chart"
       },
       {
-       "l": 136
+       "l": 142,
+       "ml": 100,
+       "status": "chart"
       },
       {
-       "l": 146
+       "l": 160,
+       "ml": 120,
+       "status": "chart"
       },
       {
-       "l": 154
+       "l": 170,
+       "ml": 130,
+       "status": "chart"
       },
       {
-       "l": 164
-      },
-      {
-       "l": 184
-      }
-     ]
-    }
-   },
-   {
-    "id": "eyeNozzle",
-    "model": "eyeNozzle",
-    "name": {
-     "fa": "نازل چشمی",
-     "en": "Eye nozzle",
-     "tr": "Göz nozul"
-    },
-    "image": "/images/product/tube-eye-nozzle.webp",
-    "sizes": {
-     "19": [
-      {
-       "l": 50
-      },
-      {
-       "l": 65
-      },
-      {
-       "l": 84
-      },
-      {
-       "l": 102
+       "l": 180,
+       "ml": 140,
+       "status": "chart"
       }
      ],
-     "25": [
+     "50": [
       {
-       "l": 65
+       "l": 105,
+       "ml": 100,
+       "status": "chart"
       },
       {
-       "l": 76
+       "l": 118,
+       "ml": 120,
+       "status": "chart"
       },
       {
-       "l": 85
+       "l": 125,
+       "ml": 130,
+       "status": "chart"
       },
       {
-       "l": 96
+       "l": 132,
+       "ml": 140,
+       "status": "chart"
       },
       {
-       "l": 105
+       "l": 138,
+       "ml": 150,
+       "status": "chart"
       },
       {
-       "l": 115
+       "l": 140,
+       "ml": 175,
+       "status": "chart"
       },
       {
-       "l": 135
+       "l": 165,
+       "ml": 200,
+       "status": "chart"
+      },
+      {
+       "l": 180,
+       "ml": 225,
+       "status": "chart"
+      },
+      {
+       "l": 196,
+       "ml": 250,
+       "status": "chart"
       }
      ]
-    }
+    },
+    "aliases": [
+     "بیضی",
+     "اووال"
+    ]
    }
   ],
   "closures": [
    {
-    "id": "flipTop",
-    "model": "flipTop",
+    "id": "screw",
+    "aliases": [
+     "اسکرو",
+     "پیچی"
+    ],
     "name": {
-     "fa": "درب فلیپ‌تاپ",
-     "en": "Flip-top cap",
-     "tr": "Flip-top kapak"
+     "fa": "درب پیچی",
+     "en": "Screw cap",
+     "tr": "Vidalı kapak"
     },
+    "model": "screw",
+    "image": "/images/product/cap-screw.webp",
+    "compat": {
+     "circular": {
+      "19": "chart",
+      "25": "chart",
+      "30": "chart",
+      "35": "chart",
+      "40": "chart",
+      "50": "chart"
+     }
+    },
+    "colours": {
+     "circular": {
+      "19": [
+       "white",
+       "coloured",
+       "metallicSilver",
+       "metallicGold",
+       "clear"
+      ],
+      "25": [
+       "white",
+       "coloured",
+       "clear",
+       "metallicSilver",
+       "metallicGold"
+      ],
+      "30": [
+       "white",
+       "coloured",
+       "clear",
+       "metallicSilver",
+       "metallicGold"
+      ],
+      "35": [
+       "white",
+       "coloured",
+       "clear",
+       "metallicSilver",
+       "metallicGold"
+      ],
+      "40": [
+       "white",
+       "coloured",
+       "clear",
+       "metallicSilver",
+       "metallicGold"
+      ],
+      "50": [
+       "white",
+       "coloured",
+       "clear",
+       "metallicSilver",
+       "metallicGold"
+      ]
+     }
+    }
+   },
+   {
+    "id": "flipTop",
+    "aliases": [
+     "فیلیپ تاپ پیچی",
+     "فلیپ تاپ پیچی"
+    ],
+    "name": {
+     "fa": "درب فلیپ‌تاپ پیچی",
+     "en": "Screw-on flip-top cap",
+     "tr": "Vidalı flip-top kapak"
+    },
+    "model": "flipTop",
     "image": "/images/product/cap-flip-top.webp",
     "compat": {
      "circular": {
@@ -2238,34 +2356,469 @@
       "40": "chart",
       "50": "chart",
       "60": "chart"
-     },
-     "oval": {
-      "30": "confirm",
-      "35": "confirm",
-      "40": "confirm"
+     }
+    },
+    "colours": {
+     "circular": {
+      "25": [
+       "white",
+       "coloured",
+       "clear"
+      ],
+      "30": [
+       "white",
+       "coloured",
+       "clear"
+      ],
+      "35": [
+       "white",
+       "coloured",
+       "clear"
+      ],
+      "40": [
+       "white",
+       "coloured",
+       "clear"
+      ],
+      "50": [
+       "white",
+       "coloured",
+       "clear"
+      ],
+      "60": [
+       "white",
+       "coloured",
+       "clear"
+      ]
      }
     }
    },
    {
-    "id": "screw",
-    "model": "screw",
+    "id": "flipTopPress",
+    "aliases": [
+     "فیلیپ تاپ پرسی",
+     "فلیپ تاپ پرسی"
+    ],
     "name": {
-     "fa": "درب پیچی",
-     "en": "Screw cap",
-     "tr": "Vidalı kapak"
+     "fa": "درب فلیپ‌تاپ پرسی",
+     "en": "Press-on flip-top cap",
+     "tr": "Geçme flip-top kapak"
     },
-    "image": "/images/product/cap-screw.webp",
+    "model": "flipTop",
+    "image": "/images/product/cap-flip-top.webp",
+    "compat": {
+     "circular": {
+      "50": "chart"
+     }
+    },
+    "colours": {
+     "circular": {
+      "50": [
+       "white",
+       "coloured",
+       "clear"
+      ]
+     }
+    }
+   },
+   {
+    "id": "eyeNozzleLong",
+    "aliases": [
+     "نازل چشمی بلند"
+    ],
+    "name": {
+     "fa": "نازل چشمی بلند",
+     "en": "Long eye-nozzle cap",
+     "tr": "Uzun göz nozul kapağı"
+    },
+    "model": "nozzle",
+    "image": "/images/product/cap-nozzle.webp",
+    "shoulder": "eyeNozzle",
     "compat": {
      "circular": {
       "19": "chart",
+      "25": "chart"
+     }
+    },
+    "colours": {
+     "circular": {
+      "19": [
+       "white",
+       "coloured",
+       "metallicSilver",
+       "metallicGold",
+       "clear"
+      ],
+      "25": [
+       "white",
+       "coloured",
+       "clear",
+       "metallicSilver",
+       "metallicGold"
+      ]
+     }
+    }
+   },
+   {
+    "id": "eyeNozzleShort",
+    "aliases": [
+     "نازل چشمی کوتاه"
+    ],
+    "name": {
+     "fa": "نازل چشمی کوتاه",
+     "en": "Short eye-nozzle cap",
+     "tr": "Kısa göz nozul kapağı"
+    },
+    "model": "nozzle",
+    "image": "/images/product/cap-nozzle.webp",
+    "shoulder": "eyeNozzle",
+    "compat": {
+     "circular": {
+      "25": "chart",
+      "30": "chart"
+     }
+    },
+    "colours": {
+     "circular": {
+      "25": [
+       "white",
+       "coloured",
+       "clear",
+       "metallicSilver",
+       "metallicGold"
+      ],
+      "30": [
+       "white",
+       "coloured",
+       "clear",
+       "metallicSilver",
+       "metallicGold"
+      ]
+     }
+    }
+   },
+   {
+    "id": "lipBalm",
+    "aliases": [
+     "بالم لب"
+    ],
+    "name": {
+     "fa": "درب بالم لب",
+     "en": "Lip-balm cap",
+     "tr": "Dudak balmı kapağı"
+    },
+    "model": "plain",
+    "image": "/images/product/cap-screw.webp",
+    "compat": {
+     "circular": {
+      "19": "chart"
+     }
+    },
+    "colours": {
+     "circular": {
+      "19": [
+       "white",
+       "coloured",
+       "metallicSilver",
+       "metallicGold",
+       "clear"
+      ]
+     }
+    }
+   },
+   {
+    "id": "airless",
+    "aliases": [
+     "پمپی AIRLESS",
+     "پمپی ایرلس",
+     "ایرلس"
+    ],
+    "name": {
+     "fa": "پمپ ایرلس",
+     "en": "Airless pump",
+     "tr": "Airless pompa"
+    },
+    "model": "plain",
+    "image": "/images/product/cap-stand-up.webp",
+    "compat": {
+     "circular": {
       "25": "chart",
       "30": "chart",
       "35": "chart"
-     },
+     }
+    },
+    "colours": {
+     "circular": {
+      "25": [
+       "white",
+       "coloured"
+      ],
+      "30": [
+       "white",
+       "metallicSilver"
+      ],
+      "35": [
+       "white",
+       "metallicSilver"
+      ]
+     }
+    }
+   },
+   {
+    "id": "octagonal",
+    "aliases": [
+     "کپ 8ضلعی",
+     "کپ ۸ضلعی",
+     "هشت ضلعی"
+    ],
+    "name": {
+     "fa": "درب هشت‌ضلعی",
+     "en": "Octagonal cap",
+     "tr": "Sekizgen kapak"
+    },
+    "model": "screw",
+    "image": "/images/product/cap-screw.webp",
+    "compat": {
+     "circular": {
+      "30": "chart"
+     }
+    },
+    "colours": {
+     "circular": {
+      "30": [
+       "white",
+       "coloured"
+      ]
+     }
+    }
+   },
+   {
+    "id": "conical",
+    "aliases": [
+     "کونیکال"
+    ],
+    "name": {
+     "fa": "درب کونیکال",
+     "en": "Conical cap",
+     "tr": "Konik kapak"
+    },
+    "model": "nozzle",
+    "image": "/images/product/cap-nozzle.webp",
+    "compat": {
+     "circular": {
+      "30": "chart"
+     }
+    },
+    "colours": {
+     "circular": {
+      "30": [
+       "white",
+       "coloured"
+      ]
+     }
+    }
+   },
+   {
+    "id": "bullet",
+    "aliases": [
+     "موشکی"
+    ],
+    "name": {
+     "fa": "درب موشکی",
+     "en": "Bullet cap",
+     "tr": "Mermi kapak"
+    },
+    "model": "plain",
+    "image": "/images/product/cap-nozzle.webp",
+    "compat": {
+     "circular": {
+      "40": "chart",
+      "50": "chart"
+     }
+    },
+    "colours": {
+     "circular": {
+      "40": [
+       "white",
+       "coloured"
+      ],
+      "50": [
+       "white",
+       "coloured"
+      ]
+     }
+    }
+   },
+   {
+    "id": "ovalScrew",
+    "aliases": [
+     "اووال پیچی"
+    ],
+    "name": {
+     "fa": "درب پیچی بیضی",
+     "en": "Oval screw cap",
+     "tr": "Oval vidalı kapak"
+    },
+    "model": "screw",
+    "image": "/images/product/cap-screw.webp",
+    "compat": {
      "oval": {
-      "30": "confirm",
-      "35": "confirm",
-      "40": "confirm"
+      "30": "chart",
+      "35": "chart",
+      "40": "chart"
+     }
+    },
+    "colours": {
+     "oval": {
+      "30": [
+       "white",
+       "coloured",
+       "clear",
+       "metallicSilver",
+       "metallicGold"
+      ],
+      "35": [
+       "white",
+       "coloured",
+       "clear",
+       "metallicSilver",
+       "metallicGold"
+      ],
+      "40": [
+       "white",
+       "coloured",
+       "clear",
+       "metallicSilver",
+       "metallicGold"
+      ]
+     }
+    }
+   },
+   {
+    "id": "superOval",
+    "aliases": [
+     "سوپر اووال"
+    ],
+    "name": {
+     "fa": "درب سوپر اووال",
+     "en": "Super-oval cap",
+     "tr": "Süper oval kapak"
+    },
+    "model": "plain",
+    "image": "/images/product/cap-screw.webp",
+    "compat": {
+     "oval": {
+      "30": "chart"
+     }
+    },
+    "colours": {
+     "oval": {
+      "30": [
+       "white",
+       "coloured",
+       "clear",
+       "metallicSilver",
+       "metallicGold"
+      ]
+     }
+    }
+   },
+   {
+    "id": "ovalEyeNozzle",
+    "aliases": [
+     "اووال نازل چشمی"
+    ],
+    "name": {
+     "fa": "نازل چشمی بیضی",
+     "en": "Oval eye-nozzle cap",
+     "tr": "Oval göz nozul kapağı"
+    },
+    "model": "nozzle",
+    "image": "/images/product/cap-nozzle.webp",
+    "shoulder": "eyeNozzle",
+    "compat": {
+     "oval": {
+      "30": "chart"
+     }
+    },
+    "colours": {
+     "oval": {
+      "30": [
+       "white",
+       "coloured",
+       "metallicSilver",
+       "metallicGold"
+      ]
+     }
+    }
+   },
+   {
+    "id": "ovalFlipTop",
+    "aliases": [
+     "اووال فیلیپ تاپ پیچی"
+    ],
+    "name": {
+     "fa": "درب فلیپ‌تاپ پیچی بیضی",
+     "en": "Oval screw-on flip-top cap",
+     "tr": "Oval vidalı flip-top kapak"
+    },
+    "model": "flipTop",
+    "image": "/images/product/cap-flip-top.webp",
+    "compat": {
+     "oval": {
+      "35": "chart",
+      "40": "chart",
+      "50": "chart"
+     }
+    },
+    "colours": {
+     "oval": {
+      "35": [
+       "white",
+       "coloured",
+       "clear"
+      ],
+      "40": [
+       "white",
+       "coloured",
+       "clear"
+      ],
+      "50": [
+       "white",
+       "coloured",
+       "clear"
+      ]
+     }
+    }
+   },
+   {
+    "id": "ovalBullet",
+    "aliases": [
+     "اووال موشکی"
+    ],
+    "name": {
+     "fa": "درب موشکی بیضی",
+     "en": "Oval bullet cap",
+     "tr": "Oval mermi kapak"
+    },
+    "model": "plain",
+    "image": "/images/product/cap-nozzle.webp",
+    "compat": {
+     "oval": {
+      "40": "chart",
+      "50": "chart"
+     }
+    },
+    "colours": {
+     "oval": {
+      "40": [
+       "white",
+       "coloured"
+      ],
+      "50": [
+       "white",
+       "coloured"
+      ]
      }
     }
    },
@@ -2287,12 +2840,10 @@
       "40": "confirm",
       "50": "confirm",
       "60": "confirm"
-     },
-     "eyeNozzle": {
-      "19": "confirm",
-      "25": "confirm"
      }
-    }
+    },
+    "aliases": [],
+    "colours": {}
    },
    {
     "id": "standUp",
@@ -2313,7 +2864,61 @@
       "50": "confirm",
       "60": "confirm"
      }
-    }
+    },
+    "aliases": [],
+    "colours": {}
+   }
+  ],
+  "colourFamilies": [
+   {
+    "id": "white",
+    "name": {
+     "fa": "سفید",
+     "en": "White",
+     "tr": "Beyaz"
+    },
+    "kind": "solid",
+    "swatch": "#f6f6f3"
+   },
+   {
+    "id": "coloured",
+    "name": {
+     "fa": "رنگی",
+     "en": "Coloured",
+     "tr": "Renkli"
+    },
+    "kind": "custom",
+    "swatch": "#1f5f9f"
+   },
+   {
+    "id": "clear",
+    "name": {
+     "fa": "شفاف",
+     "en": "Transparent",
+     "tr": "Şeffaf"
+    },
+    "kind": "clear",
+    "swatch": "#e8f1f7"
+   },
+   {
+    "id": "metallicSilver",
+    "name": {
+     "fa": "متالایز نقره‌ای",
+     "en": "Metallic silver",
+     "tr": "Metalik gümüş"
+    },
+    "kind": "metallic",
+    "swatch": "#c7ccd2"
+   },
+   {
+    "id": "metallicGold",
+    "name": {
+     "fa": "متالایز طلایی",
+     "en": "Metallic gold",
+     "tr": "Metalik altın"
+    },
+    "kind": "metallic",
+    "swatch": "#c9a24a"
    }
   ],
   "structures": [
@@ -2453,8 +3058,8 @@
    {
     "id": "eye-nozzle",
     "image": "/images/product/tube-eye-nozzle.webp",
-    "shape": "eyeNozzle",
-    "closure": "nozzle",
+    "shape": "circular",
+    "closure": "eyeNozzleLong",
     "title": {
      "fa": "تیوپ نازل چشمی",
      "en": "Eye-nozzle tube",

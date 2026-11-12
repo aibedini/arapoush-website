@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import Image from "next/image";
+import { getImageProps } from "next/image";
 import { SlidingNumber } from "@animate-ui/react/primitives/texts/sliding-number";
 import type { Dictionary } from "@/lib/i18n";
 import {
@@ -9,12 +9,14 @@ import {
   capacity,
   closureOf,
   closureStatus,
+  closuresForShape,
   diametersFor,
   fromSearch,
   lengthsFor,
   loc,
   normalize,
   sameVolume,
+  sceneModels,
   shapeOf,
   structureOf,
   structuresFor,
@@ -63,7 +65,7 @@ export default function Configurator({ t, locale, product: cat, contact = fileCo
   const shape = shapeOf(cat, cfg.shape)!;
   const closure = closureOf(cat, cfg.closure)!;
   const structure = structureOf(cat, cfg.structure);
-  const structures = structuresFor(cat, cfg.shape);
+  const structures = structuresFor(cat, cfg.shape, cfg.d, cfg.closure);
   const cap = capacity(cat, cfg);
   const shapeName = loc(shape.name, locale);
   const closureName = loc(closure.name, locale);
@@ -78,7 +80,8 @@ export default function Configurator({ t, locale, product: cat, contact = fileCo
     cap ? `${cap.ml} ml (${cap.status === "chart" ? c.statusChart : c.statusEstimate})` : c.noVolume,
   ];
 
-  const scene = useMemo(() => ({ d: cfg.d, l: cfg.l, shape: shape.model, closure: closure.model }), [cfg.d, cfg.l, shape.model, closure.model]);
+  const models = sceneModels(cat, cfg);
+  const scene = useMemo(() => ({ d: cfg.d, l: cfg.l, shape: models.shape, closure: models.closure }), [cfg.d, cfg.l, models.shape, models.closure]);
   const labels = useMemo(
     () => ({
       layers: (structure?.layers ?? []).map((l) => ({ name: loc(l.name, locale), color: l.color })),
@@ -168,7 +171,7 @@ export default function Configurator({ t, locale, product: cat, contact = fileCo
 
             <Field id={`${id}-c`} title={c.closure}>
               <div className={`${styles.cards} ${styles.cards4}`} role="group" aria-labelledby={`${id}-c`}>
-                {cat.closures.map((k) => {
+                {closuresForShape(cat, cfg.shape).map((k) => {
                   const st = closureStatus(cat, k.id, cfg.shape, cfg.d);
                   return (
                     <Card
@@ -297,7 +300,9 @@ function Field({ id, title, unit, children }: { id: string; title: string; unit?
 function Card({ checked, disabled, onSelect, img, name, note }: { checked: boolean; disabled?: boolean; onSelect: () => void; img: string; name: string; note?: string }) {
   return (
     <button type="button" aria-pressed={checked} disabled={disabled} className={styles.card} onClick={onSelect}>
-      <Image src={img} alt="" width={640} height={640} sizes="96px" className={styles.cardImg} data-no-mirror />
+      {/* getImageProps: the optimizer's srcset without an Image component to hydrate per card (12+ closures). */}
+      {/* eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element */}
+      <img {...getImageProps({ src: img, alt: "", width: 640, height: 640, sizes: "96px" }).props} className={styles.cardImg} data-no-mirror />
       <span className={styles.cardName}>{name}</span>
       {note && <span className={styles.cardNote}>{note}</span>}
     </button>

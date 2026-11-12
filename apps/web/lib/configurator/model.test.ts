@@ -1,27 +1,50 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { capacity, closuresFor, diametersFor, fromSearch, isValid, lengthsFor, loc, normalize, rankSamples, sameVolume, toSearch, withDiameter, withShape, type TubeProduct } from "./model.ts";
+import { capacity, closuresFor, closuresForShape, coloursFor, diametersFor, fromSearch, isValid, lengthsFor, loc, normalize, rankSamples, sameVolume, sceneModels, structuresFor, toSearch, withDiameter, withShape, type TubeProduct } from "./model.ts";
 
 const cat: TubeProduct = JSON.parse(readFileSync(new URL("../../content/products/multi-layer-tube.json", import.meta.url), "utf8"));
 
-test("shape diameters match the manufacturer listing", () => {
+test("shape diameters match the size charts (Ø60 round kept from v2)", () => {
   assert.deepEqual(diametersFor(cat, "circular"), [19, 25, 30, 35, 40, 50, 60]);
-  assert.deepEqual(diametersFor(cat, "oval"), [30, 35, 40]);
-  assert.deepEqual(diametersFor(cat, "eyeNozzle"), [19, 25]);
+  assert.deepEqual(diametersFor(cat, "oval"), [30, 35, 40, 50]);
+  assert.deepEqual(cat.shapes.map((s) => s.id), ["circular", "oval"]);
 });
 
 test("Ø30 × 110 circular reads 50 ml from the chart, never a formula", () => {
   assert.deepEqual(capacity(cat, { shape: "circular", d: 30, l: 110, closure: "flipTop", structure: "pe-evoh-5" }), { ml: 50, status: "chart" });
 });
 
-test("inferred volumes are flagged as estimates", () => {
-  assert.equal(capacity(cat, { shape: "circular", d: 50, l: 115, closure: "flipTop", structure: "pe-evoh-5" })?.status, "estimate");
+test("chart volumes replace the earlier estimates", () => {
+  assert.deepEqual(capacity(cat, { shape: "circular", d: 50, l: 115, closure: "flipTop", structure: "pe-evoh-5" }), { ml: 140, status: "chart" });
 });
 
-test("oval and eye-nozzle have no published volume yet", () => {
-  assert.equal(capacity(cat, { shape: "oval", d: 35, l: 120, closure: "screw", structure: "pe-evoh-5" }), null);
-  assert.equal(capacity(cat, { shape: "eyeNozzle", d: 19, l: 84, closure: "nozzle", structure: "pe-evoh-5" }), null);
+test("oval tubes now have their chart volumes", () => {
+  assert.deepEqual(capacity(cat, { shape: "oval", d: 35, l: 112, closure: "ovalScrew", structure: "pe-evoh-5" }), { ml: 60, status: "chart" });
+});
+
+test("closure colours follow the chart per shape and diameter", () => {
+  const ids = (closure: string, shape: string, d: number) => coloursFor(cat, closure, shape, d).map((f) => f.id);
+  assert.deepEqual(ids("airless", "circular", 30), ["white", "metallicSilver"]);
+  assert.deepEqual(ids("flipTop", "circular", 30), ["white", "coloured", "clear"]);
+  assert.deepEqual(ids("screw", "circular", 19), ["white", "coloured", "clear", "metallicSilver", "metallicGold"]);
+  assert.deepEqual(ids("ovalBullet", "oval", 50), ["white", "coloured"]);
+  assert.deepEqual(ids("screw", "oval", 30), []);
+});
+
+test("each shape lists only its own closures", () => {
+  assert.deepEqual(closuresForShape(cat, "oval").map((c) => c.id), ["ovalScrew", "superOval", "ovalEyeNozzle", "ovalFlipTop", "ovalBullet"]);
+  assert.ok(!closuresForShape(cat, "circular").some((c) => c.id.startsWith("oval") || c.id === "superOval"));
+});
+
+test("eye-nozzle caps put an eye-nozzle shoulder on the tube in 3D", () => {
+  assert.deepEqual(sceneModels(cat, { shape: "circular", d: 19, l: 65, closure: "eyeNozzleLong", structure: "pe-evoh-5" }), { shape: "eyeNozzle", closure: "nozzle" });
+  assert.deepEqual(sceneModels(cat, { shape: "circular", d: 30, l: 110, closure: "flipTop", structure: "pe-evoh-5" }), { shape: "circular", closure: "flipTop" });
+});
+
+test("links from before v3 (shape=eyeNozzle) still open an eye-nozzle tube", () => {
+  const c = fromSearch(cat, "shape=eyeNozzle&d=19&l=84&cap=nozzle");
+  assert.deepEqual([c.shape, c.d, c.l, c.closure], ["circular", 19, 84, "eyeNozzleLong"]);
 });
 
 test("every catalogue length per shape and diameter is valid", () => {
@@ -34,8 +57,8 @@ test("every catalogue length per shape and diameter is valid", () => {
 });
 
 test("invalid diameters snap to the nearest allowed one for that shape", () => {
-  assert.equal(normalize(cat, { shape: "oval", d: 60 }).d, 40);
-  assert.equal(normalize(cat, { shape: "eyeNozzle", d: 50 }).d, 25);
+  assert.equal(normalize(cat, { shape: "oval", d: 60 }).d, 50);
+  assert.equal(normalize(cat, { shape: "oval", d: 19 }).d, 30);
   assert.equal(normalize(cat, { shape: "circular", d: 33 }).d, 35);
 });
 
@@ -45,11 +68,15 @@ test("lengths outside the catalogue snap to the nearest listed length", () => {
 });
 
 test("unsupported closures are replaced, never kept", () => {
-  // Ø19 is only listed with a screw cap; flip-top starts at Ø25.
+  // Ø19 takes screw, long eye-nozzle and lip-balm caps; flip-top starts at Ø25.
   assert.equal(normalize(cat, { shape: "circular", d: 19, closure: "flipTop", structure: "pe-evoh-5" }).closure, "screw");
-  // Eye-nozzle tubes only take the nozzle closure.
-  assert.equal(normalize(cat, { shape: "eyeNozzle", d: 19, closure: "screw", structure: "pe-evoh-5" }).closure, "nozzle");
+  // Oval tubes take the oval caps only.
+  assert.equal(normalize(cat, { shape: "oval", d: 35, closure: "screw", structure: "pe-evoh-5" }).closure, "ovalScrew");
   assert.ok(!closuresFor(cat, "circular", 60).some((c) => c.closure === "screw"));
+  assert.deepEqual(
+    closuresFor(cat, "circular", 30).filter((c) => c.status === "chart").map((c) => c.closure),
+    ["screw", "flipTop", "eyeNozzleShort", "airless", "octagonal", "conical"],
+  );
 });
 
 test("garbage URLs cannot produce an invalid configuration", () => {
@@ -70,8 +97,8 @@ test("changing diameter keeps the volume as close as possible", () => {
 });
 
 test("switching shape keeps a valid diameter and closure", () => {
-  const c = withShape(cat, { shape: "circular", d: 60, l: 155, closure: "flipTop", structure: "pe-evoh-5" }, "eyeNozzle");
-  assert.deepEqual([c.d, c.closure], [25, "nozzle"]);
+  const c = withShape(cat, { shape: "circular", d: 60, l: 155, closure: "flipTop", structure: "pe-evoh-5" }, "oval");
+  assert.deepEqual([c.d, c.closure], [50, "ovalFlipTop"]);
   assert.ok(isValid(cat, c));
 });
 
@@ -105,7 +132,7 @@ test("samples rank by shape, then closure", () => {
   const ranked = rankSamples(cat, { shape: "circular", d: 30, l: 110, closure: "flipTop", structure: "pe-evoh-5" });
   assert.ok(ranked.every((r) => r.sample.shape === "circular"));
   assert.equal(ranked[0]?.sample.closure, "flipTop");
-  assert.ok(rankSamples(cat, { shape: "eyeNozzle", d: 19, l: 50, closure: "nozzle", structure: "pe-evoh-5" }).every((r) => r.sample.shape === "eyeNozzle"));
+  assert.equal(rankSamples(cat, { shape: "circular", d: 19, l: 50, closure: "eyeNozzleLong", structure: "pe-evoh-5" })[0]?.sample.id, "eye-nozzle");
 });
 
 test("missing translations fall back to English", () => {
@@ -119,6 +146,9 @@ test("structures are selectable, validated and limited by shape", () => {
   assert.equal(normalize(two, { shape: "circular", structure: "abl" }).structure, "abl");
   assert.equal(normalize(two, { shape: "oval", structure: "abl" }).structure, "pe-evoh-5");
   assert.equal(normalize(two, { structure: "nope" }).structure, "pe-evoh-5");
+  two.structures.push({ id: "big", name: { en: "Heavy wall" }, layers: [], diameters: [50], closures: ["screw"] });
+  assert.deepEqual(structuresFor(two, "circular", 50, "screw").map((x) => x.id), ["pe-evoh-5", "abl", "big"]);
+  assert.ok(!structuresFor(two, "circular", 40, "screw").some((x) => x.id === "big"));
   const c = normalize(two, { shape: "circular", d: 40, l: 120, closure: "flipTop", structure: "abl" });
   assert.deepEqual(fromSearch(two, toSearch(c)), c);
 });

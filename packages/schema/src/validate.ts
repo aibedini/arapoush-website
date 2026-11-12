@@ -110,6 +110,17 @@ function walk(field: Field, v: unknown, path: string, issues: Issue[]): unknown 
         return walk(field.of, item, id !== undefined ? `${path}[${field.key}=${id}]` : `${path}[${i}]`, issues);
       });
     }
+    case "map": {
+      if (typeof v !== "object" || v === null || Array.isArray(v)) return err(issues, path, "TYPE", "Expected an object"), v;
+      const re = field.keyPattern ? new RegExp(field.keyPattern) : null;
+      const out: Record<string, unknown> = {};
+      for (const [k, val] of Object.entries(v as Record<string, unknown>)) {
+        const at = path === "/" ? `/${k}` : `${path}/${k}`;
+        if (re && !re.test(k)) err(issues, at, "BAD_KEY", `Key does not match ${field.keyPattern}`);
+        out[k] = walk(field.of, val, at, issues);
+      }
+      return out;
+    }
     case "group": {
       if (typeof v !== "object" || Array.isArray(v)) return err(issues, path, "TYPE", "Expected an object"), v;
       const out: Record<string, unknown> = {};
@@ -136,8 +147,9 @@ export function fieldAt(schema: GroupField, path: string): Field | undefined {
     if (!f) return undefined;
     if (key) {
       while (f && f.kind === "list") f = f.of;
-      if (!f || f.kind !== "group") return undefined;
-      f = f.fields[key];
+      if (f?.kind === "map") f = f.of;
+      else if (!f || f.kind !== "group") return undefined;
+      else f = f.fields[key];
     }
     if (/\[[^\]]*\]/.test(raw)) while (f && f.kind === "list") f = f.of;
   }
@@ -155,8 +167,9 @@ export function isLockedPath(schema: GroupField, path: string): boolean {
         if (f.locked) return true;
         f = f.of;
       }
-      if (!f || f.kind !== "group") return false;
-      f = f.fields[key];
+      if (f?.kind === "map") f = f.of;
+      else if (!f || f.kind !== "group") return false;
+      else f = f.fields[key];
       if (f?.locked) return true;
     }
   }
@@ -173,8 +186,9 @@ export function isOperatorOnlyPath(schema: GroupField, path: string): boolean {
         if (f.operatorOnly) return true;
         f = f.of;
       }
-      if (!f || f.kind !== "group") return false;
-      f = f.fields[key];
+      if (f?.kind === "map") f = f.of;
+      else if (!f || f.kind !== "group") return false;
+      else f = f.fields[key];
       if (f?.operatorOnly) return true;
     }
   }

@@ -652,6 +652,33 @@ Forms on the page are OPEX forms: `request`, `careers`, `feedback` and `complain
 system forms, like `quote` and `contact`. Their definitions live in `packages/schema/src/systemForms.ts`,
 so the site renders them even when OPEX is off.
 
+### 6.5.3 Tube catalogue v3 and the size-chart import
+
+**`product.tube.catalogue`** (v3) holds:
+- shapes: `sizes`, a map from diameter to rows of length and volume;
+- closures:
+  - `compat`, a map from shape to diameter to `chart` or `confirm`;
+  - `colours`, a map from shape to diameter to colour ids;
+  - `aliases`, the chart wordings;
+  - `shoulder`, for eye-nozzle caps;
+- `colourFamilies`;
+- structures, optionally limited by `diameters` or `closures`.
+
+`map` fields take their keys from the data (`packages/schema/src/fields.ts`). A chart can therefore
+add a diameter, shape or closure without a schema change.
+
+The size charts (`.xlsx`) are applied in three ways:
+- in the console: **Catalogue** (`/catalogue`): preview, warnings, a change list, then save as a draft;
+- through `POST /v1/manage/catalogue/tube/import`;
+- for the repository seed: `pnpm --filter @arapoush/opex-api tube:chart`.
+
+How the import works:
+- The parser is `packages/schema/src/tubeChart.ts` and the reader `apps/opex-api/src/catalogue/xlsx.ts`.
+- Unknown wording becomes a new closure, with a warning.
+- A colour listed twice is flagged as a likely chart typo.
+- Diameters a chart does not mention are kept unless "keep missing" is off.
+- A pre-v3 draft is upgraded on its first import.
+
 ### 6.6 SEO and machine-readable output (derived, not separately edited)
 
 - **Per page `seo` group** (in each page type): title, description (L), OG image, `noindex` boolean

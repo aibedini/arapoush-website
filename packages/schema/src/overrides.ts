@@ -16,13 +16,11 @@ export const OVERRIDES: Override[] = [
   { type: "global.site", path: "/social/*", set: { operatorOnly: true } },
   { type: "page.home.layout", path: "/sections", set: { operatorOnly: true } },
 
-  // Tube configurator: geometry, compatibility and 3D model keys are code-owned in v1.
+  // Tube configurator (v3): sizes, fits and colours come from the size charts (chart import) and are
+  // operator data; the 3D families, shoulders and ids stay code-owned until T2 makes families editable.
   { type: "product.tube.catalogue", path: "*/model", set: { locked: true } },
-  { type: "product.tube.catalogue", path: "*/sizes", set: { locked: true } },
-  { type: "product.tube.catalogue", path: "*/compat", set: { locked: true } },
+  { type: "product.tube.catalogue", path: "/closures/shoulder", set: { locked: true } },
   { type: "product.tube.catalogue", path: "/structures/layers", set: { locked: true } },
-  { type: "product.tube.catalogue", path: "/samples/shape", set: { locked: true } },
-  { type: "product.tube.catalogue", path: "/samples/closure", set: { locked: true } },
   { type: "product.tube.catalogue", path: "*/id", set: { locked: true } },
   { type: "product.tube.catalogue", path: "/version", set: { locked: true } },
   { type: "product.tube.catalogue", path: "/updated", set: { locked: true } },
@@ -78,6 +76,7 @@ export function applyOverrides(typeKey: string, schema: GroupField, rules: Overr
     for (const r of relevant) if (globMatch(r.path, path)) out = { ...out, ...r.set } as Field;
     if (out.kind === "group") return { ...out, fields: Object.fromEntries(Object.entries(out.fields).map(([k, c]) => [k, visit(c, `${path}/${k}`)])) };
     if (out.kind === "list") return { ...out, of: visit(out.of, path) };
+    if (out.kind === "map") return { ...out, of: visit(out.of, `${path}/*`) };
     return out;
   };
   return visit(schema, "") as GroupField;

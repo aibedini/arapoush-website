@@ -25,6 +25,7 @@ import {
   Tray,
   UserCircle,
   UsersThree,
+  Package,
   type Icon,
 } from "@phosphor-icons/react";
 
@@ -51,6 +52,7 @@ const NAV: { group: string; items: Item[] }[] = [
     items: [
       { href: "/visual", label: "ویرایشگر بصری", icon: PaintBrush },
       { href: "/content", label: "محتوا (فیلدها)", icon: TextAa },
+      { href: "/catalogue", label: "کاتالوگ تیوب", icon: Package, write: true },
       { href: "/forms", label: "فرم‌ها", icon: ListChecks },
       { href: "/media", label: "رسانه", icon: Images },
     ],

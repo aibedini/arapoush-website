@@ -39,8 +39,13 @@ export type ImageField = Common & { kind: "image"; perLocale?: boolean; path?: b
 export type FileField = Common & { kind: "file"; formats?: string[] };
 export type ListField = Common & { kind: "list"; of: Field; key?: string; min?: number; max?: number; fixed?: boolean };
 export type GroupField = Common & { kind: "group"; fields: Record<string, Field> };
+/**
+ * Entries keyed by data, not by schema: diameters (`"30"`), shape ids. Every value follows `of`.
+ * `keyPattern` (a regular expression) limits the keys; `keyLabel` names them in the console.
+ */
+export type MapField = Common & { kind: "map"; of: Field; keyPattern?: string; keyLabel?: string };
 
-export type Field = TextField | NumberField | BooleanField | EnumField | UrlField | ImageField | FileField | ListField | GroupField;
+export type Field = TextField | NumberField | BooleanField | EnumField | UrlField | ImageField | FileField | ListField | GroupField | MapField;
 
 export type ContentType = {
   key: string;

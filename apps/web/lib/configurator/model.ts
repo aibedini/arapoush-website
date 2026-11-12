@@ -15,11 +15,26 @@ export type VolumeStatus = "chart" | "estimate";
 export type CompatStatus = "chart" | "confirm";
 
 export type SizeRow = { l: number; ml?: number; status?: VolumeStatus };
-export type ShapeDef = { id: string; model: ShapeModel; name: Localized; image: string; sizes: Record<string, SizeRow[]> };
-export type ClosureDef = { id: string; model: ClosureModel; name: Localized; image: string; compat: Record<string, Record<string, CompatStatus>> };
+/** `aliases`: wordings in the Arapoush size charts that map onto this entry (chart import). */
+export type ShapeDef = { id: string; model: ShapeModel; name: Localized; image: string; sizes: Record<string, SizeRow[]>; aliases?: string[] };
+/** Colour family ids, as in the size charts: white, coloured, transparent, metallic silver / gold. */
+export type ColourId = "white" | "coloured" | "clear" | "metallicSilver" | "metallicGold";
+export type ColourFamily = { id: ColourId; name: Localized; kind: "solid" | "custom" | "clear" | "metallic"; swatch: string };
+export type ClosureDef = {
+  id: string;
+  model: ClosureModel;
+  name: Localized;
+  image: string;
+  compat: Record<string, Record<string, CompatStatus>>;
+  /** Colour families offered, per shape and diameter (from the charts). */
+  colours?: Record<string, Record<string, ColourId[]>>;
+  /** Tube shoulder this closure needs (eye-nozzle caps sit on an eye-nozzle shoulder). */
+  shoulder?: ShapeModel;
+  aliases?: string[];
+};
 export type LayerDef = { id: string; color: string; name: Localized; text: Localized };
 /** A wall build-up, layers listed outside → inside. `shapes` limits it to some tube shapes. */
-export type StructureDef = { id: string; name: Localized; layers: LayerDef[]; shapes?: string[] };
+export type StructureDef = { id: string; name: Localized; layers: LayerDef[]; shapes?: string[]; diameters?: number[]; closures?: string[] };
 export type SampleDef = { id: string; image: string; shape: string; closure?: string; d?: number; title: Localized };
 export type ProductImage = { ltr: string; rtl: string; width: number; height: number; alt: Localized };
 
@@ -29,6 +44,7 @@ export type TubeProduct = {
   images: { hero: ProductImage; layers: ProductImage };
   shapes: ShapeDef[];
   closures: ClosureDef[];
+  colourFamilies?: ColourFamily[];
   structures: StructureDef[];
   samples: SampleDef[];
 };
@@ -47,7 +63,23 @@ export const nearest = (list: number[], v: number) => list.reduce((best, x) => (
 export const shapeOf = (cat: TubeProduct, id: string) => cat.shapes.find((s) => s.id === id);
 export const closureOf = (cat: TubeProduct, id: string) => cat.closures.find((c) => c.id === id);
 export const structureOf = (cat: TubeProduct, id: string) => cat.structures.find((s) => s.id === id);
-export const structuresFor = (cat: TubeProduct, shape: string) => cat.structures.filter((s) => !s.shapes?.length || s.shapes.includes(shape));
+/** Wall structures offered for a shape (and, when given, a diameter and closure). */
+export const structuresFor = (cat: TubeProduct, shape: string, d?: number, closure?: string) =>
+  cat.structures.filter(
+    (s) => (!s.shapes?.length || s.shapes.includes(shape)) && (d == null || !s.diameters?.length || s.diameters.includes(d)) && (closure == null || !s.closures?.length || s.closures.includes(closure)),
+  );
+
+/** Colour families a closure comes in at a shape and diameter, in catalogue order. */
+export const coloursFor = (cat: TubeProduct, closure: string, shape: string, d: number): ColourFamily[] => {
+  const ids = closureOf(cat, closure)?.colours?.[shape]?.[String(d)] ?? [];
+  return (cat.colourFamilies ?? []).filter((f) => ids.includes(f.id));
+};
+
+/** 3D families for the scene: an eye-nozzle closure swaps in its own shoulder. */
+export const sceneModels = (cat: TubeProduct, c: TubeConfig) => ({
+  shape: closureOf(cat, c.closure)?.shoulder ?? shapeOf(cat, c.shape)?.model ?? "circular",
+  closure: closureOf(cat, c.closure)?.model ?? "plain",
+});
 
 export const diametersFor = (cat: TubeProduct, shape: string) =>
   Object.keys(shapeOf(cat, shape)?.sizes ?? {})
@@ -66,6 +98,9 @@ export const closuresFor = (cat: TubeProduct, shape: string, d: number) =>
   cat.closures
     .map((c) => ({ closure: c.id, status: closureStatus(cat, c.id, shape, d) }))
     .filter((c): c is { closure: string; status: CompatStatus } => c.status !== null);
+
+/** Closures that fit a shape at some diameter (the configurator lists these; others belong to other shapes). */
+export const closuresForShape = (cat: TubeProduct, shape: string) => cat.closures.filter((c) => Object.keys(c.compat[shape] ?? {}).length > 0);
 
 /** Nominal fill volume from the catalogue; null means "ask Arapoush" — never a formula. */
 export const capacity = (cat: TubeProduct, c: TubeConfig): Capacity | null => {
@@ -104,7 +139,7 @@ export function normalize(cat: TubeProduct, input: Partial<Record<keyof TubeConf
   const l = Number.isFinite(lIn) && input.l !== "" && input.l != null ? nearest(ls, lIn) : nearest(ls, DEFAULT_CONFIG.l);
   const want = typeof input.closure === "string" ? input.closure : DEFAULT_CONFIG.closure;
   const closure = preferred(cat, shape, d, want)!;
-  const structures = structuresFor(cat, shape);
+  const structures = structuresFor(cat, shape, d, closure);
   const structure = structures.find((s) => s.id === input.structure)?.id ?? structures[0]?.id ?? "";
   return { shape, d, l, closure, structure };
 }
@@ -147,7 +182,17 @@ export const toSearch = (c: TubeConfig) =>
 
 export const fromSearch = (cat: TubeProduct, search: string | URLSearchParams) => {
   const p = typeof search === "string" ? new URLSearchParams(search) : search;
-  return normalize(cat, { shape: p.get("shape") ?? undefined, d: p.get("d") ?? undefined, l: p.get("l") ?? undefined, closure: p.get("cap") ?? undefined, structure: p.get("st") ?? undefined });
+  let shape = p.get("shape") ?? undefined;
+  let closure = p.get("cap") ?? undefined;
+  // Links from before v3 named a shoulder as a shape (shape=eyeNozzle): map it to a closure with that shoulder.
+  if (shape && !shapeOf(cat, shape)) {
+    const viaClosure = cat.closures.find((c) => c.shoulder === shape);
+    if (viaClosure) {
+      closure = viaClosure.id;
+      shape = Object.keys(viaClosure.compat)[0];
+    }
+  }
+  return normalize(cat, { shape, d: p.get("d") ?? undefined, l: p.get("l") ?? undefined, closure, structure: p.get("st") ?? undefined });
 };
 
 export const isValid = (cat: TubeProduct, c: TubeConfig) => {
