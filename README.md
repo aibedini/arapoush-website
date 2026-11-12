@@ -156,6 +156,9 @@ snapshot with `pnpm --filter @arapoush/schema generate`.
 | `infra` | Production stack: compose (Caddy, Postgres, ClamAV, API, console, site), backups, alerts, load test |
 | `docs/opex/runbooks` | Deploy, backup/restore drill, key rotation, incidents, alerts, AraCMS go-live, security testing |
 | `docs/opex` | OPEX content platform plan (admin, API, audit) |
+| `docs/architecture` | How it fits together as built: topology, data flow, security model, ADRs |
+| `docs/api` | Generated API reference (OpenAPI, errors, Postman) and guides |
+| `docs/storybook.md` | Component catalogue (Storybook) for the site and console |
 | `.github/workflows/ci.yml` | CI: checks, Lighthouse budgets, Docker image, installer upgrade and rollback test |
 
 - Section order of the home page: `content/home-layout.json` (backend drag-and-drop writes this list).

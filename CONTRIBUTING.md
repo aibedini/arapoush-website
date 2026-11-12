@@ -60,6 +60,7 @@ For `main`:
 2. Require these status checks to pass, and require branches to be up to date:
    - `check`
    - `docs`
+   - `storybook`
    - `php-client`
    - `opex-images`
    - `dependency-audit`

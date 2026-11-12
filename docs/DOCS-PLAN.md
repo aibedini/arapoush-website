@@ -120,6 +120,9 @@ Your four-phase plan is right in spirit. I would change five things:
 - `docs/architecture/`: system overview, data flow (content → delivery → site → revalidate),
   security model, ADRs.
 - Diagrams are generated, using the graph from graphify as a cross-check.
+- **Status: done.** `docs/architecture/`: overview and topology, data flow, security model, ADRs
+  0001–0005 (0001 moved from `docs/opex/adr/`). Diagrams are Mermaid, checked against the code paths
+  that graphify located.
 
 Estimated size: D1 is the largest (about 120 routes). D2 and D3 are medium; D4 and D6 are small;
 D5 is medium.
