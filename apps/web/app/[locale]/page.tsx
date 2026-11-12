@@ -6,6 +6,7 @@ import Drift from "@/components/motion/Drift";
 import Header from "@/components/layout/Header";
 import ContactCTA from "@/components/sections/ContactCTA";
 import { getDictionary, isLocale } from "@/lib/i18n";
+import { getAbout, t as pt } from "@/lib/about";
 import { Sections, faqItems, normalizeLayout } from "@/lib/sections";
 import { editMode } from "@/lib/content/edit";
 import EditScope from "@/components/opex/EditScope";
@@ -31,7 +32,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         // `<` is escaped so dictionary text can never close the script tag.
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd(t, locale)).replace(/</g, "\\u003c") }}
       />
-      <PageLoader logo={t.media.site.logo.src} />
+      <PageLoader logo={t.media.site.logoWhite} slogan={pt(getAbout().hero.slogan, locale)} />
       {faq.length > 0 && (
         <script
           type="application/ld+json"

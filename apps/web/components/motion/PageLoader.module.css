@@ -1,17 +1,25 @@
+/* First-visit loader ("extrusion"). Deep navy stage, white logo revealed in reading direction,
+   three layer lines (PE / EVOH / PE) and an odometer. The meta row is always left-to-right
+   (numbers and a progress bar), so it never mirrors in Persian. Only transform, opacity and
+   clip-path animate. */
+
 .loader {
+  --deep: #031d2f;
   display: none;
   position: fixed;
   inset: 0;
   z-index: 100;
   align-items: center;
   justify-content: center;
-  background: var(--cream);
-  clip-path: inset(0% 0% 0% 0%);
-  will-change: clip-path;
+  color: #fff;
+  /* solid until the exit, so no seam between the layers ever shows the page */
+  background: var(--deep);
+  pointer-events: none;
 }
 
 :global(.js) .loader {
   display: flex;
+  pointer-events: auto;
   /* Failsafe: if scripts never finish, the loader still gets out of the way. */
   animation: loaderFailsafe 0.6s ease 7s forwards;
 }
@@ -27,43 +35,164 @@
   }
 }
 
-.inner {
+/* The three panels that make up the background and run off in turn on exit. */
+.layer {
+  position: absolute;
+  inset-inline: 0;
+  /* overlap by a pixel each side so no sub-pixel seam shows the page */
+  height: calc(100% / 3 + 2px);
+  background: var(--deep);
+  will-change: transform;
+}
+/* The edge that uncovers the page carries the layer's colour, as on the progress lines. */
+.layer::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.85);
+}
+.layer:nth-child(1) {
+  top: -1px;
+}
+.layer:nth-child(2) {
+  top: calc(100% / 3 - 1px);
+}
+.layer:nth-child(2)::before {
+  background: #92b6dd;
+}
+.layer:nth-child(3) {
+  top: calc(200% / 3 - 1px);
+}
+.layer:nth-child(3)::before {
+  background: #d78a59;
+}
+
+.glow {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  background:
+    radial-gradient(42% 38% at 50% 46%, rgba(146, 182, 221, 0.22), transparent 70%),
+    radial-gradient(70% 60% at 50% 120%, rgba(84, 103, 124, 0.35), transparent 70%);
+  pointer-events: none;
+}
+
+.stage {
+  position: relative;
+  z-index: 5;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 28px;
+  gap: 26px;
+  padding-inline: 24px;
 }
 
-.logo {
-  width: 190px;
+.logoWrap {
+  position: relative;
+  width: min(260px, 62vw);
+}
+.logoWrap img {
+  display: block;
+  width: 100%;
   height: auto;
 }
-
-.meter {
-  position: relative;
-  width: 168px;
-  height: 1px;
-  background: rgba(3, 29, 47, 0.12);
-  overflow: hidden;
+.ghost {
+  opacity: 0.14;
 }
-
-.bar {
+.reveal {
   position: absolute;
   inset: 0;
-  background: var(--navy);
-  transform: scaleX(0);
-  transform-origin: left center;
+  clip-path: inset(0 100% 0 0);
 }
 
-.pct {
+.slogan {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 0.32em;
+  max-width: 28ch;
+  font: 400 15px/1.7 var(--font-sans);
+  color: rgba(245, 244, 244, 0.72);
+  text-align: center;
+}
+.wordMask {
+  display: inline-block;
+  overflow: hidden;
+  padding-block: 0.08em;
+}
+.word {
+  display: inline-block;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.lines {
+  display: grid;
+  gap: 3px;
+  width: 132px;
+}
+.track {
+  position: relative;
+  height: 2px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+.line {
+  position: absolute;
+  inset: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: #fff;
+}
+/* PE · EVOH barrier · PE: the middle wall in the site's sky blue, the outer one with the warm tick */
+.track[data-layer="1"] .line {
+  background: #92b6dd;
+}
+.track[data-layer="2"] .line {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.85) 80%, #d78a59 80%);
+}
+
+.counter {
   display: inline-flex;
   align-items: baseline;
-  gap: 2px;
-  font: 400 12px/1 var(--font-ui);
-  letter-spacing: 0.08em;
-  color: rgba(3, 29, 47, 0.55);
+  font: 500 13px/1 var(--font-mark);
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.85);
   font-variant-numeric: tabular-nums;
 }
-.pctSign {
-  opacity: 0.6;
+.col {
+  display: inline-block;
+  height: 1em;
+  overflow: hidden;
+}
+.digits {
+  display: flex;
+  flex-direction: column;
+  transition: none;
+}
+.digits span {
+  display: block;
+  height: 1em;
+  line-height: 1;
+  text-align: center;
+  min-width: 0.62em;
+}
+.pct {
+  margin-inline-start: 3px;
+  opacity: 0.5;
+}
+
+@media (min-width: 900px) {
+  .logoWrap {
+    width: 300px;
+  }
+  .slogan {
+    font-size: 16px;
+  }
 }
