@@ -1,0 +1,332 @@
+{
+  "$comment": "Contact page (/contact). Facts come from arapoush.com: contact, sales department, laboratory, quality control, recruitment, FAQ, suggestions and complaints. `style` fields pick a component variant. Working hours are empty until the client confirms them (empty lists are hidden). Map buttons use `geo` (lat/lng) when set; until then Google Maps searches the address and Neshan/Balad wait for coordinates or a pasted link.",
+  "meta": {
+    "title": {
+      "fa": "تماس با آراپوش گستر | دپارتمان فروش، آزمایشگاه، کنترل کیفیت و استخدام",
+      "en": "Contact Arapoush Gostar | Sales, Laboratory, Quality Control and Careers",
+      "tr": "Arapoush Gostar İletişim | Satış, Laboratuvar, Kalite Kontrol ve Kariyer"
+    },
+    "description": {
+      "fa": "شماره‌ها، داخلی‌ها و موبایل کارشناسان فروش آراپوش، نشانی دفتر مرکزی تهران و کارخانهٔ قزوین روی گوگل‌مپ، نشان و بلد، فرم درخواست، ارسال رزومه، پرسش‌های متداول و ثبت پیشنهاد یا شکایت.",
+      "en": "Arapoush sales lines, extensions and specialists' mobiles, the Tehran head office and Qazvin factory on Google Maps, Neshan and Balad, a request form, careers, FAQs, and suggestions or complaints.",
+      "tr": "Arapoush satış hatları, dahili numaralar ve uzmanların cep telefonları, Tahran merkez ofisi ve Kazvin fabrikası Google Haritalar, Neshan ve Balad'da, talep formu, kariyer, SSS ve öneri ya da şikâyet."
+    }
+  },
+  "hero": {
+    "style": "split",
+    "kicker": { "fa": "Contact & Support", "en": "Contact & Support", "tr": "İletişim ve Destek" },
+    "title": { "fa": "راه‌های ارتباط با آراپوش", "en": "Ways to reach Arapoush", "tr": "Arapoush'a ulaşmanın yolları" },
+    "lead": {
+      "fa": "دپارتمان‌ها، کارشناسان، نشانی دفتر و کارخانه و فرم‌های درخواست؛ همه در یک صفحه.",
+      "en": "Departments, specialists, our office and factory, and every request form, on one page.",
+      "tr": "Birimler, uzmanlar, ofis ve fabrika adresleri ve tüm talep formları tek sayfada."
+    },
+    "primary": { "fa": "ارسال درخواست", "en": "Send a request", "tr": "Talep gönderin" },
+    "secondary": { "fa": "تماس فوری", "en": "Call now", "tr": "Hemen arayın" },
+    "phone": "021-26421602",
+    "imageAlt": { "fa": "ساختمان آراپوش گستر با نشان آراپوش", "en": "The Arapoush Gostar building with the Arapoush sign", "tr": "Arapoush tabelalı Arapoush Gostar binası" }
+  },
+  "directory": {
+    "style": "tabs",
+    "kicker": { "fa": "Departments", "en": "Departments", "tr": "Birimler" },
+    "title": { "fa": "با کدام بخش می‌خواهید صحبت کنید؟", "en": "Which team would you like to talk to?", "tr": "Hangi ekiple görüşmek istersiniz?" },
+    "lead": { "fa": "شمارهٔ مستقیم، داخلی و موبایل کارشناس هر بخش را ببینید.", "en": "Direct lines, extensions and each specialist's mobile.", "tr": "Her birimin doğrudan hattı, dahili numarası ve uzmanların cep telefonları." },
+    "labels": {
+      "phones": { "fa": "تلفن‌ها", "en": "Phone lines", "tr": "Telefon hatları" },
+      "email": { "fa": "ایمیل", "en": "Email", "tr": "E-posta" },
+      "hours": { "fa": "ساعات پاسخ‌گویی", "en": "Hours", "tr": "Çalışma saatleri" },
+      "team": { "fa": "کارشناسان", "en": "People", "tr": "Ekip" },
+      "ext": { "fa": "داخلی", "en": "Ext.", "tr": "Dahili" },
+      "mobile": { "fa": "موبایل", "en": "Mobile", "tr": "Cep" },
+      "call": { "fa": "تماس با", "en": "Call", "tr": "Ara:" },
+      "extHint": { "fa": "پس از تماس با خط اصلی، شمارهٔ داخلی را بگیرید.", "en": "Call a main line, then dial the extension.", "tr": "Ana hattı arayın, ardından dahili numarayı tuşlayın." }
+    },
+    "departments": [
+      {
+        "id": "sales",
+        "icon": "cart",
+        "name": { "fa": "فروش و سفارش", "en": "Sales and orders", "tr": "Satış ve siparişler" },
+        "summary": {
+          "fa": "مشاورهٔ انتخاب تیوب و ظرف قرص جوشان، استعلام قیمت، ثبت و پیگیری سفارش.",
+          "en": "Help choosing tubes and effervescent containers, quotes, and placing and tracking orders.",
+          "tr": "Tüp ve efervesan kap seçimi, fiyat teklifi, sipariş verme ve takibi."
+        },
+        "phones": ["021-26420120", "021-26420145", "021-26420168", "021-26420315", "021-26421602"],
+        "email": "sales@arapoush.com",
+        "hours": [],
+        "people": [
+          { "name": { "fa": "مهندس زیوری", "en": "Mr Zivari", "tr": "Bay Zivari" }, "role": { "fa": "مدیر فروش", "en": "Sales manager", "tr": "Satış müdürü" }, "exts": ["116"], "mobiles": ["0991-270-3900", "0991-270-3901"] },
+          { "name": { "fa": "خانم فخیم‌جو", "en": "Ms Fakhimjou", "tr": "Bayan Fakhimjou" }, "role": { "fa": "کارشناس فروش", "en": "Sales specialist", "tr": "Satış uzmanı" }, "exts": ["112"], "mobiles": ["0991-270-3902"] },
+          { "name": { "fa": "آقای رحیمی", "en": "Mr Rahimi", "tr": "Bay Rahimi" }, "role": { "fa": "کارشناس فروش", "en": "Sales specialist", "tr": "Satış uzmanı" }, "exts": ["118"], "mobiles": ["0912-775-0625"] },
+          { "name": { "fa": "خانم همتی", "en": "Ms Hemmati", "tr": "Bayan Hemmati" }, "role": { "fa": "منشی فروش", "en": "Sales assistant", "tr": "Satış asistanı" }, "exts": ["113"] },
+          { "name": { "fa": "خانم باقری‌نژاد", "en": "Ms Bagherinejad", "tr": "Bayan Bagherinejad" }, "role": { "fa": "حسابداری فروش", "en": "Sales accounts", "tr": "Satış muhasebesi" }, "exts": ["114"] }
+        ]
+      },
+      {
+        "id": "design",
+        "icon": "palette",
+        "name": { "fa": "طراحی و گرافیک", "en": "Design and artwork", "tr": "Tasarım ve grafik" },
+        "summary": {
+          "fa": "آماده‌سازی فایل چاپ، تطبیق طرح با روش چاپ و هماهنگی نمونه و پروف.",
+          "en": "Print-ready artwork, matching designs to the printing method, and samples and proofs.",
+          "tr": "Baskıya hazır dosyalar, tasarımın baskı yöntemine uyarlanması, numune ve prova."
+        },
+        "phones": ["021-26420120", "021-26421602"],
+        "email": "sales@arapoush.com",
+        "hours": [],
+        "people": [
+          { "name": { "fa": "خانم زالی و خانم سارانی", "en": "Ms Zali and Ms Sarani", "tr": "Bayan Zali ve Bayan Sarani" }, "role": { "fa": "همکاران طراحی", "en": "Design team", "tr": "Tasarım ekibi" }, "exts": ["111", "121"] }
+        ]
+      },
+      {
+        "id": "lab",
+        "icon": "flask",
+        "name": { "fa": "آزمایشگاه", "en": "Laboratory", "tr": "Laboratuvar" },
+        "summary": {
+          "fa": "آزمون خواص تیوب پلاستیکی (INSO 5938)، درب و بدنهٔ ظرف قرص جوشان و مواد اولیه (ISO 1133 و ISO 1183) در آزمایشگاه مطابق ISO/IEC 17025.",
+          "en": "Tests of plastic tube properties (INSO 5938), effervescent caps and bodies, and raw materials (ISO 1133, ISO 1183) in a lab working to ISO/IEC 17025.",
+          "tr": "ISO/IEC 17025'e göre çalışan laboratuvarda plastik tüp özellikleri (INSO 5938), efervesan kapak ve gövdeleri ve hammaddeler (ISO 1133, ISO 1183) test edilir."
+        },
+        "phones": ["028-32848035-9"],
+        "email": "info@arapoush.com",
+        "hours": [],
+        "people": []
+      },
+      {
+        "id": "qc",
+        "icon": "shield",
+        "name": { "fa": "کنترل کیفیت", "en": "Quality control", "tr": "Kalite kontrol" },
+        "summary": {
+          "fa": "بازرسی ابعاد و حجم طبق سفارش، دوخت و اتصالات، لایه‌ها و ضخامت، فویل ممبران و نازل، بر پایهٔ روش‌های ISO و هدف صفر خطا.",
+          "en": "Checks of dimensions and volume against each order, seals and joints, layers and wall thickness, membrane foil and nozzles, to ISO-based procedures aiming at zero defects.",
+          "tr": "Siparişe göre ölçü ve hacim, kaynak ve birleşimler, katmanlar ve et kalınlığı, membran folyo ve nozullar; sıfır hata hedefli ISO tabanlı prosedürlerle."
+        },
+        "phones": ["028-32848035-9"],
+        "email": "info@arapoush.com",
+        "hours": [],
+        "people": []
+      },
+      {
+        "id": "hr",
+        "icon": "briefcase",
+        "name": { "fa": "منابع انسانی و استخدام", "en": "People and careers", "tr": "İnsan kaynakları ve kariyer" },
+        "summary": {
+          "fa": "آراپوش از نیروهای علاقه‌مند و توانمند دعوت به همکاری می‌کند. رزومهٔ خود را از بخش فرصت‌های شغلی بفرستید.",
+          "en": "Arapoush welcomes motivated, capable people. Send your résumé from the careers section.",
+          "tr": "Arapoush istekli ve yetkin kişileri ekibine davet ediyor. Özgeçmişinizi kariyer bölümünden gönderin."
+        },
+        "phones": ["021-26420120"],
+        "email": "info@arapoush.com",
+        "hours": [],
+        "people": []
+      }
+    ]
+  },
+  "locations": {
+    "style": "split",
+    "kicker": { "fa": "Locations", "en": "Locations", "tr": "Konumlar" },
+    "title": { "fa": "مکان‌های ما", "en": "Where we are", "tr": "Neredeyiz" },
+    "lead": { "fa": "دفتر مرکزی در تهران و کارخانه در شهرک صنعتی کاسپین قزوین.", "en": "Our head office in Tehran and our factory in the Caspian industrial park, Qazvin.", "tr": "Tahran'daki merkez ofisimiz ve Kazvin Hazar sanayi bölgesindeki fabrikamız." },
+    "labels": {
+      "address": { "fa": "نشانی", "en": "Address", "tr": "Adres" },
+      "postalCode": { "fa": "کد پستی", "en": "Postal code", "tr": "Posta kodu" },
+      "phones": { "fa": "تلفن", "en": "Phone", "tr": "Telefon" },
+      "fax": { "fa": "فکس", "en": "Fax", "tr": "Faks" },
+      "telegram": { "fa": "تلگرام", "en": "Telegram", "tr": "Telegram" },
+      "openIn": { "fa": "مسیریابی با", "en": "Directions in", "tr": "Yol tarifi:" },
+      "map": { "fa": "نقشهٔ موقعیت", "en": "Location map", "tr": "Konum haritası" }
+    },
+    "places": [
+      {
+        "id": "office",
+        "name": { "fa": "دفتر مرکزی تهران", "en": "Tehran head office", "tr": "Tahran merkez ofisi" },
+        "address": {
+          "fa": "تهران، خیابان شریعتی، خیابان شهید دستگردی (ظفر)، خیابان گوی‌آبادی، پلاک ۳",
+          "en": "No 3, Gooyabadi St, Shahid Dastgerdi (Zafar) Ave, Shariati St, Tehran, Iran",
+          "tr": "No 3, Gooyabadi Sk., Şehit Dastgerdi (Zafar) Cd., Şeriati Cd., Tahran, İran"
+        },
+        "query": "Arapoush Gostar, Gooyabadi St, Zafar, Tehran",
+        "postalCode": "1911833195",
+        "phones": ["021-26420120", "021-26420145", "021-26420168", "021-26420315", "021-26421602"],
+        "fax": "021-26420819",
+        "telegram": "0902-876-6583",
+        "geo": { "lat": null, "lng": null },
+        "maps": { "google": null, "neshan": null, "balad": null }
+      },
+      {
+        "id": "factory",
+        "name": { "fa": "کارخانهٔ قزوین", "en": "Qazvin factory", "tr": "Kazvin fabrikası" },
+        "address": {
+          "fa": "قزوین، شهرک صنعتی کاسپین",
+          "en": "Caspian Industrial Park, Qazvin, Iran",
+          "tr": "Hazar Sanayi Bölgesi, Kazvin, İran"
+        },
+        "query": "Caspian Industrial Park, Qazvin",
+        "postalCode": "",
+        "phones": ["028-32848035-9"],
+        "fax": "028-32848037",
+        "telegram": "0902-876-6583",
+        "geo": { "lat": null, "lng": null },
+        "maps": { "google": null, "neshan": null, "balad": null }
+      }
+    ]
+  },
+  "request": {
+    "kicker": { "fa": "Request", "en": "Request", "tr": "Talep" },
+    "title": { "fa": "ارسال درخواست و ارتباط با ما", "en": "Send us a request", "tr": "Bize talep gönderin" },
+    "lead": {
+      "fa": "پرسش، سفارش یا درخواست تماس خود را بفرستید. بخش مرتبط را انتخاب کنید تا مستقیم به همان کارشناس برسد.",
+      "en": "Send a question, an order or a call-back request. Pick the department and it goes straight to the right specialist.",
+      "tr": "Sorunuzu, siparişinizi ya da geri arama talebinizi gönderin. Birimi seçin, doğrudan ilgili uzmana ulaşsın."
+    },
+    "points": [
+      { "fa": "پاسخ در ساعات کاری همان روز", "en": "A reply the same working day", "tr": "Aynı iş günü içinde yanıt" },
+      { "fa": "تماس در زمانی که خودتان انتخاب می‌کنید", "en": "A call at the time you choose", "tr": "Seçtiğiniz saatte arama" },
+      { "fa": "شمارهٔ پیگیری برای هر درخواست", "en": "A reference number for every request", "tr": "Her talep için bir referans numarası" }
+    ]
+  },
+  "careers": {
+    "kicker": { "fa": "Careers", "en": "Careers", "tr": "Kariyer" },
+    "title": { "fa": "فرصت‌های شغلی", "en": "Careers", "tr": "Kariyer" },
+    "lead": {
+      "fa": "به تیم آراپوش بپیوندید و در توسعهٔ صنعت بسته‌بندی کشور نقش‌آفرینی کنید.",
+      "en": "Join the Arapoush team and help shape the packaging industry.",
+      "tr": "Arapoush ekibine katılın ve ambalaj sektörünün gelişimine katkıda bulunun."
+    },
+    "openingsTitle": { "fa": "موقعیت‌های فعال", "en": "Open positions", "tr": "Açık pozisyonlar" },
+    "applyFor": { "fa": "ارسال رزومه برای این موقعیت", "en": "Apply for this role", "tr": "Bu pozisyona başvur" },
+    "empty": { "fa": "الان موقعیت فعالی نداریم، اما رزومهٔ شما را برای فرصت‌های بعدی نگه می‌داریم.", "en": "No roles are open right now, but we keep your résumé for the next one.", "tr": "Şu anda açık pozisyon yok, ancak özgeçmişinizi sonraki fırsatlar için saklıyoruz." },
+    "openings": [
+      {
+        "id": "sales",
+        "title": { "fa": "کارشناس فروش", "en": "Sales specialist", "tr": "Satış uzmanı" },
+        "text": {
+          "fa": "ارتباط با مشتریان صنایع آرایشی، دارویی، بهداشتی و غذایی، پیگیری سفارش‌ها و توسعهٔ بازار.",
+          "en": "Work with cosmetic, pharmaceutical, hygiene and food customers, follow orders through and grow the market.",
+          "tr": "Kozmetik, ilaç, hijyen ve gıda müşterileriyle çalışma, sipariş takibi ve pazar geliştirme."
+        },
+        "location": { "fa": "تهران", "en": "Tehran", "tr": "Tahran" },
+        "type": { "fa": "تمام‌وقت", "en": "Full time", "tr": "Tam zamanlı" }
+      }
+    ]
+  },
+  "feedback": {
+    "kicker": { "fa": "Feedback", "en": "Feedback", "tr": "Geri bildirim" },
+    "title": { "fa": "صدای شما برای ما مهم است", "en": "Your voice matters to us", "tr": "Sesiniz bizim için önemli" },
+    "lead": {
+      "fa": "ایده‌ای برای طراحی یا بهبود فرایندها دارید، یا از چیزی ناراضی هستید؟ برای ما بنویسید.",
+      "en": "Have an idea for a design or a better process, or is something not right? Tell us.",
+      "tr": "Bir tasarım ya da süreç fikriniz mi var, yoksa memnun olmadığınız bir şey mi? Bize yazın."
+    },
+    "tabs": [
+      { "form": "feedback", "label": { "fa": "نظرات و پیشنهادات", "en": "Ideas and suggestions", "tr": "Görüş ve öneriler" } },
+      { "form": "complaint", "label": { "fa": "انتقادات و شکایات", "en": "Complaints", "tr": "Şikâyetler" } }
+    ]
+  },
+  "faq": {
+    "kicker": { "fa": "FAQ", "en": "FAQ", "tr": "SSS" },
+    "title": { "fa": "پرسش‌های متداول", "en": "Frequently asked questions", "tr": "Sık sorulan sorular" },
+    "lead": { "fa": "پاسخ پرسش‌های رایج دربارهٔ تیوب، چاپ و ظرف قرص جوشان.", "en": "Answers to common questions about tubes, printing and effervescent containers.", "tr": "Tüp, baskı ve efervesan kaplar hakkında sık sorulan soruların yanıtları." },
+    "aside": {
+      "title": { "fa": "هنوز سؤالی دارید؟", "en": "Still have a question?", "tr": "Hâlâ sorunuz mu var?" },
+      "text": { "fa": "کارشناسان ما آمادهٔ پاسخ‌گویی و مشاورهٔ تخصصی به شما هستند.", "en": "Our specialists are ready to answer and advise you.", "tr": "Uzmanlarımız sorularınızı yanıtlamaya ve size danışmanlık vermeye hazır." },
+      "cta": { "fa": "پرسش خود را بفرستید", "en": "Ask us", "tr": "Bize sorun" }
+    },
+    "groups": [
+      {
+        "id": "tubes",
+        "title": { "fa": "تیوب و ساختار", "en": "Tubes and structure", "tr": "Tüpler ve yapı" },
+        "items": [
+          {
+            "q": { "fa": "تیوب بدون درز پلاستیکی چیست؟", "en": "What is a seamless plastic tube?", "tr": "Dikişsiz plastik tüp nedir?" },
+            "a": { "fa": "درزدار یا بدون درز بودن به روش ساخت بدنه برمی‌گردد. در تیوب بدون درز، بدنه به‌صورت لوله اکسترود می‌شود و خط اتصالی ندارد.", "en": "It depends on how the body is made. A seamless tube's body is extruded as a tube, so it has no joining line.", "tr": "Gövdenin nasıl üretildiğine bağlıdır. Dikişsiz tüpün gövdesi boru olarak ekstrüde edilir, bu yüzden birleşim çizgisi yoktur." }
+          },
+          {
+            "q": { "fa": "ساختار تیوب چندلایهٔ بدون درز چگونه است؟", "en": "How is a seamless multi-layer tube built?", "tr": "Dikişsiz çok katmanlı tüp nasıl yapılır?" },
+            "a": { "fa": "معمولاً سه‌لایه است و لایهٔ میانی پلیمری مقاوم در برابر اکسیژن و رطوبت مانند EVOH است.", "en": "Usually in three layers, with a middle layer of an oxygen- and moisture-resistant polymer such as EVOH.", "tr": "Genellikle üç katmanlıdır; orta katman EVOH gibi oksijen ve neme dayanıklı bir polimerdir." }
+          },
+          {
+            "q": { "fa": "شانهٔ تیوب (نازل) چگونه ساخته می‌شود؟", "en": "How is the tube shoulder (nozzle) made?", "tr": "Tüp omuzu (nozul) nasıl yapılır?" },
+            "a": { "fa": "شانه می‌تواند جداگانه تزریق و به بدنه جوش داده شود یا مستقیم روی تیوب قالب‌گیری شود و بر اساس نیاز مشتری طراحی می‌شود.", "en": "It can be injection-moulded separately and welded on, or moulded directly onto the tube, designed to the customer's needs.", "tr": "Ayrı enjekte edilip kaynakla eklenebilir ya da doğrudan tüp üzerine kalıplanabilir; müşterinin ihtiyacına göre tasarlanır." }
+          },
+          {
+            "q": { "fa": "قطر، طول و حجم تیوب‌ها چقدر است؟", "en": "What diameters, lengths and volumes are available?", "tr": "Hangi çap, uzunluk ve hacimler mevcut?" },
+            "a": { "fa": "قطرهای ۱۹، ۲۵، ۳۰، ۳۵، ۴۰، ۵۰ و ۶۰ میلی‌متر، طول ۵۰ تا ۱۹۰ میلی‌متر و حجم ۵ تا ۳۷۵ میلی‌لیتر.", "en": "Diameters of 19, 25, 30, 35, 40, 50 and 60 mm, lengths from 50 to 190 mm and volumes from 5 to 375 ml.", "tr": "19, 25, 30, 35, 40, 50 ve 60 mm çaplar, 50–190 mm uzunluklar ve 5–375 ml hacimler." }
+          },
+          {
+            "q": { "fa": "سطح مقطع شانه‌ها چه شکل‌هایی دارد؟", "en": "What shoulder cross-sections are there?", "tr": "Hangi omuz kesitleri var?" },
+            "a": { "fa": "گرد در قطرهای ۱۹، ۲۵، ۳۰، ۳۵، ۵۰ و ۶۰ میلی‌متر و بیضی در قطرهای ۳۰ و ۳۵ میلی‌متر.", "en": "Round in 19, 25, 30, 35, 50 and 60 mm, and oval in 30 and 35 mm.", "tr": "19, 25, 30, 35, 50 ve 60 mm'de yuvarlak, 30 ve 35 mm'de oval." }
+          },
+          {
+            "q": { "fa": "حجم مناسب برای تیوب بیضی چقدر است؟", "en": "What volume suits an oval tube?", "tr": "Oval tüp için uygun hacim nedir?" },
+            "a": { "fa": "بین ۳۰ تا ۷۵ میلی‌لیتر.", "en": "Between 30 and 75 ml.", "tr": "30 ile 75 ml arası." }
+          },
+          {
+            "q": { "fa": "فویل ممبران چیست؟", "en": "What is a membrane seal?", "tr": "Membran folyo nedir?" },
+            "a": { "fa": "پوششی که با حرارت روی دهانهٔ تیوب پلمب می‌شود و جداشدنی است؛ چندلایهٔ پلیمری با آلومینیوم نازک یا فقط فیلم پلیمری.", "en": "A removable cover heat-sealed over the opening: multi-layer polymer with thin aluminium, or a polymer film alone.", "tr": "Ağız üzerine ısıyla yapıştırılan, sökülebilir bir kapak: ince alüminyumlu çok katmanlı polimer ya da yalnızca polimer film." }
+          },
+          {
+            "q": { "fa": "آیا با درب فلیپ‌تاپ هم می‌شود ممبران داشت؟", "en": "Can flip-top caps be used with a membrane seal?", "tr": "Flip-top kapaklarla membran kullanılabilir mi?" },
+            "a": { "fa": "بله. همهٔ درب‌های فلیپ‌تاپ تولیدی پیچی هستند، بنابراین ممبران قابل استفاده است.", "en": "Yes. All the flip-top caps we make screw on, so a membrane can be used.", "tr": "Evet. Ürettiğimiz tüm flip-top kapaklar vidalıdır, bu yüzden membran kullanılabilir." }
+          }
+        ]
+      },
+      {
+        "id": "printing",
+        "title": { "fa": "چاپ و تزئین", "en": "Printing and decoration", "tr": "Baskı ve süsleme" },
+        "items": [
+          {
+            "q": { "fa": "چه سطحی از تیوب قابل چاپ است؟", "en": "Which part of a tube can be printed?", "tr": "Tüpün hangi kısmı basılabilir?" },
+            "a": { "fa": "بخشی که مقطع دایره‌ای و قطر ثابت در طول دارد. امکان چاپ نهایی پس از بررسی محصول تأیید می‌شود.", "en": "The part with a circular cross-section and a constant diameter along its length. Final printability is confirmed after reviewing the product.", "tr": "Kesiti dairesel ve boyunca çapı sabit olan kısım. Nihai baskı uygunluğu ürün incelendikten sonra onaylanır." }
+          },
+          {
+            "q": { "fa": "افست خشک چیست؟", "en": "What is dry offset?", "tr": "Kuru ofset nedir?" },
+            "a": { "fa": "طرح از کلیشه‌ها با یک سیلندر و بدون آب منتقل می‌شود. رنگ‌ها روی هم چاپ نمی‌شوند و جزئیات تصویر کمتر است.", "en": "The design is transferred from plates by a cylinder, with no water. Colours cannot overlap and image detail is reduced.", "tr": "Tasarım kalıplardan bir silindirle ve susuz aktarılır. Renkler üst üste binemez ve görüntü detayı azalır." }
+          },
+          {
+            "q": { "fa": "جوهر در افست خشک چگونه تثبیت می‌شود؟", "en": "How is dry-offset ink fixed?", "tr": "Kuru ofset mürekkebi nasıl sabitlenir?" },
+            "a": { "fa": "پس از انتقال طرح، وارنیش مایع زده می‌شود و در همان دستگاه خشک می‌شود.", "en": "A liquid varnish is applied after the transfer and cured in the same machine.", "tr": "Aktarımdan sonra sıvı vernik uygulanır ve aynı makinede kurutulur." }
+          },
+          {
+            "q": { "fa": "وارنیش چه گزینه‌هایی دارد؟", "en": "What varnish finishes are there?", "tr": "Hangi vernik seçenekleri var?" },
+            "a": { "fa": "براق یا مات، به انتخاب مشتری.", "en": "Gloss or matte, as the customer chooses.", "tr": "Parlak ya da mat, müşterinin seçimine göre." }
+          },
+          {
+            "q": { "fa": "کد رنگ‌ها از چه سیستمی گرفته می‌شود؟", "en": "Which colour system is used?", "tr": "Hangi renk sistemi kullanılır?" },
+            "a": { "fa": "کدهای رنگ افست خشک از پنتون Solid Coated گرفته می‌شود.", "en": "Dry-offset colours are specified from Pantone Solid Coated.", "tr": "Kuru ofset renkleri Pantone Solid Coated'dan seçilir." }
+          },
+          {
+            "q": { "fa": "آیا روی شانهٔ تیوب هم چاپ می‌شود؟", "en": "Can the shoulder be printed?", "tr": "Omuza baskı yapılabilir mi?" },
+            "a": { "fa": "بله، با افست خشک روی قطرهای ۳۰، ۳۵ و ۵۰ میلی‌متر و روی تیوب بیضی ۳۰ و ۳۵ میلی‌متر؛ هات استمپ بیضی هم ممکن است.", "en": "Yes, in dry offset on 30, 35 and 50 mm tubes, and on oval 30 and 35 mm tubes, where hot stamping is possible too.", "tr": "Evet, 30, 35 ve 50 mm tüplerde kuru ofsetle; oval 30 ve 35 mm tüplerde sıcak baskı da mümkündür." }
+          },
+          {
+            "q": { "fa": "سیلک اسکرین چیست و چه مزیتی دارد؟", "en": "What is silk screen and why choose it?", "tr": "Serigrafi nedir, neden tercih edilir?" },
+            "a": { "fa": "جوهر از توری مستقیم روی تیوب منتقل می‌شود؛ رنگ‌ها می‌توانند روی هم بیایند و ضخامت جوهر تا حدود ۲۰ میکرون می‌رسد.", "en": "Ink passes through a mesh straight onto the tube. Colours can overlap and the ink can be up to about 20 microns thick.", "tr": "Mürekkep bir elekten doğrudan tüpe geçer. Renkler üst üste binebilir ve mürekkep kalınlığı yaklaşık 20 mikrona ulaşır." }
+          },
+          {
+            "q": { "fa": "چاپ دیجیتال برای چه سفارش‌هایی مناسب است؟", "en": "When does digital printing make sense?", "tr": "Dijital baskı ne zaman uygundur?" },
+            "a": { "fa": "برای تیراژ کم: مستقیم یا غیرمستقیم (با فویل انتقال و حرارت)، بدون فیلم و کلیشه و با آماده‌سازی سریع‌تر.", "en": "For short runs: direct or indirect (heat-transfer foil), with no films or plates and a faster setup.", "tr": "Kısa seriler için: doğrudan ya da dolaylı (ısı transfer folyosu), film ve kalıp olmadan, daha hızlı hazırlıkla." }
+          },
+          {
+            "q": { "fa": "هات استمپ چیست و چه رنگ‌هایی دارد؟", "en": "What is hot stamping, and in which colours?", "tr": "Sıcak baskı nedir, hangi renklerde yapılır?" },
+            "a": { "fa": "انتقال فویل متالایز طلایی یا نقره‌ای با کلیشهٔ برجسته و حرارت برای تأکید بر بخشی از طرح. رنگ‌های دیگر در صورت امکان فنی و اقتصادی.", "en": "Gold or silver metallised foil transferred with raised plates and heat, to highlight part of a design. Other colours where technically and economically feasible.", "tr": "Tasarımın bir kısmını vurgulamak için kabartma kalıp ve ısıyla aktarılan altın ya da gümüş metalize folyo. Diğer renkler teknik ve ekonomik olarak mümkünse." }
+          }
+        ]
+      },
+      {
+        "id": "effervescent",
+        "title": { "fa": "ظرف قرص جوشان", "en": "Effervescent containers", "tr": "Efervesan kaplar" },
+        "items": [
+          {
+            "q": { "fa": "کدام بخش ظرف قرص جوشان چاپ می‌شود؟", "en": "Which part of an effervescent tube is printed?", "tr": "Efervesan tüpün hangi kısmı basılır?" },
+            "a": { "fa": "بدنهٔ استوانه‌ای؛ بیشتر سطح بیرونی آن قابل چاپ است.", "en": "The cylindrical body; most of its outer surface can be printed.", "tr": "Silindirik gövde; dış yüzeyinin büyük kısmı basılabilir." }
+          },
+          {
+            "q": { "fa": "سیلیکاژل در درب چه کاری انجام می‌دهد؟", "en": "What does the silica gel in the cap do?", "tr": "Kapaktaki silika jel ne işe yarar?" },
+            "a": { "fa": "جاذب رطوبتی است که پس از مونتاژ درب و بدنه قرار می‌گیرد و کیفیت قرص را در طول نگهداری حفظ می‌کند.", "en": "It absorbs moisture. It is fitted after the cap and body are assembled and keeps the tablets in good condition in storage.", "tr": "Nemi emer. Kapak ve gövde birleştirildikten sonra yerleştirilir ve tabletlerin depolamada kalitesini korur." }
+          }
+        ]
+      }
+    ]
+  }
+}

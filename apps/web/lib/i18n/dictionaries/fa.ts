@@ -21,7 +21,7 @@ const fa: Dictionary = {
       { label: "چاپ", href: "/printing" },
       { label: "رسانه", href: "/media" },
       { label: "درباره ما", href: "/about" },
-      { label: "تماس", href: "#contact" },
+      { label: "تماس", href: "/contact" },
     ],
     quote: "درخواست استعلام قیمت",
     search: "جستجو",
@@ -336,6 +336,7 @@ const fa: Dictionary = {
     limited: "درخواست‌های زیادی از اتصال شما رسیده است. چند دقیقهٔ دیگر دوباره امتحان کنید.",
     fix: "لطفاً فیلدهای مشخص‌شده را بررسی کنید.",
     fileHint: "تا {size} مگابایت",
+    dropFile: "فایل را انتخاب کنید یا اینجا رها کنید",
     errors: {
       required: "این فیلد الزامی است.",
       invalid_email: "یک نشانی ایمیل درست وارد کنید.",

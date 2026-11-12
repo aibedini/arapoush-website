@@ -3971,5 +3971,634 @@
     }
    }
   }
+ },
+ {
+  "key": "page.contact",
+  "label": "Contact page",
+  "singleton": true,
+  "version": 1,
+  "schema": {
+   "kind": "group",
+   "fields": {
+    "meta": {
+     "kind": "group",
+     "fields": {
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "description": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      }
+     }
+    },
+    "hero": {
+     "kind": "group",
+     "fields": {
+      "style": {
+       "kind": "enum",
+       "values": [
+        "split",
+        "banner"
+       ],
+       "label": "Hero style"
+      },
+      "kicker": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "primary": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "secondary": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "phone": {
+       "kind": "text",
+       "localized": false,
+       "multiline": false
+      },
+      "imageAlt": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      }
+     }
+    },
+    "directory": {
+     "kind": "group",
+     "fields": {
+      "style": {
+       "kind": "enum",
+       "values": [
+        "tabs",
+        "grid"
+       ],
+       "label": "Departments style"
+      },
+      "kicker": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "labels": {
+       "kind": "group",
+       "fields": {
+        "phones": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "email": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "hours": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "team": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "ext": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "mobile": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "call": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "extHint": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        }
+       }
+      },
+      "departments": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "icon": {
+          "kind": "enum",
+          "values": [
+           "cart",
+           "palette",
+           "flask",
+           "shield",
+           "briefcase",
+           "chat",
+           "truck",
+           "user"
+          ]
+         },
+         "name": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "summary": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         },
+         "phones": {
+          "kind": "list",
+          "of": {
+           "kind": "text",
+           "localized": false,
+           "multiline": false
+          }
+         },
+         "email": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false
+         },
+         "hours": {
+          "kind": "list",
+          "of": {
+           "kind": "text",
+           "localized": true
+          },
+          "key": "id"
+         },
+         "people": {
+          "kind": "list",
+          "of": {
+           "kind": "group",
+           "fields": {
+            "name": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            },
+            "role": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            },
+            "exts": {
+             "kind": "list",
+             "of": {
+              "kind": "text",
+              "localized": false,
+              "multiline": false
+             }
+            },
+            "mobiles": {
+             "kind": "list",
+             "of": {
+              "kind": "text",
+              "localized": false,
+              "multiline": false
+             }
+            }
+           }
+          }
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    },
+    "locations": {
+     "kind": "group",
+     "fields": {
+      "style": {
+       "kind": "enum",
+       "values": [
+        "split",
+        "stacked"
+       ],
+       "label": "Locations style"
+      },
+      "kicker": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "labels": {
+       "kind": "group",
+       "fields": {
+        "address": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "postalCode": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "phones": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "fax": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "telegram": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "openIn": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "map": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        }
+       }
+      },
+      "places": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "name": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "address": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "query": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false
+         },
+         "postalCode": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false
+         },
+         "phones": {
+          "kind": "list",
+          "of": {
+           "kind": "text",
+           "localized": false,
+           "multiline": false
+          }
+         },
+         "fax": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false
+         },
+         "telegram": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false
+         },
+         "geo": {
+          "kind": "group",
+          "fields": {
+           "lat": {
+            "kind": "number",
+            "integer": false
+           },
+           "lng": {
+            "kind": "number",
+            "integer": false
+           }
+          }
+         },
+         "maps": {
+          "kind": "group",
+          "fields": {
+           "google": {
+            "kind": "url"
+           },
+           "neshan": {
+            "kind": "url"
+           },
+           "balad": {
+            "kind": "url"
+           }
+          }
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    },
+    "request": {
+     "kind": "group",
+     "fields": {
+      "kicker": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "points": {
+       "kind": "list",
+       "of": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       }
+      }
+     }
+    },
+    "careers": {
+     "kind": "group",
+     "fields": {
+      "kicker": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "openingsTitle": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "applyFor": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "empty": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "openings": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "title": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "text": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         },
+         "location": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "type": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    },
+    "feedback": {
+     "kind": "group",
+     "fields": {
+      "kicker": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "tabs": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "form": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "operatorOnly": true
+         },
+         "label": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         }
+        }
+       }
+      }
+     }
+    },
+    "faq": {
+     "kind": "group",
+     "fields": {
+      "kicker": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "aside": {
+       "kind": "group",
+       "fields": {
+        "title": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "text": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "cta": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        }
+       }
+      },
+      "groups": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "title": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "items": {
+          "kind": "list",
+          "of": {
+           "kind": "group",
+           "fields": {
+            "q": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            },
+            "a": {
+             "kind": "text",
+             "localized": true,
+             "multiline": true
+            }
+           }
+          }
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    },
+    "images": {
+     "kind": "group",
+     "fields": {
+      "hero": {
+       "kind": "image"
+      },
+      "places": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "image": {
+          "kind": "image"
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    }
+   }
+  }
  }
 ]

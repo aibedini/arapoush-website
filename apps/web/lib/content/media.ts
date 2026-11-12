@@ -22,6 +22,7 @@ export type Media = {
   certifications: { background: Img; seals: WithId<{ image: Img }>[] };
   printing: { bgLight: Img; bgNavy: Img; tubeColour: Img; tubeGold: Img; layers: Img; ctaTube: Img };
   about: { poster: Img };
+  contact: { hero: Img; places: WithId<{ image: Img }>[] };
 };
 
 type HeroSlideRaw = { id: string; tone: "light" | "dark"; background: Img; backgroundRtl?: Img; backgroundMobile?: Img; product?: Img };
@@ -43,6 +44,7 @@ export function getMedia(locale: Locale): Media {
     certifications: images("page.home.certifications", locale),
     printing: images("page.printing", locale),
     about: images("page.about", locale),
+    contact: images("page.contact", locale),
   };
 }
 

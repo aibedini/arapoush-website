@@ -21,7 +21,7 @@ const tr: Dictionary = {
       { label: "Baskı", href: "/printing" },
       { label: "Medya", href: "/media" },
       { label: "Hakkımızda", href: "/about" },
-      { label: "İletişim", href: "#contact" },
+      { label: "İletişim", href: "/contact" },
     ],
     quote: "Teklif isteyin",
     search: "Ara",
@@ -336,6 +336,7 @@ const tr: Dictionary = {
     limited: "Bağlantınızdan çok fazla istek geldi. Lütfen birkaç dakika sonra tekrar deneyin.",
     fix: "Lütfen işaretli alanları kontrol edin.",
     fileHint: "En fazla {size} MB",
+    dropFile: "Bir dosya seçin ya da buraya bırakın",
     errors: {
       required: "Bu alan zorunludur.",
       invalid_email: "Geçerli bir e-posta adresi girin.",

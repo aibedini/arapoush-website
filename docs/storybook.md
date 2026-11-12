@@ -41,6 +41,9 @@ Locally the tests use the installed Chrome. In CI they use Playwright's Chromium
 | site | `components/layout/Header.stories.tsx` | desktop, English, mobile menu |
 | site | `components/about/Honours.stories.tsx` | wall (fa), filter and viewer (en), list |
 | site | `components/about/FactoryGallery.stories.tsx` | filmstrip, next arrow (en), mosaic |
+| site | `components/contact/Directory.stories.tsx` | tabs (fa), grid, keyboard tabs (en), mobile links |
+| site | `components/contact/Locations.stories.tsx` | split (fa), stacked, with coordinates (en) |
+| site | `components/contact/Faq.stories.tsx` | groups (fa), open answer (en) |
 | console | `components/ui.stories.tsx` | page heading, modal dialog, error notes, loading |
 | console | `components/FieldEditor.stories.tsx` | localized text, all languages, list of items, choice |
 

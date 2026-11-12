@@ -21,7 +21,7 @@ const en = {
       { label: "Printing", href: "/printing" },
       { label: "Media", href: "/media" },
       { label: "About", href: "/about" },
-      { label: "Contact", href: "#contact" },
+      { label: "Contact", href: "/contact" },
     ],
     quote: "Request a quote",
     search: "Search",
@@ -336,6 +336,7 @@ const en = {
     limited: "Too many requests from your connection. Please try again in a few minutes.",
     fix: "Please check the highlighted fields.",
     fileHint: "Up to {size} MB",
+    dropFile: "Choose a file or drop it here",
     errors: {
       required: "This field is required.",
       invalid_email: "Enter a valid email address.",

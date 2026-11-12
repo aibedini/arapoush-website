@@ -5,7 +5,8 @@ import { formPath } from "@/lib/forms";
 import { printingPath, productPaths, siteUrl } from "@/lib/site";
 import { getPrinting, t as pt, type Printing } from "@/lib/printing";
 import { getAbout, type About } from "@/lib/about";
-import { aboutPath } from "@/lib/site";
+import { aboutPath, contactPath } from "@/lib/site";
+import { getContactPage, mapLinks, telHref, type Contact } from "@/lib/contact";
 import { getEffervescentProduct, getTubeProduct, type EffProduct } from "@/lib/products";
 import { diametersFor, loc, type TubeProduct } from "@/lib/configurator/model";
 import { defaultLocale, getDictionary, localeMeta, locales, type Dictionary, type Locale } from "@/lib/i18n";
@@ -108,6 +109,7 @@ export function llmsText(full: boolean) {
     ...locales.map((l) => `- [${getDictionary(l).productEff.meta.title}](${pageUrl(l, productPaths.effervescent)}): ${getDictionary(l).productEff.meta.description}`),
     ...locales.map((l) => `- [${pt(getPrinting().meta.title, l)}](${pageUrl(l, printingPath)}): ${pt(getPrinting().meta.description, l)}`),
     ...locales.map((l) => `- [${pt(getAbout().meta.title, l)}](${pageUrl(l, aboutPath)}): ${pt(getAbout().meta.description, l)}`),
+    ...locales.map((l) => `- [${pt(getContactPage().meta.title, l)}](${pageUrl(l, contactPath)}): ${pt(getContactPage().meta.description, l)}`),
     ...pageForms()
       .filter((f) => f.page.indexable)
       .flatMap((f) => locales.map((l) => `- [${pickL(f.page.title, l) || pickL(f.title, l)}](${pageUrl(l, formPath(f.slug))}): ${pickL(f.page.description, l) || pickL(f.intro, l) || "Request form"}`)),
@@ -118,6 +120,7 @@ export function llmsText(full: boolean) {
     `- Address: ${contact.address.join(" ")}`,
     `- Instagram: ${social.instagram}`,
     `- LinkedIn: ${social.linkedin}`,
+    ...contactLines(getContactPage(), "en"),
   ];
   if (!full) {
     lines.push("", "## Optional", `- [Full site text](${siteUrl}/llms-full.txt): every section of the home page in each language`);
@@ -158,6 +161,8 @@ export function llmsText(full: boolean) {
       ...printingFacts(getPrinting(), l),
       "",
       ...aboutFacts(getAbout(), l),
+      "",
+      ...contactFacts(getContactPage(), l),
       "",
       `### ${t.cta.title.join(" ")}`,
       t.cta.lead,
@@ -363,6 +368,88 @@ export function aboutJsonLd(t: Dictionary, a: About, locale: Locale, path: strin
         itemListElement: [
           { "@type": "ListItem", position: 1, name: t.common.brand, item: pageUrl(locale) },
           { "@type": "ListItem", position: 2, name: tx(a.meta.title), item: url },
+        ],
+      },
+    ],
+  };
+}
+
+/** Departments with their lines, extensions and mobiles, and both sites with their addresses. */
+function contactLines(c: Contact, l: Locale) {
+  return [
+    ...c.directory.departments.map(
+      (d) =>
+        `- ${pt(d.name, l)}: ${d.phones.join(", ")}${d.email ? `, ${d.email}` : ""}` +
+        d.people.map((m) => `; ${pt(m.name, l)} (${pt(m.role, l)}${m.exts.length ? `, ext. ${m.exts.join("/")}` : ""}${m.mobiles?.length ? `, mobile ${m.mobiles.join(" / ")}` : ""})`).join(""),
+    ),
+    ...c.locations.places.map((p) => `- ${pt(p.name, l)}: ${pt(p.address, l)}${p.postalCode ? ` (postal code ${p.postalCode})` : ""}; ${p.phones.join(", ")}${p.fax ? `; fax ${p.fax}` : ""}; directions: ${mapLinks(p, l).map((m) => m.href).join(" ")}`),
+  ];
+}
+
+/** The contact page as plain lines: departments, sites, open roles and every FAQ answer. */
+function contactFacts(c: Contact, l: Locale) {
+  return [
+    `### ${pt(c.hero.title, l)} (${pageUrl(l, contactPath)})`,
+    pt(c.hero.lead, l),
+    ...contactLines(c, l),
+    ...c.careers.openings.map((o) => `- ${pt(c.careers.title, l)}: ${pt(o.title, l)} (${pt(o.location, l)}, ${pt(o.type, l)}). ${pt(o.text, l)}`),
+    "",
+    `#### ${pt(c.faq.title, l)}`,
+    ...c.faq.groups.flatMap((g) => g.items.map((q) => `- ${pt(q.q, l)} ${pt(q.a, l)}`)),
+  ];
+}
+
+export function contactJsonLd(t: Dictionary, c: Contact, locale: Locale, path: string) {
+  const url = pageUrl(locale, path);
+  const tx = (v: Record<string, string>) => pt(v, locale);
+  const org = `${siteUrl}/#organization`;
+  const intl = (n: string) => telHref(n).replace("tel:", "");
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "ContactPage",
+        "@id": `${url}#page`,
+        url,
+        name: tx(c.meta.title),
+        description: tx(c.meta.description),
+        inLanguage: locale,
+        isPartOf: { "@id": `${siteUrl}/#website` },
+        about: { "@id": org },
+        primaryImageOfPage: `${siteUrl}${t.media.contact.hero.src}`,
+      },
+      {
+        "@type": "Organization",
+        "@id": org,
+        contactPoint: c.directory.departments.map((d) => ({
+          "@type": "ContactPoint",
+          contactType: tx(d.name),
+          telephone: d.phones[0] ? intl(d.phones[0]) : undefined,
+          email: d.email || undefined,
+          availableLanguage: ["fa", "en", "tr"],
+        })),
+        location: c.locations.places.map((p) => ({
+          "@type": "Place",
+          "@id": `${url}#${p.id}`,
+          name: tx(p.name),
+          address: { "@type": "PostalAddress", streetAddress: tx(p.address), postalCode: p.postalCode || undefined, addressCountry: "IR" },
+          telephone: p.phones[0] ? intl(p.phones[0]) : undefined,
+          faxNumber: p.fax ? intl(p.fax) : undefined,
+          ...(typeof p.geo.lat === "number" && typeof p.geo.lng === "number" ? { geo: { "@type": "GeoCoordinates", latitude: p.geo.lat, longitude: p.geo.lng } } : {}),
+          hasMap: mapLinks(p, locale)[0]?.href,
+        })),
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${url}#faq`,
+        inLanguage: locale,
+        mainEntity: c.faq.groups.flatMap((g) => g.items.map((q) => ({ "@type": "Question", name: tx(q.q), acceptedAnswer: { "@type": "Answer", text: tx(q.a) } }))),
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: t.common.brand, item: pageUrl(locale) },
+          { "@type": "ListItem", position: 2, name: tx(c.hero.title), item: url },
         ],
       },
     ],

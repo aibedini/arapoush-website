@@ -49,6 +49,10 @@ P13 content-editor UX. One commit per phase.
   - Spam controls from P8 still apply: honeypot, minimum fill time, Turnstile and a per-IP limit.
 - **Migration:** `quote` and `contact` become seeded system forms, and existing inquiries become
   tickets. The old endpoint keeps working (it maps the P8 shape onto the new form).
+- **Contact page (later):** `request`, `careers`, `feedback` and `complaint` joined the seeded system
+  forms. The definitions are shared in `packages/schema/src/systemForms.ts`, and the site falls back to
+  them when OPEX does not serve a form. Seeding is `ON CONFLICT DO NOTHING`, so operator edits survive
+  restarts.
 
 ### Tickets (API: `src/tickets/`)
 - **`tickets` table:**

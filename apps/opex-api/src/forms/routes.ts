@@ -1,7 +1,7 @@
 import { Definition, FORMS, Legacy, MAX_FILE, Submission } from "./contract.ts";
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { z } from "zod";
-import { definitionIssues, fillTemplate, pickL, route, validateSubmission, type FormDefinition, type FormValue } from "@arapoush/schema";
+import { definitionIssues, fillTemplate, pickL, publicFormOf, route, validateSubmission, type FormDefinition, type FormValue } from "@arapoush/schema";
 import type { Deps } from "../app.ts";
 import { audit, auditNow } from "../audit/audit.ts";
 import { requireOperator } from "../auth/guards.ts";
@@ -17,16 +17,7 @@ import { starterDefinition, SYSTEM_FORMS } from "./system.ts";
 type FormRow = { id: string; slug: string; status: string; system: boolean; draft: FormDefinition; published: FormDefinition | null; version: number; updated_at: Date; created_at: Date };
 
 /** What the website gets: no routing, notify addresses or rules. */
-export const publicDefinition = (slug: string, version: number, d: FormDefinition) => ({
-  slug,
-  version,
-  title: d.title,
-  intro: d.intro,
-  submitLabel: d.submitLabel,
-  success: d.success,
-  fields: d.fields,
-  page: d.settings.page,
-});
+export const publicDefinition = publicFormOf;
 
 export async function seedSystemForms(q: Q, tenant: string, notify: string[] = []) {
   for (const sf of SYSTEM_FORMS) {

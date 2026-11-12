@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 import { getDictionary, locales } from "@/lib/i18n";
 import { getPrinting } from "@/lib/printing";
 import { getAbout } from "@/lib/about";
-import { aboutPath } from "@/lib/site";
+import { aboutPath, contactPath } from "@/lib/site";
 import { getEffervescentProduct, getTubeProduct } from "@/lib/products";
 import { languageAlternates, pageUrl } from "@/lib/seo";
 import { printingPath, productPaths, siteUrl } from "@/lib/site";
@@ -23,6 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "", priority: 1, images: src([media.hero.slides[0]?.product, ...media.products.cards.map((c) => c.image)]) },
     { path: productPaths.tube, priority: 0.9, images: src([media.products.cards[0]?.image, media.site.ctaTube, tube.images?.hero ? { src: tube.images.hero.ltr } : null]) },
     { path: printingPath, priority: 0.8, images: src([media.printing.tubeGold, media.printing.tubeColour, media.printing.layers, ...printing.tech.items.map((m) => m.macro)]) },
+    { path: contactPath, priority: 0.7, images: src([media.contact.hero, ...media.contact.places.map((p) => p.image)]) },
     { path: aboutPath, priority: 0.7, images: src([media.about.poster, ...about.gallery.items.map((g) => g.image), ...about.honours.items.map((h) => h.image)]) },
     { path: productPaths.effervescent, priority: 0.9, images: src([eff.images.uses, ...eff.caps.variants.flatMap((v) => [v.photo, v.image]), eff.images.usesPhoto]) },
     // Form pages the operators marked as indexable (P11).

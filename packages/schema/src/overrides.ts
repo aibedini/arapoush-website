@@ -39,6 +39,14 @@ export const OVERRIDES: Override[] = [
   { type: "product.effervescent.page", path: "/data/images/posters", set: { locked: true } },
 
   // Printing: method ids and the guide's scoring are logic, not copy.
+  // Contact page: each section's `style` picks a component variant; ids and form slugs are code-owned.
+  { type: "page.contact", path: "/hero/style", set: { kind: "enum", values: ["split", "banner"], localized: undefined, multiline: undefined, label: "Hero style" } },
+  { type: "page.contact", path: "/directory/style", set: { kind: "enum", values: ["tabs", "grid"], localized: undefined, multiline: undefined, label: "Departments style" } },
+  { type: "page.contact", path: "/locations/style", set: { kind: "enum", values: ["split", "stacked"], localized: undefined, multiline: undefined, label: "Locations style" } },
+  { type: "page.contact", path: "/directory/departments/icon", set: { kind: "enum", values: ["cart", "palette", "flask", "shield", "briefcase", "chat", "truck", "user"], localized: undefined, multiline: undefined } },
+  { type: "page.contact", path: "/locations/places/geo/*", set: { kind: "number", localized: undefined, multiline: undefined, integer: false } },
+  { type: "page.contact", path: "/locations/places/maps/*", set: { kind: "url", localized: undefined, multiline: undefined } },
+  { type: "page.contact", path: "/feedback/tabs/form", set: { operatorOnly: true } },
   { type: "page.printing", path: "/tech/items/id", set: { locked: true } },
   { type: "page.printing", path: "/tech/items/sample", set: { operatorOnly: true } },
   { type: "page.printing", path: "/guide/questions/options/effects", set: { operatorOnly: true } },

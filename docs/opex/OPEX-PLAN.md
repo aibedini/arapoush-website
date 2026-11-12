@@ -629,6 +629,29 @@ read from the documents). Every section has a **`style`** enum that switches its
   `licence` | `award`), title, year (L or null when the document shows none), issuer, scope, text (L),
   image, copies (images)).
 
+### 6.5.2 Contact (`/[locale]/contact`)
+
+**`page.contact`**, from `content/contact.json`. It merges eight arapoush.com pages into one: contact,
+sales department, laboratory, quality control, recruitment, FAQ, suggestions and complaints. Facts
+(numbers, extensions, people, addresses) are quoted from those pages. Sections:
+- meta (L);
+- hero (`style`: `split` | `banner`): kicker, title, lead, button labels (L), call-now number, building
+  photo `images.hero` (the LCP);
+- directory (`style`: `tabs` | `grid`): texts and labels (L); departments (list: id, icon (enum), name,
+  summary (L), phones[], email, hours[] (L, hidden when empty), people (list: name, role (L), exts[],
+  mobiles[])). Operators can add departments and people;
+- locations (`style`: `split` | `stacked`): texts and labels (L); places (list: name, address (L),
+  `query` (address text for map search), postal code, phones[], fax, telegram, `geo` (lat, lng numbers),
+  `maps` (google, neshan, balad URLs)). With `geo` set, all three map apps open at the point. A pasted
+  map link overrides the generated one. Without either, only Google Maps is offered, as an address
+  search. Place photos are in `images.places` (by id);
+- request, careers (openings list), feedback (two tabs, each naming an OPEX form slug, operator-only),
+  faq (groups of question and answer (L), plus an aside card).
+
+Forms on the page are OPEX forms: `request`, `careers`, `feedback` and `complaint`. They are seeded as
+system forms, like `quote` and `contact`. Their definitions live in `packages/schema/src/systemForms.ts`,
+so the site renders them even when OPEX is off.
+
 ### 6.6 SEO and machine-readable output (derived, not separately edited)
 
 - **Per page `seo` group** (in each page type): title, description (L), OG image, `noindex` boolean

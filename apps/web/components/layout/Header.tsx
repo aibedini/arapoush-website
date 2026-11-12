@@ -22,8 +22,8 @@ type Props = { t: Dictionary; locale: Locale; /** current path after the locale,
 export default function Header({ t, locale, path = "" }: Props) {
   const onHome = path === "";
   const to = (href: string) => homeHref(locale, href, onHome);
-  // Home marks "Home" as current; product pages mark "Products".
-  const current = onHome ? "#top" : "#products";
+  // A page with its own nav item (printing, about, contact) marks it; home marks "Home"; product pages mark "Products".
+  const current = onHome ? "#top" : (t.nav.items.find((i) => path && i.href === path)?.href ?? "#products");
   const panel = useRef<HTMLDivElement>(null);
   const toggle = useRef<HTMLButtonElement>(null);
   const [scrolled, setScrolled] = useState(false);

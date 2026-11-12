@@ -140,19 +140,30 @@ export default function OpexForm({ form, t, locale, page, headingLevel = 2 }: { 
             })}
           </div>
         );
-      case "file":
+      case "file": {
+        // The real input covers the drop zone, so clicking, keyboard and dropping a file all work natively.
+        const chosen = files[f.id] ?? [];
         return (
-          <input
-            {...common}
-            type="file"
-            multiple={(f.max ?? 1) > 1}
-            accept={(f.accept ?? ["pdf", "jpeg", "png", "webp"]).map((k) => ACCEPT[k]).join(",")}
-            onChange={(e) => {
-              setFiles((s) => ({ ...s, [f.id]: Array.from(e.target.files ?? []) }));
-              if (errors[f.id]) setErrors(({ [f.id]: _, ...rest }) => rest);
-            }}
-          />
+          <div className={styles.drop} data-filled={chosen.length ? "" : undefined}>
+            <input
+              {...common}
+              type="file"
+              multiple={(f.max ?? 1) > 1}
+              accept={(f.accept ?? ["pdf", "jpeg", "png", "webp"]).map((k) => ACCEPT[k]).join(",")}
+              onChange={(e) => {
+                setFiles((s) => ({ ...s, [f.id]: Array.from(e.target.files ?? []) }));
+                if (errors[f.id]) setErrors(({ [f.id]: _, ...rest }) => rest);
+              }}
+            />
+            <svg className={styles.dropIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M7.5 17.25h-1a4 4 0 0 1-.6-7.95 6 6 0 0 1 11.6-1.3 4.5 4.5 0 0 1 .5 9.25h-1.5M12 11.5v8M9 14.25l3-3 3 3" />
+            </svg>
+            <span className={styles.dropText} aria-hidden="true">
+              {chosen.length ? chosen.map((x) => x.name).join(locale === "fa" ? "، " : ", ") : t.dropFile}
+            </span>
+          </div>
         );
+      }
       default: {
         const type = f.type === "email" ? "email" : f.type === "phone" ? "tel" : f.type === "date" ? "date" : "text";
         return (
