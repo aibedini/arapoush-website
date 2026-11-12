@@ -14,7 +14,9 @@ font/
 .lighthouse/*
 !.lighthouse/run.sh
 
-.claude/
+.claude/*
+# Project skills are shared (documentation-maintenance, D4).
+!.claude/skills/
 
 # Monorepo tooling
 .turbo/

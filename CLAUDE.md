@@ -40,6 +40,20 @@ via `lib/sections.tsx`; copy lives in `lib/i18n/dictionaries/`. The OPEX content
   contract or the committed spec is stale.
 - See `docs/api/README.md` and `docs/DOCS-PLAN.md`.
 
+## Documentation is part of every change (D4)
+
+- Use the `documentation-maintenance` skill (`.claude/skills/documentation-maintenance`) for any
+  change to routes, contracts, migrations, config, the schema, auth, integrations or shared
+  components.
+- Commits on documented surfaces change docs, or carry `Docs-Impact: none <reason>`. The commit-msg
+  hook and CI enforce it.
+- Before calling such work done:
+  - run `pnpm docs:check` and `pnpm docs:breaking`;
+  - run the API tests (contract tests);
+  - report the real results.
+- Conventional Commits; `pnpm changelog` regenerates `docs/changelog.md`. Contributing and branch
+  protection are in `CONTRIBUTING.md`.
+
 ## SEO, AI indexing and speed are checked on EVERY change (client requirement)
 
 Before calling any change done:

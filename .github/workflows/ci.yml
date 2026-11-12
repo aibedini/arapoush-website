@@ -57,6 +57,41 @@ jobs:
           path: .lighthouseci
           if-no-files-found: ignore
 
+  # Documentation (docs/DOCS-PLAN.md, D4): generated API docs match the code, OpenAPI lint, no
+  # unapproved breaking API change, links and env docs, and the per-commit docs-impact rule.
+  # The contract tests (every response checked against its contract) run in `check` (pnpm test).
+  docs:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Generated API docs are up to date
+        run: pnpm docs:api:check
+      - name: Links and environment variables are documented
+        run: node scripts/docs/check.mjs
+      - name: OpenAPI lint (Redocly)
+        run: pnpm docs:lint
+      - name: No unapproved breaking API change
+        run: |
+          BASE="${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || github.event.before }}"
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then BASE=HEAD~1; fi
+          pnpm --filter @arapoush/opex-api docs:breaking -- --base "$BASE"
+      - name: Documentation impact of every commit
+        run: |
+          BASE="${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || github.event.before }}"
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then BASE=HEAD~1; fi
+          node scripts/docs/impact.mjs --range "$BASE..HEAD"
+      - name: Contract coverage report
+        run: pnpm docs:coverage
+
   # AraCMS reference client (PHP): unit tests, including the cross-language signing vectors.
   php-client:
     runs-on: ubuntu-24.04

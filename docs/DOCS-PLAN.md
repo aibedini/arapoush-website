@@ -2,7 +2,9 @@
 
 Status: **agreed 2026-11-12**. Build order is D1 → D6, one commit per phase.
 
-Progress: **D1, D2 and D3 done**.
+Progress: **D1–D4 done**.
+- Git hooks run the fast docs checks (pre-commit) and the docs-impact rule (commit-msg); CI job `docs` runs everything.
+- The documentation-maintenance skill, the PR template, CONTRIBUTING.md with branch protection, and the generated changelog are in place.
 - References are live: `/docs/partner` (public) and `/v1/manage/docs` (console).
 - Error catalogue, Postman collection with environments, and guides in English and Persian.
 - Contract tests check every response the tests receive against its contract; 127 of 127 operations are exercised.

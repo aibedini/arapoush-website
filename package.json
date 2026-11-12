@@ -17,7 +17,11 @@
     "docs:api:check": "pnpm --filter @arapoush/opex-api docs:api:check",
     "docs:lint": "npx -y @redocly/cli@2.72.0 lint",
     "docs:breaking": "pnpm --filter @arapoush/opex-api docs:breaking",
-    "docs:coverage": "pnpm --filter @arapoush/opex-api docs:coverage"
+    "docs:coverage": "pnpm --filter @arapoush/opex-api docs:coverage",
+    "prepare": "node scripts/hooks/install.mjs",
+    "docs:check": "pnpm docs:api:check && node scripts/docs/check.mjs && pnpm docs:lint",
+    "docs:impact": "node scripts/docs/impact.mjs",
+    "changelog": "node scripts/docs/changelog.mjs"
   },
   "devDependencies": {
     "turbo": "2.11.10"
