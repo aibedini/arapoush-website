@@ -6,6 +6,7 @@ import { FileXls, Warning } from "@phosphor-icons/react";
 import { api, ApiError } from "@/lib/api";
 import { num } from "@/lib/fa";
 import { ErrorNote, PageHead } from "@/components/ui";
+import { ClosureModels } from "@/components/ClosureModels";
 
 type Change = { op: "add" | "remove" | "replace"; path: string; old?: unknown; new?: unknown };
 type Result = {
@@ -56,11 +57,20 @@ export default function CataloguePage() {
 
   return (
     <>
-      <PageHead title="کاتالوگ تیوب" sub="ورود جدول سایزهای آراپوش (اکسل) به پیکربندی‌کنندهٔ تیوب: قطرها، طول و حجم، درب‌های سازگار و رنگ هر درب" />
+      <PageHead title="کاتالوگ تیوب" sub="جدول سایزهای آراپوش (اکسل) و مدل‌های سه‌بعدی درب‌ها از فایل‌های صنعتی کارخانه" />
+
+      <div className="card" style={{ marginBlockEnd: 16 }}>
+        <div className="card-head">
+          <h2>مدل‌های سه‌بعدی درب‌ها (STEP / GLB)</h2>
+        </div>
+        <div className="card-body">
+          <ClosureModels />
+        </div>
+      </div>
 
       <div className="card">
         <div className="card-head">
-          <h2>۱. انتخاب فایل‌ها</h2>
+          <h2>جدول سایزها: ۱. انتخاب فایل‌ها</h2>
         </div>
         <div className="card-body stack">
           <p className="small muted">برای هر مقطع یک فایل (مثلاً «مقطع دایره» و «مقطع بیضی»). درب‌ها با نام یا نام‌های اکسلِ ثبت‌شده شناخته می‌شوند؛ درب ناشناخته به‌صورت مورد تازه اضافه و علامت‌گذاری می‌شود.</p>

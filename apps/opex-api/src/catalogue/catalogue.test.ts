@@ -1,6 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import { as, signIn, stepUp, testApp } from "../testing.ts";
 import { readXlsx } from "./xlsx.ts";
 
@@ -79,6 +81,69 @@ test("chart import: preview, apply as a draft, idempotent, guarded", async () =>
     // Viewers can look but not import.
     const viewer = await signIn(t.app, t, "viewer");
     assert.equal((await t.app.inject({ method: "POST", url: URL_, headers: as(viewer), payload: { files: [fixture("oval")] } })).statusCode, 403);
+  } finally {
+    await t.close();
+  }
+});
+
+test("closure models: STEP converted to GLB, reviewed, mounted, approved into the catalogue draft", async () => {
+  const t = await testApp({ DELIVERY_TOKEN: "test-delivery-token-0123456789abcdef", MEDIA_DIR: mkdtempSync(path.join(tmpdir(), "opex-media-")) }, { seed: true });
+  try {
+    const op = await signIn(t.app, t, "operator");
+    const M = "/v1/manage/catalogue/tube/models";
+    // A conical surface from the OpenCascade importer's own test files: a cap-like solid.
+    const step = readFileSync(new URL("../../../../node_modules/occt-import-js/test/testfiles/conical-surface/conical-surface.step", import.meta.url)).toString("base64");
+
+    assert.equal((await t.app.inject({ method: "POST", url: M, headers: as(op), payload: { closure: "nope", name: "x.step", data: step } })).statusCode, 404);
+    const junk = await t.app.inject({ method: "POST", url: M, headers: as(op), payload: { closure: "conical", name: "x.step", data: Buffer.from("not cad at all").toString("base64") } });
+    assert.equal(junk.statusCode, 400);
+    assert.equal(junk.json().code, "CAD_REJECTED");
+
+    const up = await t.app.inject({ method: "POST", url: M, headers: as(op), payload: { closure: "conical", name: "conical.step", data: step } });
+    assert.equal(up.statusCode, 201, up.body);
+    const m = up.json();
+    assert.equal(m.status, "needs_review");
+    assert.equal(m.source_kind, "step");
+    assert.deepEqual(m.bbox.size.map(Math.round), [7, 27, 27]);
+    assert.equal(m.mounting, null);
+    const glb = await t.app.inject({ method: "GET", url: m.url, headers: { cookie: op.cookie } });
+    assert.equal(glb.statusCode, 200);
+    assert.equal(glb.rawPayload.subarray(0, 4).toString("latin1"), "glTF");
+
+    const list = (await t.app.inject({ method: "GET", url: `${M}?closure=conical`, headers: { cookie: op.cookie } })).json();
+    assert.equal(list[0].id, m.id);
+
+    const entry = (await t.app.inject({ method: "GET", url: "/v1/manage/entries/product.tube.catalogue", headers: { cookie: op.cookie } })).json();
+    // Never placed by guess: approval needs the mounting.
+    const early = await t.app.inject({ method: "POST", url: `${M}/${m.id}/approve`, headers: as(op), payload: { base_revision_id: entry.draft.id } });
+    assert.equal(early.statusCode, 400);
+    assert.equal(early.json().code, "MOUNTING_REQUIRED");
+
+    const mounting = { axis: "+X", anchorMm: [0, 0, 0], neckDiameterMm: 13.5, thread: "M13" };
+    const set = await t.app.inject({ method: "PUT", url: `${M}/${m.id}/mounting`, headers: as(op), payload: mounting });
+    assert.equal(set.statusCode, 200, set.body);
+    assert.deepEqual(set.json().mounting, mounting);
+
+    assert.equal((await t.app.inject({ method: "POST", url: `${M}/${m.id}/approve`, headers: as(op), payload: { base_revision_id: null } })).statusCode, 412);
+    const ok = await t.app.inject({ method: "POST", url: `${M}/${m.id}/approve`, headers: as(op), payload: { base_revision_id: entry.draft.id } });
+    assert.equal(ok.statusCode, 200, ok.body);
+    assert.equal(ok.json().model.status, "approved");
+    const draft = (await t.app.inject({ method: "GET", url: "/v1/manage/entries/product.tube.catalogue", headers: { cookie: op.cookie } })).json().draft.data;
+    const conical = draft.closures.find((c: { id: string }) => c.id === "conical");
+    assert.equal(conical.model3d.axis, "+X");
+    assert.match(conical.model3d.src, /^\/media\/ast_[0-9A-Z]{26}\.glb$/);
+    assert.equal(conical.model, "param", "the parametric shape stays as the fallback");
+
+    // Published, the GLB becomes public like any other media.
+    const file = conical.model3d.src.slice("/media/".length);
+    assert.equal((await t.app.inject({ method: "GET", url: `/media/${file}` })).statusCode, 404);
+    const pub = await t.app.inject({ method: "POST", url: "/v1/manage/entries/product.tube.catalogue/publish", headers: as(op), payload: {} });
+    assert.equal(pub.statusCode, 200, pub.body);
+    assert.equal((await t.app.inject({ method: "GET", url: `/media/${file}` })).statusCode, 200);
+
+    // Viewers can list but not upload.
+    const viewer = await signIn(t.app, t, "viewer");
+    assert.equal((await t.app.inject({ method: "POST", url: M, headers: as(viewer), payload: { closure: "conical", name: "x.step", data: step } })).statusCode, 403);
   } finally {
     await t.close();
   }

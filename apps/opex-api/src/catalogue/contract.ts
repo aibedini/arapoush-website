@@ -25,6 +25,35 @@ export const ImportBody = z.strictObject({
   note: z.string().max(500).optional(),
 });
 
+export const Axis = z.enum(["+Y", "-Y", "+X", "-X", "+Z", "-Z"]).describe("Direction from the cap's mounting face towards the tube (the opening), in the model's own axes.");
+export const Mounting = z
+  .strictObject({
+    axis: Axis,
+    anchorMm: z.tuple([z.number(), z.number(), z.number()]).describe("Point on the mounting face that sits on the top of the tube neck, in model millimetres."),
+    neckDiameterMm: z.number().positive().max(120).describe("Neck (thread) diameter the cap is made for."),
+    thread: z.string().max(60).optional().describe("Thread designation, if any (e.g. 24/410)."),
+  })
+  .meta({ id: "Mounting" });
+export const CadModel = z
+  .object({
+    id: z.string(),
+    closure_id: z.string(),
+    source_name: z.string(),
+    source_kind: z.enum(["step", "glb"]),
+    status: z.enum(["needs_review", "approved", "archived"]),
+    url: z.string().describe("The converted GLB (console preview path until published)."),
+    bbox: z.object({ min: z.array(z.number()), max: z.array(z.number()), size: z.array(z.number()) }).describe("Millimetres."),
+    triangles: z.number(),
+    parts: z.number(),
+    simplified: z.boolean(),
+    mounting: Mounting.nullable(),
+    created_at: z.string(),
+    approved_at: z.string().nullable(),
+  })
+  .meta({ id: "CadModel" });
+const ModelId = z.object({ id: z.string().max(40) });
+const NoModel = { status: 404, code: "NOT_FOUND", when: "No such model." };
+
 const Change = z.object({ op: z.enum(["add", "remove", "replace"]), path: z.string(), old: z.unknown().optional(), new: z.unknown().optional() });
 const Chart = z.object({ file: z.string(), shape: z.string().nullable(), diameters: z.array(z.number()), sizes: z.number(), closures: z.array(z.string()) });
 
@@ -69,6 +98,82 @@ export const CATALOGUE = {
       { status: 412, code: "CONFLICT_BASE_REVISION", when: "With apply: the draft changed since the preview; preview again." },
     ],
     audit: ["content.revision.create"],
+    source: S,
+  }),
+  uploadModel: route({
+    id: "uploadClosureModel",
+    method: "POST",
+    path: "/v1/manage/catalogue/tube/models",
+    audience: "manage",
+    tags,
+    auth: "session",
+    role: "operator",
+    summary: "Upload factory CAD (STEP/STP or GLB) for a closure",
+    description:
+      "Converts the file to an optimized GLB in millimetres (OpenCascade for STEP, glTF Transform for both) in a worker, stores it and returns the model for review. Nothing reaches the website until an operator sets the mounting and approves it. Limits: 25 MB, 2,000,000 triangles before simplification, 90 s.",
+    body: z.strictObject({
+      closure: z.string().min(1).max(40).describe("Catalogue closure id."),
+      name: z.string().min(1).max(200),
+      data: z.string().max(35_000_000).describe("The file, base64."),
+      unit: z.enum(["mm", "m"]).default("m").describe("GLB only: what one unit in the file means (glTF default: metres). STEP carries its own units."),
+    }),
+    responses: { 201: { description: "Converted; needs review.", schema: CadModel } },
+    errors: [
+      { status: 400, code: "CAD_REJECTED", when: "Not STEP/GLB, unreadable, empty, too large, too many triangles or too slow (`detail` says which)." },
+      { status: 404, code: "NOT_FOUND", when: "No closure with that id in the catalogue draft." },
+    ],
+    audit: ["cad.uploaded", "cad.rejected"],
+    source: S,
+  }),
+  listModels: route({
+    id: "listClosureModels",
+    method: "GET",
+    path: "/v1/manage/catalogue/tube/models",
+    audience: "manage",
+    tags,
+    auth: "session",
+    role: "viewer",
+    summary: "Closure models, newest first",
+    query: z.object({ closure: z.string().max(40).optional() }),
+    responses: { 200: { description: "Models.", schema: z.array(CadModel) } },
+    source: S,
+  }),
+  mountModel: route({
+    id: "setClosureModelMounting",
+    method: "PUT",
+    path: "/v1/manage/catalogue/tube/models/:id/mounting",
+    audience: "manage",
+    tags,
+    auth: "session",
+    role: "operator",
+    summary: "Set how the model sits on the tube neck",
+    description: "Axis, anchor point and neck diameter, read off the drawing or the preview. Required before approval; changing it on an approved model sends it back to review.",
+    params: ModelId,
+    body: Mounting,
+    responses: { 200: { description: "Updated.", schema: CadModel } },
+    errors: [NoModel],
+    audit: ["cad.mounting"],
+    source: S,
+  }),
+  approveModel: route({
+    id: "approveClosureModel",
+    method: "POST",
+    path: "/v1/manage/catalogue/tube/models/:id/approve",
+    audience: "manage",
+    tags,
+    auth: "session",
+    role: "operator",
+    summary: "Use the model for its closure (saves a catalogue draft)",
+    description: "Writes `model3d` (GLB, mounting, size) on the closure in the catalogue draft; the website shows it after the draft is published. The parametric shape stays as the fallback.",
+    params: ModelId,
+    body: z.strictObject({ base_revision_id: z.string().max(40).nullable().describe("The catalogue draft you are looking at.") }),
+    responses: { 200: { description: "Approved; draft saved.", schema: z.object({ model: CadModel, revision: z.object({ id: z.string(), number: z.number() }) }) } },
+    errors: [
+      NoModel,
+      { status: 400, code: "MOUNTING_REQUIRED", when: "Set the mounting first: a model is never placed by guess." },
+      { status: 412, code: "CONFLICT_BASE_REVISION", when: "The catalogue draft changed; reload." },
+    ],
+    audit: ["cad.approved", "content.revision.create"],
     source: S,
   }),
 } as const;

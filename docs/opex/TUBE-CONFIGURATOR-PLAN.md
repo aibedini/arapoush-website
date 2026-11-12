@@ -2,7 +2,27 @@
 
 Status: **agreed 2026-11-12**. Build order is T1 → T6, one commit per phase, as with P0–P13 and D1–D6.
 
-Progress: **T1 done**.
+Progress: **T1 and T2 done**.
+
+T2 (2026-11-12, ADR 0006):
+- **Parametric caps:** every chart closure has a 3D shape.
+  - Lip balm, airless, octagonal, conical, bullet, oval screw, super-oval and oval bullet use the
+    parametric family (`model: "param"`, `shape3d`, editable in OPEX).
+  - Eye-nozzle caps use the eye-nozzle shoulder, with long or short caps.
+  - Closures can switch family in OPEX. New closures from a chart start as parametric caps.
+- **Factory CAD:**
+  - Console **Catalogue → 3D models**: upload STEP/STP or GLB per closure. It is converted in a worker
+    (OpenCascade, then glTF Transform with meshopt) to a GLB in mm.
+  - Review the size, set the mounting (axis, anchor, neck Ø, thread), approve into the draft, then
+    preview the configurator on that closure.
+  - API: `/v1/manage/catalogue/tube/models` (upload, list, `…/mounting`, `…/approve`).
+- **Site:** an approved `model3d` replaces the parametric cap once loaded. It is rotated and anchored,
+  never scaled, and the neck follows the model's neck Ø. The parametric cap is the fallback.
+- **Proven:** with a STEP sample from the OpenCascade importer's own test files, the cap was
+  converted, mounted and shown in the site viewer. **Waiting for the factory's STEP files** for the
+  real proof.
+
+T1:
 - Catalogue v3:
   - shapes per chart;
   - closures with chart wordings (`aliases`), fits and colours per shape and diameter;

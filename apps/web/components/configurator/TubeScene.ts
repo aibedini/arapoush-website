@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import type { ClosureModel, ShapeModel } from "@/lib/configurator/model";
+import type { ClosureModel, ClosureModel3d, ClosureShape, ShapeModel } from "@/lib/configurator/model";
 
 /**
  * Parametric tube scene. 1 world unit = 10 mm, so a Ø30 × 110 tube is 3 × 11 units and
@@ -10,9 +10,17 @@ import type { ClosureModel, ShapeModel } from "@/lib/configurator/model";
  */
 
 const OVAL = { x: 1.12, z: 0.74 };
+const AXES: Record<string, THREE.Vector3> = {
+  "+Y": new THREE.Vector3(0, 1, 0),
+  "-Y": new THREE.Vector3(0, -1, 0),
+  "+X": new THREE.Vector3(1, 0, 0),
+  "-X": new THREE.Vector3(-1, 0, 0),
+  "+Z": new THREE.Vector3(0, 0, 1),
+  "-Z": new THREE.Vector3(0, 0, -1),
+};
 
 /** What the mesh is built from: catalogue ids are mapped to geometry families before they get here. */
-export type SceneSpec = { d: number; l: number; shape: ShapeModel; closure: ClosureModel };
+export type SceneSpec = { d: number; l: number; shape: ShapeModel; closure: ClosureModel; closureShape?: ClosureShape; closureModel?: ClosureModel3d };
 export type SceneLabels = {
   /** Wall layers of the selected structure, outside → inside. */
   layers: { name: string; color: string }[];
@@ -141,7 +149,7 @@ export class TubeScene {
   setConfig(cfg: SceneSpec) {
     const c = this.cfg;
     const layersKey = this.o.labels.layers.map((x) => x.color).join();
-    if (c && c.shape === cfg.shape && c.d === cfg.d && c.l === cfg.l && c.closure === cfg.closure && layersKey === this.layersKey) return this.invalidate();
+    if (c && c.shape === cfg.shape && c.d === cfg.d && c.l === cfg.l && c.closure === cfg.closure && JSON.stringify(c.closureShape) === JSON.stringify(cfg.closureShape) && c.closureModel?.src === cfg.closureModel?.src && layersKey === this.layersKey) return this.invalidate();
     this.layersKey = layersKey;
     const prev = this.built;
     this.cfg = cfg;
@@ -162,6 +170,44 @@ export class TubeScene {
     }
     this.frameModel(!prev);
     this.invalidate();
+    if (cfg.closureModel) void this.mountModel(b, cfg.closureModel);
+  }
+
+  /**
+   * Swaps the parametric closure for the approved factory model once it has loaded: rotated so its
+   * opening points at the tube, its anchor on the neck top, millimetres to scene units. Never scaled
+   * to fit; if loading fails the parametric closure simply stays.
+   */
+  private async mountModel(b: Built, m: ClosureModel3d) {
+    try {
+      const [{ GLTFLoader }, { MeshoptDecoder }] = await Promise.all([import("three/examples/jsm/loaders/GLTFLoader.js"), import("three/examples/jsm/libs/meshopt_decoder.module.js")]);
+      const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(m.src);
+      if (this.built !== b) return disposeTree(gltf.scene);
+      const [ax, ay, az] = [m.anchorMm[0] ?? 0, m.anchorMm[1] ?? 0, m.anchorMm[2] ?? 0];
+      gltf.scene.position.set(-ax, -ay, -az);
+      const holder = new THREE.Group();
+      holder.add(gltf.scene);
+      holder.quaternion.setFromUnitVectors(AXES[m.axis] ?? AXES["+Y"], new THREE.Vector3(0, 1, 0));
+      holder.scale.setScalar(0.1); // 1 unit = 10 mm
+      holder.updateMatrixWorld(true);
+      gltf.scene.traverse((o) => {
+        if ((o as THREE.Mesh).isMesh) (o as THREE.Mesh).castShadow = false;
+      });
+      const box = new THREE.Box3().setFromObject(holder);
+      [...b.closure.children].forEach((ch) => {
+        b.closure.remove(ch);
+        disposeTree(ch);
+      });
+      b.closure.add(holder);
+      b.lid = null;
+      b.floor = Math.min(-0.2, box.min.y);
+      b.capDrop = Math.abs(b.floor) + 1.4;
+      this.applyExplode();
+      this.frameModel(false);
+      this.invalidate();
+    } catch {
+      /* keep the parametric closure */
+    }
   }
 
   setLabels(labels: SceneLabels) {
@@ -412,7 +458,8 @@ function buildTube(cfg: SceneSpec, font: string, layerColors: string[]): Built {
 
   // Shoulder + body + crimp transition as one smooth surface.
   const eye = cfg.shape === "eyeNozzle";
-  const neckR = eye ? r * 0.16 : Math.max(0.36, r * 0.42);
+  // With a factory model the neck is the one the cap is made for (neckDiameterMm), never a guess.
+  const neckR = eye ? r * 0.16 : cfg.closureModel ? cfg.closureModel.neckDiameterMm / 20 : Math.max(0.36, r * 0.42);
   const shoulderH = eye ? r * 1.7 : Math.max(0.45, r * 0.42);
   const crimpH = Math.min(L * 0.22, r * 1.15 + 0.4);
   const sealH = 0.45;
@@ -458,8 +505,8 @@ function buildTube(cfg: SceneSpec, font: string, layerColors: string[]): Built {
     const tip = new THREE.Mesh(new THREE.CylinderGeometry(neckR * 0.55, neckR, 0.5, 32), plastic);
     tip.position.y = -0.25;
     root.add(tip);
-    // Protective nozzle cap over the tip.
-    const capH = Math.max(1.2, r * 1.3);
+    // Protective nozzle cap over the tip (long or short: shape3d.height).
+    const capH = Math.max(0.9, r * (cfg.closureShape?.height ?? 1.3));
     const cap = new THREE.Mesh(
       lathe([
         [0, -capH],
@@ -479,7 +526,7 @@ function buildTube(cfg: SceneSpec, font: string, layerColors: string[]): Built {
     neck.position.y = -neckH / 2;
     const thread = new THREE.Mesh(new THREE.TubeGeometry(new Helix(neckR, -neckH * 0.85, -neckH * 0.15, 2.2), 160, 0.035, 8), plastic);
     root.add(neck, thread);
-    const built = buildClosure(cfg.closure, r, neckR, plastic, shadowed);
+    const built = cfg.closure === "param" ? buildParam(cfg.closureShape ?? {}, r, neckR, cfg.shape === "oval", plastic, shadowed) : buildClosure(cfg.closure, r, neckR, plastic, shadowed);
     closure.add(built.group);
     lid = built.lid;
     floor = built.floor;
@@ -623,6 +670,55 @@ function buildClosure(kind: ClosureModel, r: number, neckR: number, plastic: THR
   }
   return { group, lid, floor };
 }
+
+/**
+ * The parametric closure: a skirt from the neck down to `height`, then a flat, domed, conical or
+ * bullet top. Octagonal bodies are an 8-segment lathe; oval ones follow the tube's ellipse.
+ */
+function buildParam(p: ClosureShape, r: number, neckR: number, ovalTube: boolean, plastic: THREE.Material, shadowed: THREE.Material) {
+  const group = new THREE.Group();
+  const R = Math.max(neckR + 0.1, r * clampN(p.width, 0.4, 1.4, 0.9));
+  const H = Math.max(0.5, r * clampN(p.height, 0.2, 4, 1));
+  const T = r * clampN(p.topHeight, 0, 3, 0);
+  const top = p.top ?? "flat";
+  const pts: [number, number][] = [
+    [neckR, 0],
+    [R - 0.04, 0],
+    [R, -0.05],
+    [R, -H + 0.07],
+  ];
+  if (top === "flat" || T === 0) pts.push([R - 0.07, -H], [0, -H]);
+  else {
+    const N = 12;
+    for (let i = 0; i <= N; i++) {
+      const t = i / N;
+      // dome: quarter ellipse; bullet: ogive that stays full longer; cone: straight to a small flat tip.
+      const x = top === "dome" ? Math.cos((t * Math.PI) / 2) : top === "bullet" ? Math.sqrt(Math.max(0, 1 - t ** 2.4)) : Math.max(0.12, 1 - t);
+      const y = top === "dome" ? Math.sin((t * Math.PI) / 2) : t;
+      pts.push([R * x, -H - T * y]);
+    }
+    pts.push([0, -H - T]);
+  }
+  const g = lathe(pts, p.body === "octagon" ? 8 : 192);
+  const ribCount = Math.round(clampN(p.ribs, 0, 120, 0));
+  if (ribCount && p.body !== "octagon") ribs(g, R, -H + 0.12, -0.08, ribCount);
+  if (p.oval && ovalTube) {
+    g.scale(OVAL.x, 1, OVAL.z);
+    g.computeVertexNormals();
+  }
+  group.add(new THREE.Mesh(g, plastic));
+  if (p.pump) {
+    // Overcap meets the pump base a third of the way down.
+    const seam = new THREE.Mesh(new THREE.TorusGeometry(R * 1.002, 0.02, 6, 128), shadowed);
+    seam.rotation.x = Math.PI / 2;
+    seam.position.y = -H * 0.34;
+    if (p.oval && ovalTube) seam.scale.set(OVAL.x, OVAL.z, 1);
+    group.add(seam);
+  }
+  return { group, lid: null as THREE.Object3D | null, floor: -H - T };
+}
+
+const clampN = (v: number | undefined, min: number, max: number, fallback: number) => (typeof v === "number" && Number.isFinite(v) ? Math.min(max, Math.max(min, v)) : fallback);
 
 /** Surface of revolution with an elliptical cross-section that flattens into the crimp at the top. */
 function surface(rows: { y: number; rad: number; ovalMix: number; crimp: number }[], ox: number, oz: number, vStart: number, vEnd: number) {

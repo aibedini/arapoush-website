@@ -8,7 +8,28 @@
 export type Localized = Record<string, string>;
 /** 3D geometry families the scene knows how to build. New ids map onto one of these. */
 export type ShapeModel = "circular" | "oval" | "eyeNozzle";
-export type ClosureModel = "flipTop" | "screw" | "nozzle" | "standUp" | "plain";
+export type ClosureModel = "flipTop" | "screw" | "nozzle" | "standUp" | "plain" | "param";
+/**
+ * The parametric closure family (T2): any cap that is a turned or faceted body with an optional
+ * top. Sizes are ratios of the tube radius, so one definition fits every diameter it is offered on.
+ * Eye-nozzle caps use `height` for the length of their protective cap.
+ */
+export type ClosureShape = {
+  body?: "round" | "octagon";
+  /** Follow the oval tube's cross-section (oval caps). */
+  oval?: boolean;
+  /** Cap radius / tube radius. */
+  width?: number;
+  /** Skirt height / tube radius. */
+  height?: number;
+  top?: "flat" | "dome" | "cone" | "bullet";
+  /** Height of the top above the skirt / tube radius. */
+  topHeight?: number;
+  /** Knurl ribs around the skirt (0 = smooth). */
+  ribs?: number;
+  /** Airless pump: a parting line between overcap and pump base. */
+  pump?: boolean;
+};
 /** chart = Arapoush size chart (indicative), estimate = inferred. */
 export type VolumeStatus = "chart" | "estimate";
 /** chart = listed by Arapoush, confirm = offered, awaiting sign-off. */
@@ -20,6 +41,8 @@ export type ShapeDef = { id: string; model: ShapeModel; name: Localized; image: 
 /** Colour family ids, as in the size charts: white, coloured, transparent, metallic silver / gold. */
 export type ColourId = "white" | "coloured" | "clear" | "metallicSilver" | "metallicGold";
 export type ColourFamily = { id: ColourId; name: Localized; kind: "solid" | "custom" | "clear" | "metallic"; swatch: string };
+/** A GLB in millimetres with its mounting: `axis` points from the mounting face to the tube. */
+export type ClosureModel3d = { src: string; modelId?: string; axis: "+Y" | "-Y" | "+X" | "-X" | "+Z" | "-Z"; anchorMm: number[]; neckDiameterMm: number; sizeMm?: number[] };
 export type ClosureDef = {
   id: string;
   model: ClosureModel;
@@ -30,6 +53,10 @@ export type ClosureDef = {
   colours?: Record<string, Record<string, ColourId[]>>;
   /** Tube shoulder this closure needs (eye-nozzle caps sit on an eye-nozzle shoulder). */
   shoulder?: ShapeModel;
+  /** Parameters for the `param` family (and the eye-nozzle cap length). */
+  shape3d?: ClosureShape;
+  /** Approved factory model (OPEX → Catalogue → 3D models); the parametric shape is its fallback. */
+  model3d?: ClosureModel3d;
   aliases?: string[];
 };
 export type LayerDef = { id: string; color: string; name: Localized; text: Localized };
@@ -79,6 +106,8 @@ export const coloursFor = (cat: TubeProduct, closure: string, shape: string, d: 
 export const sceneModels = (cat: TubeProduct, c: TubeConfig) => ({
   shape: closureOf(cat, c.closure)?.shoulder ?? shapeOf(cat, c.shape)?.model ?? "circular",
   closure: closureOf(cat, c.closure)?.model ?? "plain",
+  closureShape: closureOf(cat, c.closure)?.shape3d,
+  closureModel: closureOf(cat, c.closure)?.model3d,
 });
 
 export const diametersFor = (cat: TubeProduct, shape: string) =>

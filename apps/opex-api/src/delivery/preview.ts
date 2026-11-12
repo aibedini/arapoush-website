@@ -28,7 +28,7 @@ export function pageFor(type: string, locale = "fa") {
 const keyOf = (config: Config) => new Uint8Array(Buffer.from(sha256(`opex-preview:${config.SESSION_SECRET}`), "hex"));
 
 /** A 30-minute preview link for the website: drafts, or drafts with one change request applied. */
-export async function previewLink(config: Config, o: { sub: string; type: string; locale: string; cr?: string }) {
+export async function previewLink(config: Config, o: { sub: string; type: string; locale: string; cr?: string; query?: string }) {
   const jti = token(12);
   const jwt = await new SignJWT({ scope: "preview", type: o.type, ...(o.cr ? { cr: o.cr } : {}) })
     .setProtectedHeader({ alg: "HS256" })
@@ -42,6 +42,7 @@ export async function previewLink(config: Config, o: { sub: string; type: string
   const url = new URL("/api/opex/preview", config.SITE_URL);
   url.searchParams.set("token", jwt);
   url.searchParams.set("path", pageFor(o.type, o.locale));
+  if (o.query) url.searchParams.set("q", o.query);
   return { url: url.toString(), jti, expiresIn: 1800 };
 }
 
@@ -54,9 +55,9 @@ export async function previewModule(app: FastifyInstance, deps: Deps) {
   const tenant = config.TENANT;
 
   app.post("/v1/manage/preview", { preHandler: requireOperator(deps) }, async (req) => {
-    const { type, locale, cr } = DELIVERY.managePreview.body.parse(req.body ?? {});
+    const { type, locale, cr, query } = DELIVERY.managePreview.body.parse(req.body ?? {});
     typeOrThrow(type);
-    const link = await previewLink(config, { sub: req.principal!.id, type, locale, cr });
+    const link = await previewLink(config, { sub: req.principal!.id, type, locale, cr, query });
     await auditNow(db, tenant, { action: "content.preview", actor: actorOf(req), request: req.info, resource: { type: "entry", entry: type, cr: cr ?? null, jti: link.jti } });
     return { url: link.url, expiresIn: link.expiresIn };
   });

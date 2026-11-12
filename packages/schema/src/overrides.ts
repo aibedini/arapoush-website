@@ -17,8 +17,9 @@ export const OVERRIDES: Override[] = [
   { type: "page.home.layout", path: "/sections", set: { operatorOnly: true } },
 
   // Tube configurator (v3): sizes, fits and colours come from the size charts (chart import) and are
-  // operator data; the 3D families, shoulders and ids stay code-owned until T2 makes families editable.
-  { type: "product.tube.catalogue", path: "*/model", set: { locked: true } },
+  // operator data. Closures pick their 3D family and shape (T2); tube shape families, shoulders and ids
+  // stay code-owned.
+  { type: "product.tube.catalogue", path: "/shapes/model", set: { locked: true } },
   { type: "product.tube.catalogue", path: "/closures/shoulder", set: { locked: true } },
   { type: "product.tube.catalogue", path: "/structures/layers", set: { locked: true } },
   { type: "product.tube.catalogue", path: "*/id", set: { locked: true } },

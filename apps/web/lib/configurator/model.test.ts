@@ -38,8 +38,16 @@ test("each shape lists only its own closures", () => {
 });
 
 test("eye-nozzle caps put an eye-nozzle shoulder on the tube in 3D", () => {
-  assert.deepEqual(sceneModels(cat, { shape: "circular", d: 19, l: 65, closure: "eyeNozzleLong", structure: "pe-evoh-5" }), { shape: "eyeNozzle", closure: "nozzle" });
-  assert.deepEqual(sceneModels(cat, { shape: "circular", d: 30, l: 110, closure: "flipTop", structure: "pe-evoh-5" }), { shape: "circular", closure: "flipTop" });
+  assert.deepEqual(sceneModels(cat, { shape: "circular", d: 19, l: 65, closure: "eyeNozzleLong", structure: "pe-evoh-5" }), { shape: "eyeNozzle", closure: "nozzle", closureShape: { height: 1.6 }, closureModel: undefined });
+  assert.deepEqual(sceneModels(cat, { shape: "circular", d: 30, l: 110, closure: "flipTop", structure: "pe-evoh-5" }), { shape: "circular", closure: "flipTop", closureShape: undefined, closureModel: undefined });
+});
+
+test("every chart closure has a 3D shape: a built family or parametric parameters", () => {
+  for (const c of cat.closures) {
+    if (c.model === "param") assert.ok(c.shape3d && c.shape3d.height, c.id);
+    else assert.ok(["flipTop", "screw", "nozzle", "standUp", "plain"].includes(c.model), c.id);
+  }
+  assert.equal(cat.closures.find((c) => c.id === "octagonal")?.shape3d?.body, "octagon");
 });
 
 test("links from before v3 (shape=eyeNozzle) still open an eye-nozzle tube", () => {

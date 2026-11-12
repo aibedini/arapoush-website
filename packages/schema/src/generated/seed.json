@@ -2457,6 +2457,9 @@
        "metallicGold"
       ]
      }
+    },
+    "shape3d": {
+     "height": 1.6
     }
    },
    {
@@ -2495,6 +2498,9 @@
        "metallicGold"
       ]
      }
+    },
+    "shape3d": {
+     "height": 0.95
     }
    },
    {
@@ -2507,7 +2513,7 @@
      "en": "Lip-balm cap",
      "tr": "Dudak balmı kapağı"
     },
-    "model": "plain",
+    "model": "param",
     "image": "/images/product/cap-screw.webp",
     "compat": {
      "circular": {
@@ -2524,6 +2530,14 @@
        "clear"
       ]
      }
+    },
+    "shape3d": {
+     "body": "round",
+     "width": 1,
+     "height": 2.4,
+     "top": "dome",
+     "topHeight": 0.25,
+     "ribs": 0
     }
    },
    {
@@ -2538,7 +2552,7 @@
      "en": "Airless pump",
      "tr": "Airless pompa"
     },
-    "model": "plain",
+    "model": "param",
     "image": "/images/product/cap-stand-up.webp",
     "compat": {
      "circular": {
@@ -2562,6 +2576,15 @@
        "metallicSilver"
       ]
      }
+    },
+    "shape3d": {
+     "body": "round",
+     "width": 1,
+     "height": 2.1,
+     "top": "dome",
+     "topHeight": 0.45,
+     "ribs": 0,
+     "pump": true
     }
    },
    {
@@ -2576,7 +2599,7 @@
      "en": "Octagonal cap",
      "tr": "Sekizgen kapak"
     },
-    "model": "screw",
+    "model": "param",
     "image": "/images/product/cap-screw.webp",
     "compat": {
      "circular": {
@@ -2590,6 +2613,14 @@
        "coloured"
       ]
      }
+    },
+    "shape3d": {
+     "body": "octagon",
+     "width": 0.98,
+     "height": 1.05,
+     "top": "flat",
+     "topHeight": 0,
+     "ribs": 0
     }
    },
    {
@@ -2602,7 +2633,7 @@
      "en": "Conical cap",
      "tr": "Konik kapak"
     },
-    "model": "nozzle",
+    "model": "param",
     "image": "/images/product/cap-nozzle.webp",
     "compat": {
      "circular": {
@@ -2616,6 +2647,14 @@
        "coloured"
       ]
      }
+    },
+    "shape3d": {
+     "body": "round",
+     "width": 0.82,
+     "height": 0.7,
+     "top": "cone",
+     "topHeight": 1.5,
+     "ribs": 0
     }
    },
    {
@@ -2628,7 +2667,7 @@
      "en": "Bullet cap",
      "tr": "Mermi kapak"
     },
-    "model": "plain",
+    "model": "param",
     "image": "/images/product/cap-nozzle.webp",
     "compat": {
      "circular": {
@@ -2647,6 +2686,14 @@
        "coloured"
       ]
      }
+    },
+    "shape3d": {
+     "body": "round",
+     "width": 0.92,
+     "height": 1.25,
+     "top": "bullet",
+     "topHeight": 1.05,
+     "ribs": 0
     }
    },
    {
@@ -2659,7 +2706,7 @@
      "en": "Oval screw cap",
      "tr": "Oval vidalı kapak"
     },
-    "model": "screw",
+    "model": "param",
     "image": "/images/product/cap-screw.webp",
     "compat": {
      "oval": {
@@ -2692,6 +2739,15 @@
        "metallicGold"
       ]
      }
+    },
+    "shape3d": {
+     "body": "round",
+     "oval": true,
+     "width": 0.9,
+     "height": 0.95,
+     "top": "flat",
+     "topHeight": 0,
+     "ribs": 48
     }
    },
    {
@@ -2704,7 +2760,7 @@
      "en": "Super-oval cap",
      "tr": "Süper oval kapak"
     },
-    "model": "plain",
+    "model": "param",
     "image": "/images/product/cap-screw.webp",
     "compat": {
      "oval": {
@@ -2721,6 +2777,15 @@
        "metallicGold"
       ]
      }
+    },
+    "shape3d": {
+     "body": "round",
+     "oval": true,
+     "width": 1.02,
+     "height": 1.15,
+     "top": "dome",
+     "topHeight": 0.18,
+     "ribs": 0
     }
    },
    {
@@ -2750,6 +2815,9 @@
        "metallicGold"
       ]
      }
+    },
+    "shape3d": {
+     "height": 1.3
     }
    },
    {
@@ -2801,7 +2869,7 @@
      "en": "Oval bullet cap",
      "tr": "Oval mermi kapak"
     },
-    "model": "plain",
+    "model": "param",
     "image": "/images/product/cap-nozzle.webp",
     "compat": {
      "oval": {
@@ -2820,6 +2888,15 @@
        "coloured"
       ]
      }
+    },
+    "shape3d": {
+     "body": "round",
+     "oval": true,
+     "width": 0.92,
+     "height": 1.25,
+     "top": "bullet",
+     "topHeight": 1.05,
+     "ribs": 0
     }
    },
    {

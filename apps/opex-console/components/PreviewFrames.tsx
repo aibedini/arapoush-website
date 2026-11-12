@@ -33,7 +33,7 @@ function Frame({ src, width }: { src: string; width: number }) {
  * The website with drafts (or one change request) applied, at phone, tablet and desktop widths.
  * The link is signed by OPEX for 30 minutes; the preview is never indexed.
  */
-export function PreviewFrames({ open, onClose, type, cr }: { open: boolean; onClose: () => void; type: string; cr?: string }) {
+export function PreviewFrames({ open, onClose, type, cr, query }: { open: boolean; onClose: () => void; type: string; cr?: string; query?: string }) {
   const [locale, setLocale] = useState<"fa" | "en" | "tr">("fa");
   const [url, setUrl] = useState<string | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
@@ -41,10 +41,10 @@ export function PreviewFrames({ open, onClose, type, cr }: { open: boolean; onCl
     if (!open) return;
     setUrl(null);
     setError(null);
-    api<{ url: string }>("/v1/manage/preview", { body: { type, locale, ...(cr ? { cr } : {}) } })
+    api<{ url: string }>("/v1/manage/preview", { body: { type, locale, ...(cr ? { cr } : {}), ...(query ? { query } : {}) } })
       .then((r) => setUrl(r.url))
       .catch(setError);
-  }, [open, type, cr, locale]);
+  }, [open, type, cr, locale, query]);
   return (
     <Dialog open={open} onClose={onClose} title={cr ? "پیش‌نمایش این درخواست روی سایت" : "پیش‌نمایش پیش‌نویس روی سایت"} wide>
       <div className="row">

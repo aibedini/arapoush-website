@@ -173,11 +173,12 @@ export function mergeChart(catalogue: ChartCatalogue, chart: ParsedChart, o: Mer
     for (const x of b.closures) {
       let cl = cat.closures.find((c) => matches(x.label, c));
       if (!cl) {
-        cl = { id: slug(ids), aliases: [x.label], name: { fa: x.label }, model: "plain", compat: {}, colours: {} };
+        // A new cap starts as a plain parametric cap; the operator shapes it in OPEX (T2).
+        cl = { id: slug(ids), aliases: [x.label], name: { fa: x.label }, model: "param", shape3d: { body: "round", width: 0.9, height: 1, top: "flat", topHeight: 0, ribs: 0 }, compat: {}, colours: {} };
         ids.add(cl.id);
         cat.closures.push(cl);
         added.push(cl.id);
-        warnings.push(`new closure "${x.label}" (${cl.id}): add its English/Turkish names, image and 3D family`);
+        warnings.push(`new closure "${x.label}" (${cl.id}): add its English/Turkish names and image, and shape it in 3D`);
       }
       here.add(cl.id);
       (cl.compat[shape.id] ??= {})[d] = "chart";

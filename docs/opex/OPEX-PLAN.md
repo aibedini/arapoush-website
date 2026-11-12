@@ -679,6 +679,14 @@ How the import works:
 - Diameters a chart does not mention are kept unless "keep missing" is off.
 - A pre-v3 draft is upgraded on its first import.
 
+**Closure 3D (T2, ADR 0006).**
+- `model` is the closure's 3D family: `param` or a built family.
+- `shape3d` holds the parametric caps: ratios of the tube radius, a top shape, ribs and pump.
+- `model3d` holds an approved factory model (`src` GLB in mm, `axis`, `anchorMm`, `neckDiameterMm`,
+  `sizeMm`). It is locked and written only by approving a model in **Catalogue → 3D models**.
+- Models live in `cad_models` (migration 007) as `needs_review`, `approved` or `archived`. Their
+  GLBs are media assets: private until the catalogue is published.
+
 ### 6.6 SEO and machine-readable output (derived, not separately edited)
 
 - **Per page `seo` group** (in each page type): title, description (L), OG image, `noindex` boolean

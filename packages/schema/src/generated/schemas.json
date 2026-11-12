@@ -1713,10 +1713,16 @@
         "multiline": false
        },
        "model": {
-        "kind": "text",
-        "localized": false,
-        "multiline": false,
-        "locked": true
+        "kind": "enum",
+        "values": [
+         "param",
+         "flipTop",
+         "screw",
+         "nozzle",
+         "standUp",
+         "plain"
+        ],
+        "label": "3D family"
        },
        "image": {
         "kind": "image",
@@ -1773,6 +1779,110 @@
         ],
         "label": "Tube shoulder (3D)",
         "locked": true
+       },
+       "shape3d": {
+        "kind": "group",
+        "label": "3D shape (parametric family)",
+        "fields": {
+         "body": {
+          "kind": "enum",
+          "values": [
+           "round",
+           "octagon"
+          ],
+          "label": "Body"
+         },
+         "oval": {
+          "kind": "boolean",
+          "label": "Oval (follows an oval tube)"
+         },
+         "width": {
+          "kind": "number",
+          "min": 0.4,
+          "max": 1.4,
+          "label": "Width (× tube radius)"
+         },
+         "height": {
+          "kind": "number",
+          "min": 0.2,
+          "max": 4,
+          "label": "Skirt height (× tube radius)"
+         },
+         "top": {
+          "kind": "enum",
+          "values": [
+           "flat",
+           "dome",
+           "cone",
+           "bullet"
+          ],
+          "label": "Top"
+         },
+         "topHeight": {
+          "kind": "number",
+          "min": 0,
+          "max": 3,
+          "label": "Top height (× tube radius)"
+         },
+         "ribs": {
+          "kind": "number",
+          "integer": true,
+          "min": 0,
+          "max": 120,
+          "label": "Grip ribs"
+         },
+         "pump": {
+          "kind": "boolean",
+          "label": "Airless pump (parting line)"
+         }
+        }
+       },
+       "model3d": {
+        "kind": "group",
+        "label": "Approved 3D model (from factory CAD)",
+        "locked": true,
+        "fields": {
+         "src": {
+          "kind": "text",
+          "localized": false,
+          "label": "GLB"
+         },
+         "modelId": {
+          "kind": "text",
+          "localized": false,
+          "label": "Model id"
+         },
+         "axis": {
+          "kind": "enum",
+          "values": [
+           "+Y",
+           "-Y",
+           "+X",
+           "-X",
+           "+Z",
+           "-Z"
+          ],
+          "label": "Opening towards"
+         },
+         "anchorMm": {
+          "kind": "list",
+          "of": {
+           "kind": "number"
+          },
+          "label": "Anchor (mm)"
+         },
+         "neckDiameterMm": {
+          "kind": "number",
+          "label": "Neck Ø (mm)"
+         },
+         "sizeMm": {
+          "kind": "list",
+          "of": {
+           "kind": "number"
+          },
+          "label": "Size (mm)"
+         }
+        }
        }
       }
      },

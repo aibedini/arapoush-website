@@ -30,5 +30,7 @@ export async function GET(req: Request) {
   // Visual editor (P12): the page loads its in-place editing bridge.
   if (url.searchParams.get("edit") === "1") jar.set("opex_edit", "1", { httpOnly: true, secure: https, sameSite: https ? "none" : "lax", path: "/", maxAge: 30 * 60 });
   else jar.delete("opex_edit");
-  redirect(path);
+  // Optional page query (e.g. the configurator on one closure); same characters OPEX allows.
+  const q = url.searchParams.get("q") ?? "";
+  redirect(/^[\w=&.-]{1,200}$/.test(q) ? `${path}?${q}` : path);
 }

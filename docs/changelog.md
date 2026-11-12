@@ -6,6 +6,7 @@ Generated from the commit history by `pnpm changelog` (Conventional Commits). Ph
 
 ### Features
 
+- **T1:** tube catalogue v3 from the Arapoush size charts, with chart import in OPEX (`3d98d70`, 2026-11-12)
 - **web:** "extrusion" page loader, correct in Persian (`1bda2ce`, 2026-11-12)
 - **web:** contact page (/contact) merging eight arapoush.com pages (`c5603f1`, 2026-11-12)
 - **web:** About Arapoush page (/about) with factory film, story timeline, gallery and honours (`ed85f9e`, 2026-11-12)

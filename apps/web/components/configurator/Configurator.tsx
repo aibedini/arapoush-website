@@ -81,7 +81,9 @@ export default function Configurator({ t, locale, product: cat, contact = fileCo
   ];
 
   const models = sceneModels(cat, cfg);
-  const scene = useMemo(() => ({ d: cfg.d, l: cfg.l, shape: models.shape, closure: models.closure }), [cfg.d, cfg.l, models.shape, models.closure]);
+  const shapeKey = JSON.stringify([models.closureShape ?? null, models.closureModel ?? null]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- shapeKey stands for closureShape and closureModel by value
+  const scene = useMemo(() => ({ d: cfg.d, l: cfg.l, shape: models.shape, closure: models.closure, closureShape: models.closureShape, closureModel: models.closureModel }), [cfg.d, cfg.l, models.shape, models.closure, shapeKey]);
   const labels = useMemo(
     () => ({
       layers: (structure?.layers ?? []).map((l) => ({ name: loc(l.name, locale), color: l.color })),

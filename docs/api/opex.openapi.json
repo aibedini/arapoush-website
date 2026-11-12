@@ -419,7 +419,7 @@
               "type": "string",
               "pattern": "^ast_[0-9A-Z]{26}\\.\\w+$"
             },
-            "description": "ast_….webp | .svg | .pdf | .ai"
+            "description": "ast_….webp | .svg | .pdf | .ai | .glb (3D models)"
           }
         ],
         "responses": {
@@ -3734,6 +3734,579 @@
                   "title": "CONFLICT_BASE_REVISION",
                   "status": 412,
                   "code": "CONFLICT_BASE_REVISION",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "manage"
+      }
+    },
+    "/v1/manage/catalogue/tube/models": {
+      "get": {
+        "operationId": "listClosureModels",
+        "summary": "Closure models, newest first",
+        "description": "**Console role:** viewer or above.\n\n**Source:** `apps/opex-api/src/catalogue/routes.ts`",
+        "tags": [
+          "Catalogue"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "closure",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 40
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Models.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CadModel"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: No valid console session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: Role below viewer.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NETWORK_DENIED",
+                  "status": 403,
+                  "code": "NETWORK_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "manage"
+      },
+      "post": {
+        "operationId": "uploadClosureModel",
+        "summary": "Upload factory CAD (STEP/STP or GLB) for a closure",
+        "description": "Converts the file to an optimized GLB in millimetres (OpenCascade for STEP, glTF Transform for both) in a worker, stores it and returns the model for review. Nothing reaches the website until an operator sets the mounting and approves it. Limits: 25 MB, 2,000,000 triangles before simplification, 90 s.\n\n**Console role:** operator or above.\n\n**Audit:** records `cad.uploaded`, `cad.rejected`.\n\n**Source:** `apps/opex-api/src/catalogue/routes.ts`",
+        "tags": [
+          "Catalogue"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "closure": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40,
+                    "description": "Catalogue closure id."
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "data": {
+                    "type": "string",
+                    "maxLength": 35000000,
+                    "description": "The file, base64."
+                  },
+                  "unit": {
+                    "default": "m",
+                    "description": "GLB only: what one unit in the file means (glTF default: metres). STEP carries its own units.",
+                    "type": "string",
+                    "enum": [
+                      "mm",
+                      "m"
+                    ]
+                  }
+                },
+                "required": [
+                  "closure",
+                  "name",
+                  "data"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Converted; needs review.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CadModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`CAD_REJECTED`: Not STEP/GLB, unreadable, empty, too large, too many triangles or too slow (`detail` says which).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: No valid console session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: Role below operator (auditors never write).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NETWORK_DENIED",
+                  "status": 403,
+                  "code": "NETWORK_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: No closure with that id in the catalogue draft.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "manage"
+      }
+    },
+    "/v1/manage/catalogue/tube/models/{id}/approve": {
+      "post": {
+        "operationId": "approveClosureModel",
+        "summary": "Use the model for its closure (saves a catalogue draft)",
+        "description": "Writes `model3d` (GLB, mounting, size) on the closure in the catalogue draft; the website shows it after the draft is published. The parametric shape stays as the fallback.\n\n**Console role:** operator or above.\n\n**Audit:** records `cad.approved`, `content.revision.create`.\n\n**Source:** `apps/opex-api/src/catalogue/routes.ts`",
+        "tags": [
+          "Catalogue"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 40
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "base_revision_id": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 40
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "description": "The catalogue draft you are looking at."
+                  }
+                },
+                "required": [
+                  "base_revision_id"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Approved; draft saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "model": {
+                      "$ref": "#/components/schemas/CadModel"
+                    },
+                    "revision": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "number": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "number"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "model",
+                    "revision"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`MOUNTING_REQUIRED`: Set the mounting first: a model is never placed by guess.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: No valid console session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: Role below operator (auditors never write).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NETWORK_DENIED",
+                  "status": 403,
+                  "code": "NETWORK_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: No such model.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "`CONFLICT_BASE_REVISION`: The catalogue draft changed; reload.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "CONFLICT_BASE_REVISION",
+                  "status": 412,
+                  "code": "CONFLICT_BASE_REVISION",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "manage"
+      }
+    },
+    "/v1/manage/catalogue/tube/models/{id}/mounting": {
+      "put": {
+        "operationId": "setClosureModelMounting",
+        "summary": "Set how the model sits on the tube neck",
+        "description": "Axis, anchor point and neck diameter, read off the drawing or the preview. Required before approval; changing it on an approved model sends it back to review.\n\n**Console role:** operator or above.\n\n**Audit:** records `cad.mounting`.\n\n**Source:** `apps/opex-api/src/catalogue/routes.ts`",
+        "tags": [
+          "Catalogue"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 40
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Mounting"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CadModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: No valid console session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: Role below operator (auditors never write).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NETWORK_DENIED",
+                  "status": 403,
+                  "code": "NETWORK_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: No such model.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
                   "instance": "req_01J…"
                 }
               }
@@ -9566,7 +10139,7 @@
               "type": "string",
               "pattern": "^ast_[0-9A-Z]{26}\\.\\w+$"
             },
-            "description": "ast_….webp | .svg | .pdf | .ai"
+            "description": "ast_….webp | .svg | .pdf | .ai | .glb (3D models)"
           }
         ],
         "responses": {
@@ -12393,6 +12966,12 @@
                     "description": "Apply this change request's items on top.",
                     "type": "string",
                     "maxLength": 40
+                  },
+                  "query": {
+                    "description": "Query string for the page, e.g. `shape=circular&d=30&cap=conical` to open the tube configurator on one closure.",
+                    "type": "string",
+                    "maxLength": 200,
+                    "pattern": "^[\\w=&.-]*$"
                   }
                 },
                 "required": [
@@ -21189,6 +21768,113 @@
         ],
         "additionalProperties": false
       },
+      "CadModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "closure_id": {
+            "type": "string"
+          },
+          "source_name": {
+            "type": "string"
+          },
+          "source_kind": {
+            "type": "string",
+            "enum": [
+              "step",
+              "glb"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "needs_review",
+              "approved",
+              "archived"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "description": "The converted GLB (console preview path until published)."
+          },
+          "bbox": {
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "max": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "size": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              }
+            },
+            "required": [
+              "min",
+              "max",
+              "size"
+            ],
+            "additionalProperties": false,
+            "description": "Millimetres."
+          },
+          "triangles": {
+            "type": "number"
+          },
+          "parts": {
+            "type": "number"
+          },
+          "simplified": {
+            "type": "boolean"
+          },
+          "mounting": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Mounting"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "approved_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "closure_id",
+          "source_name",
+          "source_kind",
+          "status",
+          "url",
+          "bbox",
+          "triangles",
+          "parts",
+          "simplified",
+          "mounting",
+          "created_at",
+          "approved_at"
+        ],
+        "additionalProperties": false
+      },
       "Change": {
         "type": "object",
         "properties": {
@@ -22030,6 +22716,58 @@
           "subject_id",
           "scope",
           "actions"
+        ],
+        "additionalProperties": false
+      },
+      "Mounting": {
+        "type": "object",
+        "properties": {
+          "axis": {
+            "type": "string",
+            "enum": [
+              "+Y",
+              "-Y",
+              "+X",
+              "-X",
+              "+Z",
+              "-Z"
+            ],
+            "description": "Direction from the cap's mounting face towards the tube (the opening), in the model's own axes."
+          },
+          "anchorMm": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "items": false,
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "Point on the mounting face that sits on the top of the tube neck, in model millimetres."
+          },
+          "neckDiameterMm": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 120,
+            "description": "Neck (thread) diameter the cap is made for."
+          },
+          "thread": {
+            "description": "Thread designation, if any (e.g. 24/410).",
+            "type": "string",
+            "maxLength": 60
+          }
+        },
+        "required": [
+          "axis",
+          "anchorMm",
+          "neckDiameterMm"
         ],
         "additionalProperties": false
       },

@@ -12,6 +12,7 @@ ADRs are not edited after acceptance. A later decision supersedes one in a new A
 | [0003](0003-contracts-are-the-api-docs.md) | Route contracts are the single source of validation, OpenAPI and tests | Accepted 2026-11-12 |
 | [0004](0004-visual-editor-in-the-real-page.md) | The visual editor edits the real site page through a draft-mode bridge | Accepted 2026-11-12 |
 | [0005](0005-documentation-enforced-per-commit.md) | Documentation is enforced per commit by a hook and CI | Accepted 2026-11-12 |
+| [0006](0006-closures-from-factory-cad.md) | Closures in 3D come from factory CAD or parametric families, never from photos | Accepted 2026-11-12 |
 
 ## Writing one
 

@@ -65,7 +65,14 @@ export const DELIVERY = {
     auth: "session",
     role: "viewer",
     source: "delivery/preview.ts",
-    body: z.strictObject({ type: z.string().max(80).describe("Decides which page opens."), locale: Locale.default("fa"), cr: z.string().max(40).optional().describe("Apply this change request's items on top.") }),
+    body: z.strictObject({ type: z.string().max(80).describe("Decides which page opens."), locale: Locale.default("fa"), cr: z.string().max(40).optional().describe("Apply this change request's items on top."),
+      query: z
+        .string()
+        .max(200)
+        .regex(/^[\w=&.-]*$/)
+        .optional()
+        .describe("Query string for the page, e.g. `shape=circular&d=30&cap=conical` to open the tube configurator on one closure."),
+    }),
     responses: { 200: { description: "The link.", schema: z.object({ url: z.string(), expiresIn: z.number() }) } },
     errors: [{ status: 404, code: "NOT_FOUND", when: "Unknown content type." }],
     audit: ["content.preview"],

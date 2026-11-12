@@ -515,6 +515,170 @@
             },
             "description": "Reads one or more size charts (.xlsx, one cross-section per file) and applies them to the current draft of `product.tube.catalogue`: sizes and volumes per diameter, which closures fit, and the colour families each closure comes in. Closures are matched by id, Persian name or `aliases`; unknown ones are added with a warning. Without `apply` it only previews (the changes against the draft). With `apply` it saves a new draft revision, which is published the normal way.\n\nSource: catalogue/routes.ts"
           }
+        },
+        {
+          "name": "Closure models, newest first",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/catalogue/tube/models",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "catalogue",
+                "tube",
+                "models"
+              ],
+              "query": [
+                {
+                  "key": "closure",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Source: catalogue/routes.ts"
+          }
+        },
+        {
+          "name": "Upload factory CAD (STEP/STP or GLB) for a closure",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/catalogue/tube/models",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "catalogue",
+                "tube",
+                "models"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"closure\": \"string\",\n  \"name\": \"string\",\n  \"data\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Converts the file to an optimized GLB in millimetres (OpenCascade for STEP, glTF Transform for both) in a worker, stores it and returns the model for review. Nothing reaches the website until an operator sets the mounting and approves it. Limits: 25 MB, 2,000,000 triangles before simplification, 90 s.\n\nSource: catalogue/routes.ts"
+          }
+        },
+        {
+          "name": "Use the model for its closure (saves a catalogue draft)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/catalogue/tube/models/:id/approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "catalogue",
+                "tube",
+                "models",
+                ":id",
+                "approve"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"base_revision_id\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Writes `model3d` (GLB, mounting, size) on the closure in the catalogue draft; the website shows it after the draft is published. The parametric shape stays as the fallback.\n\nSource: catalogue/routes.ts"
+          }
+        },
+        {
+          "name": "Set how the model sits on the tube neck",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/catalogue/tube/models/:id/mounting",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "catalogue",
+                "tube",
+                "models",
+                ":id",
+                "mounting"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "null",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Axis, anchor point and neck diameter, read off the drawing or the preview. Required before approval; changing it on an approved model sends it back to review.\n\nSource: catalogue/routes.ts"
+          }
         }
       ]
     },

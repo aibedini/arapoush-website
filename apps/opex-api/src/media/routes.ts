@@ -52,7 +52,7 @@ export async function mediaModule(app: FastifyInstance, deps: Deps) {
   // Public, immutable media (ids never change content).
   app.get("/media/:file", { config: { rateLimit: { max: 3000, timeWindow: "1 minute" } } }, async (req, reply) => {
     const { file } = req.params as { file: string };
-    const m = /^(ast_[0-9A-Z]{26})\.(webp|svg|pdf|ai)$/.exec(file);
+    const m = /^(ast_[0-9A-Z]{26})\.(webp|svg|pdf|ai|glb)$/.exec(file);
     if (!m) throw notFound("Media");
     const [a] = await db.q<{ mime: string; public: boolean; status: string }>(`SELECT mime, public, status FROM assets WHERE id = $1 AND tenant_id = $2`, [m[1], tenant]);
     if (!a || !a.public || a.status !== "clean") throw notFound("Media");
@@ -64,7 +64,7 @@ export async function mediaModule(app: FastifyInstance, deps: Deps) {
   // Operator preview of unpublished media.
   app.get("/v1/manage/media/:file/raw", { preHandler: requireOperator(deps) }, async (req, reply) => {
     const { file } = req.params as { file: string };
-    const m = /^(ast_[0-9A-Z]{26})\.(webp|svg|pdf|ai)$/.exec(file);
+    const m = /^(ast_[0-9A-Z]{26})\.(webp|svg|pdf|ai|glb)$/.exec(file);
     if (!m) throw notFound("Media");
     const [a] = await db.q<{ mime: string }>(`SELECT mime FROM assets WHERE id = $1 AND tenant_id = $2`, [m[1], tenant]);
     const p = path.join(config.MEDIA_DIR, file);

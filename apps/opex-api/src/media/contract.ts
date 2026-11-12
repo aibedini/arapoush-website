@@ -2,7 +2,7 @@ import { z } from "zod";
 import { Iso, route } from "../openapi/contract.ts";
 
 export const AssetSchema = z.object({ id: z.string(), url: z.string(), mime: z.string(), bytes: z.number(), width: z.number().nullable(), height: z.number().nullable(), status: z.string(), scan: z.string() }).meta({ id: "Asset" });
-const File = z.object({ file: z.string().regex(/^ast_[0-9A-Z]{26}\.\w+$/).describe("ast_….webp | .svg | .pdf | .ai") });
+const File = z.object({ file: z.string().regex(/^ast_[0-9A-Z]{26}\.\w+$/).describe("ast_….webp | .svg | .pdf | .ai | .glb (3D models)") });
 const Bytes = { description: "The file.", contentType: "application/octet-stream" };
 
 const S = "media/routes.ts";

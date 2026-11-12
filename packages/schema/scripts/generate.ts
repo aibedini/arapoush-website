@@ -207,6 +207,37 @@ function tubeCatalogue(g: GroupField): GroupField {
   closure.fields.compat = { kind: "map", ...SHAPE, label: "Fits (shape → diameter)", of: { kind: "map", ...DIAMETER, of: { kind: "enum", values: ["chart", "confirm"] } } };
   closure.fields.colours = { kind: "map", ...SHAPE, label: "Colours (shape → diameter)", of: { kind: "map", ...DIAMETER, of: { kind: "list", of: { kind: "enum", values: [...COLOUR_IDS] } } } };
   closure.fields.shoulder = { kind: "enum", values: ["circular", "oval", "eyeNozzle"], label: "Tube shoulder (3D)" };
+  closure.fields.model = { kind: "enum", values: ["param", "flipTop", "screw", "nozzle", "standUp", "plain"], label: "3D family" };
+  const ratio = (label: string, min: number, max: number): Field => ({ kind: "number", min, max, label });
+  closure.fields.shape3d = {
+    kind: "group",
+    label: "3D shape (parametric family)",
+    fields: {
+      body: { kind: "enum", values: ["round", "octagon"], label: "Body" },
+      oval: { kind: "boolean", label: "Oval (follows an oval tube)" },
+      width: ratio("Width (× tube radius)", 0.4, 1.4),
+      height: ratio("Skirt height (× tube radius)", 0.2, 4),
+      top: { kind: "enum", values: ["flat", "dome", "cone", "bullet"], label: "Top" },
+      topHeight: ratio("Top height (× tube radius)", 0, 3),
+      ribs: { kind: "number", integer: true, min: 0, max: 120, label: "Grip ribs" },
+      pump: { kind: "boolean", label: "Airless pump (parting line)" },
+    },
+  };
+  // Set by approving a factory model (Catalogue → 3D models); never typed by hand.
+  const mm: Field = { kind: "list", of: { kind: "number" } };
+  closure.fields.model3d = {
+    kind: "group",
+    label: "Approved 3D model (from factory CAD)",
+    locked: true,
+    fields: {
+      src: { kind: "text", localized: false, label: "GLB" },
+      modelId: { kind: "text", localized: false, label: "Model id" },
+      axis: { kind: "enum", values: ["+Y", "-Y", "+X", "-X", "+Z", "-Z"], label: "Opening towards" },
+      anchorMm: { ...mm, label: "Anchor (mm)" },
+      neckDiameterMm: { kind: "number", label: "Neck Ø (mm)" },
+      sizeMm: { ...mm, label: "Size (mm)" },
+    },
+  };
   closure.fields.aliases = { ...plainList, label: "Chart wordings" };
   structure.fields.diameters = { kind: "list", label: "Only these diameters (empty: all)", of: { kind: "number", integer: true } };
   structure.fields.closures = { ...plainList, label: "Only with these closures (empty: all)" };

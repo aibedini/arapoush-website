@@ -70,4 +70,4 @@ export async function ingest(deps: Deps, o: { buf: Buffer; name: string; actor: 
   return { id, url: `/media/${id}.${ext}`, mime, bytes: stored.length, width, height, status: "clean", scan };
 }
 
-export const extOf = (mime: string) => (mime === "image/svg+xml" ? "svg" : mime === "application/pdf" ? "pdf" : "webp");
+export const extOf = (mime: string) => (mime === "image/svg+xml" ? "svg" : mime === "application/pdf" ? "pdf" : mime === "model/gltf-binary" ? "glb" : "webp");

@@ -45,6 +45,7 @@ Locally the tests use the installed Chrome. In CI they use Playwright's Chromium
 | site | `components/contact/Locations.stories.tsx` | split (fa), stacked, with coordinates (en) |
 | site | `components/contact/Faq.stories.tsx` | groups (fa), open answer (en) |
 | console | `components/ui.stories.tsx` | page heading, modal dialog, error notes, loading |
+| console | `components/ClosureModels.stories.tsx` | review (fixtures), anchor suggestion |
 | console | `components/FieldEditor.stories.tsx` | localized text, all languages, list of items, choice |
 
 ## Conventions
