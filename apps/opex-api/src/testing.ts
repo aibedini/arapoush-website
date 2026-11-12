@@ -1,4 +1,5 @@
 import { createHash, randomBytes } from "node:crypto";
+import { appendFileSync } from "node:fs";
 import type { FastifyInstance } from "fastify";
 import { SignJWT, exportJWK, generateKeyPair, type CryptoKey, type JWK } from "jose";
 import { Secret, TOTP } from "otpauth";
@@ -7,6 +8,7 @@ import { openDb, type Db } from "./db/index.ts";
 import { migrate } from "./db/migrate.ts";
 import { buildApp } from "./app.ts";
 import { MODULES } from "./modules.ts";
+import { contractChecker } from "./openapi/verify.ts";
 import { createOperator } from "./auth/routes.ts";
 import { seedContent } from "./content/seed.ts";
 
@@ -16,8 +18,24 @@ export async function testApp(env: Record<string, string> = {}, opts: { seed?: b
   const db = await openDb({ memory: true });
   await migrate(db);
   if (opts.seed) await seedContent({ config, db });
-  const app = await buildApp({ config, db }, MODULES);
-  return { app, db, config, close: async () => (await app.close(), await db.close()) };
+  const checker = contractChecker();
+  const app = await buildApp({ config, db }, MODULES, { onPayload: checker.onPayload });
+  return {
+    app,
+    db,
+    config,
+    close: async () => {
+      await app.close();
+      await db.close();
+      // `pnpm docs:coverage`: which documented operation/status pairs the tests exercised.
+      if (process.env.CONTRACT_COVERAGE_FILE) appendFileSync(process.env.CONTRACT_COVERAGE_FILE, [...checker.seen].map((s) => s + String.fromCharCode(10)).join(""));
+      // D2: a response that does not match its documented contract fails the test.
+      if (checker.violations.length) {
+        const lines = checker.violations.map((v) => `  ${v.route} → ${v.status}: ${v.problem}`);
+        throw new Error(["API responses differ from their contracts:", ...new Set(lines)].join(String.fromCharCode(10)));
+      }
+    },
+  };
 }
 
 /** TOTP code `steps` periods from now (each code is accepted once, so tests step forward). */

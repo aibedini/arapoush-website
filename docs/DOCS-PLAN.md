@@ -2,7 +2,9 @@
 
 Status: **agreed 2026-11-12**. Build order is D1 → D6, one commit per phase.
 
-Progress: **D1 done**.
+Progress: **D1 and D2 done**.
+- Contract tests check every response the tests receive against its contract; 127 of 127 operations are exercised.
+- The breaking-change check is deterministic and needs no external binary.
 - 127 OPEX operations, 3 webhooks and 7 website routes are generated into `docs/api/` and pass Redocly lint (0 problems).
 - Tests enforce route coverage and that the committed specs match the code.
 

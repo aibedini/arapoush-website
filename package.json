@@ -14,7 +14,10 @@
     "check": "turbo run typecheck lint test build",
     "audit:lighthouse": "bash .lighthouse/run.sh /fa audit-mobile && bash .lighthouse/run.sh /fa audit-desktop desktop",
     "docs:api": "pnpm --filter @arapoush/opex-api docs:api",
-    "docs:api:check": "pnpm --filter @arapoush/opex-api docs:api:check"
+    "docs:api:check": "pnpm --filter @arapoush/opex-api docs:api:check",
+    "docs:lint": "npx -y @redocly/cli@2.72.0 lint",
+    "docs:breaking": "pnpm --filter @arapoush/opex-api docs:breaking",
+    "docs:coverage": "pnpm --filter @arapoush/opex-api docs:coverage"
   },
   "devDependencies": {
     "turbo": "2.11.10"

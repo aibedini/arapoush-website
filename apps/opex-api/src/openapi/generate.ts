@@ -95,7 +95,7 @@ const SECURITY: Record<string, Json> = {
 };
 
 /** Errors every route of a kind can return, added to the documented route-specific ones. */
-function genericErrors(c: RouteContract): ErrorSpec[] {
+export function genericErrors(c: RouteContract): ErrorSpec[] {
   // The website's routes answer in their own shapes (documented per route), not problem+json.
   if (c.audience === "site") return [];
   const e: ErrorSpec[] = [];

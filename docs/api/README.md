@@ -48,10 +48,16 @@ pnpm docs:api:check
 Fails if the committed files differ from what the code produces.
 
 ```bash
-npx -y @redocly/cli@2.72.0 lint
+pnpm docs:lint
 ```
 
-Lints the specs (rules in `redocly.yaml`).
+Lints the specs with Redocly (rules in `redocly.yaml`).
+
+```bash
+pnpm docs:breaking
+```
+
+Compares the specs with `origin/main`, or the ref given with `--base`.
 
 ## What the tests enforce (`apps/opex-api/src/openapi/openapi.test.ts`)
 
@@ -66,5 +72,23 @@ Lints the specs (rules in `redocly.yaml`).
 1. Write or change the contract in the module's `contract.ts`, with its examples and its error codes.
 2. Parse the request in the handler with `CONTRACT.x.body.parse(...)` (and `.query`, `.params`).
 3. Run `pnpm docs:api` and commit the regenerated files together with the code.
-4. A breaking change (removed field, new required input, changed status) needs a major or minor
-   version bump; the oasdiff check arrives in D2.
+4. A breaking change (removed operation, field or status, a new required input, narrower input
+   rules, a changed type) fails `pnpm docs:breaking`. To ship one on purpose:
+   - bump `API_VERSION` in `apps/opex-api/src/openapi/specs.ts` (minor or major);
+   - regenerate the specs;
+   - add a commit trailer `API-Break: approved <reason>`;
+   - tell the AraCMS team first when `partner.openapi.json` changes.
+
+## Contract tests (D2)
+
+- Every response the API tests receive is checked against its route's contract
+  (`src/openapi/verify.ts`, wired into `testApp`).
+- An undocumented status, an undocumented error code, or a body that does not match the documented
+  schema fails the test.
+- `src/openapi/walkthrough.test.ts` calls the routes the feature tests do not.
+
+```bash
+pnpm docs:coverage
+```
+
+Lists the documented operations the tests exercise; today 127 of 127.

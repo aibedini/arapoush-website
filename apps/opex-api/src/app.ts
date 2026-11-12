@@ -37,7 +37,10 @@ function requestInfo(req: FastifyRequest): RequestInfo {
   };
 }
 
-export async function buildApp(deps: Deps, modules: Module[] = []): Promise<FastifyInstance> {
+/** `onPayload` (tests): sees every response body before it is sent (contract checks). */
+export type BuildOptions = { onPayload?: (req: FastifyRequest, status: number, contentType: string, payload: unknown) => void };
+
+export async function buildApp(deps: Deps, modules: Module[] = [], opts: BuildOptions = {}): Promise<FastifyInstance> {
   const { config } = deps;
   const app = Fastify({
     trustProxy: config.trustedProxies,
@@ -56,6 +59,13 @@ export async function buildApp(deps: Deps, modules: Module[] = []): Promise<Fast
     for (const m of [r.method].flat()) if (m !== "HEAD" && m !== "OPTIONS") routes.push({ method: m, url: r.url });
   });
   app.decorate("routeList", routes);
+  if (opts.onPayload) {
+    const check = opts.onPayload;
+    app.addHook("onSend", async (req, reply, payload) => {
+      check(req, reply.statusCode, String(reply.getHeader("content-type") ?? ""), payload);
+      return payload;
+    });
+  }
 
   await app.register(helmet, {
     contentSecurityPolicy: { directives: { defaultSrc: ["'none'"], frameAncestors: ["'none'"], formAction: ["'self'"], styleSrc: ["'self'", "'unsafe-inline'"] } },

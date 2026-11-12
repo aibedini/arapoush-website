@@ -14,7 +14,10 @@
     "test": "node --no-warnings --test --test-concurrency=1 \"src/**/*.test.ts\"",
     "dev:watch": "node --env-file-if-exists=.env.local --watch-path=src --watch-path=../../packages/schema/src --no-warnings src/server.ts",
     "docs:api": "node --no-warnings src/openapi/cli.ts",
-    "docs:api:check": "node --no-warnings src/openapi/cli.ts --check"
+    "docs:api:check": "node --no-warnings src/openapi/cli.ts --check",
+    "docs:coverage": "node --no-warnings src/openapi/coverage.ts",
+    "docs:lint": "npx -y @redocly/cli@2.72.0 lint --config ../../redocly.yaml",
+    "docs:breaking": "node --no-warnings src/openapi/breaking.ts"
   },
   "dependencies": {
     "@arapoush/schema": "workspace:*",
