@@ -6,6 +6,8 @@ Generated from the commit history by `pnpm changelog` (Conventional Commits). Ph
 
 ### Features
 
+- **D5:** Storybook catalogue for the site and console, tested in CI (`23b40d4`, 2026-11-12)
+- **D4:** continuous documentation (hooks, CI, skill, PR template, changelog) (`9489f10`, 2026-11-12)
 - **D3:** readable API references, guides and Postman (`582a4b5`, 2026-11-12)
 - **D2:** contract tests on every response and a breaking-change gate (`3be00bb`, 2026-11-12)
 - **D1:** API contracts and generated OpenAPI 3.1 (`bd71507`, 2026-11-12)
@@ -39,6 +41,7 @@ Generated from the commit history by `pnpm changelog` (Conventional Commits). Ph
 
 ### Documentation
 
+- **D6:** architecture docs - topology, data flow, security model, ADRs (`cddee40`, 2026-11-12)
 - documentation system plan (D1–D6) with agreed decisions (`7afe794`, 2026-11-12)
 
 ### Maintenance
