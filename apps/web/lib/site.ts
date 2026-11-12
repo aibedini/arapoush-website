@@ -17,6 +17,9 @@ export const printingPath = "/printing";
 /** About Arapoush: story, factory and honours (the header's "About" item), relative to the locale root. */
 export const aboutPath = "/about";
 
+/** Applications by industry: cosmetic, hygiene, pharmaceutical, food and industrial (the header's "Applications"). */
+export const applicationsPath = "/applications";
+
 /** Contact page: departments, locations, request, careers, feedback and FAQ (the header's "Contact"). */
 export const contactPath = "/contact";
 
@@ -26,7 +29,7 @@ export const homeHref = (locale: string, href: string, onHome: boolean) =>
 
 export const links = {
   products: { tube: productPaths.tube as string, effervescent: productPaths.effervescent as string },
-  applications: "#contact",
+  applications: applicationsPath as string,
   articles: null as string | null,
   allArticles: null as string | null,
   // Drop the real catalog at public/files/arapoush-catalog.pdf.

@@ -178,6 +178,11 @@ const defs: Def[] = [
     data: { ...json("content/about.json"), images: { poster: await img("/images/about/hero-poster.webp") } },
   },
   {
+    key: "page.applications",
+    label: "Applications by industry",
+    data: json("content/applications.json"),
+  },
+  {
     key: "page.contact",
     label: "Contact page",
     data: {
@@ -277,8 +282,30 @@ function tubePage(g: GroupField): GroupField {
   return g;
 }
 
+/** Applications page: ids and tags inference reads as free text (empty lists, a hex read as a link). */
+function applicationsPage(g: GroupField): GroupField {
+  const IDS = ["cosmetics", "hygiene", "pharma", "food", "industrial"];
+  const listOf = (path: string[]) => path.reduce<Field>((f, k) => ((f as GroupField).fields?.[k] ?? ((f as ListField).of as GroupField).fields[k])!, g);
+  const item = (path: string[]) => (listOf(path) as ListField).of as GroupField;
+  const industry = item(["industries", "items"]);
+  industry.fields.id = { kind: "enum", values: IDS, label: "Industry id" };
+  industry.fields.accent = { kind: "text", localized: false, label: "Accent colour (hex)" };
+  industry.fields.configure = { kind: "text", localized: false, label: "Configurator link (query: shape, cap, pr)" };
+  const content = item(["finder", "contents"]);
+  content.fields.closures = { ...plainList, label: "Closures to suggest (catalogue ids)" };
+  const priority = item(["finder", "priorities"]);
+  priority.fields.print = { kind: "list", label: "Print methods to suggest", of: { kind: "enum", values: ["flexo", "offset", "silk", "hotstamp", "combination"] } };
+  item(["projects", "items"]).fields.industry = { kind: "enum", values: IDS, label: "Industry" };
+  item(["faq", "items"]).fields.industries = { kind: "list", label: "Industries (empty: all)", of: { kind: "enum", values: IDS } };
+  const spot = item(["engineering", "spots"]);
+  spot.fields.x = { kind: "number", min: 0, max: 100, label: "Hotspot x (%)" };
+  spot.fields.y = { kind: "number", min: 0, max: 100, label: "Hotspot y (%)" };
+  return g;
+}
+
 function extend(key: string, g: GroupField): GroupField {
   if (key === "product.tube.catalogue") return tubeCatalogue(g);
+  if (key === "page.applications") return applicationsPage(g);
   if (key === "product.tube.page") return tubePage(g);
   if (key !== "page.home.layout") return g;
   const sections = g.fields.sections as ListField;

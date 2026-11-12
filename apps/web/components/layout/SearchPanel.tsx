@@ -14,13 +14,13 @@ const CERT_CODES = ["GMP", "ISO 9001", "IFDA", "INSO"];
 function buildIndex(t: Dictionary): Entry[] {
   return [
     { group: "section", title: t.products.eyebrow, text: t.products.lead, href: "#products" },
-    { group: "section", title: t.applications.eyebrow, text: t.applications.lead, href: "#applications" },
+    { group: "section", title: t.applications.eyebrow, text: t.applications.lead, href: "/applications" },
     { group: "section", title: t.insights.eyebrow, text: t.insights.lead, href: "#insights" },
     { group: "section", title: t.partners.eyebrow, text: t.partners.lead.join(" "), href: "#partners" },
     { group: "section", title: t.certifications.eyebrow, text: t.certifications.lead, href: "#certifications" },
     { group: "section", title: t.cta.contact, text: t.cta.lead, href: "#contact" },
     ...t.products.cards.map((c, i) => ({ group: "product" as const, title: c.title.join(" "), text: c.text, href: [productPaths.tube, productPaths.effervescent][i] ?? "#products" })),
-    ...t.applications.items.map((a) => ({ group: "application" as const, title: a.title, text: a.text, href: "#applications" })),
+    ...t.applications.items.map((a, i) => ({ group: "application" as const, title: a.title, text: a.text, href: `/applications#${["cosmetics", "pharma", "hygiene", "food"][i] ?? ""}` })),
     ...t.insights.articles.map((a) => ({ group: "article" as const, title: a.title, text: a.text, href: "#insights" })),
     ...t.certifications.items.map((c, i) => ({ group: "certificate" as const, title: `${CERT_CODES[i]} — ${c.name}`, text: c.text, href: "#certifications" })),
   ];

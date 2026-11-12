@@ -17,7 +17,7 @@ const tr: Dictionary = {
     items: [
       { label: "Ana Sayfa", href: "#top" },
       { label: "Ürünler", href: "#products" },
-      { label: "Uygulamalar", href: "#applications" },
+      { label: "Uygulamalar", href: "/applications" },
       { label: "Baskı", href: "/printing" },
       { label: "Medya", href: "/media" },
       { label: "Hakkımızda", href: "/about" },

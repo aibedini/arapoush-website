@@ -2,8 +2,9 @@ import { isBlockKind, pickL, type LayoutSection } from "@arapoush/schema";
 import { entry } from "@/lib/content";
 import { pageForms } from "@/lib/content/forms";
 import { formPath } from "@/lib/forms";
-import { printingPath, productPaths, siteUrl } from "@/lib/site";
+import { applicationsPath, printingPath, productPaths, siteUrl } from "@/lib/site";
 import { getPrinting, t as pt, type Printing } from "@/lib/printing";
+import { getApplications, type Applications } from "@/lib/applications";
 import { getAbout, type About } from "@/lib/about";
 import { aboutPath, contactPath } from "@/lib/site";
 import { getContactPage, mapLinks, telHref, type Contact } from "@/lib/contact";
@@ -108,6 +109,7 @@ export function llmsText(full: boolean) {
     ...locales.map((l) => `- [${getDictionary(l).productTube.meta.title}](${pageUrl(l, productPaths.tube)}): ${getDictionary(l).productTube.meta.description}`),
     ...locales.map((l) => `- [${getDictionary(l).productEff.meta.title}](${pageUrl(l, productPaths.effervescent)}): ${getDictionary(l).productEff.meta.description}`),
     ...locales.map((l) => `- [${pt(getPrinting().meta.title, l)}](${pageUrl(l, printingPath)}): ${pt(getPrinting().meta.description, l)}`),
+    ...locales.map((l) => `- [${pt(getApplications().meta.title, l)}](${pageUrl(l, applicationsPath)}): ${pt(getApplications().meta.description, l)}`),
     ...locales.map((l) => `- [${pt(getAbout().meta.title, l)}](${pageUrl(l, aboutPath)}): ${pt(getAbout().meta.description, l)}`),
     ...locales.map((l) => `- [${pt(getContactPage().meta.title, l)}](${pageUrl(l, contactPath)}): ${pt(getContactPage().meta.description, l)}`),
     ...pageForms()
@@ -159,6 +161,8 @@ export function llmsText(full: boolean) {
       ...effFacts(t, getEffervescentProduct(), l),
       "",
       ...printingFacts(getPrinting(), l),
+      "",
+      ...applicationsFacts(getApplications(), l),
       "",
       ...aboutFacts(getAbout(), l),
       "",
@@ -341,6 +345,60 @@ export function printingJsonLd(t: Dictionary, p: Printing, locale: Locale, path:
   };
 }
 
+/**
+ * Applications page: each industry as a solution Arapoush offers (with its typical products), the
+ * FAQ as a FAQPage, and the breadcrumb trail.
+ */
+export function applicationsJsonLd(t: Dictionary, a: Applications, locale: Locale, path: string) {
+  const url = pageUrl(locale, path);
+  const tx = (v: Record<string, string>) => pt(v, locale);
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${url}#page`,
+        url,
+        name: tx(a.meta.title),
+        description: tx(a.meta.description),
+        inLanguage: locale,
+        isPartOf: { "@id": `${siteUrl}/#website` },
+        primaryImageOfPage: `${siteUrl}${a.industries.items[0]?.image.src ?? ""}`,
+        mainEntity: {
+          "@type": "ItemList",
+          itemListElement: a.industries.items.map((x, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            item: {
+              "@type": "Service",
+              "@id": `${url}#${x.id}`,
+              name: `${tx(x.name)}: ${tx(x.title)}`,
+              description: tx(x.body),
+              serviceType: tx(x.name),
+              audience: { "@type": "BusinessAudience", name: tx(x.name) },
+              provider: { "@id": `${siteUrl}/#organization` },
+              image: `${siteUrl}${x.image.src}`,
+              category: x.examples.map(tx),
+            },
+          })),
+        },
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${url}#faq`,
+        mainEntity: a.faq.items.map((f) => ({ "@type": "Question", name: tx(f.q), acceptedAnswer: { "@type": "Answer", text: tx(f.a) } })),
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: t.common.brand, item: pageUrl(locale) },
+          { "@type": "ListItem", position: 2, name: tx(a.industries.title), item: url },
+        ],
+      },
+    ],
+  };
+}
+
 /** About page: Arapoush as an organisation with its founding, honours and credentials. */
 export function aboutJsonLd(t: Dictionary, a: About, locale: Locale, path: string) {
   const url = pageUrl(locale, path);
@@ -486,6 +544,24 @@ function aboutFacts(a: About, l: Locale) {
     ...a.honours.items.map(
       (h) => `- ${pt(h.title, l)}${h.year ? ` (${pt(h.year, l)})` : ""}. ${pt(a.honours.issuer, l)}: ${pt(h.issuer, l)}. ${pt(a.honours.scope, l)}: ${pt(h.scope, l)}. ${pt(h.text, l)}`,
     ),
+  ];
+}
+
+/** Every industry with its needs, the Arapoush answer and typical products, then the FAQ. */
+function applicationsFacts(a: Applications, l: Locale) {
+  const tx = (v: Record<string, string>) => pt(v, l);
+  return [
+    `### ${tx(a.hero.title)} (${pageUrl(l, applicationsPath)})`,
+    tx(a.hero.lead),
+    ...a.industries.items.flatMap((x) => [
+      `#### ${tx(x.name)}: ${tx(x.title)} (${pageUrl(l, applicationsPath)}#${x.id})`,
+      tx(x.body),
+      ...x.needs.map((n) => `- ${tx(n.title)}: ${tx(n.text)}`),
+      ...x.solutions.map((s) => `- ${tx(s.title)}: ${tx(s.text)}`),
+      `- ${tx(a.industries.examplesLabel)}: ${x.examples.map(tx).join(", ")}`,
+    ]),
+    `#### ${tx(a.faq.title)}`,
+    ...a.faq.items.map((f) => `- ${tx(f.q)} ${tx(f.a)}`),
   ];
 }
 

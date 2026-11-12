@@ -7,7 +7,7 @@ import { Call, Instagram, LinkedIn, Location, Mail, PaperDownload } from "@/comp
 import BackToTop from "./BackToTop";
 import styles from "./Footer.module.css";
 
-const exploreHrefs = ["#applications", "/about", "#insights", "#certifications"];
+const exploreHrefs = ["/applications", "/about", "#insights", "#certifications"];
 
 export default function Footer({ t, locale }: { t: Dictionary; locale: string }) {
   const { contact, links, social } = t.site;

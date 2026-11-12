@@ -67,9 +67,9 @@
       "tr": "Uygulamalar"
      },
      "href": {
-      "fa": "#applications",
-      "en": "#applications",
-      "tr": "#applications"
+      "fa": "/applications",
+      "en": "/applications",
+      "tr": "/applications"
      }
     },
     {
@@ -7154,6 +7154,1760 @@
     "width": 850,
     "height": 456
    }
+  }
+ },
+ "page.applications": {
+  "meta": {
+   "title": {
+    "fa": "کاربردهای تیوب در صنایع آرایشی، بهداشتی، دارویی، غذایی و صنعتی | آراپوش",
+    "en": "Tube Packaging by Industry: Cosmetic, Hygiene, Pharma, Food, Industrial | Arapoush",
+    "tr": "Sektörlere Göre Tüp Ambalaj: Kozmetik, Hijyen, İlaç, Gıda, Endüstri | Arapoush"
+   },
+   "description": {
+    "fa": "راهکار بسته‌بندی تیوب چندلایه آراپوش برای هر صنعت: نیازهای هر محصول، ساختار لایه‌ها، نازل و درب، روش چاپ، نمونه‌کارها و استعلام قیمت متناسب با صنعت شما.",
+    "en": "Arapoush multi-layer tube packaging for every industry: what each product needs, layer structure, nozzles and caps, printing, sample projects and an industry-specific quote request.",
+    "tr": "Her sektör için Arapoush çok katmanlı tüp ambalaj: her ürünün ihtiyaçları, katman yapısı, nozul ve kapaklar, baskı, örnek projeler ve sektöre özel teklif talebi."
+   }
+  },
+  "hero": {
+   "eyebrow": {
+    "fa": "Packaging for every industry",
+    "en": "Packaging for every industry",
+    "tr": "Her sektör için ambalaj"
+   },
+   "title": {
+    "fa": "بسته‌بندی برای هر صنعت؛ راهکاری برای هر نیاز",
+    "en": "Packaging for every industry. Engineered for every need.",
+    "tr": "Her sektör için ambalaj. Her ihtiyaç için mühendislik."
+   },
+   "lead": {
+    "fa": "از کرم و ژل تا قرص جوشان، عسل و چسب؛ تیوب‌های بدون درز چندلایه آراپوش برای محصولات آرایشی، بهداشتی، دارویی، غذایی و صنعتی ساخته می‌شوند. صنعت خود را انتخاب کنید تا ببینید محصولتان چه بسته‌بندی‌ای لازم دارد.",
+    "en": "From creams and gels to effervescent tablets, honey and adhesives: Arapoush seamless multi-layer tubes are made for cosmetic, hygiene, pharmaceutical, food and industrial products. Pick your industry to see what your product needs.",
+    "tr": "Krem ve jellerden efervesan tabletlere, bala ve yapıştırıcılara: Arapoush dikişsiz çok katmanlı tüpleri kozmetik, hijyen, ilaç, gıda ve endüstriyel ürünler için üretilir. Ürününüzün neye ihtiyacı olduğunu görmek için sektörünüzü seçin."
+   },
+   "explore": {
+    "fa": "انتخاب صنعت",
+    "en": "Choose your industry",
+    "tr": "Sektörünüzü seçin"
+   },
+   "finder": {
+    "fa": "پیدا کردن راهکار مناسب",
+    "en": "Find your packaging direction",
+    "tr": "Ambalaj yönünüzü bulun"
+   },
+   "industriesLabel": {
+    "fa": "صنایع",
+    "en": "Industries",
+    "tr": "Sektörler"
+   }
+  },
+  "industries": {
+   "eyebrow": {
+    "fa": "Industry applications",
+    "en": "Industry applications",
+    "tr": "Sektörel uygulamalar"
+   },
+   "title": {
+    "fa": "هر صنعت، نیاز خودش را دارد",
+    "en": "Every industry has its own needs",
+    "tr": "Her sektörün kendi ihtiyaçları var"
+   },
+   "lead": {
+    "fa": "آنچه هر صنعت از تیوب می‌خواهد، راهکاری که آراپوش برای آن دارد و محصولاتی که در آن بسته‌بندی می‌شوند.",
+    "en": "What each industry asks of a tube, how Arapoush answers it, and the products packed in it.",
+    "tr": "Her sektörün tüpten beklediği, Arapoush'un çözümü ve bu sektörde ambalajlanan ürünler."
+   },
+   "tabsLabel": {
+    "fa": "صنعت",
+    "en": "Industry",
+    "tr": "Sektör"
+   },
+   "needsLabel": {
+    "fa": "نیازهای بسته‌بندی",
+    "en": "Packaging needs",
+    "tr": "Ambalaj ihtiyaçları"
+   },
+   "solutionsLabel": {
+    "fa": "راهکار آراپوش",
+    "en": "The Arapoush answer",
+    "tr": "Arapoush çözümü"
+   },
+   "examplesLabel": {
+    "fa": "محصولات نمونه",
+    "en": "Typical products",
+    "tr": "Tipik ürünler"
+   },
+   "configure": {
+    "fa": "طراحی تیوب برای این صنعت",
+    "en": "Configure a tube for this industry",
+    "tr": "Bu sektör için tüp tasarlayın"
+   },
+   "quote": {
+    "fa": "استعلام قیمت",
+    "en": "Request a quote",
+    "tr": "Teklif isteyin"
+   },
+   "readMore": {
+    "fa": "بیشتر دربارهٔ بسته‌بندی این صنعت",
+    "en": "More about packaging for this industry",
+    "tr": "Bu sektörün ambalajı hakkında daha fazlası"
+   },
+   "items": [
+    {
+     "id": "cosmetics",
+     "name": {
+      "fa": "آرایشی",
+      "en": "Cosmetics",
+      "tr": "Kozmetik"
+     },
+     "label": {
+      "fa": "Cosmetics",
+      "en": "Cosmetics",
+      "tr": "Kozmetik"
+     },
+     "title": {
+      "fa": "زیبایی در هر جزئیات",
+      "en": "Beauty in every detail",
+      "tr": "Her ayrıntıda güzellik"
+     },
+     "lead": {
+      "fa": "بسته‌بندی محصولات آرایشی بخشی از هویت برند است؛ تیوب باید هم چشم را بگیرد و هم تا آخرین قطره خوب کار کند.",
+      "en": "Cosmetic packaging is part of the brand: a tube has to catch the eye and work well to the last drop.",
+      "tr": "Kozmetik ambalajı markanın bir parçasıdır: tüp hem dikkat çekmeli hem de son damlaya kadar iyi çalışmalıdır."
+     },
+     "body": {
+      "fa": "در صنعت آرایشی، طراحی و ظاهر بسته‌بندی سهم بزرگی در انتخاب اولیهٔ مشتری دارد. تیوب بدون درز چندلایه سرعت پرکردن در خط تولید را بالا می‌برد، مصرف را برای کاربر آسان می‌کند و چون محصول در طول مصرف با هوا و دست تماس ندارد، کیفیت و بهداشت آن بهتر حفظ می‌شود و نیاز به نگهدارنده کمتر است. در پژوهشی که در سال ۲۰۰۶ میان هزار مصرف‌کننده انجام شد، امکان استفاده تا آخرین قطره (۹۰٪)، خوانایی چاپ (۸۱٪)، دوام (۷۸٪) و باز و بسته شدن آسان درب (۷۷٪) مهم‌ترین دلایل رضایت از تیوب بودند.",
+      "en": "In cosmetics, design and appearance weigh heavily in a shopper's first choice. A seamless multi-layer tube speeds up filling, is easy to use, and because the product is not exposed to air or fingers while it is used, it keeps its quality and hygiene better and needs fewer preservatives. In a 2006 survey of a thousand consumers, using the product to the last drop (90%), legible printing (81%), durability (78%) and an easy-to-open cap (77%) were the main reasons people liked tubes.",
+      "tr": "Kozmetikte tasarım ve görünüm, müşterinin ilk seçiminde büyük rol oynar. Dikişsiz çok katmanlı tüp dolumu hızlandırır, kullanımı kolaylaştırır ve ürün kullanım sırasında hava ya da elle temas etmediği için kalitesini ve hijyenini daha iyi korur, daha az koruyucu gerektirir. 2006'da bin tüketiciyle yapılan bir ankette son damlaya kadar kullanım (%90), okunaklı baskı (%81), dayanıklılık (%78) ve kolay açılan kapak (%77) tüpü tercih etmenin başlıca nedenleriydi."
+     },
+     "image": {
+      "src": "/images/product-tube.webp",
+      "width": 1095,
+      "height": 1436
+     },
+     "accent": "#c9a07a",
+     "needs": [
+      {
+       "title": {
+        "fa": "هویت بصری برند",
+        "en": "Brand identity",
+        "tr": "Marka kimliği"
+       },
+       "text": {
+        "fa": "رنگ بدنه، جلوهٔ سطح و طراحی که در قفسه دیده شود.",
+        "en": "Body colour, surface finish and a design that stands out on the shelf.",
+        "tr": "Rafta öne çıkan gövde rengi, yüzey ve tasarım."
+       }
+      },
+      {
+       "title": {
+        "fa": "جلوهٔ چاپ",
+        "en": "Print effect",
+        "tr": "Baskı etkisi"
+       },
+       "text": {
+        "fa": "چاپ ظریف و خوانا، فویل متالایز و جوهر برجسته روی سطح کوچک تیوب.",
+        "en": "Fine, legible print, metallic foil and raised ink on a small surface.",
+        "tr": "Küçük yüzeyde ince, okunaklı baskı, metalik folyo ve kabarık mürekkep."
+       }
+      },
+      {
+       "title": {
+        "fa": "تجربهٔ استفاده",
+        "en": "Ease of use",
+        "tr": "Kullanım kolaylığı"
+       },
+       "text": {
+        "fa": "درب با باز و بسته شدن آسان و مصرف تا آخرین قطره.",
+        "en": "A cap that opens and closes easily, and use to the last drop.",
+        "tr": "Kolay açılıp kapanan kapak ve son damlaya kadar kullanım."
+       }
+      }
+     ],
+     "solutions": [
+      {
+       "title": {
+        "fa": "تیوب بدون درز چندلایه",
+        "en": "Seamless multi-layer tube",
+        "tr": "Dikişsiz çok katmanlı tüp"
+       },
+       "text": {
+        "fa": "بدنهٔ یکپارچه با سطح صاف برای چاپ ۳۶۰ درجه.",
+        "en": "One-piece body with a smooth surface for 360° print.",
+        "tr": "360° baskı için pürüzsüz yüzeyli tek parça gövde."
+       }
+      },
+      {
+       "title": {
+        "fa": "چاپ ترکیبی و هات استمپ",
+        "en": "Combination print and hot stamping",
+        "tr": "Kombine baskı ve sıcak baskı"
+       },
+       "text": {
+        "fa": "تا ۱۱ رنگ با ترکیب افست خشک و سیلک، و فویل طلایی یا نقره‌ای.",
+        "en": "Up to 11 colours combining dry offset and silk screen, with gold or silver foil.",
+        "tr": "Kuru ofset ve serigrafi ile 11 renge kadar, altın ya da gümüş folyo."
+       }
+      },
+      {
+       "title": {
+        "fa": "درب‌های متنوع",
+        "en": "A range of caps",
+        "tr": "Çeşitli kapaklar"
+       },
+       "text": {
+        "fa": "فلیپ‌تاپ، پیچی، ایستاده، هشت‌ضلعی، کونیکال و پمپ ایرلس.",
+        "en": "Flip-top, screw, stand-up, octagonal, conical and airless pump.",
+        "tr": "Flip-top, vidalı, ayakta duran, sekizgen, konik ve havasız pompa."
+       }
+      }
+     ],
+     "examples": [
+      {
+       "fa": "کرم پوست و ضدآفتاب",
+       "en": "Skin creams and sunscreen",
+       "tr": "Cilt kremleri ve güneş kremi"
+      },
+      {
+       "fa": "ژل و شوینده صورت",
+       "en": "Face gels and cleansers",
+       "tr": "Yüz jelleri ve temizleyiciler"
+      },
+      {
+       "fa": "مراقبت مو و بدن",
+       "en": "Hair and body care",
+       "tr": "Saç ve vücut bakımı"
+      },
+      {
+       "fa": "بالم لب و رژ مایع",
+       "en": "Lip balm and liquid lipstick",
+       "tr": "Dudak balmı ve likit ruj"
+      }
+     ],
+     "configure": "shape=circular&cap=flipTop&pr=combination"
+    },
+    {
+     "id": "hygiene",
+     "name": {
+      "fa": "بهداشتی",
+      "en": "Hygiene",
+      "tr": "Hijyen"
+     },
+     "label": {
+      "fa": "Personal care",
+      "en": "Personal care",
+      "tr": "Kişisel bakım"
+     },
+     "title": {
+      "fa": "مراقبت روزانه، بی‌دردسر",
+      "en": "Everyday care, made easy",
+      "tr": "Günlük bakım, zahmetsiz"
+     },
+     "lead": {
+      "fa": "در محصولات بهداشتی، مشتری پس از اعتماد به برند به این نگاه می‌کند که بسته‌بندی چقدر راحت و کامل کار می‌کند.",
+      "en": "With hygiene products, once people trust the brand they judge it by how easily and fully the pack works.",
+      "tr": "Hijyen ürünlerinde markaya güvenen tüketici, ambalajın ne kadar kolay ve eksiksiz çalıştığına bakar."
+     },
+     "body": {
+      "fa": "امکان استفاده تا آخرین ذرهٔ محصول و راحتی مصرف، روی خرید بعدی اثر مستقیم دارد. نازل مناسب و کنترل مقدار خروج در هر بار فشار هم اهمیت زیادی دارد. لایه‌های تیوب بر اساس محصول، بازاریابی و تجربهٔ کاربر انتخاب می‌شوند: لایهٔ سد فلزی (ABL) پس از فشردن به شکل اولیه برنمی‌گردد و لایهٔ سد پلیمری (PBL) به حالت اولیه برمی‌گردد. حجم، قطر و ارتفاع تیوب هم بر اساس طرح شما تعیین می‌شود.",
+      "en": "Using a product to the very end and how easy it is to dispense directly affect the next purchase. The right nozzle and controlled output per squeeze matter just as much. Layers are chosen for the product, the marketing and the user's experience: an aluminium barrier laminate (ABL) stays pressed after squeezing, while a polymer barrier laminate (PBL) springs back. Volume, diameter and height are set to your design.",
+      "tr": "Ürünü sonuna kadar kullanabilmek ve kolay dozlama bir sonraki satın almayı doğrudan etkiler. Doğru nozul ve her sıkışta kontrollü çıkış da aynı derecede önemlidir. Katmanlar ürüne, pazarlamaya ve kullanıcı deneyimine göre seçilir: alüminyum bariyerli laminat (ABL) sıkıldıktan sonra eski haline dönmez, polimer bariyerli laminat (PBL) ise geri döner. Hacim, çap ve yükseklik tasarımınıza göre belirlenir."
+     },
+     "image": {
+      "src": "/images/printing/sample-vitamin-c.webp",
+      "width": 1448,
+      "height": 1086
+     },
+     "accent": "#6aa6d6",
+     "needs": [
+      {
+       "title": {
+        "fa": "فشردن راحت",
+        "en": "Easy squeezing",
+        "tr": "Kolay sıkma"
+       },
+       "text": {
+        "fa": "بدنهٔ انعطاف‌پذیر و استفاده تا انتهای محصول.",
+        "en": "A flexible body and use to the very end.",
+        "tr": "Esnek gövde ve sonuna kadar kullanım."
+       }
+      },
+      {
+       "title": {
+        "fa": "کنترل خروج",
+        "en": "Controlled output",
+        "tr": "Kontrollü çıkış"
+       },
+       "text": {
+        "fa": "نازل و درب متناسب با غلظت محصول و مقدار هر بار مصرف.",
+        "en": "Nozzle and cap matched to the product's thickness and each dose.",
+        "tr": "Ürünün kıvamına ve her doza uygun nozul ve kapak."
+       }
+      },
+      {
+       "title": {
+        "fa": "بهداشت در مصرف",
+        "en": "Hygiene in use",
+        "tr": "Kullanımda hijyen"
+       },
+       "text": {
+        "fa": "محصول تا لحظهٔ مصرف از هوا و آلودگی دور می‌ماند.",
+        "en": "The product stays away from air and dirt until it is used.",
+        "tr": "Ürün kullanılana kadar havadan ve kirden uzak kalır."
+       }
+      }
+     ],
+     "solutions": [
+      {
+       "title": {
+        "fa": "لایهٔ سد مناسب",
+        "en": "The right barrier",
+        "tr": "Doğru bariyer"
+       },
+       "text": {
+        "fa": "انتخاب بین ساختار با لایهٔ سد پلیمری یا فلزی برای حس و رفتار دلخواه تیوب.",
+        "en": "Polymer or aluminium barrier, for the feel and behaviour you want.",
+        "tr": "İstediğiniz his ve davranış için polimer ya da alüminyum bariyer."
+       }
+      },
+      {
+       "title": {
+        "fa": "درب ایستاده و فلیپ‌تاپ",
+        "en": "Stand-up and flip-top caps",
+        "tr": "Ayakta duran ve flip-top kapaklar"
+       },
+       "text": {
+        "fa": "برای مصرف روزانه با یک دست و تخلیهٔ کامل.",
+        "en": "One-handed daily use and complete emptying.",
+        "tr": "Tek elle günlük kullanım ve tam boşaltma."
+       }
+      },
+      {
+       "title": {
+        "fa": "ابعاد سفارشی",
+        "en": "Custom sizes",
+        "tr": "Özel ölçüler"
+       },
+       "text": {
+        "fa": "قطر ۱۹ تا ۶۰ میلی‌متر و طول متناسب با حجم موردنظر.",
+        "en": "Diameters from 19 to 60 mm and a length to suit the volume.",
+        "tr": "19–60 mm çap ve hacme uygun uzunluk."
+       }
+      }
+     ],
+     "examples": [
+      {
+       "fa": "خمیردندان",
+       "en": "Toothpaste",
+       "tr": "Diş macunu"
+      },
+      {
+       "fa": "کرم موبر",
+       "en": "Hair-removal cream",
+       "tr": "Tüy dökücü krem"
+      },
+      {
+       "fa": "ژل و کرم دست",
+       "en": "Hand gels and creams",
+       "tr": "El jelleri ve kremleri"
+      },
+      {
+       "fa": "شوینده‌های شخصی",
+       "en": "Personal cleansers",
+       "tr": "Kişisel temizleyiciler"
+      }
+     ],
+     "configure": "shape=circular&cap=standUp&pr=offset"
+    },
+    {
+     "id": "pharma",
+     "name": {
+      "fa": "دارویی",
+      "en": "Pharmaceutical",
+      "tr": "İlaç"
+     },
+     "label": {
+      "fa": "Pharmaceutical",
+      "en": "Pharmaceutical",
+      "tr": "İlaç"
+     },
+     "title": {
+      "fa": "محافظت مطمئن از دارو",
+      "en": "Dependable protection for medicines",
+      "tr": "İlaçlar için güvenilir koruma"
+     },
+     "lead": {
+      "fa": "داروها به رطوبت و نور حساس‌اند؛ تعداد لایه، نوع تیوب، نازل، رنگ و چاپ باید با شرایط نگهداری هر دارو جور باشد.",
+      "en": "Medicines are sensitive to moisture and light: layers, tube type, nozzle, colour and print must suit how each one is stored.",
+      "tr": "İlaçlar neme ve ışığa duyarlıdır: katmanlar, tüp tipi, nozul, renk ve baskı her ilacın saklama koşuluna uymalıdır."
+     },
+     "body": {
+      "fa": "حجم بسته بر اساس دوز تجویزی تعیین می‌شود و نگهداری در یخچال یا دمای اتاق روی انتخاب نازل اثر دارد. یک‌تکه یا دوتکه بودن نازل، به‌ویژه در نازل‌های چشمی، حساسیت ویژه‌ای دارد. آراپوش نخستین تولیدکنندهٔ تیوب قرص جوشان در ایران است: درب‌های سیلیکاژلی همراه با فنر (اسپیرال) هم رطوبت را از قرص دور نگه می‌دارند و هم از خرد شدن قرص‌ها در حمل جلوگیری می‌کنند.",
+      "en": "Pack size follows the prescribed dose, and storage in a fridge or at room temperature affects the nozzle. Whether a nozzle is one or two pieces matters, especially for eye nozzles. Arapoush was the first maker of effervescent-tablet tubes in Iran: silica-gel caps with a spiral spring keep moisture away from tablets and stop them breaking in transit.",
+      "tr": "Ambalaj hacmi reçeteli doza göre belirlenir; buzdolabında ya da oda sıcaklığında saklama nozul seçimini etkiler. Nozulun tek ya da iki parça olması, özellikle göz nozullarında önemlidir. Arapoush, İran'da efervesan tablet tüpünün ilk üreticisidir: yaylı (spiral) silika jel kapaklar nemi tabletlerden uzak tutar ve taşımada kırılmalarını önler."
+     },
+     "image": {
+      "src": "/images/printing/sample-calcium.webp",
+      "width": 1448,
+      "height": 1086
+     },
+     "accent": "#3f7fc0",
+     "needs": [
+      {
+       "title": {
+        "fa": "محافظت از فرمولاسیون",
+        "en": "Formula protection",
+        "tr": "Formül koruması"
+       },
+       "text": {
+        "fa": "سد در برابر رطوبت، اکسیژن و نور برای حفظ اثر دارو.",
+        "en": "A barrier to moisture, oxygen and light that keeps the medicine effective.",
+        "tr": "İlacın etkisini koruyan nem, oksijen ve ışık bariyeri."
+       }
+      },
+      {
+       "title": {
+        "fa": "دوز و نازل دقیق",
+        "en": "Dose and nozzle",
+        "tr": "Doz ve nozul"
+       },
+       "text": {
+        "fa": "حجم متناسب با دوز و نازل متناسب با نحوهٔ مصرف و نگهداری.",
+        "en": "A volume for the dose and a nozzle for how it is used and stored.",
+        "tr": "Doza uygun hacim, kullanım ve saklamaya uygun nozul."
+       }
+      },
+      {
+       "title": {
+        "fa": "خوانایی اطلاعات",
+        "en": "Legible information",
+        "tr": "Okunaklı bilgi"
+       },
+       "text": {
+        "fa": "چاپ دقیق دستور مصرف، سری ساخت و هشدارها روی سطح کوچک.",
+        "en": "Precise print of directions, batch and warnings on a small surface.",
+        "tr": "Küçük yüzeyde kullanım talimatı, seri ve uyarıların net baskısı."
+       }
+      }
+     ],
+     "solutions": [
+      {
+       "title": {
+        "fa": "پنج‌لایهٔ PE / EVOH",
+        "en": "5-layer PE / EVOH",
+        "tr": "5 katmanlı PE / EVOH"
+       },
+       "text": {
+        "fa": "لایهٔ EVOH سد بالایی در برابر اکسیژن و رطوبت می‌سازد.",
+        "en": "The EVOH layer is a high barrier to oxygen and moisture.",
+        "tr": "EVOH katmanı oksijen ve neme karşı yüksek bariyerdir."
+       }
+      },
+      {
+       "title": {
+        "fa": "نازل چشمی و درب‌های دارویی",
+        "en": "Eye nozzles and pharma caps",
+        "tr": "Göz nozulları ve ilaç kapakları"
+       },
+       "text": {
+        "fa": "نازل چشمی بلند و کوتاه، نازل‌دار و درب پیچی.",
+        "en": "Long and short eye nozzles, nozzle caps and screw caps.",
+        "tr": "Uzun ve kısa göz nozulları, nozullu ve vidalı kapaklar."
+       }
+      },
+      {
+       "title": {
+        "fa": "تیوب قرص جوشان",
+        "en": "Effervescent-tablet tube",
+        "tr": "Efervesan tablet tüpü"
+       },
+       "text": {
+        "fa": "درب سیلیکاژلی با یا بدون فنر برای قرص‌های حساس به رطوبت.",
+        "en": "Silica-gel caps, with or without a spring, for moisture-sensitive tablets.",
+        "tr": "Neme duyarlı tabletler için yaylı ya da yaysız silika jel kapak."
+       }
+      }
+     ],
+     "examples": [
+      {
+       "fa": "پماد و ژل موضعی",
+       "en": "Ointments and topical gels",
+       "tr": "Merhem ve topikal jeller"
+      },
+      {
+       "fa": "قرص جوشان و ویتامین",
+       "en": "Effervescent tablets and vitamins",
+       "tr": "Efervesan tablet ve vitaminler"
+      },
+      {
+       "fa": "پماد و ژل چشمی",
+       "en": "Eye ointments and gels",
+       "tr": "Göz merhemleri ve jelleri"
+      },
+      {
+       "fa": "داروهای خوراکی",
+       "en": "Oral medicines",
+       "tr": "Ağızdan alınan ilaçlar"
+      }
+     ],
+     "configure": "shape=circular&cap=eyeNozzleLong&pr=offset",
+     "more": {
+      "label": {
+       "fa": "تیوب قرص جوشان",
+       "en": "Effervescent tablet tube",
+       "tr": "Efervesan tablet tüpü"
+      },
+      "href": "/products/effervescent-tube"
+     }
+    },
+    {
+     "id": "food",
+     "name": {
+      "fa": "غذایی",
+      "en": "Food",
+      "tr": "Gıda"
+     },
+     "label": {
+      "fa": "Food & beverage",
+      "en": "Food & beverage",
+      "tr": "Gıda ve içecek"
+     },
+     "title": {
+      "fa": "تازگی که می‌ماند",
+      "en": "Freshness that lasts",
+      "tr": "Kalıcı tazelik"
+     },
+     "lead": {
+      "fa": "اولویت در بسته‌بندی غذا حفظ سلامت ماده غذایی است؛ عبور اکسیژن از لایه‌ها و نوع درب تعیین‌کننده‌اند.",
+      "en": "In food packaging, keeping the food safe comes first: oxygen passing through the layers and the type of cap decide it.",
+      "tr": "Gıda ambalajında öncelik gıdanın güvenliğidir: katmanlardan geçen oksijen ve kapak tipi belirleyicidir."
+     },
+     "body": {
+      "fa": "تیوب در مقایسه با ظرف شیشه‌ای یا کاسه‌ای، ماده غذایی را کمتر در معرض هوا قرار می‌دهد و نیاز به نگهدارنده را کم می‌کند. نازل مناسب مصرف عسل، شکلات و مربا را آسان‌تر و تمیزتر می‌کند و تیوب برای سفر هم مناسب است. برای محصولات قرص‌مانند مثل آدامس و دراژه، تیوب استوانه‌ای با درب سیلیکاژلی (با یا بدون فنر) رطوبت را دور نگه می‌دارد. چاپ تا ۱۱ رنگ با ترکیب افست خشک و سیلک انجام می‌شود. سازگاری هر ترکیب غذایی با لایه‌های تیوب پیش از تولید، موردی بررسی می‌شود.",
+      "en": "Compared with a glass jar or tub, a tube exposes food less to air and reduces the need for preservatives. The right nozzle makes honey, chocolate and jam easier and cleaner to use, and tubes travel well. For tablet-like products such as gum and dragées, a cylindrical tube with a silica-gel cap (with or without a spring) keeps moisture out. Print runs up to 11 colours combining dry offset and silk screen. Each food's compatibility with the tube layers is checked case by case before production.",
+      "tr": "Cam kavanoz ya da kaseye kıyasla tüp, gıdayı havaya daha az maruz bırakır ve koruyucu ihtiyacını azaltır. Doğru nozul bal, çikolata ve reçelin kullanımını kolaylaştırır; tüp seyahate de uygundur. Sakız ve draje gibi tablet benzeri ürünler için silika jel kapaklı (yaylı ya da yaysız) silindirik tüp nemi dışarıda tutar. Baskı, kuru ofset ve serigrafi ile 11 renge kadardır. Her gıdanın tüp katmanlarıyla uyumu üretimden önce ayrı ayrı incelenir."
+     },
+     "image": {
+      "src": "/images/app-food.webp",
+      "width": 712,
+      "height": 930
+     },
+     "accent": "#d99b3a",
+     "needs": [
+      {
+       "title": {
+        "fa": "سلامت ماده غذایی",
+        "en": "Food safety",
+        "tr": "Gıda güvenliği"
+       },
+       "text": {
+        "fa": "متریال مناسب تماس با غذا و نفوذ کم اکسیژن.",
+        "en": "Materials suited to food contact and low oxygen transmission.",
+        "tr": "Gıdayla temasa uygun malzeme ve düşük oksijen geçişi."
+       }
+      },
+      {
+       "title": {
+        "fa": "مصرف آسان و تمیز",
+        "en": "Easy, clean dispensing",
+        "tr": "Kolay ve temiz kullanım"
+       },
+       "text": {
+        "fa": "نازل و درب متناسب با غلظت عسل، شکلات یا سس.",
+        "en": "Nozzle and cap matched to honey, chocolate or sauce.",
+        "tr": "Bal, çikolata ya da sosa uygun nozul ve kapak."
+       }
+      },
+      {
+       "title": {
+        "fa": "ماندگاری",
+        "en": "Shelf life",
+        "tr": "Raf ömrü"
+       },
+       "text": {
+        "fa": "دور نگه داشتن هوا و رطوبت در طول نگهداری و مصرف.",
+        "en": "Keeping air and moisture out through storage and use.",
+        "tr": "Saklama ve kullanım boyunca hava ve nemi dışarıda tutma."
+       }
+      }
+     ],
+     "solutions": [
+      {
+       "title": {
+        "fa": "ساختار سد چندلایه",
+        "en": "Multi-layer barrier",
+        "tr": "Çok katmanlı bariyer"
+       },
+       "text": {
+        "fa": "لایه‌بندی متناسب با میزان حساسیت ماده غذایی به اکسیژن.",
+        "en": "Layers chosen for how sensitive the food is to oxygen.",
+        "tr": "Gıdanın oksijene duyarlılığına göre seçilen katmanlar."
+       }
+      },
+      {
+       "title": {
+        "fa": "نازل و درب غذایی",
+        "en": "Food nozzles and caps",
+        "tr": "Gıda nozulları ve kapakları"
+       },
+       "text": {
+        "fa": "فلیپ‌تاپ و نازل برای مصرف آسان؛ درب سیلیکاژلی برای محصولات قرص‌مانند.",
+        "en": "Flip-tops and nozzles for easy use; silica-gel caps for tablet-like products.",
+        "tr": "Kolay kullanım için flip-top ve nozul; tablet benzeri ürünler için silika jel kapak."
+       }
+      },
+      {
+       "title": {
+        "fa": "چاپ کامل اطلاعات",
+        "en": "Full product information",
+        "tr": "Eksiksiz ürün bilgisi"
+       },
+       "text": {
+        "fa": "چاپ دقیق تا ۱۱ رنگ برای اطلاعات کامل و برند گیرا.",
+        "en": "Precise print up to 11 colours for full information and a striking brand.",
+        "tr": "Eksiksiz bilgi ve çarpıcı marka için 11 renge kadar net baskı."
+       }
+      }
+     ],
+     "examples": [
+      {
+       "fa": "عسل و مربا",
+       "en": "Honey and jam",
+       "tr": "Bal ve reçel"
+      },
+      {
+       "fa": "شکلات و کرم‌های خوراکی",
+       "en": "Chocolate and food spreads",
+       "tr": "Çikolata ve sürülebilir kremalar"
+      },
+      {
+       "fa": "سس و چاشنی",
+       "en": "Sauces and condiments",
+       "tr": "Soslar ve çeşniler"
+      },
+      {
+       "fa": "آدامس و دراژه",
+       "en": "Gum and dragées",
+       "tr": "Sakız ve draje"
+      }
+     ],
+     "configure": "shape=circular&cap=flipTop&pr=combination"
+    },
+    {
+     "id": "industrial",
+     "name": {
+      "fa": "صنعتی",
+      "en": "Industrial",
+      "tr": "Endüstriyel"
+     },
+     "label": {
+      "fa": "Industrial",
+      "en": "Industrial",
+      "tr": "Endüstriyel"
+     },
+     "title": {
+      "fa": "مقاوم در برابر سخت‌ترین محتوا",
+      "en": "Built for demanding contents",
+      "tr": "Zorlu içerikler için"
+     },
+     "lead": {
+      "fa": "بسته‌بندی کالای صنعتی باید کمترین خطر را برای مصرف‌کننده داشته باشد و با محتوای خورنده یا چسبنده سازگار بماند.",
+      "en": "Industrial packaging must pose the least risk to the user and stay compatible with corrosive or adhesive contents.",
+      "tr": "Endüstriyel ambalaj kullanıcı için en az riski taşımalı ve aşındırıcı ya da yapışkan içerikle uyumlu kalmalıdır."
+     },
+     "body": {
+      "fa": "خورندگی، چسبندگی و حساسیت‌زایی ماده تعیین می‌کند تیوب چند لایه داشته باشد، از چه جنسی و با چه چسبی بین لایه‌ها. اطلاعات خطر برای پوست و چشم و دستور کمک‌های اولیه باید واضح چاپ شود و ظاهر بسته نشان دهد محصول صنعتی است تا به‌اشتباه مصرف نشود. چاپ سیلک تا ۵ رنگ با ضخامت جوهر تا ۲۰ میکرون، افست خشک تا ۶ رنگ با ضخامت ۴ تا ۵ میکرون، هات استمپ و رنگ‌دهی لایه‌های بیرونی و درونی با مستربچ در دسترس است.",
+      "en": "How corrosive, sticky or irritating the material is decides how many layers the tube has, what they are made of and the adhesive between them. Hazard information for skin and eyes and first-aid directions must be printed clearly, and the pack should look industrial so it is never used by mistake. Silk screen up to 5 colours with ink up to 20 microns thick, dry offset up to 6 colours at 4–5 microns, hot stamping, and masterbatch colouring of the outer and inner layers are available.",
+      "tr": "Malzemenin aşındırıcılığı, yapışkanlığı ve tahriş ediciliği tüpün kaç katmanlı olacağını, katmanların malzemesini ve aralarındaki yapıştırıcıyı belirler. Cilt ve göz için tehlike bilgileri ile ilk yardım talimatı net basılmalı ve ambalaj, yanlışlıkla kullanılmaması için endüstriyel olduğunu göstermelidir. 20 mikrona kadar mürekkeple 5 renge kadar serigrafi, 4–5 mikronla 6 renge kadar kuru ofset, sıcak baskı ve dış ve iç katmanların masterbatch ile renklendirilmesi mümkündür."
+     },
+     "image": {
+      "src": "/images/cta-tube.webp",
+      "width": 1448,
+      "height": 1086
+     },
+     "accent": "#5b6f82",
+     "needs": [
+      {
+       "title": {
+        "fa": "سازگاری با محتوا",
+        "en": "Compatibility",
+        "tr": "Uyumluluk"
+       },
+       "text": {
+        "fa": "لایه‌ها و چسب بین آن‌ها در برابر مواد خورنده یا چسبنده.",
+        "en": "Layers and the adhesive between them that resist corrosive or sticky contents.",
+        "tr": "Aşındırıcı ya da yapışkan içeriğe dayanan katmanlar ve yapıştırıcı."
+       }
+      },
+      {
+       "title": {
+        "fa": "ایمنی مصرف",
+        "en": "Safe use",
+        "tr": "Güvenli kullanım"
+       },
+       "text": {
+        "fa": "هشدارها و کمک‌های اولیه که روی سطح کوچک خوانا بمانند.",
+        "en": "Warnings and first aid that stay legible on a small surface.",
+        "tr": "Küçük yüzeyde okunaklı kalan uyarılar ve ilk yardım bilgisi."
+       }
+      },
+      {
+       "title": {
+        "fa": "خروج کنترل‌شده",
+        "en": "Controlled dispensing",
+        "tr": "Kontrollü çıkış"
+       },
+       "text": {
+        "fa": "نازل مناسب برای چسب، گریس یا درزگیر.",
+        "en": "The right nozzle for adhesive, grease or sealant.",
+        "tr": "Yapıştırıcı, gres ya da dolgu için doğru nozul."
+       }
+      }
+     ],
+     "solutions": [
+      {
+       "title": {
+        "fa": "لایه‌بندی ویژه",
+        "en": "Purpose-built layers",
+        "tr": "Amaca özel katmanlar"
+       },
+       "text": {
+        "fa": "تعداد، جنس و چسب لایه‌ها بر اساس رفتار ماده.",
+        "en": "Number, material and adhesive of the layers set by the contents.",
+        "tr": "Katman sayısı, malzemesi ve yapıştırıcısı içeriğe göre."
+       }
+      },
+      {
+       "title": {
+        "fa": "چاپ مقاوم و خوانا",
+        "en": "Durable, legible print",
+        "tr": "Dayanıklı, okunaklı baskı"
+       },
+       "text": {
+        "fa": "سیلک تا ۲۰ میکرون و افست خشک ۴ تا ۵ میکرون.",
+        "en": "Silk screen up to 20 µm and dry offset at 4–5 µm.",
+        "tr": "20 µm'ye kadar serigrafi ve 4–5 µm kuru ofset."
+       }
+      },
+      {
+       "title": {
+        "fa": "رنگ‌دهی با مستربچ",
+        "en": "Masterbatch colouring",
+        "tr": "Masterbatch renklendirme"
+       },
+       "text": {
+        "fa": "رنگ لایهٔ بیرونی و درونی برای تمایز و ایمنی.",
+        "en": "Coloured outer and inner layers for distinction and safety.",
+        "tr": "Ayırt edicilik ve güvenlik için renkli dış ve iç katman."
+       }
+      }
+     ],
+     "examples": [
+      {
+       "fa": "چسب و درزگیر",
+       "en": "Adhesives and sealants",
+       "tr": "Yapıştırıcı ve dolgu macunları"
+      },
+      {
+       "fa": "گریس و روان‌کننده",
+       "en": "Grease and lubricants",
+       "tr": "Gres ve yağlayıcılar"
+      },
+      {
+       "fa": "خمیرهای تعمیر",
+       "en": "Repair pastes",
+       "tr": "Tamir macunları"
+      },
+      {
+       "fa": "مواد شیمیایی خانگی",
+       "en": "Household chemicals",
+       "tr": "Ev kimyasalları"
+      }
+     ],
+     "configure": "shape=circular&cap=nozzle&pr=silk"
+    }
+   ]
+  },
+  "finder": {
+   "eyebrow": {
+    "fa": "Solution finder",
+    "en": "Solution finder",
+    "tr": "Çözüm bulucu"
+   },
+   "title": {
+    "fa": "مسیر بسته‌بندی مناسب را پیدا کنید",
+    "en": "Find your packaging direction",
+    "tr": "Ambalaj yönünüzü bulun"
+   },
+   "lead": {
+    "fa": "با سه انتخاب ساده، ببینید چه ساختار، دربی و روش چاپی برای محصول شما ارزش بررسی دارد.",
+    "en": "Three quick choices show which structure, cap and print method are worth considering for your product.",
+    "tr": "Üç hızlı seçimle ürününüz için hangi yapı, kapak ve baskı yönteminin değerlendirilmeye değer olduğunu görün."
+   },
+   "industry": {
+    "fa": "صنعت",
+    "en": "Industry",
+    "tr": "Sektör"
+   },
+   "content": {
+    "fa": "محتوای محصول",
+    "en": "What's inside",
+    "tr": "İçerik"
+   },
+   "priority": {
+    "fa": "اولویت اصلی",
+    "en": "Main priority",
+    "tr": "Ana öncelik"
+   },
+   "result": {
+    "fa": "مسیر پیشنهادی",
+    "en": "Suggested direction",
+    "tr": "Önerilen yön"
+   },
+   "structureLabel": {
+    "fa": "ساختار",
+    "en": "Structure",
+    "tr": "Yapı"
+   },
+   "closuresLabel": {
+    "fa": "درب و نازل قابل بررسی",
+    "en": "Caps and nozzles to consider",
+    "tr": "Değerlendirilecek kapak ve nozullar"
+   },
+   "printLabel": {
+    "fa": "روش چاپ",
+    "en": "Printing",
+    "tr": "Baskı"
+   },
+   "sendLabel": {
+    "fa": "برای استعلام آماده کنید",
+    "en": "Have these ready",
+    "tr": "Bunları hazırlayın"
+   },
+   "ask": {
+    "fa": "استعلام با همین مشخصات",
+    "en": "Ask with these details",
+    "tr": "Bu bilgilerle sorun"
+   },
+   "configure": {
+    "fa": "طراحی سه‌بعدی تیوب",
+    "en": "Design the tube in 3D",
+    "tr": "Tüpü 3B tasarlayın"
+   },
+   "disclaimer": {
+    "fa": "این پیشنهاد نقطهٔ شروع گفت‌وگوست. سازگاری دارویی، غذایی یا شیمیایی هر محصول پیش از تولید توسط کارشناسان آراپوش بررسی و تأیید می‌شود.",
+    "en": "This is a starting point for a conversation. Pharmaceutical, food or chemical compatibility is reviewed and confirmed by Arapoush engineers before production.",
+    "tr": "Bu öneri bir başlangıç noktasıdır. İlaç, gıda ya da kimyasal uyumluluk üretimden önce Arapoush mühendislerince incelenip onaylanır."
+   },
+   "contents": [
+    {
+     "id": "cream",
+     "label": {
+      "fa": "کرم / ماده غلیظ",
+      "en": "Cream / thick paste",
+      "tr": "Krem / koyu macun"
+     },
+     "closures": [
+      "flipTop",
+      "screw",
+      "standUp"
+     ],
+     "note": {
+      "fa": "مادهٔ غلیظ با دهانهٔ پهن‌تر و بدنهٔ نرم راحت‌تر خارج می‌شود.",
+      "en": "Thick products flow best from a wider orifice and a soft body.",
+      "tr": "Koyu ürünler geniş ağız ve yumuşak gövdeden daha rahat çıkar."
+     }
+    },
+    {
+     "id": "gel",
+     "label": {
+      "fa": "ژل",
+      "en": "Gel",
+      "tr": "Jel"
+     },
+     "closures": [
+      "flipTop",
+      "nozzle",
+      "flipTopPress"
+     ],
+     "note": {
+      "fa": "فلیپ‌تاپ با دهانهٔ کوچک‌تر خروج ژل را کنترل می‌کند.",
+      "en": "A flip-top with a smaller orifice keeps gel under control.",
+      "tr": "Küçük ağızlı flip-top jelin çıkışını kontrol eder."
+     }
+    },
+    {
+     "id": "liquid",
+     "label": {
+      "fa": "مایع / رقیق",
+      "en": "Liquid / runny",
+      "tr": "Sıvı / akışkan"
+     },
+     "closures": [
+      "eyeNozzleShort",
+      "nozzle",
+      "flipTop"
+     ],
+     "note": {
+      "fa": "نازل باریک از چکه‌کردن و خروج ناخواسته جلوگیری می‌کند.",
+      "en": "A narrow nozzle prevents dripping and accidental flow.",
+      "tr": "Dar nozul damlamayı ve istenmeyen akışı önler."
+     }
+    },
+    {
+     "id": "tablet",
+     "label": {
+      "fa": "جامد / قرص",
+      "en": "Solid / tablets",
+      "tr": "Katı / tablet"
+     },
+     "closures": [],
+     "note": {
+      "fa": "برای قرص، تیوب استوانه‌ای با درب سیلیکاژلی مناسب است.",
+      "en": "Tablets suit a cylindrical tube with a silica-gel cap.",
+      "tr": "Tabletler için silika jel kapaklı silindirik tüp uygundur."
+     },
+     "more": {
+      "label": {
+       "fa": "تیوب قرص جوشان",
+       "en": "Effervescent tablet tube",
+       "tr": "Efervesan tablet tüpü"
+      },
+      "href": "/products/effervescent-tube"
+     }
+    },
+    {
+     "id": "other",
+     "label": {
+      "fa": "سایر",
+      "en": "Other",
+      "tr": "Diğer"
+     },
+     "closures": [
+      "screw",
+      "nozzle"
+     ],
+     "note": {
+      "fa": "مشخصات محصول را بفرستید تا کارشناسان گزینهٔ مناسب را پیشنهاد کنند.",
+      "en": "Send us the product details and our engineers will suggest the right option.",
+      "tr": "Ürün bilgilerini gönderin, mühendislerimiz doğru seçeneği önersin."
+     }
+    }
+   ],
+   "priorities": [
+    {
+     "id": "look",
+     "label": {
+      "fa": "ظاهر و چاپ",
+      "en": "Look and print",
+      "tr": "Görünüm ve baskı"
+     },
+     "structure": {
+      "fa": "تیوب بدون درز چندلایه با سطح صاف برای چاپ کامل دور تیوب",
+      "en": "A seamless multi-layer tube with a smooth surface for full wrap-around print",
+      "tr": "Tam çevre baskı için pürüzsüz yüzeyli dikişsiz çok katmanlı tüp"
+     },
+     "print": [
+      "combination",
+      "hotstamp",
+      "silk"
+     ]
+    },
+    {
+     "id": "protect",
+     "label": {
+      "fa": "محافظت و ماندگاری",
+      "en": "Protection and shelf life",
+      "tr": "Koruma ve raf ömrü"
+     },
+     "structure": {
+      "fa": "ساختار پنج‌لایهٔ PE / EVOH با سد بالا در برابر اکسیژن و رطوبت",
+      "en": "5-layer PE / EVOH with a high barrier to oxygen and moisture",
+      "tr": "Oksijen ve neme karşı yüksek bariyerli 5 katmanlı PE / EVOH"
+     },
+     "print": [
+      "offset",
+      "flexo"
+     ]
+    },
+    {
+     "id": "dose",
+     "label": {
+      "fa": "دوز و خروج دقیق",
+      "en": "Precise dosing",
+      "tr": "Hassas dozlama"
+     },
+     "structure": {
+      "fa": "تیوب چندلایه با نازل یا درب متناسب با مقدار هر بار مصرف",
+      "en": "A multi-layer tube with a nozzle or cap sized for each dose",
+      "tr": "Her doza göre nozul ya da kapaklı çok katmanlı tüp"
+     },
+     "print": [
+      "offset",
+      "flexo"
+     ]
+    },
+    {
+     "id": "safety",
+     "label": {
+      "fa": "ایمنی و هشدارها",
+      "en": "Safety and warnings",
+      "tr": "Güvenlik ve uyarılar"
+     },
+     "structure": {
+      "fa": "لایه‌بندی و چسب متناسب با محتوا، با چاپ مقاوم برای هشدارها",
+      "en": "Layers and adhesive matched to the contents, with durable print for warnings",
+      "tr": "İçeriğe uygun katman ve yapıştırıcı, uyarılar için dayanıklı baskı"
+     },
+     "print": [
+      "silk",
+      "offset"
+     ]
+    },
+    {
+     "id": "cost",
+     "label": {
+      "fa": "هزینه و تیراژ بالا",
+      "en": "Cost at volume",
+      "tr": "Yüksek adette maliyet"
+     },
+     "structure": {
+      "fa": "ساختار استاندارد چندلایه در ابعاد پرمصرف جدول آراپوش",
+      "en": "A standard multi-layer build in the popular sizes of the Arapoush chart",
+      "tr": "Arapoush tablosundaki yaygın ölçülerde standart çok katmanlı yapı"
+     },
+     "print": [
+      "flexo",
+      "offset"
+     ]
+    }
+   ],
+   "send": [
+    {
+     "fa": "نوع و غلظت محتوا",
+     "en": "What's inside and how thick it is",
+     "tr": "İçerik ve kıvamı"
+    },
+    {
+     "fa": "حجم یا ابعاد تقریبی",
+     "en": "Approximate volume or size",
+     "tr": "Yaklaşık hacim ya da ölçü"
+    },
+    {
+     "fa": "تیراژ موردنظر",
+     "en": "Quantity",
+     "tr": "Adet"
+    },
+    {
+     "fa": "فایل طرح یا مشخصات فنی",
+     "en": "Artwork or technical specs",
+     "tr": "Tasarım dosyası ya da teknik bilgiler"
+    }
+   ]
+  },
+  "engineering": {
+   "eyebrow": {
+    "fa": "Materials & engineering",
+    "en": "Materials & engineering",
+    "tr": "Malzeme ve mühendislik"
+   },
+   "title": {
+    "fa": "ساختار و مهندسی تیوب",
+    "en": "Inside the tube",
+    "tr": "Tüpün yapısı"
+   },
+   "lead": {
+    "fa": "پنج تصمیم که بسته‌بندی هر صنعت را شکل می‌دهند. روی هر بخش بزنید تا ببینید چه چیزی در انتخاب اثر دارد.",
+    "en": "Five decisions shape the packaging for every industry. Pick one to see what matters when choosing.",
+    "tr": "Her sektörün ambalajını beş karar şekillendirir. Seçimde neyin önemli olduğunu görmek için birini seçin."
+   },
+   "image": {
+    "src": "/images/printing/layers.webp",
+    "width": 1448,
+    "height": 1086
+   },
+   "imageAlt": {
+    "fa": "لایه‌های تیوب چندلایه به‌صورت بازشده",
+    "en": "The layers of a multi-layer tube, opened up",
+    "tr": "Çok katmanlı tüpün açılmış katmanları"
+   },
+   "spots": [
+    {
+     "id": "layers",
+     "x": 30,
+     "y": 22,
+     "title": {
+      "fa": "ساختار و جنس لایه‌ها",
+      "en": "Layer structure and materials",
+      "tr": "Katman yapısı ve malzemeler"
+     },
+     "text": {
+      "fa": "PE بیرونی برای دوام و کیفیت چاپ، چسب برای اتصال لایه‌ها، EVOH برای سد و PE درونی برای سازگاری با محصول. تعداد و جنس لایه‌ها بر اساس محتوا انتخاب می‌شود.",
+      "en": "Outer PE for durability and print, adhesive to bond the layers, EVOH for the barrier and inner PE for contact with the product. The number and material of the layers follow the contents.",
+      "tr": "Dayanıklılık ve baskı için dış PE, katmanları bağlayan yapıştırıcı, bariyer için EVOH ve ürünle temas için iç PE. Katman sayısı ve malzemesi içeriğe göre seçilir."
+     },
+     "link": {
+      "label": {
+       "fa": "تیوب چندلایه",
+       "en": "Multi-layer tube",
+       "tr": "Çok katmanlı tüp"
+      },
+      "href": "/products/multi-layer-tube"
+     }
+    },
+    {
+     "id": "barrier",
+     "x": 55,
+     "y": 44,
+     "title": {
+      "fa": "محافظت از محتوا",
+      "en": "Protecting the contents",
+      "tr": "İçeriğin korunması"
+     },
+     "text": {
+      "fa": "سد در برابر اکسیژن، رطوبت و نور، عطر محصول را حفظ می‌کند و ماندگاری را بالا می‌برد. لایهٔ سد پلیمری یا فلزی رفتار تیوب پس از فشردن را هم تعیین می‌کند.",
+      "en": "A barrier to oxygen, moisture and light keeps the product's scent and extends its life. A polymer or aluminium barrier also decides how the tube behaves after squeezing.",
+      "tr": "Oksijen, nem ve ışık bariyeri ürünün kokusunu korur ve ömrünü uzatır. Polimer ya da alüminyum bariyer tüpün sıkıldıktan sonraki davranışını da belirler."
+     }
+    },
+    {
+     "id": "closures",
+     "x": 80,
+     "y": 70,
+     "title": {
+      "fa": "نازل و درب",
+      "en": "Nozzles and caps",
+      "tr": "Nozul ve kapaklar"
+     },
+     "text": {
+      "fa": "بیش از ده نوع درب: فلیپ‌تاپ، پیچی، ایستاده، نازل چشمی، موشکی، کونیکال، هشت‌ضلعی، پمپ ایرلس و درب‌های بیضی. درب بر اساس غلظت، دوز و نحوهٔ مصرف انتخاب می‌شود.",
+      "en": "More than ten closures: flip-top, screw, stand-up, eye nozzle, bullet, conical, octagonal, airless pump and oval caps, chosen for thickness, dose and use.",
+      "tr": "Ondan fazla kapak: flip-top, vidalı, ayakta duran, göz nozulu, mermi, konik, sekizgen, havasız pompa ve oval kapaklar; kıvam, doz ve kullanıma göre seçilir."
+     },
+     "link": {
+      "label": {
+       "fa": "درب‌ها در پیکربندی",
+       "en": "Caps in the configurator",
+       "tr": "Yapılandırıcıda kapaklar"
+      },
+      "href": "/products/multi-layer-tube#configurator"
+     }
+    },
+    {
+     "id": "sizes",
+     "x": 22,
+     "y": 74,
+     "title": {
+      "fa": "ابعاد و حجم",
+      "en": "Sizes and volume",
+      "tr": "Ölçü ve hacim"
+     },
+     "text": {
+      "fa": "تیوب گرد از قطر ۱۹ تا ۶۰ و بیضی از ۳۰ تا ۵۰ میلی‌متر، با طول‌های جدول سایز آراپوش. حجم بر اساس دوز یا مقدار مصرف تعیین می‌شود.",
+      "en": "Round tubes from 19 to 60 mm and oval from 30 to 50 mm, in the lengths of the Arapoush size chart. Volume follows the dose or how much is used.",
+      "tr": "Yuvarlak tüp 19–60 mm, oval 30–50 mm çapta, Arapoush ölçü tablosundaki uzunluklarda. Hacim doza ya da kullanım miktarına göre belirlenir."
+     },
+     "link": {
+      "label": {
+       "fa": "جدول سایزها",
+       "en": "Size chart",
+       "tr": "Ölçü tablosu"
+      },
+      "href": "/products/multi-layer-tube#configurator"
+     }
+    },
+    {
+     "id": "print",
+     "x": 62,
+     "y": 16,
+     "title": {
+      "fa": "چاپ و تزئین",
+      "en": "Printing and decoration",
+      "tr": "Baskı ve süsleme"
+     },
+     "text": {
+      "fa": "فلکسو تا ۸ رنگ، افست خشک تا ۶ رنگ، سیلک تا ۵ رنگ، هات استمپ و چاپ ترکیبی تا ۱۱ رنگ. روش چاپ بر اساس طرح، تیراژ و نوع محصول انتخاب می‌شود.",
+      "en": "Flexo up to 8 colours, dry offset up to 6, silk screen up to 5, hot stamping and combination print up to 11, chosen for the design, the run and the product.",
+      "tr": "8 renge kadar flekso, 6 renge kadar kuru ofset, 5 renge kadar serigrafi, sıcak baskı ve 11 renge kadar kombine baskı; tasarıma, adede ve ürüne göre seçilir."
+     },
+     "link": {
+      "label": {
+       "fa": "فناوری‌های چاپ",
+       "en": "Printing technologies",
+       "tr": "Baskı teknolojileri"
+      },
+      "href": "/printing"
+     }
+    }
+   ]
+  },
+  "projects": {
+   "eyebrow": {
+    "fa": "Sample projects",
+    "en": "Sample projects",
+    "tr": "Örnek projeler"
+   },
+   "title": {
+    "fa": "نمونه‌کارها",
+    "en": "Sample work",
+    "tr": "Örnek çalışmalar"
+   },
+   "lead": {
+    "fa": "نمونه‌هایی از ترکیب ساختار، درب و چاپ برای صنایع مختلف. برای دیدن جزئیات هر نمونه روی آن بزنید.",
+    "en": "Examples of structure, cap and print combined for different industries. Open one to see its details.",
+    "tr": "Farklı sektörler için yapı, kapak ve baskı örnekleri. Ayrıntıları görmek için birini açın."
+   },
+   "all": {
+    "fa": "همه",
+    "en": "All",
+    "tr": "Tümü"
+   },
+   "close": {
+    "fa": "بستن",
+    "en": "Close",
+    "tr": "Kapat"
+   },
+   "prev": {
+    "fa": "نمونهٔ قبلی",
+    "en": "Previous sample",
+    "tr": "Önceki örnek"
+   },
+   "next": {
+    "fa": "نمونهٔ بعدی",
+    "en": "Next sample",
+    "tr": "Sonraki örnek"
+   },
+   "note": {
+    "fa": "طرح‌ها نمونه‌اند و برای نمایش قابلیت‌ها ساخته شده‌اند.",
+    "en": "Designs are samples made to show what is possible.",
+    "tr": "Tasarımlar olanakları göstermek için hazırlanmış örneklerdir."
+   },
+   "items": [
+    {
+     "id": "lavender",
+     "industry": "cosmetics",
+     "image": {
+      "src": "/images/printing/sample-lavender.webp",
+      "width": 1448,
+      "height": 1086
+     },
+     "title": {
+      "fa": "کرم دست اسطوخودوس",
+      "en": "Lavender hand cream",
+      "tr": "Lavanta el kremi"
+     },
+     "text": {
+      "fa": "تیوب گرد با درب فلیپ‌تاپ و چاپ ترکیبی با رنگ‌های ملایم.",
+      "en": "Round tube, flip-top cap and soft combination print.",
+      "tr": "Yuvarlak tüp, flip-top kapak ve yumuşak kombine baskı."
+     },
+     "specs": [
+      {
+       "label": {
+        "fa": "چاپ",
+        "en": "Print",
+        "tr": "Baskı"
+       },
+       "value": {
+        "fa": "ترکیبی",
+        "en": "Combination",
+        "tr": "Kombine"
+       }
+      },
+      {
+       "label": {
+        "fa": "درب",
+        "en": "Cap",
+        "tr": "Kapak"
+       },
+       "value": {
+        "fa": "فلیپ‌تاپ",
+        "en": "Flip-top",
+        "tr": "Flip-top"
+       }
+      }
+     ]
+    },
+    {
+     "id": "silk-cream",
+     "industry": "cosmetics",
+     "image": {
+      "src": "/images/product-tube.webp",
+      "width": 1095,
+      "height": 1436
+     },
+     "title": {
+      "fa": "کرم پوست با جلوهٔ ابریشمی",
+      "en": "Silky skin cream",
+      "tr": "İpeksi cilt kremi"
+     },
+     "text": {
+      "fa": "بدنهٔ مات و چاپ مینیمال برای برند لوکس.",
+      "en": "Matte body and minimal print for a premium brand.",
+      "tr": "Lüks marka için mat gövde ve minimal baskı."
+     },
+     "specs": [
+      {
+       "label": {
+        "fa": "چاپ",
+        "en": "Print",
+        "tr": "Baskı"
+       },
+       "value": {
+        "fa": "افست خشک",
+        "en": "Dry offset",
+        "tr": "Kuru ofset"
+       }
+      },
+      {
+       "label": {
+        "fa": "درب",
+        "en": "Cap",
+        "tr": "Kapak"
+       },
+       "value": {
+        "fa": "پیچی",
+        "en": "Screw",
+        "tr": "Vidalı"
+       }
+      }
+     ]
+    },
+    {
+     "id": "vitamin-c",
+     "industry": "hygiene",
+     "image": {
+      "src": "/images/printing/sample-vitamin-c.webp",
+      "width": 1448,
+      "height": 1086
+     },
+     "title": {
+      "fa": "شویندهٔ صورت ویتامین C",
+      "en": "Vitamin C face wash",
+      "tr": "C vitaminli yüz temizleyici"
+     },
+     "text": {
+      "fa": "رنگ‌های زنده با چاپ فلکسو برای مصرف روزانه.",
+      "en": "Bright flexo colours for daily use.",
+      "tr": "Günlük kullanım için canlı flekso renkleri."
+     },
+     "specs": [
+      {
+       "label": {
+        "fa": "چاپ",
+        "en": "Print",
+        "tr": "Baskı"
+       },
+       "value": {
+        "fa": "فلکسو",
+        "en": "Flexo",
+        "tr": "Flekso"
+       }
+      },
+      {
+       "label": {
+        "fa": "درب",
+        "en": "Cap",
+        "tr": "Kapak"
+       },
+       "value": {
+        "fa": "فلیپ‌تاپ",
+        "en": "Flip-top",
+        "tr": "Flip-top"
+       }
+      }
+     ]
+    },
+    {
+     "id": "calcium",
+     "industry": "pharma",
+     "image": {
+      "src": "/images/printing/sample-calcium.webp",
+      "width": 1448,
+      "height": 1086
+     },
+     "title": {
+      "fa": "ژل کلسیم",
+      "en": "Calcium gel",
+      "tr": "Kalsiyum jel"
+     },
+     "text": {
+      "fa": "ساختار پنج‌لایهٔ EVOH و چاپ دقیق اطلاعات دارو.",
+      "en": "5-layer EVOH build and precise print of the medicine information.",
+      "tr": "5 katmanlı EVOH yapı ve ilaç bilgilerinin net baskısı."
+     },
+     "specs": [
+      {
+       "label": {
+        "fa": "ساختار",
+        "en": "Structure",
+        "tr": "Yapı"
+       },
+       "value": {
+        "fa": "پنج‌لایه PE / EVOH",
+        "en": "5-layer PE / EVOH",
+        "tr": "5 katmanlı PE / EVOH"
+       }
+      },
+      {
+       "label": {
+        "fa": "چاپ",
+        "en": "Print",
+        "tr": "Baskı"
+       },
+       "value": {
+        "fa": "افست خشک",
+        "en": "Dry offset",
+        "tr": "Kuru ofset"
+       }
+      }
+     ]
+    },
+    {
+     "id": "effervescent",
+     "industry": "pharma",
+     "image": {
+      "src": "/images/product-effervescent.webp",
+      "width": 1095,
+      "height": 1436
+     },
+     "title": {
+      "fa": "تیوب قرص جوشان",
+      "en": "Effervescent tablet tube",
+      "tr": "Efervesan tablet tüpü"
+     },
+     "text": {
+      "fa": "درب سیلیکاژلی با فنر برای قرص‌های حساس به رطوبت.",
+      "en": "Silica-gel cap with a spring for moisture-sensitive tablets.",
+      "tr": "Neme duyarlı tabletler için yaylı silika jel kapak."
+     },
+     "specs": [
+      {
+       "label": {
+        "fa": "درب",
+        "en": "Cap",
+        "tr": "Kapak"
+       },
+       "value": {
+        "fa": "سیلیکاژلی با فنر",
+        "en": "Silica gel with spring",
+        "tr": "Yaylı silika jel"
+       }
+      }
+     ]
+    },
+    {
+     "id": "industrial-white",
+     "industry": "industrial",
+     "image": {
+      "src": "/images/cta-tube.webp",
+      "width": 1448,
+      "height": 1086
+     },
+     "title": {
+      "fa": "تیوب صنعتی",
+      "en": "Industrial tube",
+      "tr": "Endüstriyel tüp"
+     },
+     "text": {
+      "fa": "لایهٔ درونی رنگی و چاپ سیلک مقاوم برای هشدارها.",
+      "en": "Coloured inner layer and durable silk-screen print for warnings.",
+      "tr": "Renkli iç katman ve uyarılar için dayanıklı serigrafi."
+     },
+     "specs": [
+      {
+       "label": {
+        "fa": "چاپ",
+        "en": "Print",
+        "tr": "Baskı"
+       },
+       "value": {
+        "fa": "سیلک",
+        "en": "Silk screen",
+        "tr": "Serigrafi"
+       }
+      },
+      {
+       "label": {
+        "fa": "رنگ‌دهی",
+        "en": "Colouring",
+        "tr": "Renklendirme"
+       },
+       "value": {
+        "fa": "مستربچ",
+        "en": "Masterbatch",
+        "tr": "Masterbatch"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "quality": {
+   "eyebrow": {
+    "fa": "Quality & compliance",
+    "en": "Quality & compliance",
+    "tr": "Kalite ve uygunluk"
+   },
+   "title": {
+    "fa": "بررسی پیش از تولید، نه پس از آن",
+    "en": "Checked before production, not after",
+    "tr": "Üretimden sonra değil, önce kontrol"
+   },
+   "lead": {
+    "fa": "در صنایع حساس، انتخاب بسته‌بندی با بررسی مهندسی شروع می‌شود. این مسیری است که هر سفارش طی می‌کند.",
+    "en": "In sensitive industries, choosing packaging starts with an engineering review. This is the path every order takes.",
+    "tr": "Hassas sektörlerde ambalaj seçimi mühendislik incelemesiyle başlar. Her sipariş bu yolu izler."
+   },
+   "steps": [
+    {
+     "title": {
+      "fa": "شناخت محصول",
+      "en": "Understand the product",
+      "tr": "Ürünü tanıma"
+     },
+     "text": {
+      "fa": "نوع، غلظت و شرایط نگهداری محتوا و نحوهٔ مصرف آن.",
+      "en": "What's inside, how thick it is, how it is stored and used.",
+      "tr": "İçerik, kıvam, saklama koşulları ve kullanım şekli."
+     }
+    },
+    {
+     "title": {
+      "fa": "انتخاب مواد و لایه‌ها",
+      "en": "Choose materials and layers",
+      "tr": "Malzeme ve katman seçimi"
+     },
+     "text": {
+      "fa": "ساختار، سد و چسب بین لایه‌ها متناسب با محتوا.",
+      "en": "Structure, barrier and adhesive matched to the contents.",
+      "tr": "İçeriğe uygun yapı, bariyer ve yapıştırıcı."
+     }
+    },
+    {
+     "title": {
+      "fa": "بررسی سازگاری",
+      "en": "Review compatibility",
+      "tr": "Uyumluluk incelemesi"
+     },
+     "text": {
+      "fa": "برای محصولات دارویی، غذایی و شیمیایی، سازگاری محتوا با لایه‌ها موردی بررسی می‌شود.",
+      "en": "For pharmaceutical, food and chemical products, compatibility with the layers is reviewed case by case.",
+      "tr": "İlaç, gıda ve kimyasal ürünlerde katmanlarla uyum ayrı ayrı incelenir."
+     }
+    },
+    {
+     "title": {
+      "fa": "نمونه و کنترل تولید",
+      "en": "Sample and production control",
+      "tr": "Numune ve üretim kontrolü"
+     },
+     "text": {
+      "fa": "نمونه برای تأیید شما و کنترل کیفیت در طول تولید.",
+      "en": "A sample for your approval and quality control throughout production.",
+      "tr": "Onayınız için numune ve üretim boyunca kalite kontrol."
+     }
+    }
+   ],
+   "certificates": {
+    "fa": "گواهینامه‌ها و افتخارات آراپوش",
+    "en": "Arapoush certificates and honours",
+    "tr": "Arapoush sertifikaları ve ödülleri"
+   }
+  },
+  "quote": {
+   "eyebrow": {
+    "fa": "Request a quote",
+    "en": "Request a quote",
+    "tr": "Teklif isteyin"
+   },
+   "title": {
+    "fa": "راهکار بسته‌بندی خود را درخواست کنید",
+    "en": "Request your packaging solution",
+    "tr": "Ambalaj çözümünüzü isteyin"
+   },
+   "lead": {
+    "fa": "صنعت و مشخصات محصول را بفرستید؛ درخواست شما با شمارهٔ پیگیری به کارشناس همان صنعت می‌رسد.",
+    "en": "Tell us your industry and product; your request reaches the right specialist with a tracking number.",
+    "tr": "Sektörünüzü ve ürününüzü bildirin; talebiniz takip numarasıyla doğru uzmana ulaşır."
+   },
+   "form": "applications-quote",
+   "department": "sales",
+   "sentTitle": {
+    "fa": "درخواست شما ثبت شد",
+    "en": "Your request is registered",
+    "tr": "Talebiniz kaydedildi"
+   },
+   "numberLabel": {
+    "fa": "شمارهٔ پیگیری",
+    "en": "Tracking number",
+    "tr": "Takip numarası"
+   },
+   "followUp": {
+    "fa": "کارشناسان {department} به‌زودی با شما تماس می‌گیرند.",
+    "en": "The {department} team will contact you shortly.",
+    "tr": "{department} ekibi kısa süre içinde sizinle iletişime geçecek."
+   },
+   "again": {
+    "fa": "درخواست تازه",
+    "en": "New request",
+    "tr": "Yeni talep"
+   },
+   "fallback": {
+    "fa": "سامانهٔ استعلام در دسترس نیست. برنامهٔ ایمیل شما با همین اطلاعات باز می‌شود.",
+    "en": "The request system is unavailable. Your email app will open with these details.",
+    "tr": "Talep sistemi kullanılamıyor. E-posta uygulamanız bu bilgilerle açılacak."
+   }
+  },
+  "faq": {
+   "eyebrow": {
+    "fa": "FAQ",
+    "en": "FAQ",
+    "tr": "SSS"
+   },
+   "title": {
+    "fa": "پرسش‌های متداول",
+    "en": "Frequently asked questions",
+    "tr": "Sık sorulan sorular"
+   },
+   "all": {
+    "fa": "همهٔ صنایع",
+    "en": "All industries",
+    "tr": "Tüm sektörler"
+   },
+   "items": [
+    {
+     "industries": [],
+     "q": {
+      "fa": "برای دریافت قیمت چه اطلاعاتی لازم است؟",
+      "en": "What do you need to give me a price?",
+      "tr": "Fiyat için hangi bilgiler gerekir?"
+     },
+     "a": {
+      "fa": "نوع محتوا، حجم یا ابعاد تقریبی، نوع درب، روش چاپ و تعداد رنگ، تیراژ و در صورت امکان فایل طرح. اگر هنوز همه را نمی‌دانید، کارشناسان در انتخاب کمک می‌کنند.",
+      "en": "The contents, the approximate volume or size, the cap, the print method and number of colours, the quantity and, if possible, the artwork. If you don't know all of these yet, our specialists will help you choose.",
+      "tr": "İçerik, yaklaşık hacim ya da ölçü, kapak, baskı yöntemi ve renk sayısı, adet ve mümkünse tasarım dosyası. Henüz hepsini bilmiyorsanız uzmanlarımız seçimde yardımcı olur."
+     }
+    },
+    {
+     "industries": [],
+     "q": {
+      "fa": "آیا چاپ اختصاصی روی تیوب ممکن است؟",
+      "en": "Can the tube carry our own print?",
+      "tr": "Tüpe özel baskı yapılabilir mi?"
+     },
+     "a": {
+      "fa": "بله. فلکسو تا ۸ رنگ، افست خشک تا ۶ رنگ، سیلک تا ۵ رنگ، هات استمپ و چاپ ترکیبی تا ۱۱ رنگ در دسترس است و روش مناسب بر اساس طرح و تیراژ انتخاب می‌شود.",
+      "en": "Yes. Flexo up to 8 colours, dry offset up to 6, silk screen up to 5, hot stamping and combination print up to 11 are available; the method follows the design and the run.",
+      "tr": "Evet. 8 renge kadar flekso, 6 renge kadar kuru ofset, 5 renge kadar serigrafi, sıcak baskı ve 11 renge kadar kombine baskı mümkündür; yöntem tasarıma ve adede göre seçilir."
+     }
+    },
+    {
+     "industries": [
+      "cosmetics",
+      "hygiene"
+     ],
+     "q": {
+      "fa": "برای محصول غلیظ چه تیوبی مناسب است؟",
+      "en": "Which tube suits a thick product?",
+      "tr": "Koyu bir ürün için hangi tüp uygundur?"
+     },
+     "a": {
+      "fa": "تیوب با بدنهٔ نرم و دهانهٔ پهن‌تر، معمولاً با درب پیچی یا فلیپ‌تاپ با سوراخ بزرگ‌تر. قطر بزرگ‌تر هم فشردن را راحت‌تر می‌کند.",
+      "en": "A soft-bodied tube with a wider orifice, usually a screw cap or a flip-top with a larger hole. A bigger diameter also makes squeezing easier.",
+      "tr": "Geniş ağızlı, yumuşak gövdeli bir tüp; genellikle vidalı kapak ya da büyük delikli flip-top. Daha büyük çap da sıkmayı kolaylaştırır."
+     }
+    },
+    {
+     "industries": [
+      "hygiene"
+     ],
+     "q": {
+      "fa": "تفاوت تیوب با لایهٔ سد فلزی و پلیمری چیست؟",
+      "en": "What is the difference between aluminium and polymer barrier tubes?",
+      "tr": "Alüminyum ve polimer bariyerli tüp arasındaki fark nedir?"
+     },
+     "a": {
+      "fa": "تیوب با لایهٔ سد فلزی (ABL) پس از فشردن به شکل اولیه برنمی‌گردد و هوا را به داخل نمی‌کشد؛ تیوب با لایهٔ سد پلیمری (PBL) به حالت اولیه برمی‌گردد و ظاهر خود را تا پایان مصرف حفظ می‌کند.",
+      "en": "An aluminium barrier laminate (ABL) tube stays pressed after squeezing and doesn't draw air back in; a polymer barrier laminate (PBL) tube springs back and keeps its look to the end.",
+      "tr": "Alüminyum bariyerli laminat (ABL) tüp sıkıldıktan sonra eski haline dönmez ve içeri hava çekmez; polimer bariyerli laminat (PBL) tüp geri döner ve görünümünü sonuna kadar korur."
+     }
+    },
+    {
+     "industries": [
+      "pharma"
+     ],
+     "q": {
+      "fa": "برای انتخاب بسته‌بندی دارویی چه اطلاعاتی لازم است؟",
+      "en": "What do you need to choose pharmaceutical packaging?",
+      "tr": "İlaç ambalajı seçmek için ne gerekir?"
+     },
+     "a": {
+      "fa": "ترکیب و حساسیت دارو به رطوبت و نور، شرایط نگهداری (یخچال یا دمای اتاق)، دوز و نحوهٔ مصرف، و نوع نازل موردنظر. سازگاری دارو با لایه‌ها پیش از تولید بررسی می‌شود.",
+      "en": "The formula and its sensitivity to moisture and light, storage (fridge or room temperature), the dose and how it is used, and the nozzle you want. Compatibility with the layers is reviewed before production.",
+      "tr": "Formül ve neme ve ışığa duyarlılığı, saklama koşulu (buzdolabı ya da oda sıcaklığı), doz ve kullanım şekli ile istenen nozul. Katmanlarla uyum üretimden önce incelenir."
+     }
+    },
+    {
+     "industries": [
+      "pharma",
+      "food"
+     ],
+     "q": {
+      "fa": "درب سیلیکاژلی چه کاری انجام می‌دهد؟",
+      "en": "What does a silica-gel cap do?",
+      "tr": "Silika jel kapak ne işe yarar?"
+     },
+     "a": {
+      "fa": "سیلیکاژل داخل درب رطوبت را جذب می‌کند تا قرص‌ها یا محصولات قرص‌مانند خشک بمانند. فنر (اسپیرال) هم از لرزش و خرد شدن قرص‌ها در حمل جلوگیری می‌کند.",
+      "en": "Silica gel in the cap absorbs moisture so tablets and tablet-like products stay dry. The spiral spring stops them rattling and breaking in transit.",
+      "tr": "Kapaktaki silika jel nemi emer, böylece tabletler ve tablet benzeri ürünler kuru kalır. Spiral yay da taşımada sallanıp kırılmalarını önler."
+     }
+    },
+    {
+     "industries": [
+      "food"
+     ],
+     "q": {
+      "fa": "آیا تیوب برای مواد غذایی مناسب است؟",
+      "en": "Are your tubes suitable for food?",
+      "tr": "Tüpleriniz gıdaya uygun mu?"
+     },
+     "a": {
+      "fa": "تیوب چندلایه ماده غذایی را کمتر از ظرف باز در معرض هوا قرار می‌دهد. مواد تماس با غذا و سازگاری هر ترکیب غذایی پیش از تولید موردی بررسی و تأیید می‌شود.",
+      "en": "A multi-layer tube exposes food to less air than an open container. Food-contact materials and each recipe's compatibility are reviewed and confirmed case by case before production.",
+      "tr": "Çok katmanlı tüp gıdayı açık bir kaba göre havaya daha az maruz bırakır. Gıdayla temas eden malzemeler ve her tarifin uyumu üretimden önce ayrı ayrı incelenip onaylanır."
+     }
+    },
+    {
+     "industries": [
+      "industrial"
+     ],
+     "q": {
+      "fa": "برای مواد خورنده یا چسب چه تیوبی مناسب است؟",
+      "en": "Which tube suits corrosive products or adhesives?",
+      "tr": "Aşındırıcı ürünler ya da yapıştırıcılar için hangi tüp uygundur?"
+     },
+     "a": {
+      "fa": "تعداد و جنس لایه‌ها و چسب بین آن‌ها بر اساس خورندگی و چسبندگی ماده انتخاب می‌شود. برگهٔ اطلاعات ایمنی محصول را همراه درخواست بفرستید.",
+      "en": "The number and material of the layers and the adhesive between them follow how corrosive and sticky the material is. Send the product's safety data sheet with your request.",
+      "tr": "Katman sayısı, malzemesi ve aralarındaki yapıştırıcı, malzemenin aşındırıcılığına ve yapışkanlığına göre seçilir. Talebinizle birlikte ürünün güvenlik bilgi formunu gönderin."
+     }
+    },
+    {
+     "industries": [],
+     "q": {
+      "fa": "چه عواملی روی ابعاد و نوع درب اثر دارند؟",
+      "en": "What affects the size and the cap?",
+      "tr": "Ölçüyü ve kapağı ne etkiler?"
+     },
+     "a": {
+      "fa": "حجم موردنیاز یا دوز، غلظت محتوا، نحوهٔ مصرف (روزانه، دقیق، سفری) و ظاهر موردنظر برند. هر درب فقط روی قطرهایی که در جدول آراپوش آمده عرضه می‌شود.",
+      "en": "The volume or dose, the thickness of the contents, how it is used (daily, precise, travel) and the look the brand wants. Each cap is offered only on the diameters in the Arapoush chart.",
+      "tr": "Gereken hacim ya da doz, içeriğin kıvamı, kullanım şekli (günlük, hassas, seyahat) ve markanın istediği görünüm. Her kapak yalnızca Arapoush tablosundaki çaplarda sunulur."
+     }
+    }
+   ]
   }
  },
  "page.contact": {

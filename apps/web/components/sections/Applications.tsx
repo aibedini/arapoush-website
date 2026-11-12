@@ -8,11 +8,12 @@ import Glow from "@/components/ui/Glow";
 import styles from "./Applications.module.css";
 
 /** Design slots; each photo comes from content (t.media.applications) by id. */
+/** `to`: the industry's panel on the applications page. */
 const visuals = [
-  { id: "cosmetics", h: 505, x: 117 },
-  { id: "pharma", h: 465, x: 578 },
-  { id: "hygienic", h: 455, x: 1039 },
-  { id: "food", h: 465, x: 1500 },
+  { id: "cosmetics", to: "cosmetics", h: 505, x: 117 },
+  { id: "pharma", to: "pharma", h: 465, x: 578 },
+  { id: "hygienic", to: "hygiene", h: 455, x: 1039 },
+  { id: "food", to: "food", h: 465, x: 1500 },
 ];
 
 export default function Applications({ t }: SectionProps) {
@@ -48,7 +49,7 @@ export default function Applications({ t }: SectionProps) {
             if (!item) return null;
             return (
               <li key={v.id} className={`at ${styles.slot}`} style={{ "--x": v.x, "--y": 259, "--w": 356 } as React.CSSProperties} data-reveal-item>
-                <a href={links.applications} className={styles.card} aria-label={`${item.title} — ${item.text}`}>
+                <a href={`${links.applications}#${v.to}`} className={styles.card} aria-label={`${item.title} — ${item.text}`}>
                   <div className={styles.media} style={{ "--ih": v.h } as React.CSSProperties} data-reveal-media>
                     <div className={styles.mediaInner}>
                       <Image src={byId(t.media.applications.items, v.id)?.image.src ?? ""} alt="" fill sizes="(max-width: 767px) 46vw, (max-width: 1099px) 46vw, 19vw" />

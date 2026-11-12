@@ -3,6 +3,24 @@ import type { NextConfig } from "next";
 
 const year = "public, max-age=31536000, immutable";
 
+/**
+ * The old industry pages (arapoush.com, before this site) now live on one applications page, each as
+ * a panel: 301 to /{locale}/applications#{industry}. Persian slugs are matched percent-encoded, as
+ * browsers and crawlers send them.
+ */
+const oldIndustryPages: [string, string][] = [
+  ["/تیوب-بدون-درز-پلاستیکی-آرایشی", "/fa/applications#cosmetics"],
+  ["/بسته-بندی-تیوب-محصولات-بهداشتی", "/fa/applications#hygiene"],
+  ["/بسته-بندی-اکستروژن-محصولات-دارویی", "/fa/applications#pharma"],
+  ["/راهکارهای-بسته-بندی-تیوب-محصولات-خوراکی", "/fa/applications#food"],
+  ["/تیوب-بدون-درز-چند-لایه-محصولات-صنعتی", "/fa/applications#industrial"],
+  ["/tubes-cosmetic", "/en/applications#cosmetics"],
+  ["/tubes-hygienic", "/en/applications#hygiene"],
+  ["/tubes-pharmaceutical", "/en/applications#pharma"],
+  ["/tubes-food", "/en/applications#food"],
+  ["/tubes-industrial", "/en/applications#industrial"],
+];
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Self-contained server bundle (.next/standalone) for the Linux installer and Docker image.
@@ -24,6 +42,12 @@ const nextConfig: NextConfig = {
     // the about, printing and home sections' CSS). Strict chunking keeps each page to its own imports.
     cssChunking: "strict",
     optimizePackageImports: ["@animate-ui/react", "radix-ui", "motion"],
+  },
+  async redirects() {
+    return oldIndustryPages.flatMap(([from, to]) => {
+      const encoded = encodeURI(from);
+      return [...new Set([from, encoded])].map((source) => ({ source, destination: to, permanent: true }));
+    });
   },
   // Media uploaded in OPEX is served same-origin (no third-party host in CSP, no cookies sent to OPEX).
   async rewrites() {

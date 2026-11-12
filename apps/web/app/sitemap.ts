@@ -2,11 +2,12 @@ import { ensureContent } from "@/lib/content";
 import type { MetadataRoute } from "next";
 import { getDictionary, locales } from "@/lib/i18n";
 import { getPrinting } from "@/lib/printing";
+import { getApplications } from "@/lib/applications";
 import { getAbout } from "@/lib/about";
 import { aboutPath, contactPath } from "@/lib/site";
 import { getEffervescentProduct, getTubeProduct } from "@/lib/products";
 import { languageAlternates, pageUrl } from "@/lib/seo";
-import { printingPath, productPaths, siteUrl } from "@/lib/site";
+import { applicationsPath, printingPath, productPaths, siteUrl } from "@/lib/site";
 import { pageForms } from "@/lib/content/forms";
 import { formPath } from "@/lib/forms";
 
@@ -17,11 +18,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const tube = getTubeProduct();
   const eff = getEffervescentProduct();
   const printing = getPrinting();
+  const apps = getApplications();
   const about = getAbout();
   const src = (list: ({ src: string } | undefined | null)[]) => [...new Set(list.filter((x): x is { src: string } => !!x?.src).map((x) => x.src))];
   const pages = [
     { path: "", priority: 1, images: src([media.hero.slides[0]?.product, ...media.products.cards.map((c) => c.image)]) },
     { path: productPaths.tube, priority: 0.9, images: src([media.products.cards[0]?.image, media.site.ctaTube, tube.images?.hero ? { src: tube.images.hero.ltr } : null, ...tube.samples.map((x) => ({ src: x.image }))]) },
+    { path: applicationsPath, priority: 0.8, images: src([...apps.industries.items.map((x) => x.image), ...apps.projects.items.map((p) => p.image)]) },
     { path: printingPath, priority: 0.8, images: src([media.printing.tubeGold, media.printing.tubeColour, media.printing.layers, ...printing.tech.items.map((m) => m.macro)]) },
     { path: contactPath, priority: 0.7, images: src([media.contact.hero, ...media.contact.places.map((p) => p.image)]) },
     { path: aboutPath, priority: 0.7, images: src([media.about.poster, ...about.gallery.items.map((g) => g.image), ...about.honours.items.map((h) => h.image)]) },

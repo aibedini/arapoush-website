@@ -4441,6 +4441,740 @@
   }
  },
  {
+  "key": "page.applications",
+  "label": "Applications by industry",
+  "singleton": true,
+  "version": 1,
+  "schema": {
+   "kind": "group",
+   "fields": {
+    "meta": {
+     "kind": "group",
+     "fields": {
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "description": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      }
+     }
+    },
+    "hero": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "explore": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "finder": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "industriesLabel": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      }
+     }
+    },
+    "industries": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "tabsLabel": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "needsLabel": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "solutionsLabel": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "examplesLabel": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "configure": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "quote": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "readMore": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "items": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "enum",
+          "values": [
+           "cosmetics",
+           "hygiene",
+           "pharma",
+           "food",
+           "industrial"
+          ],
+          "label": "Industry id",
+          "locked": true
+         },
+         "name": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "label": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "title": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "lead": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         },
+         "body": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         },
+         "image": {
+          "kind": "image"
+         },
+         "accent": {
+          "kind": "text",
+          "localized": false,
+          "label": "Accent colour (hex)"
+         },
+         "needs": {
+          "kind": "list",
+          "of": {
+           "kind": "group",
+           "fields": {
+            "title": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            },
+            "text": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            }
+           }
+          }
+         },
+         "solutions": {
+          "kind": "list",
+          "of": {
+           "kind": "group",
+           "fields": {
+            "title": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            },
+            "text": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            }
+           }
+          }
+         },
+         "examples": {
+          "kind": "list",
+          "of": {
+           "kind": "text",
+           "localized": true,
+           "multiline": false
+          }
+         },
+         "configure": {
+          "kind": "text",
+          "localized": false,
+          "label": "Configurator link (query: shape, cap, pr)"
+         },
+         "more": {
+          "kind": "group",
+          "fields": {
+           "label": {
+            "kind": "text",
+            "localized": true,
+            "multiline": false
+           },
+           "href": {
+            "kind": "url",
+            "internal": true
+           }
+          }
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    },
+    "finder": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "industry": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "content": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "priority": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "result": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "structureLabel": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "closuresLabel": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "printLabel": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "sendLabel": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "ask": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "configure": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "disclaimer": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "contents": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "label": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "closures": {
+          "kind": "list",
+          "of": {
+           "kind": "text",
+           "localized": false,
+           "multiline": false
+          },
+          "label": "Closures to suggest (catalogue ids)"
+         },
+         "note": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "more": {
+          "kind": "group",
+          "fields": {
+           "label": {
+            "kind": "text",
+            "localized": true,
+            "multiline": false
+           },
+           "href": {
+            "kind": "url",
+            "internal": true
+           }
+          }
+         }
+        }
+       },
+       "key": "id"
+      },
+      "priorities": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "label": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "structure": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "print": {
+          "kind": "list",
+          "label": "Print methods to suggest",
+          "of": {
+           "kind": "enum",
+           "values": [
+            "flexo",
+            "offset",
+            "silk",
+            "hotstamp",
+            "combination"
+           ]
+          }
+         }
+        }
+       },
+       "key": "id"
+      },
+      "send": {
+       "kind": "list",
+       "of": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       }
+      }
+     }
+    },
+    "engineering": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "image": {
+       "kind": "image"
+      },
+      "imageAlt": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "spots": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "x": {
+          "kind": "number",
+          "min": 0,
+          "max": 100,
+          "label": "Hotspot x (%)"
+         },
+         "y": {
+          "kind": "number",
+          "min": 0,
+          "max": 100,
+          "label": "Hotspot y (%)"
+         },
+         "title": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "text": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         },
+         "link": {
+          "kind": "group",
+          "fields": {
+           "label": {
+            "kind": "text",
+            "localized": true,
+            "multiline": false
+           },
+           "href": {
+            "kind": "url",
+            "internal": true
+           }
+          }
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    },
+    "projects": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "all": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "close": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "prev": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "next": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "note": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "items": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "industry": {
+          "kind": "enum",
+          "values": [
+           "cosmetics",
+           "hygiene",
+           "pharma",
+           "food",
+           "industrial"
+          ],
+          "label": "Industry"
+         },
+         "image": {
+          "kind": "image"
+         },
+         "title": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "text": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "specs": {
+          "kind": "list",
+          "of": {
+           "kind": "group",
+           "fields": {
+            "label": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            },
+            "value": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false
+            }
+           }
+          }
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    },
+    "quality": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "steps": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "title": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "text": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         }
+        }
+       }
+      },
+      "certificates": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      }
+     }
+    },
+    "quote": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "form": {
+       "kind": "text",
+       "localized": false,
+       "multiline": false
+      },
+      "department": {
+       "kind": "text",
+       "localized": false,
+       "multiline": false
+      },
+      "sentTitle": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "numberLabel": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "followUp": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "again": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "fallback": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      }
+     }
+    },
+    "faq": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "all": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "items": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "industries": {
+          "kind": "list",
+          "label": "Industries (empty: all)",
+          "of": {
+           "kind": "enum",
+           "values": [
+            "cosmetics",
+            "hygiene",
+            "pharma",
+            "food",
+            "industrial"
+           ]
+          }
+         },
+         "q": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "a": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ {
   "key": "page.contact",
   "label": "Contact page",
   "singleton": true,

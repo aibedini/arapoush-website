@@ -17,7 +17,7 @@ const en = {
     items: [
       { label: "Home", href: "#top" },
       { label: "Products", href: "#products" },
-      { label: "Applications", href: "#applications" },
+      { label: "Applications", href: "/applications" },
       { label: "Printing", href: "/printing" },
       { label: "Media", href: "/media" },
       { label: "About", href: "/about" },
