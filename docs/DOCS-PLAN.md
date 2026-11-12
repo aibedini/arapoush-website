@@ -111,6 +111,10 @@ Your four-phase plan is right in spirit. I would change five things:
 - About 25 components across site and console, with autodocs, the a11y addon, interaction tests and
   RTL/LTR plus three viewports.
 - The Storybook build is checked in CI. The MCP addon is optional.
+- **Status: done.** Storybook 10.6 (`@storybook/nextjs-vite`), 30 stories in 7 files (site 21, console
+  9), each run as a Vitest browser test with axe as an error. The tests found and fixed three real
+  accessibility bugs: the language button name, buttons nested in a list summary, and a labelled
+  loading region without a role. Guide: `docs/storybook.md`.
 
 **D6: Architecture docs**
 - `docs/architecture/`: system overview, data flow (content → delivery → site → revalidate),

@@ -427,6 +427,10 @@ details.list-item:not([open]) .li-caret { transform: rotate(90deg); }
 .li-title { flex: 1; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .li-head { display: flex; align-items: center; gap: 8px; }
 .li-tools { flex-wrap: nowrap; gap: 0; }
+.li-wrap { position: relative; margin-block: 6px; }
+.li-wrap > details.list-item { margin-block: 0; }
+details.list-item.has-tools > summary.li-head { padding-inline-end: 124px; }
+.li-wrap > .li-tools { position: absolute; inset-block-start: 1px; inset-inline-end: 8px; block-size: 40px; display: flex; align-items: center; }
 .savebar { position: sticky; inset-block-end: 12px; z-index: 6; margin-block-start: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; background: var(--surface); border: 1px solid var(--accent); box-shadow: 0 8px 30px rgb(13 30 50 / 18%); }
 .savebar > span { flex: 1; min-inline-size: 200px; }
 details.group > summary { list-style: none; }

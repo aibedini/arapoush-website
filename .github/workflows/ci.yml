@@ -92,6 +92,35 @@ jobs:
       - name: Contract coverage report
         run: pnpm docs:coverage
 
+  # Component catalogue (D5): every story renders, its play test passes and axe finds no violation
+  # (a11y.test = "error"), then the static Storybooks are built and kept as an artifact.
+  storybook:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Story tests (site)
+        run: pnpm --filter @arapoush/web test:stories
+      - name: Story tests (console)
+        run: pnpm --filter @arapoush/opex-console test:stories
+      - name: Build the Storybooks
+        run: |
+          pnpm --filter @arapoush/web build-storybook
+          pnpm --filter @arapoush/opex-console build-storybook
+      - uses: actions/upload-artifact@v4
+        with:
+          name: storybook
+          path: |
+            apps/web/storybook-static
+            apps/opex-console/storybook-static
+
   # AraCMS reference client (PHP): unit tests, including the cross-language signing vectors.
   php-client:
     runs-on: ubuntu-24.04

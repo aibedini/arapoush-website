@@ -13,7 +13,7 @@ type Props = { locale: Locale; label: string; className?: string; path?: string;
 export default function LanguageMenu({ locale, label, className, path = "", open, onOpenChange, autoFocus }: Props) {
   return (
     <DropdownMenu.Root modal={false} dir={localeMeta[locale].dir} open={open} onOpenChange={onOpenChange}>
-      <DropdownMenu.Trigger className={`${styles.trigger} ${className ?? ""}`} aria-label={`${label}: ${localeMeta[locale].label}`} autoFocus={autoFocus}>
+      <DropdownMenu.Trigger className={`${styles.trigger} ${className ?? ""}`} aria-label={`${label}: ${localeMeta[locale].label}, ${localeMeta[locale].short}`} autoFocus={autoFocus}>
         <Globe className={styles.icon} />
         <span className={styles.short}>{localeMeta[locale].short}</span>
         <ChevronDown className={`${styles.icon} ${styles.chev}`} />

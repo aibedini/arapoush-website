@@ -175,30 +175,33 @@ function ListEditor({ f, value, orig, onChange, name, path, ctx, disabled }: Pro
     <div>
       {items.map((it, i) => {
         const o = f.key ? origItems.find((x) => obj(x)[f.key!] === obj(it)[f.key!]) : origItems[i];
+        // The move/delete buttons sit beside the summary, not inside it: a <summary> is itself a control.
         return (
-          <details key={f.key ? keyOf(it, i) : i} className={`list-item${same(it, o) ? "" : " changed"}`} open={items.length <= 2 || !o}>
-            <summary className="li-head">
-              <CaretDown size={14} className="li-caret" aria-hidden />
-              <span className="li-title small">
-                <b>{num(i + 1)}</b> {titleOf(it) || <span className="muted">بدون عنوان</span>}
-              </span>
-              {!same(it, o) && <span className="badge warn">تغییر کرده</span>}
-              {!fixed && (
-                <span className="row li-tools" onClick={(e) => e.preventDefault()}>
-                  <button type="button" className="btn sm ghost icon-btn" disabled={i === 0} onClick={() => move(i, -1)} aria-label={`بالا بردن مورد ${i + 1}`}>
-                    <ArrowUp size={15} aria-hidden />
-                  </button>
-                  <button type="button" className="btn sm ghost icon-btn" disabled={i === items.length - 1} onClick={() => move(i, 1)} aria-label={`پایین بردن مورد ${i + 1}`}>
-                    <ArrowDown size={15} aria-hidden />
-                  </button>
-                  <button type="button" className="btn sm ghost icon-btn danger" disabled={f.min !== undefined && items.length <= f.min} onClick={() => confirm(`مورد ${i + 1} حذف شود؟`) && onChange(items.filter((_, j) => j !== i))} aria-label={`حذف مورد ${i + 1}`}>
-                    <Trash size={15} aria-hidden />
-                  </button>
+          <div key={f.key ? keyOf(it, i) : i} className="li-wrap">
+            <details className={`list-item${same(it, o) ? "" : " changed"}${fixed ? "" : " has-tools"}`} open={items.length <= 2 || !o}>
+              <summary className="li-head">
+                <CaretDown size={14} className="li-caret" aria-hidden />
+                <span className="li-title small">
+                  <b>{num(i + 1)}</b> {titleOf(it) || <span className="muted">بدون عنوان</span>}
                 </span>
-              )}
-            </summary>
-            <FieldEditor field={f.of} value={it} orig={o} onChange={(v) => set(i, v)} name={`${name} ${i + 1}`} path={`${path}[${i}]`} ctx={ctx} inList />
-          </details>
+                {!same(it, o) && <span className="badge warn">تغییر کرده</span>}
+              </summary>
+              <FieldEditor field={f.of} value={it} orig={o} onChange={(v) => set(i, v)} name={`${name} ${i + 1}`} path={`${path}[${i}]`} ctx={ctx} inList />
+            </details>
+            {!fixed && (
+              <span className="row li-tools">
+                <button type="button" className="btn sm ghost icon-btn" disabled={i === 0} onClick={() => move(i, -1)} aria-label={`بالا بردن مورد ${i + 1}`}>
+                  <ArrowUp size={15} aria-hidden />
+                </button>
+                <button type="button" className="btn sm ghost icon-btn" disabled={i === items.length - 1} onClick={() => move(i, 1)} aria-label={`پایین بردن مورد ${i + 1}`}>
+                  <ArrowDown size={15} aria-hidden />
+                </button>
+                <button type="button" className="btn sm ghost icon-btn danger" disabled={f.min !== undefined && items.length <= f.min} onClick={() => confirm(`مورد ${i + 1} حذف شود؟`) && onChange(items.filter((_, j) => j !== i))} aria-label={`حذف مورد ${i + 1}`}>
+                  <Trash size={15} aria-hidden />
+                </button>
+              </span>
+            )}
+          </div>
         );
       })}
       {!fixed && (f.max === undefined || items.length < f.max) && (

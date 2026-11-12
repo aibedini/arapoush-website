@@ -58,6 +58,12 @@ Checks that the generated docs are current, that links and env docs resolve, and
 pnpm docs:breaking
 ```
 
+```bash
+pnpm docs:stories
+```
+
+Runs every story in both Storybooks as a browser test (play steps plus axe). Needed whenever a shared component or its story changed; see `docs/storybook.md`.
+
 Fails on unapproved breaking changes.
 
 ```bash

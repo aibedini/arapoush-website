@@ -24,7 +24,7 @@ export default function LanguageSwitch({ locale, label, className, path = "" }: 
     <button
       type="button"
       className={`${styles.trigger} ${className ?? ""}`}
-      aria-label={`${label}: ${localeMeta[locale].label}`}
+      aria-label={`${label}: ${localeMeta[locale].label}, ${localeMeta[locale].short}`}
       aria-haspopup="menu"
       aria-expanded={false}
       onPointerEnter={upgrade("hover")}

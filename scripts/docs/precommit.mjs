@@ -8,7 +8,7 @@ import { execFileSync } from "node:child_process";
 const staged = execFileSync("git", ["diff", "--cached", "--name-only", "--diff-filter=ACMR"], { encoding: "utf8" }).split("\n").filter(Boolean);
 const run = (cmd, args) => {
   try {
-    execFileSync(cmd, args, { stdio: "inherit", shell: process.platform === "win32" });
+    execFileSync(cmd, args, { stdio: "inherit" });
     return true;
   } catch {
     return false;

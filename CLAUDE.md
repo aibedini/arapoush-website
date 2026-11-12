@@ -51,6 +51,8 @@ via `lib/sections.tsx`; copy lives in `lib/i18n/dictionaries/`. The OPEX content
   - run `pnpm docs:check` and `pnpm docs:breaking`;
   - run the API tests (contract tests);
   - report the real results.
+- Shared components in `apps/*/components` have stories (`docs/storybook.md`). A new or changed
+  component updates its story, and `pnpm docs:stories` passes (axe violations fail it).
 - Conventional Commits; `pnpm changelog` regenerates `docs/changelog.md`. Contributing and branch
   protection are in `CONTRIBUTING.md`.
 

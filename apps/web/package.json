@@ -9,7 +9,10 @@
     "start:standalone": "node .next/standalone/apps/web/server.js",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "test": "node --no-warnings --test \"lib/**/*.test.ts\""
+    "test": "node --no-warnings --test \"lib/**/*.test.ts\"",
+    "storybook": "storybook dev -p 6006 --no-open",
+    "build-storybook": "storybook build -o storybook-static --quiet",
+    "test:stories": "vitest run --config vitest.storybook.config.mts"
   },
   "dependencies": {
     "@animate-ui/react": "2.4.1",
@@ -24,12 +27,22 @@
   },
   "devDependencies": {
     "@arapoush/config": "workspace:*",
+    "@storybook/addon-a11y": "10.6.5",
+    "@storybook/addon-docs": "10.6.5",
+    "@storybook/addon-vitest": "10.6.5",
+    "@storybook/nextjs-vite": "10.6.5",
     "@types/node": "22.15.29",
     "@types/react": "19.1.6",
     "@types/react-dom": "19.1.5",
     "@types/three": "^0.180.0",
+    "@vitest/browser": "4.1.12",
+    "@vitest/browser-playwright": "4.1.12",
     "eslint": "9.39.5",
-    "typescript": "5.8.3"
+    "playwright": "1.64.1",
+    "storybook": "10.6.5",
+    "typescript": "5.8.3",
+    "vite": "8.3.5",
+    "vitest": "4.1.12"
   },
   "browserslist": [
     "chrome >= 111",

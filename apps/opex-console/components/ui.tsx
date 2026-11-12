@@ -65,7 +65,7 @@ export function ErrorNote({ error }: { error: ApiError | null }) {
 
 export function Loading({ rows = 4 }: { rows?: number }) {
   return (
-    <div className="stack" aria-busy="true" aria-label="در حال بارگذاری">
+    <div className="stack" role="status" aria-busy="true" aria-label="در حال بارگذاری">
       {Array.from({ length: rows }, (_, i) => (
         <div key={i} className="skeleton" style={{ blockSize: 22, inlineSize: `${90 - i * 12}%` }} />
       ))}

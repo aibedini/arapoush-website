@@ -28,3 +28,7 @@ apps/opex-api/data/
 
 # graphify knowledge graph (rebuilt locally by the post-commit hook)
 graphify-out/
+
+# Storybook builds
+storybook-static/
+*.storybook.log
