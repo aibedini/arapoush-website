@@ -72,7 +72,8 @@ export type ClosureDef = {
 export type LayerDef = { id: string; color: string; name: Localized; text: Localized };
 /** A wall build-up, layers listed outside → inside. `shapes` limits it to some tube shapes. */
 export type StructureDef = { id: string; name: Localized; layers: LayerDef[]; shapes?: string[]; diameters?: number[]; closures?: string[] };
-export type SampleDef = { id: string; image: string; shape: string; closure?: string; d?: number; title: Localized };
+/** Tags a sample is ranked by: shape (required), closure, diameter, print method, cap colour family. */
+export type SampleDef = { id: string; image: string; shape: string; closure?: string; d?: number; print?: string; colour?: string; title: Localized };
 export type ProductImage = { ltr: string; rtl: string; width: number; height: number; alt: Localized };
 
 export type TubeProduct = {
@@ -232,16 +233,22 @@ export function withShape(cat: TubeProduct, c: TubeConfig, shape: string): TubeC
 }
 
 /**
- * Product samples ordered by how well they match the selection:
- * shape first, then closure, then diameter. Samples of other shapes are dropped.
+ * Product samples ordered by how well they match the selection: shape first (others are dropped),
+ * then closure, print method, diameter and cap colour. A tag that differs counts against a sample;
+ * an untagged one is neutral.
  */
 export function rankSamples(cat: TubeProduct, c: TubeConfig) {
+  const tag = (have: unknown, want: unknown, hit: number, miss: number) => (have == null || have === "" ? 0 : have === want ? hit : -miss);
   return cat.samples
     .filter((s) => s.shape === c.shape)
     .map((s) => {
       const closure = s.closure === c.closure;
       const diameter = s.d === c.d;
-      const score = (closure ? 4 : s.closure ? -1 : 0) + (diameter ? 2 : s.d != null ? -Math.min(2, Math.abs(s.d - c.d) / 10) : 0);
+      const score =
+        (closure ? 4 : s.closure ? -1 : 0) +
+        (diameter ? 2 : s.d != null ? -Math.min(2, Math.abs(s.d - c.d) / 10) : 0) +
+        tag(s.print, c.print, 3, 1) +
+        tag(s.colour, c.colour, 1, 0.5);
       // "exact" needs the sample to actually show the chosen closure; untagged ones only share the shape.
       return { sample: s, exact: closure && (s.d == null || diameter), score };
     })

@@ -13,9 +13,10 @@ type Art = { image: ProductImage; locale: string; dir: "ltr" | "rtl" };
 
 const featureIcons = [Layers, ShieldCheck, Leaf, Recycle];
 
-export function ProductHero({ t, video, image, locale, dir }: T & Art & { video: string | null }) {
+/** `media` (default): full-bleed photo; `compact`: a shorter hero for pages that lead with the configurator. */
+export function ProductHero({ t, video, image, locale, dir, style = "media" }: T & Art & { video: string | null; style?: string }) {
   return (
-    <section id="top" className={styles.hero} aria-labelledby="product-title">
+    <section id="top" className={`${styles.hero} ${style === "compact" ? styles.heroCompact : ""}`} aria-labelledby="product-title">
       <div className={styles.heroArt}>
         <div data-parallax="40">
           <Image src={image[dir]} alt={loc(image.alt, locale)} width={image.width} height={image.height} priority sizes="(max-width: 767px) 80vw, (max-width: 1099px) 70vw, 100vw" className={styles.heroImg} data-no-mirror />
@@ -68,10 +69,11 @@ export function ProductHero({ t, video, image, locale, dir }: T & Art & { video:
   );
 }
 
-export function LayerStructure({ t, structure, image, locale, dir }: T & Art & { structure: StructureDef | undefined }) {
+/** `split` (default): copy beside the cut-away; `stacked`: copy above it. */
+export function LayerStructure({ t, structure, image, locale, dir, style = "split" }: T & Art & { structure: StructureDef | undefined; style?: string }) {
   const s = t.layers;
   return (
-    <section className={`${styles.panel} ${styles.layers}`} aria-labelledby="layers-title" data-reveal>
+    <section className={`${styles.panel} ${styles.layers} ${style === "stacked" ? styles.layersStacked : ""}`} aria-labelledby="layers-title" data-reveal>
       <div className={styles.layersCopy}>
         <h2 id="layers-title" className={styles.panelTitle}>
           {s.title}

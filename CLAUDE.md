@@ -25,8 +25,11 @@ via `lib/sections.tsx`; copy lives in `lib/i18n/dictionaries/`. The OPEX content
   the `opex_edit` cookie). Normal visitors get neither.
 - A new section or page wraps its content in `EditScope` with the entry it reads, so the editor can
   match its text and images.
-- Page-builder blocks live in `page.home.layout` (`sections[i].props`). Their kinds and fields are in
-  `packages/schema/src/blocks.ts`, and they render in `components/sections/blocks/Block.tsx`.
+- Page-builder blocks live in a page's section list: `page.home.layout` → `sections`, or
+  `product.tube.page` → `layout.sections`, each block as `sections[i].props`. Pages with sections
+  are registered in `PAGE_LAYOUTS` (`packages/schema/src/blocks.ts`), with their built-in sections,
+  entries and style variants. Block kinds and fields are in the same file, and blocks render in
+  `components/sections/blocks/Block.tsx`.
 - A new block kind needs all three: the schema in blocks.ts, the render in Block.tsx and the console
   label in the visual editor. Then regenerate the schema.
 
@@ -79,6 +82,9 @@ Before calling any change done:
    - Below-the-fold sections should be server components where they don't need state.
    - Link/button label rolls use `components/ui/RollText` (CSS), not a JS text component per link.
    - Per-element effects are wired page-wide once (`Reveals`, `Drift`) in idle slices, not per component.
+   - CSS is inlined with strict chunking (`next.config.ts`), so each page carries only its own styles.
+     Loose chunking put other pages' CSS into every page (about 100 KB of HTML).
+   - Form code is code-split (`components/forms/LazyOpexForm`). Use it wherever a form may appear.
    - Sections that clip their overflow use `content-visibility: auto`; `Reveals` re-measures
      ScrollTrigger when the page height changes. Don't add it to sections whose art overflows.
 5. Accessibility: every control has a visible-text-matching accessible name, ≥ 24px targets, AA contrast.

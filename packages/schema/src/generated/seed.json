@@ -1843,6 +1843,44 @@
      "tr": "İç katmanlarını gösteren çok katmanlı tüp kesiti"
     }
    }
+  },
+  "layout": {
+   "sections": [
+    {
+     "id": "hero",
+     "type": "hero",
+     "enabled": true,
+     "style": "media"
+    },
+    {
+     "id": "configurator",
+     "type": "configurator",
+     "enabled": true,
+     "style": "viewerStart"
+    },
+    {
+     "id": "samples",
+     "type": "samples",
+     "enabled": true,
+     "style": "grid"
+    },
+    {
+     "id": "quote",
+     "type": "quote",
+     "enabled": true
+    },
+    {
+     "id": "structure",
+     "type": "structure",
+     "enabled": true,
+     "style": "split"
+    },
+    {
+     "id": "closing",
+     "type": "closing",
+     "enabled": true
+    }
+   ]
   }
  },
  "product.tube.catalogue": {

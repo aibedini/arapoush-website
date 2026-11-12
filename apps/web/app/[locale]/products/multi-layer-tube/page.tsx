@@ -7,7 +7,12 @@ import ContactCTA from "@/components/sections/ContactCTA";
 import Reveals from "@/components/motion/Reveals";
 import TouchFeedback from "@/components/motion/TouchFeedback";
 import Drift from "@/components/motion/Drift";
-import Configurator from "@/components/configurator/Configurator";
+import Configurator, { type ConfiguratorStyle } from "@/components/configurator/Configurator";
+import TubeState from "@/components/configurator/TubeState";
+import { QuoteSection, SamplesSection } from "@/components/configurator/TubeSections";
+import Block from "@/components/sections/blocks/Block";
+import { isBlockKind, TUBE_SECTIONS, type BlockKind } from "@arapoush/schema";
+import { getTubeLayout } from "@/lib/tubeLayout";
 import { LayerStructure, ProductHero } from "@/components/product/ProductSections";
 import styles from "@/components/product/Product.module.css";
 import { getDictionary, isLocale, localeMeta, locales } from "@/lib/i18n";
@@ -56,6 +61,31 @@ export default async function MultiLayerTubePage({ params }: { params: Params })
   const product = getTubeProduct();
   const dir = localeMeta[locale].dir;
 
+  const layout = getTubeLayout();
+  const closing = layout.find((x) => x.type === "closing");
+
+  // Each section in the operator's order; blocks carry their own props (visual editor base path).
+  const render = (sec: (typeof layout)[number]) => {
+    switch (sec.type) {
+      case "hero":
+        return <ProductHero t={t.productTube} video={null} image={product.images.hero} locale={locale} dir={dir} style={sec.style} />;
+      case "configurator":
+        return <Configurator style={sec.style as ConfiguratorStyle} />;
+      case "samples":
+        return <SamplesSection style={sec.style as "grid" | "rail"} />;
+      case "quote":
+        return <QuoteSection email={t.site.contact.email} direct={opexEnabled()} />;
+      case "structure":
+        return (
+          <div className={styles.lower}>
+            <LayerStructure t={t.productTube} structure={product.structures[0]} image={product.images.layers} locale={locale} dir={dir} style={sec.style} />
+          </div>
+        );
+      default:
+        return isBlockKind(sec.type) ? <Block kind={sec.type as BlockKind} id={sec.id} props={sec.props ?? {}} t={t} locale={locale} /> : null;
+    }
+  };
+
   return (
     <>
       <script
@@ -65,18 +95,25 @@ export default async function MultiLayerTubePage({ params }: { params: Params })
       />
       <Header t={t} locale={locale} path={PATH} />
       <EditScope on={edit} entry="product.tube.page" label="صفحهٔ تیوب">
-      <main id="main" className={styles.page}>
+        <main id="main" className={styles.page}>
           <div className={styles.wrap}>
-            <ProductHero t={t.productTube} video={null} image={product.images.hero} locale={locale} dir={dir} />
-            <Configurator t={t.productTube} locale={locale} product={product} contact={t.site.contact} direct={opexEnabled()} />
-            <div className={styles.lower}>
-              <LayerStructure t={t.productTube} structure={product.structures[0]} image={product.images.layers} locale={locale} dir={dir} />
-            </div>
+            <TubeState product={product} c={t.productTube.configurator} locale={locale}>
+              {layout.map((sec, i) => {
+                if (!sec.enabled || sec.type === "closing") return null;
+                const block = isBlockKind(sec.type);
+                const def = block ? null : TUBE_SECTIONS[sec.type as keyof typeof TUBE_SECTIONS];
+                return (
+                  <EditScope key={sec.id} on={edit} section={sec.id} label={def?.label ?? sec.type} entry={block ? "product.tube.page" : def!.entry} base={block ? `/layout/sections[${i}]/props` : undefined}>
+                    {render(sec)}
+                  </EditScope>
+                );
+              })}
+            </TubeState>
           </div>
         </main>
       </EditScope>
-      {/* Same closing CTA and footer as every page. */}
-      <ContactCTA t={t} locale={locale} />
+      {/* Same closing call to action and footer as every page; hidden in the layout, only the footer stays. */}
+      <ContactCTA t={t} locale={locale} footerOnly={!closing?.enabled} />
       <Reveals />
       <TouchFeedback />
       <Drift />

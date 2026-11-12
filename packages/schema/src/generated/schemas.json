@@ -1653,6 +1653,167 @@
        }
       }
      }
+    },
+    "layout": {
+     "kind": "group",
+     "fields": {
+      "sections": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "type": {
+          "kind": "enum",
+          "values": [
+           "hero",
+           "configurator",
+           "samples",
+           "quote",
+           "structure",
+           "closing",
+           "richText",
+           "imageText",
+           "cta",
+           "faq",
+           "form",
+           "spacer"
+          ],
+          "label": "Section type"
+         },
+         "enabled": {
+          "kind": "boolean"
+         },
+         "style": {
+          "kind": "enum",
+          "values": [
+           "media",
+           "compact",
+           "viewerStart",
+           "viewerEnd",
+           "grid",
+           "rail",
+           "split",
+           "stacked"
+          ],
+          "label": "Style"
+         },
+         "props": {
+          "kind": "group",
+          "label": "Block content",
+          "fields": {
+           "eyebrow": {
+            "kind": "text",
+            "localized": true,
+            "multiline": false,
+            "max": 80,
+            "label": "Eyebrow"
+           },
+           "title": {
+            "kind": "text",
+            "localized": true,
+            "multiline": false,
+            "max": 200,
+            "label": "Title"
+           },
+           "body": {
+            "kind": "text",
+            "localized": true,
+            "multiline": true,
+            "max": 4000,
+            "label": "Text"
+           },
+           "image": {
+            "kind": "image",
+            "label": "Image"
+           },
+           "imageSide": {
+            "kind": "enum",
+            "values": [
+             "start",
+             "end"
+            ],
+            "label": "Image side"
+           },
+           "tone": {
+            "kind": "enum",
+            "values": [
+             "light",
+             "dark"
+            ],
+            "label": "Background"
+           },
+           "button": {
+            "kind": "group",
+            "label": "Button",
+            "fields": {
+             "label": {
+              "kind": "text",
+              "localized": true,
+              "multiline": false,
+              "max": 60,
+              "label": "Button label"
+             },
+             "href": {
+              "kind": "url",
+              "label": "Button link"
+             }
+            }
+           },
+           "items": {
+            "kind": "list",
+            "label": "Questions",
+            "max": 30,
+            "of": {
+             "kind": "group",
+             "fields": {
+              "q": {
+               "kind": "text",
+               "localized": true,
+               "multiline": false,
+               "max": 300,
+               "label": "Question"
+              },
+              "a": {
+               "kind": "text",
+               "localized": true,
+               "multiline": true,
+               "max": 3000,
+               "label": "Answer"
+              }
+             }
+            }
+           },
+           "form": {
+            "kind": "text",
+            "localized": false,
+            "max": 40,
+            "label": "Form address (slug)"
+           },
+           "size": {
+            "kind": "enum",
+            "values": [
+             "s",
+             "m",
+             "l"
+            ],
+            "label": "Space"
+           }
+          }
+         }
+        },
+        "operatorOnly": true
+       },
+       "key": "id",
+       "label": "Sections",
+       "operatorOnly": true
+      }
+     }
     }
    }
   }

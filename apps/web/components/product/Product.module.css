@@ -448,3 +448,11 @@ a.videoLink:hover .playRing {
     transition: none;
   }
 }
+
+/* ── Section styles (OPEX, T4) ── */
+.heroCompact {
+  min-height: max(440px, calc(640 * var(--u)));
+}
+.layersStacked {
+  grid-template-columns: minmax(0, 1fr);
+}

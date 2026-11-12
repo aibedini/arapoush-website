@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowClockwise, ArrowCounterClockwise, ArrowDown, ArrowUp, Copy, DesktopTower, DeviceMobile, DeviceTablet, DotsSixVertical, Eye, EyeSlash, Plus, Question, Rows, TextAa, Image as ImageIcon, Megaphone, ListChecks, ArrowsVertical, Trash, UploadSimple, PaintBrush } from "@phosphor-icons/react";
-import { BLOCK_FIELDS, BLOCK_KINDS, BLOCK_PROPS, getAt, isBlockKind, newBlock, SECTION_ENTRY, setAt, type BlockKind, type GroupField, type LayoutSection } from "@arapoush/schema";
+import { BLOCK_FIELDS, BLOCK_KINDS, BLOCK_PROPS, getAt, isBlockKind, newBlock, PAGE_LAYOUTS, SECTION_ENTRY, setAt, type BlockKind, type GroupField, type LayoutSection } from "@arapoush/schema";
 import { api, ApiError } from "@/lib/api";
 import { canWrite, useMe } from "@/lib/hooks";
 import { num } from "@/lib/fa";
@@ -11,16 +11,17 @@ import { MediaLibrary, assetUrl, type Asset } from "@/components/MediaLibrary";
 import { Dialog, ErrorNote, Loading } from "@/components/ui";
 
 type Doc = { schema: GroupField; data: Record<string, unknown>; rev: string | null; published: string | null; draft: string | null };
-type PageDef = { key: string; label: string; type: string; entries: string[] };
+/** `layout`: pages whose sections can be ordered, hidden, restyled and mixed with blocks (PAGE_LAYOUTS). */
+type PageDef = { key: string; label: string; type: string; entries: string[]; layout?: keyof typeof PAGE_LAYOUTS };
 
 const PAGES: PageDef[] = [
-  { key: "home", label: "صفحهٔ اصلی", type: "page.home.layout", entries: ["page.home.layout", ...Object.values(SECTION_ENTRY), "global.site"] },
-  { key: "tube", label: "تیوب چندلایه", type: "product.tube.page", entries: ["product.tube.page", "global.site"] },
+  { key: "home", label: "صفحهٔ اصلی", type: "page.home.layout", entries: ["page.home.layout", ...Object.values(SECTION_ENTRY), "global.site"], layout: "home" },
+  { key: "tube", label: "تیوب چندلایه", type: "product.tube.page", entries: ["product.tube.page", "product.tube.catalogue", "global.site"], layout: "tube" },
   { key: "eff", label: "تیوب قرص جوشان", type: "product.effervescent.page", entries: ["product.effervescent.page", "global.site"] },
   { key: "printing", label: "چاپ", type: "page.printing", entries: ["page.printing", "global.site"] },
   { key: "about", label: "درباره آراپوش", type: "page.about", entries: ["page.about", "global.site"] },
 ];
-const SECTION_LABEL: Record<string, string> = { hero: "اسلایدر بالای صفحه", products: "محصولات", applications: "کاربردها", insights: "مقاله‌ها", partners: "مشتریان", certifications: "گواهینامه‌ها" };
+const STYLE_LABEL: Record<string, string> = { media: "تصویر تمام‌عرض", compact: "کوتاه", viewerStart: "نمایشگر اول", viewerEnd: "گزینه‌ها اول", grid: "شبکه", rail: "ردیف لغزان", split: "کنار هم", stacked: "زیر هم" };
 const BLOCKS: Record<BlockKind, { label: string; text: string; icon: typeof Rows }> = {
   richText: { label: "متن", text: "عنوان و چند پاراگراف", icon: TextAa },
   imageText: { label: "تصویر و متن", text: "تصویر کنار متن، با دکمهٔ دلخواه", icon: ImageIcon },
@@ -218,9 +219,11 @@ export default function Visual() {
     return () => window.removeEventListener("keydown", h);
   });
 
-  const layout = docs?.["page.home.layout"];
-  const sections = (layout?.data.sections as LayoutSection[] | undefined) ?? [];
-  const setSections = (next: LayoutSection[]) => layout && change("page.home.layout", { ...layout.data, sections: next }, "whole");
+  const L = page.layout ? PAGE_LAYOUTS[page.layout] : null;
+  const layout = L ? docs?.[L.entry] : undefined;
+  const sections = ((L && layout ? getAt(layout.data, L.path) : undefined) as LayoutSection[] | undefined) ?? [];
+  const setSections = (next: LayoutSection[]) => L && layout && change(L.entry, setAt(layout.data, L.path, next), "whole");
+  const sectionDef = (type: string) => L?.sections[type];
   const move = (i: number, j: number) => {
     if (j < 0 || j >= sections.length) return;
     const next = [...sections];
@@ -234,7 +237,7 @@ export default function Visual() {
     const next = [...sections];
     next.splice(at, 0, newBlock(kind, `${kind}-${n}`));
     setSections(next);
-    setSelected({ section: `${kind}-${n}`, entry: "page.home.layout" });
+    setSelected({ section: `${kind}-${n}`, entry: L!.entry });
     setAdding(null);
   };
   const [drag, setDrag] = useState<number | null>(null);
@@ -274,10 +277,11 @@ export default function Visual() {
       const props = (selSection.props ?? {}) as Record<string, unknown>;
       return { title: BLOCKS[kind].label, schema, value: props, onChange: (v: Record<string, unknown>) => setSections(sections.map((s, i) => (i === sel ? { ...s, props: v } : s))) };
     }
-    const key = selSection ? SECTION_ENTRY[selSection.type as keyof typeof SECTION_ENTRY] : selected.entry;
+    const def = selSection ? sectionDef(selSection.type) : undefined;
+    const key = def ? def.entry : selected.entry;
     const d = key ? docs[key] : undefined;
     if (!d || !key) return null;
-    return { title: selSection ? SECTION_LABEL[selSection.type] ?? key : key === "global.site" ? "سربرگ و پانویس" : "محتوای صفحه", schema: d.schema, value: d.data, onChange: (v: Record<string, unknown>) => change(key, v, "whole") };
+    return { title: def?.label ?? (key === "global.site" ? "سربرگ و پانویس" : "محتوای صفحه"), schema: d.schema, value: d.data, onChange: (v: Record<string, unknown>) => change(key, v, "whole") };
   })();
   // Inspector edits save after a pause (typing in a field is many changes).
   const [draftInspector, setDraftInspector] = useState<Record<string, unknown> | null>(null);
@@ -344,7 +348,7 @@ export default function Visual() {
 
       <div className="vis-body">
         <aside className="vis-panel" aria-label="بخش‌های صفحه">
-          {page.key === "home" ? (
+          {L ? (
             <>
               <h2 className="small muted">بخش‌ها</h2>
               <ol className="vis-sections">
@@ -372,12 +376,12 @@ export default function Visual() {
                         type="button"
                         className="vs-main"
                         onClick={() => {
-                          setSelected({ section: s.id, entry: block ? "page.home.layout" : SECTION_ENTRY[s.type as keyof typeof SECTION_ENTRY] });
+                          setSelected({ section: s.id, entry: block ? L.entry : (sectionDef(s.type)?.entry ?? L.entry) });
                           send({ type: "select", section: s.id });
                         }}
                       >
                         <Icon size={16} aria-hidden />
-                        <span>{block ? (s.props?.title?.fa || BLOCKS[s.type as BlockKind].label) : SECTION_LABEL[s.type]}</span>
+                        <span>{block ? (s.props?.title?.fa || BLOCKS[s.type as BlockKind].label) : (sectionDef(s.type)?.label ?? s.type)}</span>
                       </button>
                       {edit && (
                         <span className="vs-tools">
@@ -457,6 +461,24 @@ export default function Visual() {
           ) : (
             <>
               <h2>{inspector.title}</h2>
+              {selSection && (sectionDef(selSection.type)?.styles.length ?? 0) > 0 && (
+                <label className="stack" style={{ gap: 4, marginBlockEnd: 12 }}>
+                  <span className="small" style={{ fontWeight: 600 }}>
+                    سبک نمایش این بخش
+                  </span>
+                  <select
+                    value={selSection.style ?? sectionDef(selSection.type)!.styles[0]}
+                    disabled={!edit}
+                    onChange={(e) => setSections(sections.map((x) => (x.id === selSection.id ? { ...x, style: e.target.value } : x)))}
+                  >
+                    {sectionDef(selSection.type)!.styles.map((st) => (
+                      <option key={st} value={st}>
+                        {STYLE_LABEL[st] ?? st}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
               {Object.entries(inspector.schema.fields).map(([k, f]) => {
                 const value = (draftInspector ?? inspector.value)[k];
                 return (

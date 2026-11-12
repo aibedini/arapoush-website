@@ -1,17 +1,14 @@
 "use client";
 
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { getImageProps } from "next/image";
 import { SlidingNumber } from "@animate-ui/react/primitives/texts/sliding-number";
-import type { Dictionary } from "@/lib/i18n";
 import {
-  DEFAULT_CONFIG,
   capacity,
   closureOf,
   closureStatus,
   closuresForShape,
   diametersFor,
-  fromSearch,
   lengthsFor,
   loc,
   normalize,
@@ -28,44 +25,27 @@ import {
   toSearch,
   withDiameter,
   withShape,
-  type TubeConfig,
-  type TubeProduct,
 } from "@/lib/configurator/model";
-import { contact as fileContact, type Contact } from "@/lib/site";
 import ChipGroup from "./ChipGroup";
 import Viewer from "./Viewer";
-import Samples from "./Samples";
-import QuoteForm from "./QuoteForm";
+import { useTube } from "./TubeState";
 import chip from "@/components/product/Product.module.css";
 import styles from "./Configurator.module.css";
 
 const fill = (s: string, vars: Record<string, string | number>) => s.replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? ""));
 
-type Props = { t: Dictionary["productTube"]; locale: string; product: TubeProduct; contact?: Contact; direct?: boolean };
+/** `viewerStart`: the 3D viewer leads (default); `viewerEnd`: the options lead, the viewer follows. */
+export type ConfiguratorStyle = "viewerStart" | "viewerEnd";
+type Props = { style?: ConfiguratorStyle };
 
-/** Every option below comes from the product content (admin panel); nothing here lists shapes, closures or sizes. */
-export default function Configurator({ t, locale, product: cat, contact = fileContact, direct }: Props) {
-  const c = t.configurator;
+/**
+ * Every option below comes from the product content (admin panel); nothing here lists shapes,
+ * closures or sizes. The selection lives in <TubeState>, shared with samples and the quote.
+ */
+export default function Configurator({ style = "viewerStart" }: Props) {
   const id = useId();
-  const [cfg, setCfg] = useState<TubeConfig>(() => normalize(cat, DEFAULT_CONFIG));
+  const { cat, cfg, setCfg, spec, c, locale } = useTube();
   const [shared, setShared] = useState(false);
-  const urlReady = useRef(false);
-
-  // A shared link restores its configuration; anything invalid is normalised before it is shown.
-  useEffect(() => {
-    if (new URLSearchParams(location.search).has("shape")) setCfg(fromSearch(cat, location.search));
-  }, [cat]);
-  useEffect(() => {
-    // First run is the default config: leave a clean URL until something is chosen.
-    if (!urlReady.current) {
-      urlReady.current = true;
-      return;
-    }
-    const url = new URL(location.href);
-    if (url.search === `?${toSearch(cfg)}`) return;
-    url.search = toSearch(cfg);
-    history.replaceState(history.state, "", url);
-  }, [cfg]);
 
   const shape = shapeOf(cat, cfg.shape)!;
   const closure = closureOf(cat, cfg.closure)!;
@@ -85,15 +65,6 @@ export default function Configurator({ t, locale, product: cat, contact = fileCo
   const prints = printsFor(cat, cfg.shape, cfg.d);
   const print = printOf(cat, cfg.print);
   const printName = print ? loc(print.name, locale) : c.noPrint;
-  const spec = [
-    `${shapeName} · ${size}`,
-    closureName,
-    ...(capColourName ? [`${c.specColour}: ${capColourName}`] : []),
-    `${c.specBody}: ${bodyName}`,
-    `${c.specPrint}: ${printName}`,
-    ...(structureName ? [structureName] : []),
-    cap ? `${cap.ml} ml (${cap.status === "chart" ? c.statusChart : c.statusEstimate})` : c.noVolume,
-  ];
 
   const models = sceneModels(cat, cfg);
   const shapeKey = JSON.stringify([models.closureShape ?? null, models.closureModel ?? null]);
@@ -137,7 +108,7 @@ export default function Configurator({ t, locale, product: cat, contact = fileCo
           <p className={styles.lead}>{c.lead}</p>
         </header>
 
-        <div className={styles.grid}>
+        <div className={`${styles.grid} ${style === "viewerEnd" ? styles.viewerEnd : ""}`}>
           <Viewer
             cfg={sceneCfg}
             label={fill(c.viewerLabel, { shape: shapeName, d: cfg.d, l: cfg.l, closure: closureName })}
@@ -376,9 +347,6 @@ export default function Configurator({ t, locale, product: cat, contact = fileCo
         </div>
       </section>
 
-      <Samples t={c} locale={locale} product={cat} cfg={cfg} onApply={(patch) => setCfg(normalize(cat, { ...cfg, ...patch }))} />
-
-      <QuoteForm t={c} spec={spec} subjectSpec={`${shapeName} ${size}, ${closureName}`} search={toSearch(cfg)} email={contact.email} locale={locale} direct={direct} />
     </>
   );
 }

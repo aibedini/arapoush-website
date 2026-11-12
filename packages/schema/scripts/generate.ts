@@ -14,7 +14,7 @@ import { mergeLocales } from "../src/localize.ts";
 import { applyOverrides } from "../src/overrides.ts";
 import type { ContentType, Field, GroupField, ListField, MapField } from "../src/fields.ts";
 import { COLOUR_IDS } from "../src/tubeChart.ts";
-import { BLOCK_KINDS, BLOCK_PROPS, SECTION_TYPES } from "../src/blocks.ts";
+import { BLOCK_KINDS, BLOCK_PROPS, SECTION_STYLES, SECTION_TYPES, TUBE_SECTIONS } from "../src/blocks.ts";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const web = path.resolve(here, "../../../apps/web");
@@ -145,7 +145,7 @@ const defs: Def[] = [
   {
     key: "product.tube.page",
     label: "Product: multi-layer tube (page copy)",
-    data: { ...dict("productTube"), images: json("content/products/multi-layer-tube.json").images },
+    data: { ...dict("productTube"), images: json("content/products/multi-layer-tube.json").images, layout: json("content/products/tube-layout.json") },
   },
   {
     key: "product.tube.catalogue",
@@ -254,8 +254,30 @@ function tubeCatalogue(g: GroupField): GroupField {
   return g;
 }
 
+/** The tube page's section list (T4): built-ins with a style, or page-builder blocks with props. */
+function tubePage(g: GroupField): GroupField {
+  const layout = g.fields.layout as GroupField;
+  const sections = layout.fields.sections as ListField;
+  const item = sections.of as GroupField;
+  layout.fields.sections = {
+    ...sections,
+    label: "Sections",
+    of: {
+      ...item,
+      fields: {
+        ...item.fields,
+        type: { kind: "enum", values: [...Object.keys(TUBE_SECTIONS), ...BLOCK_KINDS], label: "Section type" },
+        style: { kind: "enum", values: SECTION_STYLES, label: "Style" },
+        props: BLOCK_PROPS,
+      },
+    },
+  };
+  return g;
+}
+
 function extend(key: string, g: GroupField): GroupField {
   if (key === "product.tube.catalogue") return tubeCatalogue(g);
+  if (key === "product.tube.page") return tubePage(g);
   if (key !== "page.home.layout") return g;
   const sections = g.fields.sections as ListField;
   const item = sections.of as GroupField;

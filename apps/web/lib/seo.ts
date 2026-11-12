@@ -184,6 +184,11 @@ function tubeFacts(t: Dictionary, p: TubeProduct, l: Locale) {
           .join("; "),
     ),
     `- ${c.closure}: ${p.closures.map((k) => loc(k.name, l)).join(", ")}`,
+    ...p.closures.flatMap((k) =>
+      Object.entries(k.colours ?? {}).map(([shape, byD]) => `  - ${loc(k.name, l)} (${loc(p.shapes.find((x) => x.id === shape)?.name, l)}): ${Object.entries(byD).map(([d, ids]) => `Ø${d}: ${ids.map((id) => loc(p.colourFamilies?.find((f) => f.id === id)?.name, l)).join("/")}`).join("; ")}`),
+    ),
+    ...(p.prints?.length ? [`- ${c.printMethod}: ${p.prints.map((x) => `${loc(x.name, l)}${x.note ? ` (${loc(x.note, l)})` : ""}`).join("; ")}`] : []),
+    ...(p.bodyColours?.length ? [`- ${c.bodyColour}: ${p.bodyColours.map((b) => loc(b.name, l)).join(", ")}`] : []),
     ...p.structures.map((s) => `- ${c.specStructure}: ${loc(s.name, l)} — ${s.layers.map((x) => `${loc(x.name, l)} (${loc(x.text, l)})`).join("; ")}`),
   ];
 }
@@ -196,8 +201,17 @@ export function productTubeJsonLd(t: Dictionary, product: TubeProduct, locale: L
     "@context": "https://schema.org",
     "@graph": [
       {
+        // Sizes as one line per shape and diameter (lengths and volumes): the full size chart without
+        // a variant per row, which would double the page weight (it travels in the HTML and the RSC payload).
         "@type": "Product",
         "@id": `${url}#product`,
+        size: product.shapes.flatMap((sh) =>
+          diametersFor(product, sh.id).map((d) => {
+            const rows = sh.sizes[String(d)] ?? [];
+            const ml = rows.filter((r) => r.ml).map((r) => r.ml!);
+            return `${loc(sh.name, locale)} Ø${d}: ${rows.map((r) => r.l).join("/")} mm${ml.length ? ` (${Math.min(...ml)}–${Math.max(...ml)} ml)` : ""}`;
+          }),
+        ),
         name: p.title.join(" "),
         description: p.lead,
         url,
@@ -208,6 +222,8 @@ export function productTubeJsonLd(t: Dictionary, product: TubeProduct, locale: L
         additionalProperty: [
           ...product.shapes.map((s) => ({ "@type": "PropertyValue", name: `${p.configurator.shape}: ${loc(s.name, locale)}`, value: `Ø ${diametersFor(product, s.id).join(", ")} mm` })),
           { "@type": "PropertyValue", name: p.configurator.closure, value: product.closures.map((k) => loc(k.name, locale)).join(", ") },
+          ...(product.colourFamilies?.length ? [{ "@type": "PropertyValue", name: p.configurator.capColour, value: product.colourFamilies.map((f) => loc(f.name, locale)).join(", ") }] : []),
+          ...(product.prints?.length ? [{ "@type": "PropertyValue", name: p.configurator.printMethod, value: product.prints.map((x) => loc(x.name, locale)).join(", ") }] : []),
           ...(product.structures[0]?.layers ?? []).map((l, i) => ({ "@type": "PropertyValue", name: `${p.layers.title} ${i + 1}`, value: `${loc(l.name, locale)} — ${loc(l.text, locale)}` })),
         ],
       },

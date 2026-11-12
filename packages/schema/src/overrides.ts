@@ -15,6 +15,7 @@ export const OVERRIDES: Override[] = [
   { type: "global.site", path: "/contact/*", set: { operatorOnly: true } },
   { type: "global.site", path: "/social/*", set: { operatorOnly: true } },
   { type: "page.home.layout", path: "/sections", set: { operatorOnly: true } },
+  { type: "product.tube.page", path: "/layout/sections", set: { operatorOnly: true } },
 
   // Tube configurator (v3): sizes, fits and colours come from the size charts (chart import) and are
   // operator data. Closures pick their 3D family and shape (T2); tube shape families, shoulders and ids

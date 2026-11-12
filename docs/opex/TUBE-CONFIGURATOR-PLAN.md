@@ -2,7 +2,39 @@
 
 Status: **agreed 2026-11-12**. Build order is T1 → T6, one commit per phase, as with P0–P13 and D1–D6.
 
-Progress: **T1, T2 and T3 done**.
+Progress: **T1–T4 done**.
+
+T4 (2026-11-12): component-based page, live edit, related samples, SEO.
+- **Layout:** `product.tube.page` → `layout.sections`, with built-in sections and their styles:
+  - hero: `media` or `compact`;
+  - configurator: `viewerStart` or `viewerEnd`;
+  - samples: `grid` or `rail`;
+  - quote;
+  - structure: `split` or `stacked`;
+  - closing: hidden means footer only.
+
+  Page-builder blocks can go anywhere. The registry, `PAGE_LAYOUTS` / `TUBE_SECTIONS` in
+  `packages/schema/src/blocks.ts`, is shared by the site, the schema and the visual editor.
+- **Shared selection:** the configurator, samples and quote are separate sections sharing one
+  selection (`TubeState`), so they can be reordered or have blocks between them.
+- **Visual editor:** the tube page now has the home page's section tools: order, hide, add, duplicate
+  and remove blocks, plus a style picker for built-in sections. Text is edited in place: page copy
+  (`product.tube.page`) and catalogue text (`product.tube.catalogue`).
+- **Samples:** ranked by shape, closure, print method, diameter and cap colour. Samples can carry
+  `print` and `colour` tags, and "use this" applies them.
+- **SEO:**
+  - JSON-LD is a `ProductGroup`, with every catalogue size as a variant (size, link, volume) plus
+    the cap colours and print methods;
+  - llms lists the colours per closure and diameter, the prints and the body colours;
+  - the sitemap includes the sample images.
+  - No `offers`: there are no public prices.
+- **Weight:**
+  - Sizes are summarised per shape and diameter in JSON-LD. A variant per size would add about
+    50 KB, because it is sent twice (HTML and RSC).
+  - The form block's code loads only when used.
+  - CSS chunking is strict.
+  - Result: HTML per page went down by 15 to 108 KB.
+  - Lighthouse mobile medians in an A/B: tube 85 → 87, home 73 → 80.
 
 T3 (2026-11-12): live colour and print.
 - **Cap colour:** the families the chart allows for that closure and diameter. A custom colour

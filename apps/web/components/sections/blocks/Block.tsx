@@ -2,7 +2,7 @@ import Image from "next/image";
 import { pickL, type BlockKind, type BlockProps } from "@arapoush/schema";
 import type { Dictionary, Locale } from "@/lib/i18n";
 import { getForm } from "@/lib/content/forms";
-import OpexForm from "@/components/forms/OpexForm";
+import OpexForm from "@/components/forms/LazyOpexForm";
 import RollText from "@/components/ui/RollText";
 import MaybeLink from "@/components/ui/MaybeLink";
 import styles from "./Block.module.css";

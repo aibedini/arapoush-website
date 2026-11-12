@@ -679,6 +679,12 @@ How the import works:
 - Diameters a chart does not mention are kept unless "keep missing" is off.
 - A pre-v3 draft is upgraded on its first import.
 
+**Tube page layout (T4).** `product.tube.page` → `layout.sections`: `{id, type, enabled, style, props}`.
+- Types are the built-in sections in `TUBE_SECTIONS` or the page-builder blocks.
+- `style` must be one of that section's styles. Unknown values fall back, and the configurator
+  section is always kept.
+- The visual editor manages this list as it does the home page's (`PAGE_LAYOUTS`).
+
 **Colour and print (T3).**
 - `colourFamilies[].palette`: the swatches for a custom cap colour.
 - `bodyColours`: id, name and hex.

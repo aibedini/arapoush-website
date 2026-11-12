@@ -37,7 +37,7 @@ Locally the tests use the installed Chrome. In CI they use Playwright's Chromium
 | site | `components/forms/OpexForm.stories.tsx` | empty (fa), English, validation errors, conditional field, sent, rate limited |
 | site | `components/sections/blocks/Block.stories.tsx` | rich text, image + text, dark call to action, FAQ, spacer |
 | site | `components/ui/RollText.stories.tsx` | primary, ghost, light on dark, Persian |
-| site | `components/configurator/ChipGroup.stories.tsx` | default, RTL keyboard, English |
+| site | `components/configurator/ChipGroup.stories.tsx` | default, RTL keyboard, English, plain |
 | site | `components/layout/Header.stories.tsx` | desktop, English, mobile menu |
 | site | `components/about/Honours.stories.tsx` | wall (fa), filter and viewer (en), list |
 | site | `components/about/FactoryGallery.stories.tsx` | filmstrip, next arrow (en), mosaic |
@@ -45,6 +45,7 @@ Locally the tests use the installed Chrome. In CI they use Playwright's Chromium
 | site | `components/contact/Locations.stories.tsx` | split (fa), stacked, with coordinates (en) |
 | site | `components/contact/Faq.stories.tsx` | groups (fa), open answer (en) |
 | console | `components/ui.stories.tsx` | page heading, modal dialog, error notes, loading |
+| site | `components/configurator/Samples.stories.tsx` | grid with the best match first, rail |
 | console | `components/ClosureModels.stories.tsx` | review (fixtures), anchor suggestion |
 | console | `components/FieldEditor.stories.tsx` | localized text, all languages, list of items, choice |
 

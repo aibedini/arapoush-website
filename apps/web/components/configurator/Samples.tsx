@@ -3,7 +3,7 @@
 import { useId } from "react";
 import Image from "next/image";
 import type { Dictionary } from "@/lib/i18n";
-import { closureOf, loc, rankSamples, shapeOf, type TubeConfig, type TubeProduct } from "@/lib/configurator/model";
+import { closureOf, loc, printOf, rankSamples, shapeOf, type TubeConfig, type TubeProduct } from "@/lib/configurator/model";
 import styles from "./Configurator.module.css";
 
 type Props = {
@@ -12,12 +12,14 @@ type Props = {
   product: TubeProduct;
   cfg: TubeConfig;
   onApply: (patch: Partial<TubeConfig>) => void;
+  /** `grid` (default) or `rail`: one scrolling row. */
+  style?: "grid" | "rail";
 };
 
 const MAX = 6;
 
 /** Product samples for the current shape, best match to closure and diameter first (admin-managed list). */
-export default function Samples({ t, locale, product, cfg, onApply }: Props) {
+export default function Samples({ t, locale, product, cfg, onApply, style = "grid" }: Props) {
   const id = useId();
   const ranked = rankSamples(product, cfg).slice(0, MAX);
 
@@ -32,9 +34,9 @@ export default function Samples({ t, locale, product, cfg, onApply }: Props) {
       </header>
 
       {ranked.length ? (
-        <ul className={styles.sampleGrid} aria-live="polite">
+        <ul className={`${styles.sampleGrid} ${style === "rail" ? styles.sampleRail : ""}`} aria-live="polite">
           {ranked.map(({ sample: s, exact }) => {
-            const tags = [loc(shapeOf(product, s.shape)?.name, locale), s.closure ? loc(closureOf(product, s.closure)?.name, locale) : "", s.d ? `Ø${s.d} mm` : ""].filter(Boolean);
+            const tags = [loc(shapeOf(product, s.shape)?.name, locale), s.closure ? loc(closureOf(product, s.closure)?.name, locale) : "", s.d ? `Ø${s.d} mm` : "", s.print ? loc(printOf(product, s.print)?.name, locale) : ""].filter(Boolean);
             return (
               <li key={s.id} className={styles.sample}>
                 <div className={styles.sampleImg}>
@@ -48,8 +50,8 @@ export default function Samples({ t, locale, product, cfg, onApply }: Props) {
                       <span key={tag}>{tag}</span>
                     ))}
                   </p>
-                  {(s.closure !== cfg.closure && s.closure) || (s.d && s.d !== cfg.d) ? (
-                    <button type="button" className={styles.sampleApply} onClick={() => onApply({ shape: s.shape, ...(s.closure ? { closure: s.closure } : {}), ...(s.d ? { d: s.d } : {}) })}>
+                  {(s.closure !== cfg.closure && s.closure) || (s.d && s.d !== cfg.d) || (s.print && s.print !== cfg.print) ? (
+                    <button type="button" className={styles.sampleApply} onClick={() => onApply({ shape: s.shape, ...(s.closure ? { closure: s.closure } : {}), ...(s.d ? { d: s.d } : {}), ...(s.print ? { print: s.print } : {}), ...(s.colour ? { colour: s.colour } : {}) })}>
                       {t.useSample}
                     </button>
                   ) : null}

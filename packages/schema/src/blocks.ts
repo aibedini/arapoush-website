@@ -63,7 +63,8 @@ export type BlockProps = {
   form?: string;
   size?: "s" | "m" | "l";
 };
-export type LayoutSection = { id: string; type: SectionType | BlockKind; enabled: boolean; props?: BlockProps };
+/** `type` is a built-in section of its page or a block kind; `style` picks a variant of a built-in section. */
+export type LayoutSection = { id: string; type: SectionType | BlockKind | (string & {}); enabled: boolean; style?: string; props?: BlockProps };
 
 /** A new block with sensible starter content. */
 export function newBlock(kind: BlockKind, id: string): LayoutSection {
@@ -77,3 +78,30 @@ export function newBlock(kind: BlockKind, id: string): LayoutSection {
   };
   return { id, type: kind, enabled: true, props: base[kind] };
 }
+
+/**
+ * Pages whose sections operators order, hide, restyle and mix with blocks (P12, T4). `path` is
+ * where the section list lives in `entry`; each built-in section names the entry its copy lives
+ * in (what the visual editor opens) and its style variants (first is the default).
+ */
+export type PageSectionDef = { label: string; entry: string; styles: readonly string[] };
+export type PageLayoutDef = { entry: string; path: string; sections: Record<string, PageSectionDef> };
+
+export const TUBE_SECTIONS = {
+  hero: { label: "بالای صفحه", entry: "product.tube.page", styles: ["media", "compact"] },
+  configurator: { label: "پیکربندی تیوب", entry: "product.tube.catalogue", styles: ["viewerStart", "viewerEnd"] },
+  samples: { label: "نمونه‌های مرتبط", entry: "product.tube.catalogue", styles: ["grid", "rail"] },
+  quote: { label: "استعلام قیمت", entry: "product.tube.page", styles: [] },
+  structure: { label: "ساختار لایه‌ها", entry: "product.tube.page", styles: ["split", "stacked"] },
+  closing: { label: "دعوت پایانی", entry: "global.site", styles: [] },
+} as const satisfies Record<string, PageSectionDef>;
+export type TubeSectionType = keyof typeof TUBE_SECTIONS;
+
+const HOME_LABEL: Record<SectionType, string> = { hero: "اسلایدر بالای صفحه", products: "محصولات", applications: "کاربردها", insights: "مقاله‌ها", partners: "مشتریان", certifications: "گواهینامه‌ها" };
+
+export const PAGE_LAYOUTS: Record<"home" | "tube", PageLayoutDef> = {
+  home: { entry: "page.home.layout", path: "/sections", sections: Object.fromEntries(SECTION_TYPES.map((t) => [t, { label: HOME_LABEL[t], entry: SECTION_ENTRY[t], styles: [] }])) },
+  tube: { entry: "product.tube.page", path: "/layout/sections", sections: TUBE_SECTIONS },
+};
+/** Every style value any page uses (the schema enum for `style`). */
+export const SECTION_STYLES = [...new Set(Object.values(TUBE_SECTIONS).flatMap((s) => s.styles))];

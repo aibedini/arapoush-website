@@ -20,6 +20,9 @@ const nextConfig: NextConfig = {
   experimental: {
     // Inline the (small) CSS into the HTML: no render-blocking stylesheet requests.
     inlineCss: true,
+    // With inlined CSS, merged chunks put other pages' styles into every page (the tube page carried
+    // the about, printing and home sections' CSS). Strict chunking keeps each page to its own imports.
+    cssChunking: "strict",
     optimizePackageImports: ["@animate-ui/react", "radix-ui", "motion"],
   },
   // Media uploaded in OPEX is served same-origin (no third-party host in CSP, no cookies sent to OPEX).
