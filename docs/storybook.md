@@ -39,6 +39,8 @@ Locally the tests use the installed Chrome. In CI they use Playwright's Chromium
 | site | `components/ui/RollText.stories.tsx` | primary, ghost, light on dark, Persian |
 | site | `components/configurator/ChipGroup.stories.tsx` | default, RTL keyboard, English |
 | site | `components/layout/Header.stories.tsx` | desktop, English, mobile menu |
+| site | `components/about/Honours.stories.tsx` | wall (fa), filter and viewer (en), list |
+| site | `components/about/FactoryGallery.stories.tsx` | filmstrip, next arrow (en), mosaic |
 | console | `components/ui.stories.tsx` | page heading, modal dialog, error notes, loading |
 | console | `components/FieldEditor.stories.tsx` | localized text, all languages, list of items, choice |
 

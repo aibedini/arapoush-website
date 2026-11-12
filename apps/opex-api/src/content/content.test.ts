@@ -5,7 +5,7 @@ import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import sharp from "sharp";
-import { getAt } from "@arapoush/schema";
+import { CONTENT_TYPES, getAt } from "@arapoush/schema";
 import { testApp, signIn, stepUp, as } from "../testing.ts";
 import { deliverPending } from "../webhooks/outbox.ts";
 
@@ -19,7 +19,8 @@ test("seed publishes the website's content; the Delivery API serves it to the si
     const bundle = await t.app.inject({ method: "GET", url: "/v1/delivery/bundle", headers: bearer });
     assert.equal(bundle.statusCode, 200);
     const b = bundle.json();
-    assert.equal(Object.keys(b.entries).filter((k) => !k.startsWith("form.")).length, 12);
+    // Every seeded content type is published (forms ride alongside).
+    assert.equal(Object.keys(b.entries).filter((k) => !k.startsWith("form.")).length, CONTENT_TYPES.length);
     assert.ok(b.entries["form.quote"] && b.entries["form.contact"], "published forms ride in the bundle");
     assert.equal(getAt(b.entries["page.printing"].data, "/hero/title@en"), "ARAPOUSH Tube Printing Technologies");
     assert.equal((await t.app.inject({ method: "GET", url: "/v1/delivery/bundle", headers: { authorization: "Bearer wrong-token-wrong-token-wrong" } })).statusCode, 403);

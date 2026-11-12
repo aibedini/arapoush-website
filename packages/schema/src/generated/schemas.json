@@ -3517,5 +3517,459 @@
     }
    }
   }
+ },
+ {
+  "key": "page.about",
+  "label": "About Arapoush",
+  "singleton": true,
+  "version": 1,
+  "schema": {
+   "kind": "group",
+   "fields": {
+    "meta": {
+     "kind": "group",
+     "fields": {
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "description": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      }
+     }
+    },
+    "hero": {
+     "kind": "group",
+     "fields": {
+      "style": {
+       "kind": "enum",
+       "values": [
+        "cinema",
+        "split"
+       ],
+       "label": "Hero style"
+      },
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "slogan": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "story": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "honours": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "play": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "pause": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "videoAlt": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "stats": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "value": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "label": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         }
+        }
+       },
+       "key": "id"
+      },
+      "video": {
+       "kind": "group",
+       "fields": {
+        "mp4": {
+         "kind": "file",
+         "formats": [
+          "mp4"
+         ]
+        },
+        "webm": {
+         "kind": "file",
+         "formats": [
+          "webm"
+         ]
+        }
+       }
+      }
+     }
+    },
+    "story": {
+     "kind": "group",
+     "fields": {
+      "style": {
+       "kind": "enum",
+       "values": [
+        "pinned",
+        "vertical"
+       ],
+       "label": "Timeline style"
+      },
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "milestones": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "year": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "title": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "text": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         },
+         "image": {
+          "kind": "image"
+         }
+        }
+       },
+       "key": "id"
+      },
+      "today": {
+       "kind": "group",
+       "fields": {
+        "eyebrow": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "title": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "value": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "unit": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "items": {
+         "kind": "list",
+         "of": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         }
+        }
+       }
+      }
+     }
+    },
+    "gallery": {
+     "kind": "group",
+     "fields": {
+      "style": {
+       "kind": "enum",
+       "values": [
+        "filmstrip",
+        "mosaic"
+       ],
+       "label": "Gallery style"
+      },
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "of": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "prev": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "next": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "items": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "image": {
+          "kind": "image"
+         },
+         "caption": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    },
+    "honours": {
+     "kind": "group",
+     "fields": {
+      "style": {
+       "kind": "enum",
+       "values": [
+        "wall",
+        "list"
+       ],
+       "label": "Honours style"
+      },
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      },
+      "filters": {
+       "kind": "group",
+       "fields": {
+        "all": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "certificate": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "licence": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "award": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        }
+       }
+      },
+      "filterLabel": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "issuer": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "year": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "scope": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "view": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "close": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "copies": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "of": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "prev": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "next": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "items": {
+       "kind": "list",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "id": {
+          "kind": "text",
+          "localized": false,
+          "multiline": false,
+          "locked": true
+         },
+         "kind": {
+          "kind": "enum",
+          "values": [
+           "certificate",
+           "licence",
+           "award"
+          ],
+          "label": "Document type"
+         },
+         "title": {
+          "kind": "text",
+          "localized": true,
+          "multiline": false
+         },
+         "year": {
+          "kind": "text",
+          "localized": true
+         },
+         "issuer": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         },
+         "scope": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         },
+         "text": {
+          "kind": "text",
+          "localized": true,
+          "multiline": true
+         },
+         "image": {
+          "kind": "image"
+         },
+         "copies": {
+          "kind": "list",
+          "of": {
+           "kind": "image"
+          }
+         }
+        }
+       },
+       "key": "id"
+      }
+     }
+    },
+    "images": {
+     "kind": "group",
+     "fields": {
+      "poster": {
+       "kind": "image"
+      }
+     }
+    }
+   }
+  }
  }
 ]

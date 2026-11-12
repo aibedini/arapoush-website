@@ -171,6 +171,11 @@ const defs: Def[] = [
       },
     },
   },
+  {
+    key: "page.about",
+    label: "About Arapoush",
+    data: { ...json("content/about.json"), images: { poster: await img("/images/about/hero-poster.webp") } },
+  },
 ];
 
 /** Shapes inference cannot see in the seed data (P12: page-builder blocks in the home layout). */

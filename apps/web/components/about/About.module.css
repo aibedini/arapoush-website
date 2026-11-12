@@ -1,0 +1,1057 @@
+/* About page. Tokens (--deep, --steel, --warm, --radius, --section-y, --u, --gutter) come from the
+   printing page's `.page` wrapper, so the two pages share one palette and rhythm. Logical
+   properties throughout; documents and factory photos carry data-no-mirror. Only transform and
+   opacity animate. */
+
+.srOnly,
+.srYear {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── Hero ── */
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.heroMedia {
+  position: relative;
+}
+.media {
+  position: absolute;
+  inset: 0;
+}
+.frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--deep);
+}
+.poster,
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.video {
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.video[data-on] {
+  opacity: 1;
+}
+.playBtn {
+  position: absolute;
+  z-index: 2;
+  inset-block-end: max(20px, calc(36 * var(--u)));
+  inset-inline-end: var(--gutter);
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(9, 38, 60, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: background-color 0.25s ease;
+}
+.playBtn:hover {
+  background: rgba(9, 38, 60, 0.75);
+}
+.playBtn svg {
+  width: 20px;
+  height: 20px;
+}
+@media (hover: none) {
+  .playBtn:active {
+    transform: scale(0.94);
+  }
+}
+
+.heroInner {
+  position: relative;
+  z-index: 1;
+}
+.heroCopy {
+  display: flex;
+  flex-direction: column;
+  gap: max(14px, calc(22 * var(--u)));
+  max-width: 860px;
+}
+.heroTitle {
+  font: 800 max(30px, calc(62 * var(--u))) / 1.2 var(--font-sans);
+  letter-spacing: -0.02em;
+}
+:lang(fa) .heroTitle {
+  letter-spacing: 0;
+  line-height: 1.5;
+}
+.heroLead {
+  max-width: 760px;
+  font: 400 max(15px, calc(18 * var(--u))) / 1.85 var(--font-sans);
+}
+.slogan {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font: 700 max(15px, calc(19 * var(--u))) / 1.5 var(--font-sans);
+  color: var(--warm);
+  background: rgba(215, 138, 89, 0.12);
+  border: 1px solid rgba(215, 138, 89, 0.35);
+}
+.glass {
+  --btn-bg: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: max(28px, calc(56 * var(--u)));
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.stat {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 4px;
+  padding: max(16px, calc(24 * var(--u))) max(16px, calc(28 * var(--u)));
+}
+.stat + .stat {
+  border-inline-start: 1px solid var(--stat-rule);
+}
+.stat dt {
+  font: 500 max(13px, calc(15 * var(--u))) / 1.5 var(--font-sans);
+}
+.stat dd {
+  margin: 0;
+  font: 800 max(26px, calc(44 * var(--u))) / 1.1 var(--font-sans);
+  letter-spacing: -0.02em;
+}
+
+/* cinema: the film fills the screen, copy sits low on a navy fade. */
+.cinema {
+  --stat-rule: rgba(255, 255, 255, 0.16);
+  display: flex;
+  align-items: flex-end;
+  min-height: min(100svh, 1080px);
+  padding: calc(var(--header-h) + 40px) 0 max(28px, calc(56 * var(--u)));
+  color: #fff;
+  background: var(--deep);
+}
+.cinema .heroMedia {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+.cinema .heroMedia::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(9, 38, 60, 0.55) 0%, rgba(9, 38, 60, 0.2) 30%, rgba(9, 38, 60, 0.72) 68%, rgba(9, 38, 60, 0.96) 100%),
+    linear-gradient(var(--fade-to, 90deg), rgba(9, 38, 60, 0.7) 0%, rgba(9, 38, 60, 0) 65%);
+}
+:global([dir="rtl"]) .cinema .heroMedia::after {
+  --fade-to: 270deg;
+}
+.cinema .heroInner {
+  width: var(--wrap);
+}
+.cinema .heroTitle {
+  color: #fff;
+}
+.cinema .heroLead {
+  color: rgba(255, 255, 255, 0.84);
+}
+.cinema .stats {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.cinema .stat dt {
+  color: rgba(255, 255, 255, 0.78);
+}
+.cinema .playBtn {
+  inset-block-start: calc(var(--header-h) + 20px);
+  inset-block-end: auto;
+}
+
+/* split: the printing page's light hero, the film framed beside the copy. */
+.split {
+  --stat-rule: rgba(59, 88, 114, 0.14);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: max(24px, calc(48 * var(--u)));
+  padding: calc(var(--header-h) + max(24px, calc(48 * var(--u)))) var(--gutter) max(36px, calc(60 * var(--u)));
+  max-width: var(--wrap);
+  margin-inline: auto;
+}
+.split .heroMedia {
+  order: 2;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 40px 80px -50px rgba(20, 70, 130, 0.7);
+}
+.split .heroInner {
+  padding: 0;
+  width: auto;
+}
+.split .heroTitle {
+  color: var(--text);
+}
+.split .heroLead {
+  color: #46505d;
+}
+.split .slogan {
+  color: var(--warm-ink);
+}
+.split .stats {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 24px 60px -40px rgba(20, 70, 130, 0.5);
+}
+.split .stat dt {
+  color: #5a6370;
+}
+.split .stat dd {
+  color: var(--deep);
+}
+
+/* ── Story ── */
+.story {
+  position: relative;
+  color: #fff;
+  background:
+    radial-gradient(80% 60% at 85% 10%, rgba(59, 88, 114, 0.55), transparent 70%),
+    linear-gradient(180deg, #071d2f 0%, var(--deep) 40%, #0b2d47 100%);
+}
+.storyPin {
+  position: relative;
+  overflow: hidden;
+}
+.ghost {
+  position: absolute;
+  inset-block-end: 4%;
+  inset-inline-start: 0;
+  white-space: nowrap;
+  font: 900 calc(300 * var(--u)) / 1 var(--font-ui);
+  letter-spacing: -0.03em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.07);
+  pointer-events: none;
+  user-select: none;
+}
+.track {
+  position: relative;
+  display: flex;
+  list-style: none;
+}
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.intro {
+  justify-content: center;
+  gap: max(14px, calc(22 * var(--u)));
+}
+.storyTitle {
+  font: 800 max(34px, calc(84 * var(--u))) / 1.1 var(--font-sans);
+  letter-spacing: -0.03em;
+}
+:lang(fa) .storyTitle {
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+.storyLead {
+  max-width: 520px;
+  font: 400 max(15px, calc(19 * var(--u))) / 1.8 var(--font-sans);
+  color: rgba(255, 255, 255, 0.8);
+}
+.year {
+  font: 800 max(72px, calc(170 * var(--u))) / 0.9 var(--font-sans);
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.55);
+  font-variant-numeric: tabular-nums;
+}
+:lang(fa) .year {
+  letter-spacing: 0;
+}
+.node {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--warm);
+  box-shadow:
+    0 0 0 6px rgba(215, 138, 89, 0.2),
+    0 0 24px rgba(215, 138, 89, 0.6);
+}
+.panelImg {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: calc(var(--radius) * 0.75);
+  background: rgba(255, 255, 255, 0.06);
+}
+.panelImg img {
+  object-fit: cover;
+}
+.panelTitle {
+  font: 700 max(18px, calc(26 * var(--u))) / 1.4 var(--font-sans);
+}
+.panelText {
+  font: 400 max(14px, calc(16 * var(--u))) / 1.85 var(--font-sans);
+  color: rgba(255, 255, 255, 0.78);
+}
+.today {
+  justify-content: center;
+}
+.todayTitle {
+  font: 700 max(18px, calc(26 * var(--u))) / 1.4 var(--font-sans);
+}
+.big {
+  overflow: hidden;
+  font: 900 max(64px, calc(190 * var(--u))) / 1 var(--font-sans);
+  letter-spacing: -0.04em;
+  color: #fff;
+}
+/* The gradient sits on the span itself: it is the element that moves, so the text clip moves with it. */
+.big span {
+  display: inline-block;
+  padding-block-end: 0.06em;
+  background: linear-gradient(180deg, #fff 30%, #f0b48c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.unit {
+  font: 600 max(15px, calc(20 * var(--u))) / 1.6 var(--font-sans);
+  color: var(--warm);
+}
+.feats {
+  display: grid;
+  gap: 10px;
+  margin-top: 6px;
+  list-style: none;
+}
+.feats li {
+  display: flex;
+  gap: 10px;
+  font: 400 max(14px, calc(16 * var(--u))) / 1.7 var(--font-sans);
+  color: rgba(255, 255, 255, 0.86);
+}
+.check {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
+  color: var(--warm);
+}
+.rail {
+  position: absolute;
+  pointer-events: none;
+}
+.bar {
+  display: block;
+  background: linear-gradient(90deg, var(--warm), #f3c7a5);
+}
+.count {
+  font: 600 13px/1 var(--font-ui);
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.7);
+  font-variant-numeric: tabular-nums;
+}
+
+/* pinned: one screen; the track runs sideways under the pin (wide screens only). */
+@media (min-width: 1100px) {
+  .pinned .storyPin {
+    height: 100svh;
+    min-height: 680px;
+  }
+  .pinned .track {
+    height: 100%;
+    align-items: stretch;
+    padding: calc(var(--header-h) + 6vh) var(--gutter) 96px;
+    gap: max(48px, calc(96 * var(--u)));
+    width: max-content;
+    will-change: transform;
+  }
+  /* The line through the year nodes, drawn by each milestone to the next one. */
+  .pinned .panel:not(.intro):not(.today)::after {
+    content: "";
+    position: absolute;
+    inset-inline-start: 7px;
+    inset-block-start: calc(max(72px, calc(170 * var(--u))) * 0.9 + 21px);
+    width: calc(100% + max(40px, calc(72 * var(--u))));
+    height: 1px;
+    background: linear-gradient(var(--line-to, 90deg), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.08));
+    pointer-events: none;
+  }
+  :global([dir="rtl"]) .pinned .panel::after {
+    --line-to: 270deg;
+  }
+  .pinned .panel {
+    width: clamp(340px, calc(560 * var(--u)), 640px);
+    justify-content: flex-start;
+  }
+  .pinned .intro {
+    width: clamp(420px, calc(760 * var(--u)), 860px);
+    justify-content: center;
+  }
+  .pinned .today {
+    width: clamp(460px, calc(820 * var(--u)), 920px);
+    justify-content: center;
+    padding-inline-end: var(--gutter);
+  }
+  .pinned .rail {
+    inset-inline: var(--gutter);
+    inset-block-end: 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .pinned .rail::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0 calc(90px + 20px);
+    height: 2px;
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .pinned .bar {
+    flex: 1;
+    height: 2px;
+    transform-origin: left center;
+  }
+  :global([dir="rtl"]) .pinned .bar {
+    transform-origin: right center;
+  }
+  .pinned .count {
+    flex: none;
+    width: 90px;
+    text-align: end;
+  }
+}
+
+/* Stacked: the vertical style everywhere, and the pinned style below 1100px. */
+.vertical .storyPin,
+.pinned .storyPin {
+  padding-block: var(--section-y);
+}
+@media (min-width: 1100px) {
+  .pinned .storyPin {
+    padding-block: 0;
+  }
+}
+.vertical .track {
+  flex-direction: column;
+}
+@media (max-width: 1099px) {
+  .pinned .track {
+    flex-direction: column;
+  }
+  .pinned .ghost {
+    display: none;
+  }
+}
+.vertical .ghost {
+  display: none;
+}
+.vertical .track,
+.pinned .track {
+  gap: max(40px, calc(72 * var(--u)));
+  width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: calc(var(--gutter) + 36px) var(--gutter);
+}
+@media (min-width: 1100px) {
+  .pinned .track {
+    margin-inline: 0;
+    padding-inline: var(--gutter);
+    width: max-content;
+  }
+  .vertical .track {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: max(48px, calc(96 * var(--u)));
+  }
+  .vertical .intro,
+  .vertical .today {
+    grid-column: 1 / -1;
+  }
+}
+.vertical .rail {
+  inset-block: var(--section-y);
+  inset-inline-start: calc((100% - var(--wrap)) / 2 + var(--gutter) + 6px);
+  width: 2px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.vertical .bar {
+  width: 2px;
+  height: 100%;
+  transform-origin: center top;
+  background: linear-gradient(180deg, var(--warm), #f3c7a5);
+}
+.vertical .count {
+  display: none;
+}
+.vertical .node {
+  position: absolute;
+  inset-inline-start: -36px;
+  inset-block-start: 0.6em;
+}
+@media (max-width: 1099px) {
+  .pinned .rail {
+    inset-block: var(--section-y);
+    inset-inline-start: calc(var(--gutter) + 6px);
+    width: 2px;
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .pinned .bar {
+    width: 2px;
+    height: 100%;
+    transform-origin: center top;
+    background: linear-gradient(180deg, var(--warm), #f3c7a5);
+  }
+  .pinned .count {
+    display: none;
+  }
+  .pinned .node {
+    position: absolute;
+    inset-inline-start: -36px;
+    inset-block-start: 0.6em;
+  }
+  .panel {
+    max-width: 680px;
+  }
+}
+@media (min-width: 1100px) {
+  .vertical .rail {
+    inset-inline-start: 50%;
+  }
+  .vertical .node {
+    display: none;
+  }
+  .vertical .track {
+    padding-inline: var(--gutter);
+  }
+}
+
+/* ── Gallery ── */
+.gallery {
+  padding: var(--section-y) 0 0;
+}
+.galleryHead {
+  margin-bottom: max(24px, calc(40 * var(--u)));
+}
+.strip {
+  position: relative;
+}
+.film {
+  --card: min(64vw, 1200px);
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--card);
+  gap: max(14px, calc(28 * var(--u)));
+  padding-inline: calc((100% - var(--card)) / 2);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-block: 6px 10px;
+}
+.film::-webkit-scrollbar {
+  display: none;
+}
+.film:focus-visible {
+  outline-offset: -4px;
+}
+.shot {
+  margin: 0;
+  scroll-snap-align: center;
+  position: relative;
+  transition: opacity 0.5s ease;
+  opacity: 0.55;
+}
+.shot[data-active] {
+  opacity: 1;
+}
+.shotImg {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ice);
+}
+.shotImg img {
+  object-fit: cover;
+  transform: scale(1.12);
+  will-change: transform;
+}
+.shotCap {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 16px 4px 0;
+  font: 600 max(14px, calc(17 * var(--u))) / 1.5 var(--font-sans);
+  color: var(--text);
+}
+.shotNum {
+  font: 600 13px/1 var(--font-ui);
+  letter-spacing: 0.15em;
+  color: var(--warm-ink);
+}
+.filmNav {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: max(16px, calc(28 * var(--u)));
+}
+.filmProgress {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  background: rgba(59, 88, 114, 0.16);
+}
+.filmProgress span {
+  position: absolute;
+  inset: 0;
+  background: var(--warm);
+  transform-origin: left center;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+:global([dir="rtl"]) .filmProgress span {
+  transform-origin: right center;
+}
+.filmCount {
+  min-width: 64px;
+  text-align: center;
+  font: 600 14px/1 var(--font-ui);
+  color: var(--steel);
+  font-variant-numeric: tabular-nums;
+}
+
+.mosaic {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: max(160px, calc(260 * var(--u)));
+  gap: max(10px, calc(18 * var(--u)));
+  list-style: none;
+}
+.tile:first-child {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+.tile figure {
+  margin: 0;
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+.tileImg {
+  position: absolute;
+  inset: 0;
+  background: var(--ice);
+}
+.tileImg img {
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tile figure:hover img {
+  transform: scale(1.05);
+}
+.tile figcaption {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 36px 16px 14px;
+  font: 600 14px/1.5 var(--font-sans);
+  color: #fff;
+  background: linear-gradient(180deg, transparent, rgba(9, 38, 60, 0.85));
+}
+
+/* ── Honours ── */
+.honours {
+  padding: var(--section-y) 0 max(56px, calc(100 * var(--u)));
+  scroll-margin-top: var(--header-h);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 2400px;
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: max(24px, calc(44 * var(--u)));
+}
+.filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  font: 600 14px/1 var(--font-sans);
+  color: var(--text);
+  background: #fff;
+  border: 1px solid rgba(59, 88, 114, 0.18);
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+.filter:hover {
+  border-color: var(--steel);
+}
+.filter[aria-pressed="true"] {
+  background: var(--deep);
+  border-color: var(--deep);
+  color: #fff;
+}
+.filterCount {
+  display: grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  padding-inline: 6px;
+  border-radius: 999px;
+  font: 600 12px/1 var(--font-ui);
+  background: rgba(59, 88, 114, 0.1);
+}
+.filter[aria-pressed="true"] .filterCount {
+  background: rgba(255, 255, 255, 0.16);
+}
+.wall {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: max(14px, calc(24 * var(--u)));
+  list-style: none;
+}
+.list {
+  display: grid;
+  gap: 14px;
+  list-style: none;
+}
+.honour {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: 0 24px 50px -40px rgba(20, 70, 130, 0.6);
+}
+.honourImg {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: linear-gradient(180deg, #f2f6fb, var(--ice));
+  cursor: zoom-in;
+}
+.honourImg img {
+  object-fit: contain;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.honourImg:hover img {
+  transform: scale(1.04);
+}
+.honourBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px 20px;
+}
+.honourKind {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font: 600 12.5px/1.5 var(--font-sans);
+  color: var(--steel);
+}
+.honourYear {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  color: var(--warm-ink);
+  background: rgba(215, 138, 89, 0.12);
+}
+.honourTitle {
+  font: 700 max(15px, calc(18 * var(--u))) / 1.5 var(--font-sans);
+  color: var(--text);
+}
+.honourMeta {
+  display: grid;
+  gap: 6px;
+}
+.honourMeta div {
+  display: grid;
+  gap: 1px;
+}
+.honourMeta dt {
+  font: 600 12px/1.5 var(--font-sans);
+  color: #5a6370;
+}
+.honourMeta dd {
+  margin: 0;
+  font: 500 13.5px/1.65 var(--font-sans);
+  color: var(--text);
+}
+.honourText {
+  font: 400 13.5px/1.8 var(--font-sans);
+  color: #46505d;
+}
+.view {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  min-height: 40px;
+  margin-top: auto;
+  padding: 0 14px;
+  border-radius: 999px;
+  font: 600 13.5px/1 var(--font-sans);
+  color: var(--deep);
+  background: var(--ice);
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+.view:hover {
+  background: var(--deep);
+  color: #fff;
+}
+@media (hover: none) {
+  .view:active,
+  .filter:active {
+    transform: scale(0.97);
+  }
+}
+.viewIcon {
+  width: 18px;
+  height: 18px;
+}
+/* list: one row per document. */
+.list .honour {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+}
+.list .honourImg {
+  aspect-ratio: auto;
+  height: 100%;
+  min-height: 160px;
+}
+.list .honourBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  column-gap: 28px;
+  align-content: start;
+}
+.list .honourKind,
+.list .honourTitle {
+  grid-column: 1;
+}
+.list .honourMeta {
+  grid-column: 1;
+}
+.list .honourText {
+  grid-column: 2;
+  grid-row: 1 / span 4;
+}
+.list .view {
+  grid-column: 1;
+}
+
+/* Viewer */
+.viewer {
+  color: #fff;
+}
+.viewerBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+  gap: max(20px, calc(40 * var(--u)));
+  min-height: 0;
+  padding: 0 var(--gutter) 24px;
+}
+.viewerStage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  padding-inline: 56px;
+}
+.viewerStage img {
+  max-width: 100%;
+  max-height: calc(100dvh - 120px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+.viewerText {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-self: center;
+  overflow-y: auto;
+  max-height: 100%;
+}
+.viewer .honourKind {
+  color: rgba(255, 255, 255, 0.75);
+}
+.viewer .honourYear {
+  color: #f3c7a5;
+  background: rgba(215, 138, 89, 0.2);
+}
+.viewerTitle {
+  font: 700 max(18px, calc(26 * var(--u))) / 1.45 var(--font-sans);
+}
+.viewer .honourMeta dt {
+  color: rgba(255, 255, 255, 0.65);
+}
+.viewer .honourMeta dd {
+  color: #fff;
+}
+.viewerNote {
+  font: 400 15px/1.85 var(--font-sans);
+  color: rgba(255, 255, 255, 0.85);
+}
+.copies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.copies button {
+  width: 72px;
+  height: 72px;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.08);
+}
+.copies button[aria-pressed="true"] {
+  border-color: var(--warm);
+}
+.copies img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1279px) {
+  .wall {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 1099px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .split .heroMedia {
+    order: 0;
+  }
+  .wall {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .mosaic {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .viewerBody {
+    grid-template-columns: minmax(0, 1fr);
+    overflow-y: auto;
+  }
+  .viewerStage img {
+    max-height: 56dvh;
+  }
+  .list .honourBody {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .list .honourText {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
+@media (max-width: 767px) {
+  .cinema {
+    min-height: 100svh;
+    padding-top: calc(var(--header-h) + 84px);
+  }
+  .heroLead {
+    font-size: 15px;
+    line-height: 1.75;
+  }
+  .stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .stat {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-block: 12px;
+  }
+  .stat + .stat {
+    border-inline-start: 0;
+    border-block-start: 1px solid var(--stat-rule);
+  }
+  .film {
+    --card: 86vw;
+  }
+  .wall {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* Phones: thumbnail beside the note, so fourteen documents stay a short scroll. */
+  .wall .honour,
+  .list .honour {
+    display: grid;
+    grid-template-columns: 104px minmax(0, 1fr);
+  }
+  .wall .honourImg,
+  .list .honourImg {
+    aspect-ratio: 4 / 5;
+    height: auto;
+    min-height: 0;
+    align-self: start;
+  }
+  .honourBody {
+    padding: 14px 14px 16px;
+  }
+  .viewerStage {
+    padding-inline: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video,
+  .shot,
+  .filmProgress span,
+  .honourImg img,
+  .tileImg img,
+  .filter,
+  .view {
+    transition: none;
+  }
+  .shotImg img {
+    transform: none;
+  }
+}

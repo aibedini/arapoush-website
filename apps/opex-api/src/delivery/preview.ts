@@ -18,6 +18,7 @@ import { applyItems } from "../cr/merge.ts";
 /** Website page that shows each content type (first locale; the editor can switch language there). */
 export function pageFor(type: string, locale = "fa") {
   if (type === "page.printing") return `/${locale}/printing`;
+  if (type === "page.about") return `/${locale}/about`;
   if (type.startsWith("product.tube.")) return `/${locale}/products/multi-layer-tube`;
   if (type.startsWith("product.effervescent.")) return `/${locale}/products/effervescent-tube`;
   return `/${locale}`;

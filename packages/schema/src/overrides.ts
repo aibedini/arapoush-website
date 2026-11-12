@@ -49,6 +49,15 @@ export const OVERRIDES: Override[] = [
   { type: "page.printing", path: "/samples/items/method", set: { operatorOnly: true } },
   { type: "page.printing", path: "/compare/rows", set: { operatorOnly: false } },
 
+  // About page: each section's `style` picks a component variant; document kinds drive the filter.
+  { type: "page.about", path: "/hero/style", set: { kind: "enum", values: ["cinema", "split"], localized: undefined, multiline: undefined, label: "Hero style" } },
+  { type: "page.about", path: "/story/style", set: { kind: "enum", values: ["pinned", "vertical"], localized: undefined, multiline: undefined, label: "Timeline style" } },
+  { type: "page.about", path: "/gallery/style", set: { kind: "enum", values: ["filmstrip", "mosaic"], localized: undefined, multiline: undefined, label: "Gallery style" } },
+  { type: "page.about", path: "/honours/style", set: { kind: "enum", values: ["wall", "list"], localized: undefined, multiline: undefined, label: "Honours style" } },
+  { type: "page.about", path: "/honours/items/kind", set: { kind: "enum", values: ["certificate", "licence", "award"], localized: undefined, multiline: undefined, label: "Document type" } },
+  { type: "page.about", path: "/hero/video/mp4", set: { kind: "file", formats: ["mp4"] } },
+  { type: "page.about", path: "/hero/video/webm", set: { kind: "file", formats: ["webm"] } },
+
   // Every list keyed by id keeps its ids stable (grants, paths and the site rely on them).
   { type: "*", path: "*/id", set: { locked: true } },
 ];

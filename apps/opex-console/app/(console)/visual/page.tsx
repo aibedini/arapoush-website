@@ -18,6 +18,7 @@ const PAGES: PageDef[] = [
   { key: "tube", label: "تیوب چندلایه", type: "product.tube.page", entries: ["product.tube.page", "global.site"] },
   { key: "eff", label: "تیوب قرص جوشان", type: "product.effervescent.page", entries: ["product.effervescent.page", "global.site"] },
   { key: "printing", label: "چاپ", type: "page.printing", entries: ["page.printing", "global.site"] },
+  { key: "about", label: "درباره آراپوش", type: "page.about", entries: ["page.about", "global.site"] },
 ];
 const SECTION_LABEL: Record<string, string> = { hero: "اسلایدر بالای صفحه", products: "محصولات", applications: "کاربردها", insights: "مقاله‌ها", partners: "مشتریان", certifications: "گواهینامه‌ها" };
 const BLOCKS: Record<BlockKind, { label: string; text: string; icon: typeof Rows }> = {

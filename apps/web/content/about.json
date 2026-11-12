@@ -1,0 +1,1159 @@
+{
+ "$comment": "About page (OPEX page.about). Persian copy is quoted from arapoush.com (about, factory and honours pages); certificate facts (issuer, scope, dates) are read from the certificate images themselves. Each section's `style` picks a component variant. Years are per locale: Solar Hijri in Persian, Gregorian in English and Turkish.",
+ "meta": {
+  "title": {
+   "fa": "درباره آراپوش گستر | تاریخچه، کارخانه، گواهینامه‌ها و افتخارات",
+   "en": "About Arapoush Gostar | History, Factory, Certificates and Honours",
+   "tr": "Arapoush Gostar Hakkında | Tarihçe, Fabrika, Sertifikalar ve Ödüller"
+  },
+  "description": {
+   "fa": "آراپوش گستر از سال 1383 تولیدکننده تیوب‌های پلاستیکی چندلایه بدون درز و ظروف قرص جوشان است: کارخانه در شهرک صنعتی کاسپین قزوین، توان تولید روزانه ۲۵۰.۰۰۰ محصول چاپی، گواهینامه‌های GMP، ایزو 9001:2015 و تایید صلاحیت آزمایشگاه.",
+   "en": "Since 2004 Arapoush Gostar has made seamless multi-layer plastic tubes and effervescent tablet containers: a factory in Caspian Industrial Town, Qazvin, 250,000 printed products a day, GMP, ISO 9001:2015 and laboratory accreditation.",
+   "tr": "Arapoush Gostar 2004'ten beri dikişsiz çok katmanlı plastik tüpler ve efervesan tablet kapları üretiyor: Kazvin Hazar Sanayi Bölgesi'nde fabrika, günde 250.000 baskılı ürün, GMP, ISO 9001:2015 ve laboratuvar akreditasyonu."
+  }
+ },
+ "hero": {
+  "style": "cinema",
+  "eyebrow": {
+   "fa": "About Arapoush Gostar",
+   "en": "About Arapoush Gostar",
+   "tr": "Arapoush Gostar hakkında"
+  },
+  "title": {
+   "fa": "آراپوش گستر تولیدکننده برتر تیوب های قرص جوشان و چندلایه پلاستیکی بدون درز",
+   "en": "Arapoush Gostar, a leading maker of effervescent tablet tubes and seamless multi-layer plastic tubes",
+   "tr": "Arapoush Gostar: efervesan tablet tüplerinin ve dikişsiz çok katmanlı plastik tüplerin önde gelen üreticisi"
+  },
+  "lead": {
+   "fa": "شرکت آراپوش گستر (سهامی خاص) تولید کننده انواع تیوب های پلاستیکی بدون درز و ظروف قرص جوشان با چاپ و تزیینات متنوع، در سال 1383 تاسیس گردید و نیازهای مشتریان خود در صنایع آرایشی، بهداشتی، دارویی، شوینده، غذایی و صنعتی را با بالاترین کیفیت و مناسبترین قیمت همراه با نوآوری و تحویل به موقع تامین می کند.",
+   "en": "Arapoush Gostar (private joint-stock company), maker of seamless plastic tubes and effervescent tablet containers with a wide range of printing and decoration, was founded in 2004. It meets the needs of its customers in the cosmetic, hygienic, pharmaceutical, detergent, food and industrial sectors with the highest quality and the best price, together with innovation and on-time delivery.",
+   "tr": "Çeşitli baskı ve dekorasyonlarla dikişsiz plastik tüpler ve efervesan tablet kapları üreten Arapoush Gostar (anonim şirket) 2004 yılında kuruldu. Kozmetik, hijyen, ilaç, deterjan, gıda ve endüstri sektörlerindeki müşterilerinin ihtiyaçlarını en yüksek kalite ve en uygun fiyatla, inovasyon ve zamanında teslimatla karşılar."
+  },
+  "slogan": {
+   "fa": "تحول مسیر تکامل ماست",
+   "en": "Transformation is the path of our evolution",
+   "tr": "Dönüşüm, evrimimizin yoludur"
+  },
+  "story": {
+   "fa": "مسیر ما",
+   "en": "Our story",
+   "tr": "Hikâyemiz"
+  },
+  "honours": {
+   "fa": "گواهینامه‌ها و افتخارات",
+   "en": "Certificates and honours",
+   "tr": "Sertifikalar ve ödüller"
+  },
+  "play": {
+   "fa": "پخش ویدیو",
+   "en": "Play video",
+   "tr": "Videoyu oynat"
+  },
+  "pause": {
+   "fa": "توقف ویدیو",
+   "en": "Pause video",
+   "tr": "Videoyu durdur"
+  },
+  "videoAlt": {
+   "fa": "خط تولید و چاپ تیوب در کارخانه آراپوش گستر",
+   "en": "Tube production and printing line at the Arapoush Gostar factory",
+   "tr": "Arapoush Gostar fabrikasında tüp üretim ve baskı hattı"
+  },
+  "stats": [
+   {
+    "id": "founded",
+    "value": {
+     "fa": "۱۳۸۳",
+     "en": "2004",
+     "tr": "2004"
+    },
+    "label": {
+     "fa": "سال تاسیس",
+     "en": "Founded",
+     "tr": "Kuruluş yılı"
+    }
+   },
+   {
+    "id": "daily",
+    "value": {
+     "fa": "۲۵۰.۰۰۰",
+     "en": "250,000",
+     "tr": "250.000"
+    },
+    "label": {
+     "fa": "محصول چاپی در روز",
+     "en": "printed products a day",
+     "tr": "günlük baskılı ürün"
+    }
+   },
+   {
+    "id": "industries",
+    "value": {
+     "fa": "۶",
+     "en": "6",
+     "tr": "6"
+    },
+    "label": {
+     "fa": "صنعت: آرایشی تا صنعتی",
+     "en": "industries, cosmetic to industrial",
+     "tr": "sektör, kozmetikten endüstriye"
+    }
+   }
+  ],
+  "video": {
+   "mp4": "/files/video/factory.mp4",
+   "webm": "/files/video/factory.webm"
+  }
+ },
+ "story": {
+  "style": "pinned",
+  "eyebrow": {
+   "fa": "Our story",
+   "en": "Our story",
+   "tr": "Hikâyemiz"
+  },
+  "title": {
+   "fa": "از ۱۳۸۳ تا امروز",
+   "en": "From 2004 to today",
+   "tr": "2004'ten bugüne"
+  },
+  "lead": {
+   "fa": "از تاسیس در سال 1383 تا کارخانه‌ای در شهرک صنعتی کاسپین قزوین با توانایی تولید روزانه ۲۵۰.۰۰۰ عدد محصول چاپی.",
+   "en": "From its founding in 2004 to a factory in Caspian Industrial Town, Qazvin, able to make 250,000 printed products a day.",
+   "tr": "2004'teki kuruluşundan, Kazvin Hazar Sanayi Bölgesi'nde günde 250.000 baskılı ürün üretebilen bir fabrikaya."
+  },
+  "milestones": [
+   {
+    "id": "founded",
+    "year": {
+     "fa": "۱۳۸۳",
+     "en": "2004",
+     "tr": "2004"
+    },
+    "title": {
+     "fa": "تاسیس آراپوش گستر",
+     "en": "Arapoush Gostar is founded",
+     "tr": "Arapoush Gostar kuruldu"
+    },
+    "text": {
+     "fa": "شرکت آراپوش گستر (سهامی خاص) تولید کننده انواع تیوب های پلاستیکی بدون درز و ظروف قرص جوشان با چاپ و تزیینات متنوع، در سال 1383 تاسیس گردید.",
+     "en": "Arapoush Gostar (private joint-stock company), maker of seamless plastic tubes and effervescent tablet containers with varied printing and decoration, was founded in 2004.",
+     "tr": "Çeşitli baskı ve dekorasyonlarla dikişsiz plastik tüpler ve efervesan tablet kapları üreten Arapoush Gostar (anonim şirket) 2004'te kuruldu."
+    },
+    "image": {
+     "src": "/images/about/factory/aerial-day.webp",
+     "width": 1500,
+     "height": 1000
+    }
+   },
+   {
+    "id": "standard",
+    "year": {
+     "fa": "۱۳۸۶",
+     "en": "2007",
+     "tr": "2007"
+    },
+    "title": {
+     "fa": "علامت استاندارد ایران",
+     "en": "The Iranian standard mark",
+     "tr": "İran standart işareti"
+    },
+    "text": {
+     "fa": "سازمان ملی استاندارد ایران پروانه کاربرد علامت استاندارد اجباری را برای تیوب چند لایه پلاستیکی بدون درز و بدون لایه آلومینیوم آراپوش گستر صادر کرد.",
+     "en": "The Iranian National Standards Organization granted the licence to use the mandatory standard mark on Arapoush's seamless multi-layer plastic tubes, with and without an aluminium layer.",
+     "tr": "İran Ulusal Standartlar Örgütü, Arapoush'un alüminyum katmanlı ve katmansız dikişsiz çok katmanlı plastik tüpleri için zorunlu standart işareti kullanım lisansını verdi."
+    },
+    "image": {
+     "src": "/images/about/honours/standard-mark.webp",
+     "width": 960,
+     "height": 960
+    }
+   },
+   {
+    "id": "iso",
+    "year": {
+     "fa": "۱۳۸۷",
+     "en": "2008",
+     "tr": "2008"
+    },
+    "title": {
+     "fa": "نخستین گواهینامه ایزو 9001",
+     "en": "First ISO 9001 certification",
+     "tr": "İlk ISO 9001 belgesi"
+    },
+    "text": {
+     "fa": "سیستم مدیریت کیفیت آراپوش گستر برای طراحی و تولید تیوب‌های پلاستیکی بهداشتی چندلایه بدون درز و ظروف قرص جوشان نخستین بار در شهریور ۱۳۸۷ گواهی ایزو 9001 گرفت و از آن زمان پیوسته تمدید شده است.",
+     "en": "Arapoush's quality management system for designing and producing seamless multi-layer hygienic plastic tubes and effervescent tablet containers was first certified to ISO 9001 in September 2008, and has been renewed ever since.",
+     "tr": "Arapoush'un dikişsiz çok katmanlı hijyenik plastik tüp ve efervesan tablet kabı tasarım ve üretimine yönelik kalite yönetim sistemi ilk kez Eylül 2008'de ISO 9001 belgesi aldı ve o günden beri yenileniyor."
+    },
+    "image": {
+     "src": "/images/about/honours/iso-9001-2017.webp",
+     "width": 960,
+     "height": 960
+    }
+   },
+   {
+    "id": "licence",
+    "year": {
+     "fa": "۱۳۸۹",
+     "en": "2010",
+     "tr": "2010"
+    },
+    "title": {
+     "fa": "پروانه بهره‌برداری",
+     "en": "Operating licence",
+     "tr": "İşletme ruhsatı"
+    },
+    "text": {
+     "fa": "سازمان صنعت، معدن و تجارت استان قزوین پروانه بهره‌برداری کارخانه آراپوش گستر را در شهرک صنعتی کاسپین صادر کرد. همان سال، آراپوش در شانزدهمین نمایشگاه بین‌المللی چاپ، بسته‌بندی و ماشین‌آلات وابسته تهران حضور داشت.",
+     "en": "The Qazvin Province Industry, Mine and Trade Organization issued the operating licence for the Arapoush Gostar factory in Caspian Industrial Town. The same year Arapoush exhibited at the 16th Tehran International Printing, Packaging and Related Machinery Exhibition.",
+     "tr": "Kazvin İli Sanayi, Maden ve Ticaret Teşkilatı, Hazar Sanayi Bölgesi'ndeki Arapoush Gostar fabrikasının işletme ruhsatını verdi. Aynı yıl Arapoush, 16. Tahran Uluslararası Baskı, Ambalaj ve İlgili Makineler Fuarı'na katıldı."
+    },
+    "image": {
+     "src": "/images/about/factory/entrance.webp",
+     "width": 1000,
+     "height": 563
+    }
+   },
+   {
+    "id": "rnd",
+    "year": {
+     "fa": "۱۳۹۳",
+     "en": "2014",
+     "tr": "2014"
+    },
+    "title": {
+     "fa": "واحد تحقیق و توسعه",
+     "en": "Research and development unit",
+     "tr": "Araştırma ve geliştirme birimi"
+    },
+    "text": {
+     "fa": "سازمان صنعت، معدن و تجارت استان قزوین با بررسی تشکیلات، امکانات آزمایشگاهی و نیروی متخصص، گواهی تحقیق و توسعه را به آراپوش گستر اعطا کرد؛ گام اول توسعه تحقیقات علمی و پژوهشی (R&D) در خط مشی شرکت.",
+     "en": "After reviewing its organisation, laboratory facilities and specialist staff, the Qazvin Province Industry, Mine and Trade Organization granted Arapoush its R&D certificate, the first step of the research and development goal in the company's policy.",
+     "tr": "Kazvin İli Sanayi, Maden ve Ticaret Teşkilatı; organizasyonunu, laboratuvar olanaklarını ve uzman kadrosunu inceledikten sonra Arapoush'a Ar-Ge belgesini verdi: şirket politikasındaki araştırma ve geliştirme hedefinin ilk adımı."
+    },
+    "image": {
+     "src": "/images/about/honours/rnd-certificate.webp",
+     "width": 500,
+     "height": 500
+    }
+   },
+   {
+    "id": "gmp-kiwa",
+    "year": {
+     "fa": "۱۳۹۵",
+     "en": "2016",
+     "tr": "2016"
+    },
+    "title": {
+     "fa": "گواهینامه GMP کیوا",
+     "en": "Kiwa GMP certificate",
+     "tr": "Kiwa GMP belgesi"
+    },
+    "text": {
+     "fa": "کیوا تولید تیوب‌های پلیمری بدون درز آراپوش را بر اساس اصول تولید خوب (GMP) گواهی کرد؛ همان سال آراپوش در بیست و سومین نمایشگاه بین‌المللی ایران بیوتی اند کلین حضور داشت.",
+     "en": "Kiwa certified Arapoush's production of seamless polymer tubes to Good Manufacturing Practice (GMP). The same year Arapoush exhibited at the 23rd Iran Beauty & Clean international exhibition.",
+     "tr": "Kiwa, Arapoush'un dikişsiz polimer tüp üretimini İyi Üretim Uygulamaları'na (GMP) göre belgelendirdi. Aynı yıl Arapoush, 23. Uluslararası Iran Beauty & Clean fuarına katıldı."
+    },
+    "image": {
+     "src": "/images/about/honours/gmp-kiwa-2016.webp",
+     "width": 500,
+     "height": 500
+    }
+   },
+   {
+    "id": "gmp",
+    "year": {
+     "fa": "۱۳۹۷",
+     "en": "2018",
+     "tr": "2018"
+    },
+    "title": {
+     "fa": "گواهینامه GMP مواد بسته‌بندی دارویی و آرایشی",
+     "en": "GMP for medicinal and cosmetic packaging",
+     "tr": "İlaç ve kozmetik ambalaj için GMP"
+    },
+    "text": {
+     "fa": "سیستم مدیریت آراپوش برای طراحی و تولید مواد بسته‌بندی اولیه محصولات دارویی و آرایشی، یعنی تیوب‌های بهداشتی چندلایه بدون درز و ظروف قرص جوشان، با استاندارد GMP منطبق شناخته شد.",
+     "en": "Arapoush's management system for designing and producing primary packaging for medicinal and cosmetic products, seamless multi-layer hygienic tubes and effervescent tablet containers, was declared compliant with GMP.",
+     "tr": "Arapoush'un ilaç ve kozmetik ürünler için birincil ambalaj, yani dikişsiz çok katmanlı hijyenik tüpler ve efervesan tablet kapları tasarım ve üretim yönetim sistemi GMP'ye uygun bulundu."
+    },
+    "image": {
+     "src": "/images/about/honours/gmp-2018.webp",
+     "width": 960,
+     "height": 960
+    }
+   },
+   {
+    "id": "exporter",
+    "year": {
+     "fa": "۱۴۰۱",
+     "en": "2022",
+     "tr": "2022"
+    },
+    "title": {
+     "fa": "صادرکننده نمونه استان قزوین",
+     "en": "Exemplary exporter of Qazvin Province",
+     "tr": "Kazvin İli'nin örnek ihracatçısı"
+    },
+    "text": {
+     "fa": "استانداری قزوین آراپوش گستر را به عنوان صادرکننده نمونه استان در سال ۱۴۰۱ برگزید و لوح تقدیر صادر کننده برتر در زمینه‌ی محصولات غیر نفتی را به شرکت اهدا کرد.",
+     "en": "The Governorate of Qazvin named Arapoush Gostar the province's exemplary exporter of 2022 and presented its letter of appreciation as a top exporter of non-oil products.",
+     "tr": "Kazvin Valiliği, Arapoush Gostar'ı 2022 yılının ilin örnek ihracatçısı seçti ve petrol dışı ürünlerde en iyi ihracatçı takdirnamesini verdi."
+    },
+    "image": {
+     "src": "/images/about/honours/exporter-1401.webp",
+     "width": 960,
+     "height": 960
+    }
+   },
+   {
+    "id": "lab",
+    "year": {
+     "fa": "۱۴۰۲",
+     "en": "2023",
+     "tr": "2023"
+    },
+    "title": {
+     "fa": "آزمایشگاه تایید صلاحیت‌شده",
+     "en": "An accredited laboratory",
+     "tr": "Akredite laboratuvar"
+    },
+    "text": {
+     "fa": "مرکز ملی تایید صلاحیت ایران آزمایشگاه آراپوش گستر را بر اساس استاندارد ایزو/آی ای سی 17025:2017 برای خدمات آزمون تایید صلاحیت کرد؛ همان سال گواهینامه ایزو 9001:2015 شرکت تمدید شد.",
+     "en": "The National Accreditation Center of Iran accredited the Arapoush Gostar laboratory for testing services to ISO/IEC 17025:2017. The same year the company's ISO 9001:2015 certificate was renewed.",
+     "tr": "İran Ulusal Akreditasyon Merkezi, Arapoush Gostar laboratuvarını test hizmetleri için ISO/IEC 17025:2017'ye göre akredite etti. Aynı yıl şirketin ISO 9001:2015 belgesi yenilendi."
+    },
+    "image": {
+     "src": "/images/about/honours/lab-17025.webp",
+     "width": 960,
+     "height": 960
+    }
+   },
+   {
+    "id": "strategy",
+    "year": {
+     "fa": "۱۴۰۳",
+     "en": "2024",
+     "tr": "2024"
+    },
+    "title": {
+     "fa": "سند راهبردی ۱۴۰۳",
+     "en": "Strategic document 2024",
+     "tr": "2024 stratejik belgesi"
+    },
+    "text": {
+     "fa": "سند راهبردی آراپوش گستر مأموریت، چشم انداز، ارزش‌ها، خط مشی و شعار شرکت را تعیین می‌کند: «تحول مسیر تکامل ماست».",
+     "en": "Arapoush Gostar's strategic document sets out the company's mission, vision, values, policy and slogan: \"Transformation is the path of our evolution\".",
+     "tr": "Arapoush Gostar'ın stratejik belgesi şirketin misyonunu, vizyonunu, değerlerini, politikasını ve sloganını belirler: \"Dönüşüm, evrimimizin yoludur\"."
+    },
+    "image": {
+     "src": "/images/about/honours/strategy-1403.webp",
+     "width": 960,
+     "height": 960
+    }
+   }
+  ],
+  "today": {
+   "eyebrow": {
+    "fa": "Today",
+    "en": "Today",
+    "tr": "Bugün"
+   },
+   "title": {
+    "fa": "دستاوردهای آراپوش گستر تاکنون",
+    "en": "Arapoush Gostar's achievements so far",
+    "tr": "Arapoush Gostar'ın bugüne kadarki başarıları"
+   },
+   "value": {
+    "fa": "۲۵۰.۰۰۰",
+    "en": "250,000",
+    "tr": "250.000"
+   },
+   "unit": {
+    "fa": "توانایی تولید روزانه ۲۵۰.۰۰۰ عدد محصول چاپی",
+    "en": "The capacity to produce 250,000 printed products a day",
+    "tr": "Günde 250.000 baskılı ürün üretme kapasitesi"
+   },
+   "items": [
+    {
+     "fa": "ارایه دهنده بیشترین تنوع چاپ بر روی تیوب های تولیدی",
+     "en": "The widest variety of printing on the tubes we make",
+     "tr": "Ürettiğimiz tüplerde en geniş baskı çeşitliliği"
+    },
+    {
+     "fa": "تنها ارایه کننده خدمات چاپ ترکیبی، هات استمپ (Hot Stamp) و چاپ تا روی شانه در تیوب های چند لایه پلاستیکی بدون درز",
+     "en": "The only provider of combination printing, hot stamping and printing up onto the shoulder of seamless multi-layer plastic tubes",
+     "tr": "Dikişsiz çok katmanlı plastik tüplerde kombine baskı, sıcak baskı (hot stamp) ve omuza kadar baskı sunan tek firma"
+    },
+    {
+     "fa": "عرضه کننده متنوع ترین تیوب های قرص جوشان",
+     "en": "Supplier of the widest range of effervescent tablet tubes",
+     "tr": "En çeşitli efervesan tablet tüplerinin tedarikçisi"
+    },
+    {
+     "fa": "تولید کننده متنوع ترین تیوب های چند لایه پلاستیکی بدون درز در مقاطع و نازل های گوناگون",
+     "en": "Maker of the widest range of seamless multi-layer plastic tubes, in many cross-sections and nozzles",
+     "tr": "Çok çeşitli kesit ve nozullarda en geniş dikişsiz çok katmanlı plastik tüp yelpazesinin üreticisi"
+    },
+    {
+     "fa": "اولین شرکت با قابلیت چاپ با روش سیلک اسکرین بر روی انواع تیوب",
+     "en": "The first company able to silk-screen print on every kind of tube",
+     "tr": "Her tür tüpe serigrafi baskı yapabilen ilk şirket"
+    }
+   ]
+  }
+ },
+ "gallery": {
+  "style": "filmstrip",
+  "eyebrow": {
+   "fa": "Inside the factory",
+   "en": "Inside the factory",
+   "tr": "Fabrikanın içinden"
+  },
+  "title": {
+   "fa": "کارخانه آراپوش گستر",
+   "en": "The Arapoush Gostar factory",
+   "tr": "Arapoush Gostar fabrikası"
+  },
+  "lead": {
+   "fa": "قزوین، شهرک صنعتی کاسپین: سالن‌های تولید، چاپ و انبار کارخانه.",
+   "en": "Caspian Industrial Town, Qazvin: the factory's production, printing and warehouse halls.",
+   "tr": "Hazar Sanayi Bölgesi, Kazvin: fabrikanın üretim, baskı ve depo salonları."
+  },
+  "of": {
+   "fa": "{n} از {total}",
+   "en": "{n} of {total}",
+   "tr": "{n} / {total}"
+  },
+  "prev": {
+   "fa": "تصویر قبلی",
+   "en": "Previous photo",
+   "tr": "Önceki fotoğraf"
+  },
+  "next": {
+   "fa": "تصویر بعدی",
+   "en": "Next photo",
+   "tr": "Sonraki fotoğraf"
+  },
+  "items": [
+   {
+    "id": "aerial-night",
+    "image": {
+     "src": "/images/about/factory/aerial-night.webp",
+     "width": 1500,
+     "height": 1000
+    },
+    "caption": {
+     "fa": "کارخانه آراپوش گستر در شهرک صنعتی کاسپین قزوین",
+     "en": "The Arapoush Gostar factory in Caspian Industrial Town, Qazvin",
+     "tr": "Kazvin Hazar Sanayi Bölgesi'ndeki Arapoush Gostar fabrikası"
+    }
+   },
+   {
+    "id": "moulding-hall",
+    "image": {
+     "src": "/images/about/factory/moulding-hall.webp",
+     "width": 1500,
+     "height": 1000
+    },
+    "caption": {
+     "fa": "سالن ماشین‌های تزریق",
+     "en": "The injection-moulding hall",
+     "tr": "Enjeksiyon kalıplama salonu"
+    }
+   },
+   {
+    "id": "printed-tubes",
+    "image": {
+     "src": "/images/about/factory/printed-tubes.webp",
+     "width": 1500,
+     "height": 1000
+    },
+    "caption": {
+     "fa": "تیوب‌های چاپ‌شده روی خط تولید",
+     "en": "Printed tubes on the production line",
+     "tr": "Üretim hattında baskılı tüpler"
+    }
+   },
+   {
+    "id": "mandrels",
+    "image": {
+     "src": "/images/about/factory/mandrels.webp",
+     "width": 1500,
+     "height": 1000
+    },
+    "caption": {
+     "fa": "سرشانه‌گذاری تیوب‌ها",
+     "en": "Tubes on the shouldering mandrels",
+     "tr": "Omuz takma mandrellerindeki tüpler"
+    }
+   },
+   {
+    "id": "mould",
+    "image": {
+     "src": "/images/about/factory/mould.webp",
+     "width": 1500,
+     "height": 1000
+    },
+    "caption": {
+     "fa": "قالب تزریق ظروف قرص جوشان",
+     "en": "An injection mould for effervescent tablet containers",
+     "tr": "Efervesan tablet kapları için enjeksiyon kalıbı"
+    }
+   },
+   {
+    "id": "entrance",
+    "image": {
+     "src": "/images/about/factory/entrance.webp",
+     "width": 1000,
+     "height": 563
+    },
+    "caption": {
+     "fa": "ساختمان اداری و ورودی کارخانه",
+     "en": "The factory's office building and entrance",
+     "tr": "Fabrikanın idari binası ve girişi"
+    }
+   },
+   {
+    "id": "aerial-day",
+    "image": {
+     "src": "/images/about/factory/aerial-day.webp",
+     "width": 1500,
+     "height": 1000
+    },
+    "caption": {
+     "fa": "نمای کارخانه از بالا",
+     "en": "The factory from above",
+     "tr": "Fabrikaya yukarıdan bakış"
+    }
+   },
+   {
+    "id": "dispatch",
+    "image": {
+     "src": "/images/about/factory/dispatch.webp",
+     "width": 1500,
+     "height": 1000
+    },
+    "caption": {
+     "fa": "انبار و بارگیری محصولات",
+     "en": "Warehouse and dispatch",
+     "tr": "Depo ve sevkiyat"
+    }
+   }
+  ]
+ },
+ "honours": {
+  "style": "wall",
+  "eyebrow": {
+   "fa": "Honours & certificates",
+   "en": "Honours & certificates",
+   "tr": "Ödüller ve sertifikalar"
+  },
+  "title": {
+   "fa": "افتخارات آراپوش گستر",
+   "en": "Arapoush Gostar's honours",
+   "tr": "Arapoush Gostar'ın ödülleri"
+  },
+  "lead": {
+   "fa": "گواهینامه‌ها، پروانه‌ها و لوح‌های تقدیری که کیفیت، آزمایشگاه، تحقیق و توسعه و صادرات آراپوش گستر را تایید می‌کنند.",
+   "en": "The certificates, licences and awards that attest to Arapoush Gostar's quality, laboratory, research and development, and exports.",
+   "tr": "Arapoush Gostar'ın kalitesini, laboratuvarını, araştırma ve geliştirmesini ve ihracatını belgeleyen sertifikalar, ruhsatlar ve ödüller."
+  },
+  "filters": {
+   "all": {
+    "fa": "همه",
+    "en": "All",
+    "tr": "Tümü"
+   },
+   "certificate": {
+    "fa": "گواهینامه‌ها",
+    "en": "Certificates",
+    "tr": "Sertifikalar"
+   },
+   "licence": {
+    "fa": "پروانه‌ها و اسناد",
+    "en": "Licences and documents",
+    "tr": "Ruhsatlar ve belgeler"
+   },
+   "award": {
+    "fa": "افتخارات",
+    "en": "Honours",
+    "tr": "Ödüller"
+   }
+  },
+  "filterLabel": {
+   "fa": "نوع مدرک",
+   "en": "Document type",
+   "tr": "Belge türü"
+  },
+  "issuer": {
+   "fa": "مرجع صدور",
+   "en": "Issued by",
+   "tr": "Veren kurum"
+  },
+  "year": {
+   "fa": "سال",
+   "en": "Year",
+   "tr": "Yıl"
+  },
+  "scope": {
+   "fa": "موضوع",
+   "en": "Awarded for",
+   "tr": "Kapsam"
+  },
+  "view": {
+   "fa": "مشاهده مدرک",
+   "en": "View document",
+   "tr": "Belgeyi görüntüle"
+  },
+  "close": {
+   "fa": "بستن",
+   "en": "Close",
+   "tr": "Kapat"
+  },
+  "copies": {
+   "fa": "نسخه‌های دیگر",
+   "en": "Other copies",
+   "tr": "Diğer nüshalar"
+  },
+  "of": {
+   "fa": "{n} از {total}",
+   "en": "{n} of {total}",
+   "tr": "{n} / {total}"
+  },
+  "prev": {
+   "fa": "مدرک قبلی",
+   "en": "Previous document",
+   "tr": "Önceki belge"
+  },
+  "next": {
+   "fa": "مدرک بعدی",
+   "en": "Next document",
+   "tr": "Sonraki belge"
+  },
+  "items": [
+   {
+    "id": "gmp",
+    "kind": "certificate",
+    "title": {
+     "fa": "گواهینامه GMP",
+     "en": "GMP certificate",
+     "tr": "GMP belgesi"
+    },
+    "year": {
+     "fa": "۱۳۹۷ (آخرین صدور ۱۴۰۲)",
+     "en": "2018 (latest issue 2024)",
+     "tr": "2018 (son düzenleme 2024)"
+    },
+    "issuer": {
+     "fa": "شرکت مرزبان کیفیت، اظهارنامه انطباق QM",
+     "en": "Marzban Keifiat Ltd. (QM Conformance Declaration)",
+     "tr": "Marzban Keifiat Ltd. (QM Conformance Declaration)"
+    },
+    "scope": {
+     "fa": "طراحی و تولید مواد بسته‌بندی اولیه محصولات دارویی و آرایشی: تیوب‌های بهداشتی چندلایه بدون درز و ظروف قرص جوشان",
+     "en": "Design and production of primary packaging for medicinal and cosmetic products: seamless multi-layer hygienic tubes and effervescent tablet containers",
+     "tr": "İlaç ve kozmetik ürünler için birincil ambalaj tasarımı ve üretimi: dikişsiz çok katmanlı hijyenik tüpler ve efervesan tablet kapları"
+    },
+    "text": {
+     "fa": "GMP یا «اصول تولید خوب» تضمین می‌کند که بسته‌بندی‌ای که با دارو و محصول آرایشی تماس دارد در شرایط کنترل‌شده، بهداشتی و قابل ردیابی تولید می‌شود. اعتبار فعلی تا بهمن ۱۴۰۵.",
+     "en": "GMP, Good Manufacturing Practice, assures that packaging touching medicines and cosmetics is made under controlled, hygienic and traceable conditions. The current declaration runs to January 2027.",
+     "tr": "GMP (İyi Üretim Uygulamaları), ilaç ve kozmetikle temas eden ambalajın kontrollü, hijyenik ve izlenebilir koşullarda üretildiğini güvence altına alır. Mevcut beyan Ocak 2027'ye kadar geçerlidir."
+    },
+    "image": {
+     "src": "/images/about/honours/gmp-2024.webp",
+     "width": 960,
+     "height": 960
+    },
+    "copies": [
+     {
+      "src": "/images/about/honours/gmp-2018.webp",
+      "width": 960,
+      "height": 960
+     }
+    ]
+   },
+   {
+    "id": "iso-9001",
+    "kind": "certificate",
+    "title": {
+     "fa": "گواهینامه ایزو 9001:2015",
+     "en": "ISO 9001:2015 certificate",
+     "tr": "ISO 9001:2015 belgesi"
+    },
+    "year": {
+     "fa": "۱۳۸۷ (آخرین صدور ۱۴۰۲)",
+     "en": "2008 (latest issue 2023)",
+     "tr": "2008 (son düzenleme 2023)"
+    },
+    "issuer": {
+     "fa": "شرکت پایش و ارزیابی انطباق ایران (PNIRAN)، مورد تایید مرکز ملی تایید صلاحیت ایران (NACI) و عضو IAF؛ پیش‌تر TÜV NORD",
+     "en": "Monitoring & Conformity Assessment Iran (PNIRAN), accredited by NACI and an IAF member; earlier TÜV NORD",
+     "tr": "Monitoring & Conformity Assessment Iran (PNIRAN), NACI akrediteli ve IAF üyesi; daha önce TÜV NORD"
+    },
+    "scope": {
+     "fa": "طراحی و تولید تیوب‌های پلاستیکی بهداشتی چندلایه بدون درز و ظروف پلی‌پروپیلنی قرص جوشان",
+     "en": "Design and production of seamless multi-layer hygienic plastic tubes and effervescent tablet polypropylene containers",
+     "tr": "Dikişsiz çok katmanlı hijyenik plastik tüplerin ve efervesan tablet polipropilen kaplarının tasarımı ve üretimi"
+    },
+    "text": {
+     "fa": "ایزو 9001 استاندارد بین‌المللی سیستم مدیریت کیفیت است: هر مرحله از طراحی تا تحویل مستند، ممیزی و پیوسته بهبود داده می‌شود. نخستین صدور شهریور ۱۳۸۷؛ اعتبار فعلی تا خرداد ۱۴۰۵.",
+     "en": "ISO 9001 is the international standard for quality management: every step from design to delivery is documented, audited and continually improved. First certified in September 2008; the current certificate runs to May 2026.",
+     "tr": "ISO 9001, kalite yönetimi için uluslararası standarttır: tasarımdan teslimata her adım belgelenir, denetlenir ve sürekli iyileştirilir. İlk belgelendirme Eylül 2008; mevcut belge Mayıs 2026'ya kadar geçerlidir."
+    },
+    "image": {
+     "src": "/images/about/honours/iso-9001-2023.webp",
+     "width": 960,
+     "height": 960
+    },
+    "copies": [
+     {
+      "src": "/images/about/honours/iso-9001-2020-en.webp",
+      "width": 960,
+      "height": 960
+     },
+     {
+      "src": "/images/about/honours/iso-9001-2020-fa.webp",
+      "width": 960,
+      "height": 960
+     },
+     {
+      "src": "/images/about/honours/iso-9001-2020-tr.webp",
+      "width": 960,
+      "height": 960
+     },
+     {
+      "src": "/images/about/honours/iso-9001-2017.webp",
+      "width": 960,
+      "height": 960
+     }
+    ]
+   },
+   {
+    "id": "lab",
+    "kind": "certificate",
+    "title": {
+     "fa": "گواهینامه تایید صلاحیت آزمایشگاه",
+     "en": "Laboratory accreditation certificate",
+     "tr": "Laboratuvar akreditasyon belgesi"
+    },
+    "year": {
+     "fa": "۱۴۰۲",
+     "en": "2023",
+     "tr": "2023"
+    },
+    "issuer": {
+     "fa": "مرکز ملی تایید صلاحیت ایران (NACI)",
+     "en": "National Accreditation Center of Iran (NACI)",
+     "tr": "İran Ulusal Akreditasyon Merkezi (NACI)"
+    },
+    "scope": {
+     "fa": "خدمات آزمون آزمایشگاه آراپوش گستر بر اساس استاندارد ایزو/آی ای سی 17025:2017",
+     "en": "Testing services of the Arapoush Gostar laboratory to ISO/IEC 17025:2017",
+     "tr": "Arapoush Gostar laboratuvarının ISO/IEC 17025:2017'ye göre test hizmetleri"
+    },
+    "text": {
+     "fa": "ایزو/آی ای سی 17025 نشان می‌دهد آزمایشگاه از نظر فنی صلاحیت دارد و نتایج آزمون‌هایش معتبر و قابل اتکاست؛ آزمون‌های کیفی تیوب‌ها در خود کارخانه انجام می‌شود. اعتبار تا تیر ۱۴۰۵.",
+     "en": "ISO/IEC 17025 shows a laboratory is technically competent and its test results are valid and reliable, so tube quality tests are done in the factory itself. Valid to July 2026.",
+     "tr": "ISO/IEC 17025, bir laboratuvarın teknik olarak yetkin olduğunu ve test sonuçlarının geçerli ve güvenilir olduğunu gösterir; tüplerin kalite testleri fabrikanın kendisinde yapılır. Temmuz 2026'ya kadar geçerlidir."
+    },
+    "image": {
+     "src": "/images/about/honours/lab-17025.webp",
+     "width": 960,
+     "height": 960
+    },
+    "copies": []
+   },
+   {
+    "id": "gmp-kiwa",
+    "kind": "certificate",
+    "title": {
+     "fa": "گواهینامه GMP کیوا",
+     "en": "Kiwa GMP certificate",
+     "tr": "Kiwa GMP belgesi"
+    },
+    "year": {
+     "fa": "۱۳۹۵",
+     "en": "2016",
+     "tr": "2016"
+    },
+    "issuer": {
+     "fa": "کیوا (Kiwa)",
+     "en": "Kiwa",
+     "tr": "Kiwa"
+    },
+    "scope": {
+     "fa": "تیوب‌های پلیمری بدون درز",
+     "en": "Seamless polymer tubes",
+     "tr": "Dikişsiz polimer tüpler"
+    },
+    "text": {
+     "fa": "گواهی بین‌المللی اصول تولید خوب (Good Manufacturing Practice) برای تولید تیوب‌های پلیمری بدون درز آراپوش، صادرشده در اردیبهشت ۱۳۹۵.",
+     "en": "International Good Manufacturing Practice certification for Arapoush's production of seamless polymer tubes, issued in May 2016.",
+     "tr": "Arapoush'un dikişsiz polimer tüp üretimi için uluslararası İyi Üretim Uygulamaları belgesi, Mayıs 2016'da düzenlendi."
+    },
+    "image": {
+     "src": "/images/about/honours/gmp-kiwa-2016.webp",
+     "width": 500,
+     "height": 500
+    },
+    "copies": []
+   },
+   {
+    "id": "standard-mark",
+    "kind": "licence",
+    "title": {
+     "fa": "پروانه کاربرد علامت استاندارد اجباری",
+     "en": "Licence to use the mandatory standard mark",
+     "tr": "Zorunlu standart işareti kullanım lisansı"
+    },
+    "year": {
+     "fa": "۱۳۸۶ (تمدید ۱۳۹۷)",
+     "en": "2007 (renewed 2018)",
+     "tr": "2007 (yenileme 2018)"
+    },
+    "issuer": {
+     "fa": "سازمان ملی استاندارد ایران",
+     "en": "Iranian National Standards Organization (INSO)",
+     "tr": "İran Ulusal Standartlar Örgütü (INSO)"
+    },
+    "scope": {
+     "fa": "تیوب چند لایه پلاستیکی بدون درز و بدون لایه آلومینیوم با نام و علامت تجاری آراپوش",
+     "en": "Seamless multi-layer plastic tubes, with and without an aluminium layer, under the Arapoush name and trademark",
+     "tr": "Arapoush adı ve markasıyla, alüminyum katmanlı ve katmansız dikişsiz çok katmanlı plastik tüpler"
+    },
+    "text": {
+     "fa": "این پروانه اجازه می‌دهد علامت استاندارد ایران روی تیوب‌های آراپوش درج شود؛ یعنی محصول با استاندارد ملی ایران مطابقت دارد و تحت نظارت سازمان ملی استاندارد تولید می‌شود.",
+     "en": "The licence lets Arapoush carry the Iranian standard mark on its tubes: the product meets the Iranian national standard and is made under INSO supervision.",
+     "tr": "Bu lisans Arapoush'un tüplerinde İran standart işaretini taşımasına izin verir: ürün İran ulusal standardını karşılar ve INSO denetiminde üretilir."
+    },
+    "image": {
+     "src": "/images/about/honours/standard-mark.webp",
+     "width": 960,
+     "height": 960
+    },
+    "copies": [
+     {
+      "src": "/images/about/honours/standard-mark-2.webp",
+      "width": 500,
+      "height": 500
+     }
+    ]
+   },
+   {
+    "id": "health",
+    "kind": "licence",
+    "title": {
+     "fa": "پروانه بهداشتی ساخت",
+     "en": "Health manufacturing licence",
+     "tr": "Sağlık üretim ruhsatı"
+    },
+    "year": null,
+    "issuer": {
+     "fa": "معاونت غذا و دارو",
+     "en": "Food and Drug Deputy (Ministry of Health)",
+     "tr": "Gıda ve İlaç Müsteşarlığı (Sağlık Bakanlığı)"
+    },
+    "scope": {
+     "fa": "تیوب پلی‌اتیلنی چندلایه بدون درز جهت بسته‌بندی فرآورده‌های آرایشی و بهداشتی",
+     "en": "Seamless multi-layer polyethylene tubes for packaging cosmetic and hygienic products",
+     "tr": "Kozmetik ve hijyen ürünlerinin ambalajı için dikişsiz çok katmanlı polietilen tüpler"
+    },
+    "text": {
+     "fa": "پروانه بهداشتی ساخت تایید می‌کند که تیوب‌هایی که با فرآورده‌های آرایشی و بهداشتی تماس مستقیم دارند، مطابق ضوابط بهداشتی وزارت بهداشت ساخته می‌شوند.",
+     "en": "The health manufacturing licence confirms that tubes in direct contact with cosmetic and hygienic products are made to the Ministry of Health's hygiene rules.",
+     "tr": "Sağlık üretim ruhsatı, kozmetik ve hijyen ürünleriyle doğrudan temas eden tüplerin Sağlık Bakanlığı'nın hijyen kurallarına göre üretildiğini doğrular."
+    },
+    "image": {
+     "src": "/images/about/honours/health-licence.webp",
+     "width": 500,
+     "height": 500
+    },
+    "copies": []
+   },
+   {
+    "id": "rnd-licence",
+    "kind": "licence",
+    "title": {
+     "fa": "پروانه تحقیق و توسعه",
+     "en": "Research and development licence",
+     "tr": "Araştırma ve geliştirme ruhsatı"
+    },
+    "year": {
+     "fa": "۱۳۹۵",
+     "en": "2017",
+     "tr": "2017"
+    },
+    "issuer": {
+     "fa": "وزارت صنعت، معدن و تجارت",
+     "en": "Ministry of Industry, Mine and Trade",
+     "tr": "Sanayi, Maden ve Ticaret Bakanlığı"
+    },
+    "scope": {
+     "fa": "صنایع شیمیایی: تیوب پلاستیکی چندلایه بدون درز و ظروف پلاستیکی بسته‌بندی قرص جوشان",
+     "en": "Chemical industries: seamless multi-layer plastic tubes and plastic effervescent tablet containers",
+     "tr": "Kimya sanayii: dikişsiz çok katmanlı plastik tüpler ve plastik efervesan tablet kapları"
+    },
+    "text": {
+     "fa": "وزارت صنعت، معدن و تجارت پس از بررسی تشکیلات، امکانات آزمایشگاهی، تجهیزات و نیروی انسانی متخصص، توانمندی آراپوش برای تحقیقات توسعه‌ای و کاربردی را تایید کرد. اعتبار پنج سال.",
+     "en": "After reviewing its organisation, laboratory, equipment and specialist staff, the Ministry confirmed Arapoush's capability for applied and development research. Valid for five years.",
+     "tr": "Bakanlık; organizasyonunu, laboratuvarını, ekipmanını ve uzman kadrosunu inceledikten sonra Arapoush'un uygulamalı ve geliştirme araştırmaları yeteneğini onayladı. Beş yıl geçerlidir."
+    },
+    "image": {
+     "src": "/images/about/honours/rnd-licence.webp",
+     "width": 960,
+     "height": 960
+    },
+    "copies": []
+   },
+   {
+    "id": "rnd-certificate",
+    "kind": "licence",
+    "title": {
+     "fa": "گواهی تحقیق و توسعه",
+     "en": "Research and development certificate",
+     "tr": "Araştırma ve geliştirme belgesi"
+    },
+    "year": {
+     "fa": "۱۳۹۳",
+     "en": "2014",
+     "tr": "2014"
+    },
+    "issuer": {
+     "fa": "سازمان صنعت، معدن و تجارت استان قزوین",
+     "en": "Qazvin Province Industry, Mine and Trade Organization",
+     "tr": "Kazvin İli Sanayi, Maden ve Ticaret Teşkilatı"
+    },
+    "scope": {
+     "fa": "ایجاد واحد تحقیق و توسعه",
+     "en": "Setting up a research and development unit",
+     "tr": "Araştırma ve geliştirme birimi kurulması"
+    },
+    "text": {
+     "fa": "این گواهی تایید می‌کند تشکیلات، امکانات آزمایشگاهی و کارگاهی و نیروی متخصص آراپوش برای فعالیت‌های تحقیق و توسعه کافی است.",
+     "en": "The certificate confirms that Arapoush's organisation, laboratory and workshop facilities and specialist staff are sufficient for research and development work.",
+     "tr": "Belge, Arapoush'un organizasyonunun, laboratuvar ve atölye olanaklarının ve uzman kadrosunun araştırma ve geliştirme çalışmaları için yeterli olduğunu doğrular."
+    },
+    "image": {
+     "src": "/images/about/honours/rnd-certificate.webp",
+     "width": 500,
+     "height": 500
+    },
+    "copies": []
+   },
+   {
+    "id": "operating-licence",
+    "kind": "licence",
+    "title": {
+     "fa": "پروانه بهره‌برداری",
+     "en": "Operating licence",
+     "tr": "İşletme ruhsatı"
+    },
+    "year": {
+     "fa": "۱۳۸۹",
+     "en": "2010",
+     "tr": "2010"
+    },
+    "issuer": {
+     "fa": "سازمان صنعت، معدن و تجارت استان قزوین",
+     "en": "Qazvin Province Industry, Mine and Trade Organization",
+     "tr": "Kazvin İli Sanayi, Maden ve Ticaret Teşkilatı"
+    },
+    "scope": {
+     "fa": "تولید انواع تیوب بسته‌بندی پلاستیکی، درپوش پلاستیکی و ظروف پلی‌پروپیلن در شهرک صنعتی کاسپین قزوین",
+     "en": "Production of plastic packaging tubes, plastic caps and polypropylene containers in Caspian Industrial Town, Qazvin",
+     "tr": "Kazvin Hazar Sanayi Bölgesi'nde plastik ambalaj tüpleri, plastik kapaklar ve polipropilen kapların üretimi"
+    },
+    "text": {
+     "fa": "پروانه بهره‌برداری مجوز رسمی تولید صنعتی کارخانه است و ظرفیت سالانه هر محصول را مشخص می‌کند.",
+     "en": "The operating licence is the factory's official permit for industrial production and sets the annual capacity of each product.",
+     "tr": "İşletme ruhsatı fabrikanın resmi sanayi üretim iznidir ve her ürünün yıllık kapasitesini belirler."
+    },
+    "image": {
+     "src": "/images/about/honours/operating-licence.webp",
+     "width": 500,
+     "height": 500
+    },
+    "copies": []
+   },
+   {
+    "id": "strategy",
+    "kind": "licence",
+    "title": {
+     "fa": "سند راهبردی ۱۴۰۳",
+     "en": "Strategic document 2024",
+     "tr": "2024 stratejik belgesi"
+    },
+    "year": {
+     "fa": "۱۴۰۳",
+     "en": "2024",
+     "tr": "2024"
+    },
+    "issuer": {
+     "fa": "آراپوش گستر، مدیرعامل",
+     "en": "Arapoush Gostar, Managing Director",
+     "tr": "Arapoush Gostar, Genel Müdür"
+    },
+    "scope": {
+     "fa": "مأموریت، چشم انداز، ارزش‌ها، خط مشی و شعار آراپوش گستر",
+     "en": "Arapoush Gostar's mission, vision, values, policy and slogan",
+     "tr": "Arapoush Gostar'ın misyonu, vizyonu, değerleri, politikası ve sloganı"
+    },
+    "text": {
+     "fa": "آراپوش گستر مشتریان خود را ممیزان مجرب و با دانشی می پندارد که به طور مستمر کیفیت محصولاتش را آدیت و ممیزی می نماید.",
+     "en": "Arapoush Gostar regards its customers as experienced, knowledgeable auditors who continually audit the quality of its products.",
+     "tr": "Arapoush Gostar, müşterilerini ürünlerinin kalitesini sürekli denetleyen deneyimli ve bilgili denetçiler olarak görür."
+    },
+    "image": {
+     "src": "/images/about/honours/strategy-1403.webp",
+     "width": 960,
+     "height": 960
+    },
+    "copies": [
+     {
+      "src": "/images/about/honours/strategy-2.webp",
+      "width": 800,
+      "height": 800
+     }
+    ]
+   },
+   {
+    "id": "exporter",
+    "kind": "award",
+    "title": {
+     "fa": "لوح تقدیر صادر کننده برتر در زمینه‌ی محصولات غیر نفتی",
+     "en": "Letter of appreciation: top exporter of non-oil products",
+     "tr": "Takdirname: petrol dışı ürünlerde en iyi ihracatçı"
+    },
+    "year": {
+     "fa": "۱۴۰۱",
+     "en": "2022",
+     "tr": "2022"
+    },
+    "issuer": {
+     "fa": "استانداری قزوین، وزارت کشور",
+     "en": "Governorate of Qazvin, Ministry of the Interior",
+     "tr": "Kazvin Valiliği, İçişleri Bakanlığı"
+    },
+    "scope": {
+     "fa": "انتخاب به عنوان صادرکننده نمونه استان قزوین در سال ۱۴۰۱",
+     "en": "Chosen as the exemplary exporter of Qazvin Province for 2022",
+     "tr": "2022 yılında Kazvin İli'nin örnek ihracatçısı seçilmesi"
+    },
+    "text": {
+     "fa": "قدردانی استاندار قزوین از نقش آراپوش گستر در صادرات غیرنفتی و حضور در بازارهای خارجی؛ یکی از اهداف خط مشی شرکت: «افزایش سهم بازار داخلی و شروع صادرات برای حضور در بازارهای خارجی».",
+     "en": "The Governor of Qazvin's recognition of Arapoush's role in non-oil exports and foreign markets, one of the goals in the company's policy: growing the home market share and exporting abroad.",
+     "tr": "Kazvin Valisi'nin, Arapoush'un petrol dışı ihracattaki ve yabancı pazarlardaki rolünü takdiri; şirket politikasının hedeflerinden biri: iç pazar payını büyütmek ve yurt dışına ihracat."
+    },
+    "image": {
+     "src": "/images/about/honours/exporter-1401.webp",
+     "width": 960,
+     "height": 960
+    },
+    "copies": []
+   },
+   {
+    "id": "expo-beauty",
+    "kind": "award",
+    "title": {
+     "fa": "بیست و سومین نمایشگاه بین‌المللی ایران بیوتی اند کلین",
+     "en": "23rd Iran Beauty & Clean International Exhibition",
+     "tr": "23. Uluslararası Iran Beauty & Clean Fuarı"
+    },
+    "year": {
+     "fa": "۱۳۹۵",
+     "en": "2016",
+     "tr": "2016"
+    },
+    "issuer": {
+     "fa": "برگزارکنندگان نمایشگاه، تهران",
+     "en": "The exhibition organisers, Tehran",
+     "tr": "Fuar organizatörleri, Tahran"
+    },
+    "scope": {
+     "fa": "مشارکت در نمایشگاه مواد شوینده، پاک‌کننده، بهداشتی، سلولزی و ماشین‌آلات وابسته",
+     "en": "Taking part in the exhibition of detergents, cleaning, hygienic and cellulose products and related machinery",
+     "tr": "Deterjan, temizlik, hijyen ve selüloz ürünleri ile ilgili makineler fuarına katılım"
+    },
+    "text": {
+     "fa": "تندیس مشارکت آراپوش گستر در بزرگ‌ترین نمایشگاه صنعت آرایشی و بهداشتی ایران، اردیبهشت ۱۳۹۵ در تهران.",
+     "en": "Arapoush Gostar's participation award at Iran's largest cosmetic and hygienic industry exhibition, Tehran, April 2016.",
+     "tr": "Arapoush Gostar'ın İran'ın en büyük kozmetik ve hijyen sektörü fuarına katılım ödülü, Tahran, Nisan 2016."
+    },
+    "image": {
+     "src": "/images/about/honours/expo-beauty-23.webp",
+     "width": 392,
+     "height": 500
+    },
+    "copies": []
+   },
+   {
+    "id": "expo-printing-16",
+    "kind": "award",
+    "title": {
+     "fa": "شانزدهمین نمایشگاه بین‌المللی چاپ، بسته‌بندی و ماشین‌آلات وابسته",
+     "en": "16th International Printing, Packaging and Related Machinery Exhibition",
+     "tr": "16. Uluslararası Baskı, Ambalaj ve İlgili Makineler Fuarı"
+    },
+    "year": {
+     "fa": "۱۳۸۸",
+     "en": "2010",
+     "tr": "2010"
+    },
+    "issuer": {
+     "fa": "برگزارکنندگان نمایشگاه، تهران",
+     "en": "The exhibition organisers, Tehran",
+     "tr": "Fuar organizatörleri, Tahran"
+    },
+    "scope": {
+     "fa": "قدردانی از مشارکت در نمایشگاه",
+     "en": "Appreciation for taking part in the exhibition",
+     "tr": "Fuara katılım için takdir"
+    },
+    "text": {
+     "fa": "تندیس قدردانی از حضور آراپوش گستر در نمایشگاه بین‌المللی چاپ و بسته‌بندی تهران، بهمن ۱۳۸۸.",
+     "en": "Appreciation trophy for Arapoush Gostar's presence at the Tehran international printing and packaging exhibition, 2010.",
+     "tr": "Arapoush Gostar'ın Tahran uluslararası baskı ve ambalaj fuarına katılımı için takdir ödülü, 2010."
+    },
+    "image": {
+     "src": "/images/about/honours/expo-printing-16.webp",
+     "width": 391,
+     "height": 500
+    },
+    "copies": []
+   },
+   {
+    "id": "expo-printing-20",
+    "kind": "award",
+    "title": {
+     "fa": "بیستمین نمایشگاه بین‌المللی چاپ، بسته‌بندی و ماشین‌آلات وابسته",
+     "en": "20th International Printing, Packaging and Related Machinery Exhibition",
+     "tr": "20. Uluslararası Baskı, Ambalaj ve İlgili Makineler Fuarı"
+    },
+    "year": null,
+    "issuer": {
+     "fa": "برگزارکنندگان نمایشگاه، تهران",
+     "en": "The exhibition organisers, Tehran",
+     "tr": "Fuar organizatörleri, Tahran"
+    },
+    "scope": {
+     "fa": "قدردانی از مشارکت در نمایشگاه",
+     "en": "Appreciation for taking part in the exhibition",
+     "tr": "Fuara katılım için takdir"
+    },
+    "text": {
+     "fa": "لوح تقدیر برگزارکنندگان بیستمین نمایشگاه بین‌المللی چاپ، بسته‌بندی و ماشین‌آلات وابسته از مدیریت آراپوش گستر برای مشارکت در نمایشگاه.",
+     "en": "Letter of appreciation from the organisers of the 20th international printing, packaging and related machinery exhibition to the Arapoush Gostar management for taking part.",
+     "tr": "20. uluslararası baskı, ambalaj ve ilgili makineler fuarı organizatörlerinden Arapoush Gostar yönetimine katılım için takdirname."
+    },
+    "image": {
+     "src": "/images/about/honours/expo-printing-20.webp",
+     "width": 500,
+     "height": 500
+    },
+    "copies": []
+   }
+  ]
+ }
+}

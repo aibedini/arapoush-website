@@ -614,6 +614,21 @@ can edit (a numeric x/y editor with a live overlay preview, P7).
 - CTA: texts (L), tube image `cta-tube`;
 - section backgrounds: `bg-navy`, `layers` (images).
 
+### 6.5.1 About (`/[locale]/about`)
+
+**`page.about`**, from `content/about.json` (Persian copy quoted from arapoush.com; certificate facts
+read from the documents). Every section has a **`style`** enum that switches its component variant:
+- meta (L);
+- hero (`style`: `cinema` | `split`): eyebrow, title, lead, slogan, CTA and video labels (L), stats
+  (list: value, label (L)), video (`file` fields `mp4`, `webm` under `/files/video/`), poster image
+  `images.poster` (the LCP; the film loads on idle or intent);
+- story (`style`: `pinned` | `vertical`): texts (L), milestones (list: year, title, text (L), image),
+  today (title, figure, unit, achievements[] (L));
+- gallery (`style`: `filmstrip` | `mosaic`): texts (L), items (list: image, caption (L));
+- honours (`style`: `wall` | `list`): texts and labels (L), items (list: kind (enum `certificate` |
+  `licence` | `award`), title, year (L or null when the document shows none), issuer, scope, text (L),
+  image, copies (images)).
+
 ### 6.6 SEO and machine-readable output (derived, not separately edited)
 
 - **Per page `seo` group** (in each page type): title, description (L), OG image, `noindex` boolean

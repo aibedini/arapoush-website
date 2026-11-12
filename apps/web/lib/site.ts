@@ -14,6 +14,9 @@ export const productPaths = {
 /** Printing technologies landing page (the header's "Printing" item), relative to the locale root. */
 export const printingPath = "/printing";
 
+/** About Arapoush: story, factory and honours (the header's "About" item), relative to the locale root. */
+export const aboutPath = "/about";
+
 /** Section anchors work from any page: on a sub-page they point back to the localized home. */
 export const homeHref = (locale: string, href: string, onHome: boolean) =>
   href.startsWith("#") && !onHome ? `/${locale}${href === "#top" ? "" : href}` : href;

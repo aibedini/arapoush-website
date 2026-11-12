@@ -4,6 +4,8 @@ import { pageForms } from "@/lib/content/forms";
 import { formPath } from "@/lib/forms";
 import { printingPath, productPaths, siteUrl } from "@/lib/site";
 import { getPrinting, t as pt, type Printing } from "@/lib/printing";
+import { getAbout, type About } from "@/lib/about";
+import { aboutPath } from "@/lib/site";
 import { getEffervescentProduct, getTubeProduct, type EffProduct } from "@/lib/products";
 import { diametersFor, loc, type TubeProduct } from "@/lib/configurator/model";
 import { defaultLocale, getDictionary, localeMeta, locales, type Dictionary, type Locale } from "@/lib/i18n";
@@ -105,6 +107,7 @@ export function llmsText(full: boolean) {
     ...locales.map((l) => `- [${getDictionary(l).productTube.meta.title}](${pageUrl(l, productPaths.tube)}): ${getDictionary(l).productTube.meta.description}`),
     ...locales.map((l) => `- [${getDictionary(l).productEff.meta.title}](${pageUrl(l, productPaths.effervescent)}): ${getDictionary(l).productEff.meta.description}`),
     ...locales.map((l) => `- [${pt(getPrinting().meta.title, l)}](${pageUrl(l, printingPath)}): ${pt(getPrinting().meta.description, l)}`),
+    ...locales.map((l) => `- [${pt(getAbout().meta.title, l)}](${pageUrl(l, aboutPath)}): ${pt(getAbout().meta.description, l)}`),
     ...pageForms()
       .filter((f) => f.page.indexable)
       .flatMap((f) => locales.map((l) => `- [${pickL(f.page.title, l) || pickL(f.title, l)}](${pageUrl(l, formPath(f.slug))}): ${pickL(f.page.description, l) || pickL(f.intro, l) || "Request form"}`)),
@@ -153,6 +156,8 @@ export function llmsText(full: boolean) {
       ...effFacts(t, getEffervescentProduct(), l),
       "",
       ...printingFacts(getPrinting(), l),
+      "",
+      ...aboutFacts(getAbout(), l),
       "",
       `### ${t.cta.title.join(" ")}`,
       t.cta.lead,
@@ -313,6 +318,72 @@ export function printingJsonLd(t: Dictionary, p: Printing, locale: Locale, path:
       },
     ],
   };
+}
+
+/** About page: Arapoush as an organisation with its founding, honours and credentials. */
+export function aboutJsonLd(t: Dictionary, a: About, locale: Locale, path: string) {
+  const url = pageUrl(locale, path);
+  const tx = (v: Record<string, string> | null | undefined) => pt(v, locale);
+  const abs = (src: string) => (src.startsWith("http") ? src : `${siteUrl}${src}`);
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "AboutPage",
+        "@id": `${url}#page`,
+        url,
+        name: tx(a.meta.title),
+        description: tx(a.meta.description),
+        inLanguage: locale,
+        isPartOf: { "@id": `${siteUrl}/#website` },
+        about: { "@id": `${siteUrl}/#organization` },
+        primaryImageOfPage: abs(a.gallery.items[0]?.image.src ?? t.media.about.poster.src),
+        image: a.gallery.items.map((g) => abs(g.image.src)),
+      },
+      {
+        "@type": "Organization",
+        "@id": `${siteUrl}/#organization`,
+        foundingDate: "2004",
+        foundingLocation: { "@type": "Place", name: "Caspian Industrial Town, Qazvin, Iran" },
+        slogan: tx(a.hero.slogan),
+        award: a.honours.items.filter((h) => h.kind === "award").map((h) => [tx(h.title), tx(h.year)].filter(Boolean).join(", ")),
+        hasCredential: a.honours.items
+          .filter((h) => h.kind !== "award")
+          .map((h) => ({
+            "@type": "EducationalOccupationalCredential",
+            name: tx(h.title),
+            description: tx(h.scope),
+            credentialCategory: h.kind === "certificate" ? "certificate" : "license",
+            recognizedBy: { "@type": "Organization", name: tx(h.issuer) },
+            image: abs(h.image.src),
+          })),
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: t.common.brand, item: pageUrl(locale) },
+          { "@type": "ListItem", position: 2, name: tx(a.meta.title), item: url },
+        ],
+      },
+    ],
+  };
+}
+
+/** The about page as plain lines: milestones, today's scale and every honour. */
+function aboutFacts(a: About, l: Locale) {
+  return [
+    `### ${pt(a.hero.title, l)} (${pageUrl(l, aboutPath)})`,
+    pt(a.hero.lead, l),
+    `Slogan: ${pt(a.hero.slogan, l)}`,
+    ...a.story.milestones.map((m) => `- ${pt(m.year, l)}: ${pt(m.title, l)}. ${pt(m.text, l)}`),
+    `- ${pt(a.story.today.unit, l)}`,
+    ...a.story.today.items.map((x) => `- ${pt(x, l)}`),
+    "",
+    `#### ${pt(a.honours.title, l)}`,
+    ...a.honours.items.map(
+      (h) => `- ${pt(h.title, l)}${h.year ? ` (${pt(h.year, l)})` : ""}. ${pt(a.honours.issuer, l)}: ${pt(h.issuer, l)}. ${pt(a.honours.scope, l)}: ${pt(h.scope, l)}. ${pt(h.text, l)}`,
+    ),
+  ];
 }
 
 /** Every printing method with its process and capabilities, as plain lines. */
