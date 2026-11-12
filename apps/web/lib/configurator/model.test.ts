@@ -40,6 +40,12 @@ test("each shape lists only its own closures", () => {
 test("eye-nozzle caps put an eye-nozzle shoulder on the tube in 3D", () => {
   assert.deepEqual(sceneModels(cat, { shape: "circular", d: 19, l: 65, closure: "eyeNozzleLong", structure: "pe-evoh-5" }), { shape: "eyeNozzle", closure: "nozzle", closureShape: { height: 1.6 }, closureModel: undefined });
   assert.deepEqual(sceneModels(cat, { shape: "circular", d: 30, l: 110, closure: "flipTop", structure: "pe-evoh-5" }), { shape: "circular", closure: "flipTop", closureShape: undefined, closureModel: undefined });
+  // A factory model made for one diameter wins there; elsewhere the closure's general model is used.
+  const general = { src: "/media/a.glb", axis: "-Y" as const, anchorMm: [0, 20, 0], neckDiameterMm: 20 };
+  const at35 = { ...general, src: "/media/b.glb", neckDiameterMm: 24 };
+  const withModels: TubeProduct = { ...cat, closures: cat.closures.map((x) => (x.id === "flipTop" ? { ...x, model3d: general, models3d: { circular: { "35": at35 } } } : x)) };
+  assert.equal(sceneModels(withModels, { shape: "circular", d: 35, l: 110, closure: "flipTop", structure: "pe-evoh-5" }).closureModel, at35);
+  assert.equal(sceneModels(withModels, { shape: "circular", d: 30, l: 110, closure: "flipTop", structure: "pe-evoh-5" }).closureModel, general);
 });
 
 test("every chart closure has a 3D shape: a built family or parametric parameters", () => {

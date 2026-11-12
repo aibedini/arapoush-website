@@ -141,6 +141,28 @@ test("closure models: STEP converted to GLB, reviewed, mounted, approved into th
     assert.equal(pub.statusCode, 200, pub.body);
     assert.equal((await t.app.inject({ method: "GET", url: `/media/${file}` })).statusCode, 200);
 
+    // A model made for one diameter: used only there, beside the closure's general model.
+    const pair = await t.app.inject({ method: "POST", url: M, headers: as(op), payload: { closure: "conical", diameter: 30, name: "x.step", data: step } });
+    assert.equal(pair.statusCode, 400);
+    assert.equal(pair.json().code, "VALIDATION_FAILED");
+    assert.equal((await t.app.inject({ method: "POST", url: M, headers: as(op), payload: { closure: "conical", shape: "circular", diameter: 99, name: "x.step", data: step } })).statusCode, 400);
+    const at30 = await t.app.inject({ method: "POST", url: M, headers: as(op), payload: { closure: "conical", shape: "circular", diameter: 30, name: "conical-30.step", data: step } });
+    assert.equal(at30.statusCode, 201, at30.body);
+    const m30 = at30.json();
+    assert.equal(m30.shape, "circular");
+    assert.equal(m30.diameter, 30);
+    assert.ok("suggested" in m30);
+    assert.equal((await t.app.inject({ method: "PUT", url: `${M}/${m30.id}/mounting`, headers: as(op), payload: mounting })).statusCode, 200);
+    const base = (await t.app.inject({ method: "GET", url: "/v1/manage/entries/product.tube.catalogue", headers: { cookie: op.cookie } })).json().draft.id;
+    const ok30 = await t.app.inject({ method: "POST", url: `${M}/${m30.id}/approve`, headers: as(op), payload: { base_revision_id: base } });
+    assert.equal(ok30.statusCode, 200, ok30.body);
+    const after = (await t.app.inject({ method: "GET", url: "/v1/manage/entries/product.tube.catalogue", headers: { cookie: op.cookie } })).json().draft.data;
+    const c2 = after.closures.find((c: { id: string }) => c.id === "conical");
+    assert.equal(c2.models3d.circular["30"].modelId, m30.id);
+    assert.equal(c2.model3d.modelId, m.id, "the general model stays");
+    const models = (await t.app.inject({ method: "GET", url: `${M}?closure=conical`, headers: { cookie: op.cookie } })).json();
+    assert.equal(models.find((x: { id: string }) => x.id === m.id).status, "approved", "a per-diameter approval archives nothing else");
+
     // Viewers can list but not upload.
     const viewer = await signIn(t.app, t, "viewer");
     assert.equal((await t.app.inject({ method: "POST", url: M, headers: as(viewer), payload: { closure: "conical", name: "x.step", data: step } })).statusCode, 403);

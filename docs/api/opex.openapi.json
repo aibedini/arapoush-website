@@ -3867,7 +3867,7 @@
       "post": {
         "operationId": "uploadClosureModel",
         "summary": "Upload factory CAD (STEP/STP or GLB) for a closure",
-        "description": "Converts the file to an optimized GLB in millimetres (OpenCascade for STEP, glTF Transform for both) in a worker, stores it and returns the model for review. Nothing reaches the website until an operator sets the mounting and approves it. Limits: 25 MB, 2,000,000 triangles before simplification, 90 s.\n\n**Console role:** operator or above.\n\n**Audit:** records `cad.uploaded`, `cad.rejected`.\n\n**Source:** `apps/opex-api/src/catalogue/routes.ts`",
+        "description": "Converts the file to an optimized GLB in millimetres (OpenCascade for STEP, glTF Transform for both) in a worker, stores it and returns the model for review with a mounting suggested from the geometry. Nothing reaches the website until an operator sets the mounting and approves it. With `shape` and `diameter` the model is used only at that diameter. Limits: 25 MB, 2,000,000 triangles before simplification, 90 s.\n\n**Console role:** operator or above.\n\n**Audit:** records `cad.uploaded`, `cad.rejected`.\n\n**Source:** `apps/opex-api/src/catalogue/routes.ts`",
         "tags": [
           "Catalogue"
         ],
@@ -3888,6 +3888,18 @@
                     "minLength": 1,
                     "maxLength": 40,
                     "description": "Catalogue closure id."
+                  },
+                  "shape": {
+                    "description": "Catalogue shape id; with `diameter`, the model is used only there.",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "diameter": {
+                    "description": "Tube diameter in mm.",
+                    "type": "integer",
+                    "minimum": 5,
+                    "maximum": 120
                   },
                   "name": {
                     "type": "string",
@@ -3931,7 +3943,7 @@
             }
           },
           "400": {
-            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`CAD_REJECTED`: Not STEP/GLB, unreadable, empty, too large, too many triangles or too slow (`detail` says which).",
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field. Or: `shape` and `diameter` must come together, and the shape must offer that diameter.\n\n`CAD_REJECTED`: Not STEP/GLB, unreadable, empty, too large, too many triangles or too slow (`detail` says which).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -4018,7 +4030,7 @@
       "post": {
         "operationId": "approveClosureModel",
         "summary": "Use the model for its closure (saves a catalogue draft)",
-        "description": "Writes `model3d` (GLB, mounting, size) on the closure in the catalogue draft; the website shows it after the draft is published. The parametric shape stays as the fallback.\n\n**Console role:** operator or above.\n\n**Audit:** records `cad.approved`, `content.revision.create`.\n\n**Source:** `apps/opex-api/src/catalogue/routes.ts`",
+        "description": "Writes the model (GLB, mounting, size) on the closure in the catalogue draft: `models3d[shape][diameter]` for a per-diameter model, otherwise `model3d`. The previously approved model for the same place is archived. The website shows it after the draft is published; the parametric shape stays as the fallback.\n\n**Console role:** operator or above.\n\n**Audit:** records `cad.approved`, `content.revision.create`.\n\n**Source:** `apps/opex-api/src/catalogue/routes.ts`",
         "tags": [
           "Catalogue"
         ],
@@ -21777,6 +21789,20 @@
           "closure_id": {
             "type": "string"
           },
+          "shape": {
+            "description": "Catalogue shape the model is for; null: every shape.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "diameter": {
+            "description": "Tube diameter (mm) the model is for; null: every diameter.",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
           "source_name": {
             "type": "string"
           },
@@ -21848,6 +21874,17 @@
               }
             ]
           },
+          "suggested": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SuggestedMounting"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Mounting read off the geometry: where the opening is, the ceiling the neck top meets and the neck width. A suggestion; set the mounting to use it."
+          },
           "created_at": {
             "type": "string"
           },
@@ -21861,6 +21898,8 @@
         "required": [
           "id",
           "closure_id",
+          "shape",
+          "diameter",
           "source_name",
           "source_kind",
           "status",
@@ -21870,6 +21909,7 @@
           "parts",
           "simplified",
           "mounting",
+          "suggested",
           "created_at",
           "approved_at"
         ],
@@ -23381,6 +23421,74 @@
         "required": [
           "when",
           "set"
+        ],
+        "additionalProperties": false
+      },
+      "SuggestedMounting": {
+        "type": "object",
+        "properties": {
+          "axis": {
+            "type": "string",
+            "enum": [
+              "+Y",
+              "-Y",
+              "+X",
+              "-X",
+              "+Z",
+              "-Z"
+            ],
+            "description": "Direction from the cap's mounting face towards the tube (the opening), in the model's own axes."
+          },
+          "anchorMm": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "items": false,
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "neckDiameterMm": {
+            "type": "number"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "low"
+            ],
+            "description": "high: one side is clearly an open, walled, round pit. low: check it in the preview."
+          },
+          "score": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "items": false,
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "Pit strength of the best side and of the runner-up."
+          }
+        },
+        "required": [
+          "axis",
+          "anchorMm",
+          "neckDiameterMm",
+          "confidence",
+          "score"
         ],
         "additionalProperties": false
       },

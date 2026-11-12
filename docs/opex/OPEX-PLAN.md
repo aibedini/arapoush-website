@@ -733,6 +733,19 @@ The configurator offers only what the catalogue allows for the chosen closure, s
 - `shape3d` holds the parametric caps: ratios of the tube radius, a top shape, ribs and pump.
 - `model3d` holds an approved factory model (`src` GLB in mm, `axis`, `anchorMm`, `neckDiameterMm`,
   `sizeMm`). It is locked and written only by approving a model in **Catalogue → 3D models**.
+- `models3d[shape][diameter]` holds factory models made for one tube diameter, also locked. The site
+  uses them there before `model3d`.
+
+**Factory CAD in bulk (T2.1).** In **Catalogue → 3D models**:
+- Several STEP/STP/GLB files can be dropped at once.
+- Each file name is matched to a closure, shape and diameter (`components/catalogue/match.ts`).
+  For example, «۳۵ فیلیپ تاپ» → flip-top, round Ø35 and «اوال» → oval. The operator checks each
+  match.
+- The upload (`POST /v1/manage/catalogue/tube/models` with `shape` and `diameter`) returns
+  `suggested`: the mounting read off the geometry, with a confidence.
+- "Approve all confident ones" saves each high-confidence suggestion as the mounting and approves it,
+  chaining the draft revisions. The rest are reviewed one by one.
+- An identical GLB uploaded twice shares one asset (migration `008_cad_models_diameter.sql`).
 - Models live in `cad_models` (migration 007) as `needs_review`, `approved` or `archived`. Their
   GLBs are media assets: private until the catalogue is published.
 

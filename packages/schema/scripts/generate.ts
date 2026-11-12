@@ -248,6 +248,8 @@ function tubeCatalogue(g: GroupField): GroupField {
       sizeMm: { ...mm, label: "Size (mm)" },
     },
   };
+  // T2.1: factory models made for one tube diameter (shape → diameter → model), also set by approval.
+  closure.fields.models3d = { kind: "map", ...SHAPE, label: "Approved 3D models per diameter", locked: true, of: { kind: "map", ...DIAMETER, of: { ...(closure.fields.model3d as GroupField), label: undefined, locked: undefined } } };
   closure.fields.aliases = { ...plainList, label: "Chart wordings" };
   structure.fields.diameters = { kind: "list", label: "Only these diameters (empty: all)", of: { kind: "number", integer: true } };
   structure.fields.closures = { ...plainList, label: "Only with these closures (empty: all)" };

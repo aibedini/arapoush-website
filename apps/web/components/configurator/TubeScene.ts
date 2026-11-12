@@ -181,7 +181,7 @@ export class TubeScene {
 
   /**
    * Swaps the parametric closure for the approved factory model once it has loaded: rotated so its
-   * opening points at the tube, its anchor on the neck top, millimetres to scene units. Never scaled
+   * opening faces down onto the tube, its anchor on the neck top, millimetres to scene units. Never scaled
    * to fit; if loading fails the parametric closure simply stays.
    */
   private async mountModel(b: Built, m: ClosureModel3d) {
@@ -193,7 +193,8 @@ export class TubeScene {
       gltf.scene.position.set(-ax, -ay, -az);
       const holder = new THREE.Group();
       holder.add(gltf.scene);
-      holder.quaternion.setFromUnitVectors(AXES[m.axis] ?? AXES["+Y"], new THREE.Vector3(0, 1, 0));
+      // `axis` is the way the opening faces; the tube is below the neck top (−Y).
+      holder.quaternion.setFromUnitVectors(AXES[m.axis] ?? AXES["-Y"], new THREE.Vector3(0, -1, 0));
       holder.scale.setScalar(0.1); // 1 unit = 10 mm
       holder.updateMatrixWorld(true);
       const chosen = capMaterial(this.cfg?.look?.cap);

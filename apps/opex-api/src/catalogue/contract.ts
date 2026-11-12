@@ -34,10 +34,21 @@ export const Mounting = z
     thread: z.string().max(60).optional().describe("Thread designation, if any (e.g. 24/410)."),
   })
   .meta({ id: "Mounting" });
+export const Suggested = z
+  .object({
+    axis: Axis,
+    anchorMm: z.tuple([z.number(), z.number(), z.number()]),
+    neckDiameterMm: z.number(),
+    confidence: z.enum(["high", "low"]).describe("high: one side is clearly an open, walled, round pit. low: check it in the preview."),
+    score: z.tuple([z.number(), z.number()]).describe("Pit strength of the best side and of the runner-up."),
+  })
+  .meta({ id: "SuggestedMounting" });
 export const CadModel = z
   .object({
     id: z.string(),
     closure_id: z.string(),
+    shape: z.string().nullable().describe("Catalogue shape the model is for; null: every shape."),
+    diameter: z.number().nullable().describe("Tube diameter (mm) the model is for; null: every diameter."),
     source_name: z.string(),
     source_kind: z.enum(["step", "glb"]),
     status: z.enum(["needs_review", "approved", "archived"]),
@@ -47,6 +58,7 @@ export const CadModel = z
     parts: z.number(),
     simplified: z.boolean(),
     mounting: Mounting.nullable(),
+    suggested: Suggested.nullable().describe("Mounting read off the geometry: where the opening is, the ceiling the neck top meets and the neck width. A suggestion; set the mounting to use it."),
     created_at: z.string(),
     approved_at: z.string().nullable(),
   })
@@ -110,9 +122,11 @@ export const CATALOGUE = {
     role: "operator",
     summary: "Upload factory CAD (STEP/STP or GLB) for a closure",
     description:
-      "Converts the file to an optimized GLB in millimetres (OpenCascade for STEP, glTF Transform for both) in a worker, stores it and returns the model for review. Nothing reaches the website until an operator sets the mounting and approves it. Limits: 25 MB, 2,000,000 triangles before simplification, 90 s.",
+      "Converts the file to an optimized GLB in millimetres (OpenCascade for STEP, glTF Transform for both) in a worker, stores it and returns the model for review with a mounting suggested from the geometry. Nothing reaches the website until an operator sets the mounting and approves it. With `shape` and `diameter` the model is used only at that diameter. Limits: 25 MB, 2,000,000 triangles before simplification, 90 s.",
     body: z.strictObject({
       closure: z.string().min(1).max(40).describe("Catalogue closure id."),
+      shape: z.string().min(1).max(40).optional().describe("Catalogue shape id; with `diameter`, the model is used only there."),
+      diameter: z.number().int().min(5).max(120).optional().describe("Tube diameter in mm."),
       name: z.string().min(1).max(200),
       data: z.string().max(35_000_000).describe("The file, base64."),
       unit: z.enum(["mm", "m"]).default("m").describe("GLB only: what one unit in the file means (glTF default: metres). STEP carries its own units."),
@@ -120,6 +134,7 @@ export const CATALOGUE = {
     responses: { 201: { description: "Converted; needs review.", schema: CadModel } },
     errors: [
       { status: 400, code: "CAD_REJECTED", when: "Not STEP/GLB, unreadable, empty, too large, too many triangles or too slow (`detail` says which)." },
+      { status: 400, code: "VALIDATION_FAILED", when: "`shape` and `diameter` must come together, and the shape must offer that diameter." },
       { status: 404, code: "NOT_FOUND", when: "No closure with that id in the catalogue draft." },
     ],
     audit: ["cad.uploaded", "cad.rejected"],
@@ -164,7 +179,8 @@ export const CATALOGUE = {
     auth: "session",
     role: "operator",
     summary: "Use the model for its closure (saves a catalogue draft)",
-    description: "Writes `model3d` (GLB, mounting, size) on the closure in the catalogue draft; the website shows it after the draft is published. The parametric shape stays as the fallback.",
+    description:
+      "Writes the model (GLB, mounting, size) on the closure in the catalogue draft: `models3d[shape][diameter]` for a per-diameter model, otherwise `model3d`. The previously approved model for the same place is archived. The website shows it after the draft is published; the parametric shape stays as the fallback.",
     params: ModelId,
     body: z.strictObject({ base_revision_id: z.string().max(40).nullable().describe("The catalogue draft you are looking at.") }),
     responses: { 200: { description: "Approved; draft saved.", schema: z.object({ model: CadModel, revision: z.object({ id: z.string(), number: z.number() }) }) } },

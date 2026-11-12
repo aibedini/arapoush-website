@@ -581,7 +581,7 @@
                 }
               }
             },
-            "description": "Converts the file to an optimized GLB in millimetres (OpenCascade for STEP, glTF Transform for both) in a worker, stores it and returns the model for review. Nothing reaches the website until an operator sets the mounting and approves it. Limits: 25 MB, 2,000,000 triangles before simplification, 90 s.\n\nSource: catalogue/routes.ts"
+            "description": "Converts the file to an optimized GLB in millimetres (OpenCascade for STEP, glTF Transform for both) in a worker, stores it and returns the model for review with a mounting suggested from the geometry. Nothing reaches the website until an operator sets the mounting and approves it. With `shape` and `diameter` the model is used only at that diameter. Limits: 25 MB, 2,000,000 triangles before simplification, 90 s.\n\nSource: catalogue/routes.ts"
           }
         },
         {
@@ -629,7 +629,7 @@
                 }
               }
             },
-            "description": "Writes `model3d` (GLB, mounting, size) on the closure in the catalogue draft; the website shows it after the draft is published. The parametric shape stays as the fallback.\n\nSource: catalogue/routes.ts"
+            "description": "Writes the model (GLB, mounting, size) on the closure in the catalogue draft: `models3d[shape][diameter]` for a per-diameter model, otherwise `model3d`. The previously approved model for the same place is archived. The website shows it after the draft is published; the parametric shape stays as the fallback.\n\nSource: catalogue/routes.ts"
           }
         },
         {

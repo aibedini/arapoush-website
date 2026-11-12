@@ -5,13 +5,15 @@
  * needs to review it: bounding box, triangle count, parts.
  *
  * Runs inside a worker thread (cadWorker.ts) so a heavy file never blocks the API.
- * Nothing here guesses fit: mounting (anchor, axis, neck) is set by an operator and approved.
+ * The mounting (anchor, axis, neck) is only suggested from the geometry (mounting.ts); an operator
+ * confirms it before approval.
  */
 import { createRequire } from "node:module";
 import { Document, Logger, NodeIO, type Mesh } from "@gltf-transform/core";
 import { ALL_EXTENSIONS } from "@gltf-transform/extensions";
 import { dedup, meshopt, prune, simplify, weld } from "@gltf-transform/functions";
 import { MeshoptDecoder, MeshoptEncoder, MeshoptSimplifier } from "meshoptimizer";
+import { suggestMounting, type MountingSuggestion } from "./mounting.ts";
 
 export type CadKind = "step" | "glb";
 export type CadResult = {
@@ -21,6 +23,8 @@ export type CadResult = {
   triangles: number;
   parts: number;
   simplified: boolean;
+  /** Where the opening is, read off the geometry; null when no side looks open. */
+  suggested: MountingSuggestion | null;
 };
 
 export const CAD_LIMITS = { bytes: 25 * 1024 * 1024, triangles: 2_000_000, targetTriangles: 80_000 };
@@ -94,11 +98,12 @@ export async function convertCad(bytes: Uint8Array, o: { unit?: "mm" | "m" } = {
     await doc.transform(simplify({ simplifier: MeshoptSimplifier, ratio: CAD_LIMITS.targetTriangles / before, error: 0.0005 }));
     simplified = true;
   }
-  await doc.transform(prune(), meshopt({ encoder: MeshoptEncoder, level: "medium" }));
+  await doc.transform(prune());
 
-  // Bounding box in mm, applying each node's world transform.
+  // World-space triangles in mm (before compression), for the bounding box and the mounting.
   const min: [number, number, number] = [Infinity, Infinity, Infinity];
   const max: [number, number, number] = [-Infinity, -Infinity, -Infinity];
+  const tris: number[] = [];
   for (const node of doc.getRoot().listNodes()) {
     const mesh = node.getMesh();
     if (!mesh) continue;
@@ -107,18 +112,29 @@ export async function convertCad(bytes: Uint8Array, o: { unit?: "mm" | "m" } = {
       const pos = p.getAttribute("POSITION");
       if (!pos) continue;
       const v: number[] = [0, 0, 0];
+      const world = new Float64Array(pos.getCount() * 3);
       for (let i = 0; i < pos.getCount(); i++) {
         pos.getElement(i, v);
         const x = mtx[0] * v[0]! + mtx[4] * v[1]! + mtx[8] * v[2]! + mtx[12];
         const y = mtx[1] * v[0]! + mtx[5] * v[1]! + mtx[9] * v[2]! + mtx[13];
         const z = mtx[2] * v[0]! + mtx[6] * v[1]! + mtx[10] * v[2]! + mtx[14];
+        world.set([x, y, z], i * 3);
         [x, y, z].forEach((c, k) => {
           if (c < min[k]!) min[k] = c;
           if (c > max[k]!) max[k] = c;
         });
       }
+      const idx = p.getIndices()?.getArray();
+      const n = idx ? idx.length : pos.getCount();
+      if (p.getMode() !== 4) continue; // triangles only
+      for (let t = 0; t < n; t++) {
+        const i = idx ? idx[t]! : t;
+        tris.push(world[i * 3]!, world[i * 3 + 1]!, world[i * 3 + 2]!);
+      }
     }
   }
+  const suggested = suggestMounting(new Float32Array(tris), min, max);
+  await doc.transform(meshopt({ encoder: MeshoptEncoder, level: "medium" }));
   const round = (n: number) => Math.round(n * 100) / 100;
   const glb = await io().writeBinary(doc);
   return {
@@ -127,5 +143,6 @@ export async function convertCad(bytes: Uint8Array, o: { unit?: "mm" | "m" } = {
     triangles: Math.round(count(doc.getRoot().listMeshes())),
     parts: doc.getRoot().listMeshes().length,
     simplified,
+    suggested,
   };
 }

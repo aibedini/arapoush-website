@@ -8,6 +8,14 @@ After T5 (2026-11-13): the catalogue manager. Everything in the catalogue is edi
 (`/catalogue`): shapes and sizes, closures with their fits and colours, colours, prints, structures and
 samples. Excel is the bulk import, one tab of it. See OPEX-PLAN.md, "Catalogue manager".
 
+T2.1 (2026-11-13): factory CAD in bulk.
+- Factory STEP files can be dropped together. Each is matched to a closure and diameter by name.
+- Each comes back with the mounting read off its geometry.
+- Confident ones are approved together, and models can be made for one diameter (`models3d`).
+- Tried on the first 10 factory files: all converted in 1–5 s. The opening was found on every cap.
+  The two flip-tops with their lids open, the oval cap and the nozzle insert are marked
+  "check in preview".
+
 T5 (2026-11-12): the quote.
 - **Form:** the OPEX system form `tube-quote`, editable in the form builder. Fields: name, company,
   phone, email and contact method:

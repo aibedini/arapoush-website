@@ -563,3 +563,9 @@ details.group:not([open]) > summary::before { transform: rotate(135deg); }
 @media (hover: none) {
   .cm-mi:active, .cm-toggle:active, .cm-dtab:active { background: var(--accent-soft); }
 }
+.cm-drop { display: grid; justify-items: center; gap: 4px; padding: 24px 16px; border: 2px dashed var(--line-strong); border-radius: var(--radius); background: var(--surface-2); text-align: center; cursor: pointer; color: var(--text); }
+.cm-drop svg { color: var(--accent); }
+.cm-drop:hover, .cm-drop[data-drag] { border-color: var(--accent); background: var(--accent-soft); }
+.cm-drop:has(:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.cm-queue td { vertical-align: middle; }
+.cm-queue select { min-block-size: 32px; padding: 3px 8px; }

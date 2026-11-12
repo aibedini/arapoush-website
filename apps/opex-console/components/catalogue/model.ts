@@ -9,6 +9,7 @@ export type SizeRow = { l: number; ml?: number; status?: "chart" | "estimate" };
 export type Fit = "chart" | "confirm";
 export type ColourId = "white" | "coloured" | "clear" | "metallicSilver" | "metallicGold";
 export type ShapeDef = { id: string; model: "circular" | "oval" | "eyeNozzle"; name: Loc; image: string; sizes: Record<string, SizeRow[]>; aliases?: string[] };
+export type Model3d = { src: string; modelId?: string; axis: string; anchorMm: number[]; neckDiameterMm: number; sizeMm?: number[] };
 export type ClosureShape = { body?: "round" | "octagon"; oval?: boolean; width?: number; height?: number; top?: "flat" | "dome" | "cone" | "bullet"; topHeight?: number; ribs?: number; pump?: boolean };
 export type ClosureDef = {
   id: string;
@@ -19,7 +20,9 @@ export type ClosureDef = {
   colours?: Record<string, Record<string, ColourId[]>>;
   shoulder?: "circular" | "oval" | "eyeNozzle";
   shape3d?: ClosureShape;
-  model3d?: { src: string; modelId?: string; axis: string; anchorMm: number[]; neckDiameterMm: number; sizeMm?: number[] };
+  model3d?: Model3d;
+  /** Factory models made for one diameter (shape → diameter); set by approving them. */
+  models3d?: Record<string, Record<string, Model3d>>;
   aliases?: string[];
 };
 export type ColourFamily = { id: ColourId; name: Loc; kind: "solid" | "custom" | "clear" | "metallic"; swatch: string; palette?: string[] };

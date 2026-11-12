@@ -23,6 +23,9 @@ type Mount = { axis: string; anchorMm: [number, number, number]; neckDiameterMm:
 type ModelRow = {
   id: string;
   closure_id: string;
+  shape_id: string | null;
+  diameter: number | null;
+  suggested: unknown;
   source_name: string;
   source_kind: "step" | "glb";
   status: "needs_review" | "approved" | "archived";
@@ -38,6 +41,8 @@ type ModelRow = {
 const view = (r: ModelRow) => ({
   id: r.id,
   closure_id: r.closure_id,
+  shape: r.shape_id,
+  diameter: r.diameter,
   source_name: r.source_name,
   source_kind: r.source_kind,
   status: r.status,
@@ -48,6 +53,7 @@ const view = (r: ModelRow) => ({
   parts: r.parts,
   simplified: r.simplified,
   mounting: r.mounting,
+  suggested: r.suggested ?? null,
   created_at: new Date(r.created_at).toISOString(),
   approved_at: r.approved_at ? new Date(r.approved_at).toISOString() : null,
 });
@@ -79,6 +85,9 @@ export async function catalogueModule(app: FastifyInstance, deps: Deps) {
     const body = CATALOGUE.uploadModel.body.parse(req.body);
     const { data } = await draftOf(db.q);
     if (!data.closures?.some((c) => c.id === body.closure)) throw notFound("Closure");
+    if ((body.shape === undefined) !== (body.diameter === undefined)) throw badRequest("VALIDATION_FAILED", "Give both shape and diameter, or neither", { issues: [{ path: "/diameter", code: "PAIR", message: "shape and diameter go together" }] });
+    if (body.shape !== undefined && !data.shapes?.find((s) => s.id === body.shape)?.sizes?.[String(body.diameter)])
+      throw badRequest("VALIDATION_FAILED", "That shape does not offer this diameter", { issues: [{ path: "/diameter", code: "UNKNOWN", message: `${body.shape} has no Ø${body.diameter}` }] });
     const bytes = new Uint8Array(Buffer.from(body.data, "base64"));
     const reject = async (reason: string) => {
       await db.tx((q) => audit(q, tenant, { action: "cad.rejected", result: "failure", actor: actorOf(req), request: req.info, resource: { closure: body.closure, name: body.name.slice(0, 200), bytes: bytes.length }, reason }));
@@ -92,25 +101,31 @@ export async function catalogueModule(app: FastifyInstance, deps: Deps) {
     } catch (e) {
       throw await reject(e instanceof CadRejected ? e.message : "The file could not be converted");
     }
-    const assetId = ulid("ast_");
-    mkdirSync(config.MEDIA_DIR, { recursive: true });
-    writeFileSync(path.join(config.MEDIA_DIR, `${assetId}.glb`), r.glb, { mode: 0o640 });
+    // The same file uploaded again (another diameter, a duplicate) shares the stored GLB.
+    const glbHash = sha256(Buffer.from(r.glb));
+    const [same] = await db.q<{ id: string }>(`SELECT id FROM assets WHERE tenant_id = $1 AND sha256 = $2`, [tenant, glbHash]);
+    const assetId = same?.id ?? ulid("ast_");
+    if (!same) {
+      mkdirSync(config.MEDIA_DIR, { recursive: true });
+      writeFileSync(path.join(config.MEDIA_DIR, `${assetId}.glb`), r.glb, { mode: 0o640 });
+    }
     const id = ulid("cad_");
     const actor = actorOf(req);
     const row = await db.tx(async (q) => {
-      await q(`INSERT INTO assets (id, tenant_id, sha256, mime, bytes, original_name, status, scan, uploaded_by) VALUES ($1,$2,$3,'model/gltf-binary',$4,$5,'clean','converted',$6)`, [
-        assetId,
-        tenant,
-        sha256(Buffer.from(r.glb)),
-        r.glb.length,
-        body.name.slice(0, 200),
-        actor.id,
-      ]);
+      if (!same)
+        await q(`INSERT INTO assets (id, tenant_id, sha256, mime, bytes, original_name, status, scan, uploaded_by) VALUES ($1,$2,$3,'model/gltf-binary',$4,$5,'clean','converted',$6)`, [
+          assetId,
+          tenant,
+          glbHash,
+          r.glb.length,
+          body.name.slice(0, 200),
+          actor.id,
+        ]);
       const [m] = await q<ModelRow>(
-        `INSERT INTO cad_models (id, tenant_id, closure_id, source_name, source_kind, source_sha256, asset_id, bbox, triangles, parts, simplified, created_by) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *`,
-        [id, tenant, body.closure, body.name.slice(0, 200), kind, sha256(Buffer.from(bytes)), assetId, JSON.stringify(r.bbox), r.triangles, r.parts, r.simplified, actor.id],
+        `INSERT INTO cad_models (id, tenant_id, closure_id, shape_id, diameter, source_name, source_kind, source_sha256, asset_id, bbox, triangles, parts, simplified, suggested, created_by) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) RETURNING *`,
+        [id, tenant, body.closure, body.shape ?? null, body.diameter ?? null, body.name.slice(0, 200), kind, sha256(Buffer.from(bytes)), assetId, JSON.stringify(r.bbox), r.triangles, r.parts, r.simplified, r.suggested ? JSON.stringify(r.suggested) : null, actor.id],
       );
-      await audit(q, tenant, { action: "cad.uploaded", actor, request: req.info, resource: { type: "cad_model", id, closure: body.closure, kind, bytes: bytes.length, glb_bytes: r.glb.length, triangles: r.triangles } });
+      await audit(q, tenant, { action: "cad.uploaded", actor, request: req.info, resource: { type: "cad_model", id, closure: body.closure, shape: body.shape, diameter: body.diameter, kind, bytes: bytes.length, glb_bytes: r.glb.length, triangles: r.triangles, suggested: r.suggested?.confidence ?? null } });
       return m!;
     });
     return reply.code(201).send(view(row));
@@ -144,9 +159,17 @@ export async function catalogueModule(app: FastifyInstance, deps: Deps) {
       const next = structuredClone(data);
       const closure = next.closures.find((c) => c.id === m.closure_id);
       if (!closure) throw notFound("Closure");
-      closure.model3d = { src: `/media/${m.asset_id}.glb`, modelId: m.id, axis: m.mounting.axis, anchorMm: m.mounting.anchorMm, neckDiameterMm: m.mounting.neckDiameterMm, sizeMm: m.bbox.size };
-      const saved = await saveDraft(q, tenant, { typeKey: TUBE_CATALOGUE, data: next, baseRevisionId: e.draft_revision_id, actor: actorOf(req), request: req.info, note: `3D model for ${m.closure_id}: ${m.source_name}` });
-      await q(`UPDATE cad_models SET status = 'archived', updated_at = clock_timestamp() WHERE tenant_id = $1 AND closure_id = $2 AND status = 'approved' AND id <> $3`, [tenant, m.closure_id, m.id]);
+      const model3d = { src: `/media/${m.asset_id}.glb`, modelId: m.id, axis: m.mounting.axis, anchorMm: m.mounting.anchorMm, neckDiameterMm: m.mounting.neckDiameterMm, sizeMm: m.bbox.size };
+      if (m.shape_id && m.diameter != null) {
+        const by = (closure.models3d ??= {}) as Record<string, Record<string, typeof model3d>>;
+        (by[m.shape_id] ??= {})[String(m.diameter)] = model3d;
+      } else closure.model3d = model3d;
+      const where = m.shape_id ? ` at ${m.shape_id} Ø${m.diameter}` : "";
+      const saved = await saveDraft(q, tenant, { typeKey: TUBE_CATALOGUE, data: next, baseRevisionId: e.draft_revision_id, actor: actorOf(req), request: req.info, note: `3D model for ${m.closure_id}${where}: ${m.source_name}` });
+      await q(
+        `UPDATE cad_models SET status = 'archived', updated_at = clock_timestamp() WHERE tenant_id = $1 AND closure_id = $2 AND shape_id IS NOT DISTINCT FROM $4 AND diameter IS NOT DISTINCT FROM $5 AND status = 'approved' AND id <> $3`,
+        [tenant, m.closure_id, m.id, m.shape_id, m.diameter],
+      );
       const [u] = await q<ModelRow>(`UPDATE cad_models SET status = 'approved', approved_by = $2, approved_at = clock_timestamp(), updated_at = clock_timestamp() WHERE id = $1 RETURNING *`, [m.id, actorOf(req).id]);
       await audit(q, tenant, { action: "cad.approved", actor: actorOf(req), request: req.info, resource: { type: "cad_model", id, closure: m.closure_id, revision: saved.revision.id } });
       return { model: view(u!), revision: { id: saved.revision.id, number: saved.revision.number } };

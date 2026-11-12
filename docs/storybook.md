@@ -47,7 +47,7 @@ Locally the tests use the installed Chrome. In CI they use Playwright's Chromium
 | console | `components/ui.stories.tsx` | page heading, modal dialog, error notes, loading |
 | site | `components/configurator/QuoteForm.stories.tsx` | empty, sent with ticket number and the sales team |
 | site | `components/configurator/Samples.stories.tsx` | grid with the best match first, rail |
-| console | `components/ClosureModels.stories.tsx` | review (fixtures), anchor suggestion |
+| console | `components/ClosureModels.stories.tsx` | review (fixtures), anchor suggestion, bulk queue matched by file name, approve all confident |
 | console | `components/catalogue/CatalogueManager.stories.tsx` | overview, closure fit and undo, shape sizes, id rename saved with its references |
 | console | `components/FieldEditor.stories.tsx` | localized text, all languages, list of items, choice |
 

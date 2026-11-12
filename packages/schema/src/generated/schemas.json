@@ -2164,6 +2164,63 @@
           "label": "Size (mm)"
          }
         }
+       },
+       "models3d": {
+        "kind": "map",
+        "keyPattern": "^[A-Za-z][A-Za-z0-9-]{0,39}$",
+        "keyLabel": "Shape id",
+        "label": "Approved 3D models per diameter",
+        "locked": true,
+        "of": {
+         "kind": "map",
+         "keyPattern": "^[0-9]{1,3}$",
+         "keyLabel": "Diameter (mm)",
+         "of": {
+          "kind": "group",
+          "fields": {
+           "src": {
+            "kind": "text",
+            "localized": false,
+            "label": "GLB"
+           },
+           "modelId": {
+            "kind": "text",
+            "localized": false,
+            "label": "Model id"
+           },
+           "axis": {
+            "kind": "enum",
+            "values": [
+             "+Y",
+             "-Y",
+             "+X",
+             "-X",
+             "+Z",
+             "-Z"
+            ],
+            "label": "Opening towards"
+           },
+           "anchorMm": {
+            "kind": "list",
+            "of": {
+             "kind": "number"
+            },
+            "label": "Anchor (mm)"
+           },
+           "neckDiameterMm": {
+            "kind": "number",
+            "label": "Neck Ø (mm)"
+           },
+           "sizeMm": {
+            "kind": "list",
+            "of": {
+             "kind": "number"
+            },
+            "label": "Size (mm)"
+           }
+          }
+         }
+        }
        }
       }
      },

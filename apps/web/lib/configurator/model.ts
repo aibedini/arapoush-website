@@ -51,7 +51,10 @@ export type PrintEffect = "flat" | "halftone" | "raised" | "foil" | "combo";
  * operator's sample design; without it the scene draws the Arapoush sample in the method's style.
  */
 export type PrintDef = { id: string; name: Localized; effect: PrintEffect; note?: Localized; colours?: number; foil?: string; artwork?: string; shapes?: string[]; diameters?: number[] };
-/** A GLB in millimetres with its mounting: `axis` points from the mounting face to the tube. */
+/**
+ * A GLB in millimetres with its mounting: `axis` is the direction the cap's opening faces (from the
+ * cap towards the tube) and `anchorMm` the point inside the cap that sits on the top of the neck.
+ */
 export type ClosureModel3d = { src: string; modelId?: string; axis: "+Y" | "-Y" | "+X" | "-X" | "+Z" | "-Z"; anchorMm: number[]; neckDiameterMm: number; sizeMm?: number[] };
 export type ClosureDef = {
   id: string;
@@ -67,6 +70,8 @@ export type ClosureDef = {
   shape3d?: ClosureShape;
   /** Approved factory model (OPEX → Catalogue → 3D models); the parametric shape is its fallback. */
   model3d?: ClosureModel3d;
+  /** Factory models made for one tube diameter (shape → diameter); they win over `model3d` there. */
+  models3d?: Record<string, Record<string, ClosureModel3d>>;
   aliases?: string[];
 };
 export type LayerDef = { id: string; color: string; name: Localized; text: Localized };
@@ -138,13 +143,19 @@ export const sceneLook = (cat: TubeProduct, c: TubeConfig) => {
   };
 };
 
-/** 3D families for the scene: an eye-nozzle closure swaps in its own shoulder. */
-export const sceneModels = (cat: TubeProduct, c: TubeConfig) => ({
-  shape: closureOf(cat, c.closure)?.shoulder ?? shapeOf(cat, c.shape)?.model ?? "circular",
-  closure: closureOf(cat, c.closure)?.model ?? "plain",
-  closureShape: closureOf(cat, c.closure)?.shape3d,
-  closureModel: closureOf(cat, c.closure)?.model3d,
-});
+/**
+ * 3D families for the scene: an eye-nozzle closure swaps in its own shoulder. The factory model is
+ * the one made for this shape and diameter, else the closure's general one.
+ */
+export const sceneModels = (cat: TubeProduct, c: TubeConfig) => {
+  const x = closureOf(cat, c.closure);
+  return {
+    shape: x?.shoulder ?? shapeOf(cat, c.shape)?.model ?? "circular",
+    closure: x?.model ?? "plain",
+    closureShape: x?.shape3d,
+    closureModel: x?.models3d?.[c.shape]?.[String(c.d)] ?? x?.model3d,
+  };
+};
 
 export const diametersFor = (cat: TubeProduct, shape: string) =>
   Object.keys(shapeOf(cat, shape)?.sizes ?? {})

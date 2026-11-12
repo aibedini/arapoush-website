@@ -22,7 +22,7 @@ export function Overview({ cat, issues, onOpen }: { cat: Catalogue; issues: Issu
   const diameters = cat.shapes.reduce((k, s) => k + diametersOf(s).length, 0);
   const stats: [string, number, string, Tab][] = [
     ["شکل", cat.shapes.length, `${num(diameters)} قطر · ${num(sizes)} سایز`, "shapes"],
-    ["درب", cat.closures.length, `${num(cat.closures.filter((x) => x.model3d).length)} با مدل کارخانه`, "closures"],
+    ["درب", cat.closures.length, `${num(cat.closures.filter((x) => x.model3d || x.models3d).length)} با مدل کارخانه`, "closures"],
     ["روش چاپ", cat.prints?.length ?? 0, "", "prints"],
     ["رنگ بدنه", cat.bodyColours?.length ?? 0, `${num(cat.colourFamilies?.length ?? 0)} خانوادهٔ رنگ درب`, "colours"],
     ["ساختار", cat.structures.length, "", "structures"],

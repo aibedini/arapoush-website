@@ -58,7 +58,7 @@ Generated from the route contracts by `pnpm docs:api`; do not edit.
 | `UNKNOWN_ITEM` | 400 | A decision names an item not in this request. / No such set item. | `POST /v1/manage/change-requests/:id/amend`<br>`POST /v1/manage/change-requests/:id/approve` |
 | `UNKNOWN_OPERATOR` | 400 | Not an active operator. | `POST /v1/manage/tickets/:ref/assign`<br>`POST /v1/manage/tickets/:ref/refer`<br>`POST /v1/manage/tickets/bulk`<br>`PUT /v1/manage/teams/:id/members` |
 | `UNKNOWN_TEAM` | 400 | No such team. | `PATCH /v1/manage/tickets/:ref`<br>`POST /v1/manage/tickets/:ref/refer`<br>`POST /v1/manage/tickets/bulk` |
-| `VALIDATION_FAILED` | 400 | The request does not match the schema; `issues` lists each field. / The result does not match the catalogue schema (`issues`). / The content does not match the schema (`issues`, up to 50). | 100 routes |
+| `VALIDATION_FAILED` | 400 | The request does not match the schema; `issues` lists each field. / The result does not match the catalogue schema (`issues`). / `shape` and `diameter` must come together, and the shape must offer that diameter. | 100 routes |
 | `VALUE_REQUIRED` | 400 | A set or insert item has no value. | `POST /v1/partner/change-requests` |
 | `WEAK_PASSWORD` | 400 | Shorter than 12 or longer than 128 characters, contains your email name, or (in production) appears in known breaches; `detail` says which. / The temporary password fails the policy. / The password fails the policy. | `POST /v1/manage/auth/password`<br>`POST /v1/manage/operators`<br>`POST /v1/manage/partners/:id/users` |
 | `WRONG_ENTRY` | 400 | The revision belongs to another entry. | `POST /v1/manage/entries/:type/publish`<br>`POST /v1/manage/entries/:type/rollback` |

@@ -41,7 +41,7 @@ export function ClosuresEditor({ cat, set, issues, disabled, selected, onSelect,
   const duplicate = () => {
     if (!x) return;
     const id = freshId(`${x.id}-copy`, ids);
-    const rest = { ...x, model3d: undefined };
+    const rest = { ...x, model3d: undefined, models3d: undefined };
     set((c) => ({ ...c, closures: [...c.closures.slice(0, index + 1), { ...structuredClone(rest), id, name: { ...x.name, fa: `${x.name.fa ?? ""} (رونوشت)` } }, ...c.closures.slice(index + 1)] }));
     onSelect(id);
   };
@@ -64,7 +64,7 @@ export function ClosuresEditor({ cat, set, issues, disabled, selected, onSelect,
           sub: `${CLOSURE_MODELS.find((m) => m.id === c.model)?.fa ?? c.model} · ${num(fitCount(c))} قطر`,
           image: c.image,
           issues: issues.filter((i) => i.tab === "closures" && i.id === c.id).length,
-          badge: c.model3d ? <span className="badge ok" title="مدل سه‌بعدی کارخانه">CAD</span> : undefined,
+          badge: c.model3d || c.models3d ? <span className="badge ok" title="مدل سه‌بعدی کارخانه">CAD</span> : undefined,
         }))}
         selected={x?.id ?? ""}
         onSelect={onSelect}
@@ -91,7 +91,7 @@ export function ClosuresEditor({ cat, set, issues, disabled, selected, onSelect,
           </div>
 
           <FitMatrix cat={cat} x={x} disabled={disabled} patch={patch} />
-          <Look x={x} disabled={disabled} patch={patch} onTab={onTab} />
+          <Look cat={cat} x={x} disabled={disabled} patch={patch} onTab={onTab} />
         </section>
       ) : (
         <div className="card empty">هنوز دربی تعریف نشده است.</div>
@@ -238,7 +238,7 @@ const RATIOS: { k: keyof ClosureShape; label: string; min: number; max: number; 
 ];
 
 /** How the closure is drawn: the 3D family, parametric shape and the approved factory model. */
-function Look({ x, disabled, patch, onTab }: { x: ClosureDef; disabled: boolean; patch: (p: Partial<ClosureDef>) => void; onTab: (t: Tab) => void }) {
+function Look({ cat, x, disabled, patch, onTab }: { cat: Catalogue; x: ClosureDef; disabled: boolean; patch: (p: Partial<ClosureDef>) => void; onTab: (t: Tab) => void }) {
   const s = x.shape3d ?? {};
   const set3d = (p: Partial<ClosureShape>) => patch({ shape3d: { ...s, ...p } });
   const param = x.model === "param" || x.model === "nozzle";
@@ -246,7 +246,7 @@ function Look({ x, disabled, patch, onTab }: { x: ClosureDef; disabled: boolean;
     <div className="card">
       <div className="card-head">
         <h2>نمای سه‌بعدی</h2>
-        {x.model3d ? <span className="badge ok">مدل کارخانه تأییدشده</span> : <span className="badge">مدل ساخته‌شده از پارامترها</span>}
+        {x.model3d || x.models3d ? <span className="badge ok">مدل کارخانه تأییدشده</span> : <span className="badge">مدل ساخته‌شده از پارامترها</span>}
       </div>
       <div className="card-body stack">
         <div className="cm-grid-2">
@@ -316,12 +316,22 @@ function Look({ x, disabled, patch, onTab }: { x: ClosureDef; disabled: boolean;
         )}
         <div className="cm-model3d">
           <CubeTransparent size={22} aria-hidden />
-          {x.model3d ? (
+          {x.model3d || x.models3d ? (
             <div className="stack" style={{ gap: 2 }}>
-              <span>
-                فایل صنعتی کارخانه جای مدل پارامتری را می‌گیرد؛ گلویی <span dir="ltr">Ø{x.model3d.neckDiameterMm} mm</span>، جهت <code>{x.model3d.axis}</code>.
-              </span>
-              <span className="small muted">پارامترهای بالا جایگزین می‌مانند اگر فایل در دسترس نباشد.</span>
+              {x.model3d && (
+                <span>
+                  مدل کارخانه برای همهٔ قطرها: گلویی <span dir="ltr">Ø{x.model3d.neckDiameterMm} mm</span>، دهانه رو به <code>{x.model3d.axis}</code>.
+                </span>
+              )}
+              {x.models3d && (
+                <span>
+                  مدل کارخانهٔ ویژهٔ قطر:{" "}
+                  {Object.entries(x.models3d)
+                    .flatMap(([shape, ds]) => Object.keys(ds).map((d) => `${locName(cat.shapes.find((s) => s.id === shape)?.name, shape)} Ø${d}`))
+                    .join("، ")}
+                </span>
+              )}
+              <span className="small muted">پارامترهای بالا جایگزین می‌مانند برای قطرهای بدون مدل یا اگر فایل در دسترس نباشد.</span>
             </div>
           ) : (
             <span>هنوز فایل STEP یا GLB کارخانه برای این درب تأیید نشده است.</span>
