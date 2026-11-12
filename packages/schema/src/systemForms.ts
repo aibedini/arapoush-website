@@ -101,6 +101,74 @@ export const SYSTEM_FORMS: { slug: string; definition: FormDefinition }[] = [
     },
   },
   {
+    // Tube page quote (T5): the selected configuration arrives in hidden fields and as ticket context.
+    slug: "tube-quote",
+    definition: {
+      title: { fa: "استعلام قیمت تیوب", en: "Tube quote request", tr: "Tüp fiyat teklifi" },
+      intro: {},
+      submitLabel: { fa: "ارسال درخواست قیمت", en: "Request a quote", tr: "Teklif iste" },
+      success: { fa: "درخواست شما ثبت شد.", en: "Your request is registered.", tr: "Talebiniz kaydedildi." },
+      fields: [
+        { ...name },
+        { ...company },
+        { ...phone, required: true, label: { fa: "شمارهٔ تماس", en: "Phone", tr: "Telefon" } },
+        { ...email, required: false },
+        {
+          id: "contact",
+          type: "radio",
+          required: true,
+          width: "full",
+          label: { fa: "چطور با شما در ارتباط باشیم؟", en: "How should we contact you?", tr: "Size nasıl ulaşalım?" },
+          options: [
+            opt("phone", "تماس تلفنی", "Phone call", "Telefon"),
+            opt("whatsapp", "واتساپ", "WhatsApp", "WhatsApp"),
+            opt("telegram", "تلگرام", "Telegram", "Telegram"),
+            opt("email", "ایمیل", "Email", "E-posta"),
+            opt("visit", "مراجعهٔ حضوری کارشناس", "A visit from our specialist", "Uzman ziyareti"),
+          ],
+        },
+        {
+          id: "time",
+          type: "select",
+          width: "half",
+          label: { fa: "زمان مناسب", en: "Best time", tr: "Uygun zaman" },
+          options: [opt("morning", "صبح (۸:۳۰ تا ۱۲)", "Morning (8:30–12)", "Sabah (8:30–12)"), opt("noon", "ظهر (۱۲ تا ۱۴)", "Midday (12–14)", "Öğle (12–14)"), opt("afternoon", "عصر (۱۴ تا ۱۷)", "Afternoon (14–17)", "Öğleden sonra (14–17)")],
+          showIf: { field: "contact", op: "in", value: ["phone", "whatsapp", "visit"] },
+        },
+        { id: "quantity", type: "number", width: "half", min: 1, label: { fa: "تیراژ (عدد)", en: "Quantity (pieces)", tr: "Adet" } },
+        { id: "needed_by", type: "date", width: "half", label: { fa: "تاریخ مورد نیاز", en: "Needed by", tr: "İhtiyaç tarihi" } },
+        {
+          id: "artwork",
+          type: "file",
+          width: "full",
+          label: { fa: "فایل طرح", en: "Artwork", tr: "Tasarım dosyası" },
+          help: { fa: "PDF یا تصویر، تا ۳ فایل", en: "PDF or images, up to 3 files", tr: "PDF ya da görseller, en fazla 3 dosya" },
+          accept: ["pdf", "jpeg", "png", "webp"],
+          max: 3,
+        },
+        { ...message, label: { fa: "توضیحات", en: "Notes", tr: "Notlar" } },
+        ...["shape", "diameter", "length", "closure", "cap_colour", "cap_hex", "body_colour", "print", "structure", "link"].map(
+          (id): FormField => ({ id, type: "hidden", label: { fa: id, en: id, tr: id } }),
+        ),
+      ],
+      settings: {
+        ...DEFAULT_SETTINGS,
+        team: "sales",
+        tags: ["tube-quote"],
+        subject: "Ø{diameter} × {length} {closure} — {name}",
+        confirmation: {
+          enabled: true,
+          subject: { fa: "درخواست قیمت شما ثبت شد", en: "Your quote request is registered", tr: "Teklif talebiniz kaydedildi" },
+          body: {
+            fa: "{name} عزیز،\n\nدرخواست قیمت شما با شمارهٔ پیگیری #{number} ثبت شد. همکاران فروش آراپوش به‌زودی با روشی که انتخاب کردید با شما تماس می‌گیرند. برای پیگیری، همین شماره را اعلام کنید یا به این ایمیل پاسخ دهید.\n\nآراپوش گستر",
+            en: "Dear {name},\n\nYour quote request is registered as #{number}. Arapoush sales will contact you shortly the way you chose. Quote this number when you follow it up, or simply reply to this email.\n\nArapoush Gostar",
+            tr: "Sayın {name},\n\nTeklif talebiniz #{number} numarasıyla kaydedildi. Arapoush satış ekibi seçtiğiniz yolla kısa süre içinde sizinle iletişime geçecek. Takip için bu numarayı belirtin ya da bu e-postayı yanıtlayın.\n\nArapoush Gostar",
+          },
+        },
+      },
+    },
+  },
+  {
     slug: "careers",
     definition: {
       title: { fa: "ارسال رزومه", en: "Apply", tr: "Başvuru" },

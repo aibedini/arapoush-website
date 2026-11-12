@@ -1,16 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { EMPTY_QUOTE, quoteMailto, validateQuote } from "./quote.ts";
-
-test("name and email are required", () => {
-  assert.deepEqual(validateQuote(EMPTY_QUOTE), { name: "required", email: "required" });
-});
-
-test("email must look like an address; quantity must be numeric", () => {
-  const e = validateQuote({ ...EMPTY_QUOTE, name: "Sara", email: "sara@", quantity: "lots" });
-  assert.deepEqual(e, { email: "invalid", quantity: "invalid" });
-  assert.deepEqual(validateQuote({ ...EMPTY_QUOTE, name: "Sara", email: "sara@brand.ir", quantity: "20,000" }), {});
-});
+import { quoteMailto } from "./quote.ts";
 
 test("mailto carries the configuration and cannot inject headers", () => {
   const href = quoteMailto({

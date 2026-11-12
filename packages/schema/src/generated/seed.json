@@ -1558,6 +1558,56 @@
      "en": "Structure",
      "tr": "Yapı"
     },
+    "quoteSentTitle": {
+     "fa": "درخواست شما ثبت شد",
+     "en": "Your request is registered",
+     "tr": "Talebiniz kaydedildi"
+    },
+    "quoteNumberLabel": {
+     "fa": "شمارهٔ پیگیری",
+     "en": "Reference number",
+     "tr": "Takip numarası"
+    },
+    "copyNumber": {
+     "fa": "کپی شمارهٔ پیگیری",
+     "en": "Copy the reference number",
+     "tr": "Takip numarasını kopyala"
+    },
+    "numberCopied": {
+     "fa": "کپی شد",
+     "en": "Copied",
+     "tr": "Kopyalandı"
+    },
+    "quoteFollowUp": {
+     "fa": "برای پیگیری سریع‌تر، این شماره را به همکاران {department} اعلام کنید:",
+     "en": "To follow it up faster, give this number to our {department} team:",
+     "tr": "Daha hızlı takip için bu numarayı {department} ekibimize iletin:"
+    },
+    "quoteEmailNote": {
+     "fa": "رونوشت درخواست با همین شماره به ایمیل شما فرستاده شد.",
+     "en": "A copy with the same number has been sent to your email.",
+     "tr": "Aynı numaralı bir kopya e-posta adresinize gönderildi."
+    },
+    "mainLine": {
+     "fa": "خط اصلی",
+     "en": "Main line",
+     "tr": "Ana hat"
+    },
+    "extShort": {
+     "fa": "داخلی",
+     "en": "Ext.",
+     "tr": "Dahili"
+    },
+    "mobileShort": {
+     "fa": "موبایل",
+     "en": "Mobile",
+     "tr": "Cep"
+    },
+    "newRequest": {
+     "fa": "درخواست تازه",
+     "en": "New request",
+     "tr": "Yeni talep"
+    },
     "capColour": {
      "fa": "رنگ درب",
      "en": "Cap colour",
@@ -1880,7 +1930,11 @@
      "type": "closing",
      "enabled": true
     }
-   ]
+   ],
+   "quote": {
+    "form": "tube-quote",
+    "department": "sales"
+   }
   }
  },
  "product.tube.catalogue": {

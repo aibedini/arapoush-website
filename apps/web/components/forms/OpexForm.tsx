@@ -25,7 +25,20 @@ const toBase64 = (f: File) =>
  * the same code as OPEX (`@arapoush/schema`), so what passes here passes there. Every submission
  * becomes a ticket in the OPEX helpdesk.
  */
-export default function OpexForm({ form, t, locale, page, headingLevel = 2 }: { form: PublicForm; t: Dictionary["forms"]; locale: string; page: string; headingLevel?: 1 | 2 }) {
+/**
+ * Embedding hooks (the tube quote, T5): `values` fills hidden fields from the page (the selected
+ * configuration); `context` adds spec lines to the ticket; `success` replaces the sent view (it gets
+ * the ticket number and a reset); `onFallback` runs when OPEX cannot take the submission (no OPEX, or
+ * an outage) instead of showing the failure note, e.g. to open the visitor's email app.
+ */
+type Embed = {
+  values?: Record<string, string>;
+  context?: { subject?: string; spec?: string[] };
+  success?: (o: { number: number | null; reset: () => void; values: Record<string, unknown> }) => React.ReactNode;
+  onFallback?: (values: Record<string, unknown>) => void;
+};
+
+export default function OpexForm({ form, t, locale, page, headingLevel = 2, values: given, context, success, onFallback }: { form: PublicForm; t: Dictionary["forms"]; locale: string; page: string; headingLevel?: 1 | 2 } & Embed) {
   const uid = useId();
   const [values, setValues] = useState<Record<string, unknown>>({});
   const [files, setFiles] = useState<Record<string, File[]>>({});
@@ -49,12 +62,14 @@ export default function OpexForm({ form, t, locale, page, headingLevel = 2 }: { 
         .filter(([, v]) => v),
     );
   }, [form.fields, page]);
+  // Page-supplied values for hidden fields win over their defaults (only fields the form has).
+  const supplied = useMemo(() => Object.fromEntries(Object.entries(given ?? {}).filter(([k, v]) => v && form.fields.some((f) => f.id === k && f.type === "hidden"))), [given, form.fields]);
 
   const set = (id: string, v: unknown) => {
     setValues((s) => ({ ...s, [id]: v }));
     if (errors[id]) setErrors(({ [id]: _, ...rest }) => rest);
   };
-  const all = { ...values, ...hidden };
+  const all = { ...values, ...hidden, ...supplied };
   const shown = form.fields.filter((f) => f.type !== "hidden" && isVisible(f, all));
 
   const submit = async (e: React.FormEvent) => {
@@ -71,7 +86,7 @@ export default function OpexForm({ form, t, locale, page, headingLevel = 2 }: { 
     }
     setStatus("sending");
     const payloadFiles = (await Promise.all(Object.entries(files).flatMap(([field, list]) => list.map(async (f) => ({ field, name: f.name, data: await toBase64(f) })))));
-    const r = await sendForm(form.slug, { locale, page, values: input, files: payloadFiles.length ? payloadFiles : undefined }, { website: trap, shownAt });
+    const r = await sendForm(form.slug, { locale, page, values: input, files: payloadFiles.length ? payloadFiles : undefined, ...(context ? { context } : {}) }, { website: trap, shownAt });
     if (r.result === "sent") {
       setNumber(r.number ?? null);
       setStatus("sent");
@@ -80,9 +95,14 @@ export default function OpexForm({ form, t, locale, page, headingLevel = 2 }: { 
       setErrors(Object.fromEntries((r.issues ?? []).map((i) => [i.path, i.message])));
       setStatus("idle");
       requestAnimationFrame(() => summary.current?.focus());
+    } else if (r.result === "fallback" && onFallback) {
+      setStatus("idle");
+      onFallback(input);
     } else setStatus(r.result === "limited" ? "limited" : "failed");
   };
 
+  const reset = () => (setValues({}), setFiles({}), setStatus("idle"));
+  if (status === "sent" && success) return <>{success({ number, reset, values })}</>;
   if (status === "sent")
     return (
       <div ref={done} tabIndex={-1} className={styles.done} role="status">

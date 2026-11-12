@@ -1333,6 +1333,56 @@
          "localized": true,
          "multiline": false
         },
+        "quoteSentTitle": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "quoteNumberLabel": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "copyNumber": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "numberCopied": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "quoteFollowUp": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "quoteEmailNote": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "mainLine": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "extShort": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "mobileShort": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "newRequest": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
         "capColour": {
          "kind": "text",
          "localized": true,
@@ -1812,6 +1862,21 @@
        "key": "id",
        "label": "Sections",
        "operatorOnly": true
+      },
+      "quote": {
+       "kind": "group",
+       "fields": {
+        "form": {
+         "kind": "text",
+         "localized": false,
+         "multiline": false
+        },
+        "department": {
+         "kind": "text",
+         "localized": false,
+         "multiline": false
+        }
+       }
       }
      }
     }

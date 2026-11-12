@@ -155,7 +155,11 @@ test("preview: the console gets a signed link; the site reads drafts only with i
     const ok = await preview({ "opex-preview": tok });
     assert.equal(ok.statusCode, 200);
     assert.equal(getAt(ok.json().entries["page.printing"].data, "/hero/title@en"), "Draft title");
-    assert.equal((await preview({ "opex-preview": tok.slice(0, -2) + "xx" })).statusCode, 401);
+    // Tamper inside the signature (the last base64url character carries padding bits, so changing only
+    // the tail can leave the decoded signature unchanged and make this check flaky).
+    const sig = tok.lastIndexOf(".") + 5;
+    const forged = tok.slice(0, sig) + (tok[sig] === "A" ? "B" : "A") + tok.slice(sig + 1);
+    assert.equal((await preview({ "opex-preview": forged })).statusCode, 401);
     assert.equal((await t.app.inject({ method: "GET", url: "/v1/delivery/preview", headers: { "opex-preview": tok } })).statusCode, 401, "the delivery token is still required");
     // Published content is unchanged.
     const live = await t.app.inject({ method: "GET", url: "/v1/delivery/content/page.printing", headers: bearer });

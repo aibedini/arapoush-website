@@ -679,6 +679,9 @@ How the import works:
 - Diameters a chart does not mention are kept unless "keep missing" is off.
 - A pre-v3 draft is upgraded on its first import.
 
+**Tube quote (T5).** `layout.quote` = `{form, department}`: the OPEX form the quote section renders
+(default `tube-quote`, a system form) and the `page.contact` department shown with the ticket number.
+
 **Tube page layout (T4).** `product.tube.page` → `layout.sections`: `{id, type, enabled, style, props}`.
 - Types are the built-in sections in `TUBE_SECTIONS` or the page-builder blocks.
 - `style` must be one of that section's styles. Unknown values fall back, and the configurator

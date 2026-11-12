@@ -211,3 +211,43 @@ test("SLA breaches are flagged once and notify the leads; quoted text stripping"
     await t.close();
   }
 });
+
+test("tube quote (T5): configuration in hidden fields and context, subject from it, confirmation with the number", async () => {
+  const t = await testApp({ DELIVERY_TOKEN: TOKEN });
+  try {
+    const admin = await signIn(t.app, t, "super_admin");
+    const config = { shape: "circular", diameter: "30", length: "110", closure: "airless", cap_colour: "metallicSilver", body_colour: "#1d1f22", print: "hotstamp", structure: "pe-evoh-5", link: "shape=circular&d=30&l=110&cap=airless" };
+    const r = await t.app.inject({
+      method: "POST",
+      url: "/v1/delivery/forms/tube-quote",
+      headers: site("198.51.100.77"),
+      payload: {
+        locale: "fa",
+        page: "/fa/products/multi-layer-tube",
+        values: { name: "Sara Karimi", company: "Daroo Co", phone: "09121234567", email: "sara@example.com", contact: "whatsapp", time: "morning", quantity: 50000, needed_by: "2026-12-20", message: "Gold foil logo", ...config },
+        context: { spec: ["گرد · Ø30 × 110 mm", "پمپ ایرلس", "چاپ: هات استمپ"] },
+      },
+    });
+    assert.equal(r.statusCode, 201, r.body);
+    const { number } = r.json();
+
+    // An unknown contact option is refused (the shared validator, same as in the browser).
+    const bad = await t.app.inject({ method: "POST", url: "/v1/delivery/forms/tube-quote", headers: site("198.51.100.78"), payload: { locale: "en", page: "/en/products/multi-layer-tube", values: { name: "A", phone: "09120000000", contact: "nope" } } });
+    assert.equal(bad.statusCode, 400);
+
+    const ticket = (await t.app.inject({ method: "GET", url: `/v1/manage/tickets/${number}`, headers: { cookie: admin.cookie } })).json();
+    assert.equal(ticket.data.subject, "Ø30 × 110 airless — Sara Karimi");
+    assert.equal(ticket.data.values.print, "hotstamp");
+    assert.equal(ticket.data.values.contact, "whatsapp");
+    assert.deepEqual(ticket.data.context.spec, ["گرد · Ø30 × 110 mm", "پمپ ایرلس", "چاپ: هات استمپ"]);
+    assert.equal(ticket.ticket.team.name, "فروش", "routed to sales");
+    const sent = await outbox(t);
+    const conf = sent.find((m) => m.to === "sara@example.com");
+    assert.ok(conf, "the visitor gets a confirmation");
+    assert.match(conf!.subject, new RegExp(`#${number}`));
+    assert.match(conf!.text, new RegExp(`#${number}`));
+    assert.match(conf!.text, /Sara Karimi/);
+  } finally {
+    await t.close();
+  }
+});

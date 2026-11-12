@@ -12,14 +12,15 @@ import TubeState from "@/components/configurator/TubeState";
 import { QuoteSection, SamplesSection } from "@/components/configurator/TubeSections";
 import Block from "@/components/sections/blocks/Block";
 import { isBlockKind, TUBE_SECTIONS, type BlockKind } from "@arapoush/schema";
-import { getTubeLayout } from "@/lib/tubeLayout";
+import { getTubeLayout, getTubeQuote } from "@/lib/tubeLayout";
+import { getContactPage, pageForm } from "@/lib/contact";
 import { LayerStructure, ProductHero } from "@/components/product/ProductSections";
 import styles from "@/components/product/Product.module.css";
 import { getDictionary, isLocale, localeMeta, locales } from "@/lib/i18n";
 import { languageAlternates, pageUrl, productTubeJsonLd } from "@/lib/seo";
 import { productPaths } from "@/lib/site";
 import { getTubeProduct } from "@/lib/products";
-import { ensureContent, opexEnabled } from "@/lib/content";
+import { ensureContent } from "@/lib/content";
 
 const PATH = productPaths.tube;
 type Params = Promise<{ locale: string }>;
@@ -63,6 +64,9 @@ export default async function MultiLayerTubePage({ params }: { params: Params })
 
   const layout = getTubeLayout();
   const closing = layout.find((x) => x.type === "closing");
+  const quote = getTubeQuote();
+  const quoteForm = pageForm(quote.form);
+  const department = getContactPage().directory.departments.find((d) => d.id === quote.department);
 
   // Each section in the operator's order; blocks carry their own props (visual editor base path).
   const render = (sec: (typeof layout)[number]) => {
@@ -74,7 +78,7 @@ export default async function MultiLayerTubePage({ params }: { params: Params })
       case "samples":
         return <SamplesSection style={sec.style as "grid" | "rail"} />;
       case "quote":
-        return <QuoteSection email={t.site.contact.email} direct={opexEnabled()} />;
+        return quoteForm ? <QuoteSection email={t.site.contact.email} form={quoteForm} forms={t.forms} department={department} /> : null;
       case "structure":
         return (
           <div className={styles.lower}>

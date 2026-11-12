@@ -1,11 +1,43 @@
 {
-  "$comment": "Multi-layer tube page: section order, visibility and style (OPEX: product.tube.page → layout). Built-in sections: hero (media | compact), configurator (viewerStart | viewerEnd), samples (grid | rail), quote, structure (split | stacked), cta (the closing call to action; hidden = footer only). Page-builder blocks (richText, imageText, cta, faq, form, spacer) can go anywhere with their own props.",
+  "$comment": "Multi-layer tube page: section order, visibility and style (OPEX: product.tube.page → layout). Built-in sections: hero (media | compact), configurator (viewerStart | viewerEnd), samples (grid | rail), quote, structure (split | stacked), cta (the closing call to action; hidden = footer only). Page-builder blocks (richText, imageText, cta, faq, form, spacer) can go anywhere with their own props. `quote`: the OPEX form the quote section uses and the contact-page department shown with the ticket number.",
   "sections": [
-    { "id": "hero", "type": "hero", "enabled": true, "style": "media" },
-    { "id": "configurator", "type": "configurator", "enabled": true, "style": "viewerStart" },
-    { "id": "samples", "type": "samples", "enabled": true, "style": "grid" },
-    { "id": "quote", "type": "quote", "enabled": true },
-    { "id": "structure", "type": "structure", "enabled": true, "style": "split" },
-    { "id": "closing", "type": "closing", "enabled": true }
-  ]
+    {
+      "id": "hero",
+      "type": "hero",
+      "enabled": true,
+      "style": "media"
+    },
+    {
+      "id": "configurator",
+      "type": "configurator",
+      "enabled": true,
+      "style": "viewerStart"
+    },
+    {
+      "id": "samples",
+      "type": "samples",
+      "enabled": true,
+      "style": "grid"
+    },
+    {
+      "id": "quote",
+      "type": "quote",
+      "enabled": true
+    },
+    {
+      "id": "structure",
+      "type": "structure",
+      "enabled": true,
+      "style": "split"
+    },
+    {
+      "id": "closing",
+      "type": "closing",
+      "enabled": true
+    }
+  ],
+  "quote": {
+    "form": "tube-quote",
+    "department": "sales"
+  }
 }

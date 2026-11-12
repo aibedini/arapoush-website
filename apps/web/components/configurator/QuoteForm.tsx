@@ -1,65 +1,110 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import type { Dictionary } from "@/lib/i18n";
-import { EMPTY_QUOTE, quoteMailto, validateQuote, type QuoteErrors, type QuoteForm as Form } from "@/lib/configurator/quote";
+import type { PublicForm } from "@/lib/forms";
+import { quoteMailto } from "@/lib/configurator/quote";
+import { telHref, type Department } from "@/lib/contactText";
+import LazyOpexForm from "@/components/forms/LazyOpexForm";
 import RollText from "@/components/ui/RollText";
-import Honeypot from "@/components/ui/Honeypot";
-import { sendInquiry } from "@/lib/forms";
 import styles from "./Configurator.module.css";
 
 type Props = {
   t: Dictionary["productTube"]["configurator"];
+  forms: Dictionary["forms"];
+  form: PublicForm;
+  /** Hidden-field values: the selected configuration. */
+  values: Record<string, string>;
   spec: string[];
   subjectSpec: string;
   search: string;
+  /** Sales inbox for the email-app fallback. */
   email: string;
   locale: string;
-  /** OPEX is set up: the request is sent directly (the email app is only the fallback). */
-  direct?: boolean;
+  /** Who follows the request up (contact page department), shown with the ticket number. */
+  department?: Department;
 };
 
-/**
- * Quote request pre-filled with the configuration. With OPEX it is sent straight to sales (stored
- * encrypted, emailed); otherwise, or if sending fails, it opens the visitor's email app with a
- * complete message addressed to the sales inbox.
- */
-export default function QuoteForm({ t, spec, subjectSpec, search, email, locale, direct }: Props) {
-  const id = useId();
-  const [form, setForm] = useState<Form>(EMPTY_QUOTE);
-  const [errors, setErrors] = useState<QuoteErrors>({});
-  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
-  const [trap, setTrap] = useState("");
-  const [shownAt] = useState(() => Date.now());
+const lp = (l: Record<string, string> | undefined, locale: string) => l?.[locale] || l?.en || l?.fa || "";
 
-  const fields: {
-    key: keyof Form;
-    label: string;
-    type?: string;
-    auto?: string;
-    optional?: boolean;
-    wide?: boolean;
-    area?: boolean;
-  }[] = [
-    { key: "name", label: t.name, auto: "name" },
-    { key: "company", label: t.company, auto: "organization", optional: true },
-    { key: "email", label: t.email, type: "email", auto: "email" },
-    { key: "phone", label: t.phone, type: "tel", auto: "tel", optional: true },
-    { key: "quantity", label: t.quantity, optional: true, wide: true },
-    {
-      key: "message",
-      label: t.message,
-      optional: true,
-      wide: true,
-      area: true,
-    },
-  ];
-  const errorText = (k: keyof Form) => {
-    const e = errors[k];
-    if (!e) return null;
-    if (e === "required") return t.required;
-    return k === "email" ? t.invalidEmail : t.invalidQuantity;
-  };
+/**
+ * Quote request (T5): the OPEX form `tube-quote` (fields, labels and routing are managed in OPEX),
+ * with the configuration attached as hidden fields and ticket context. After sending, the visitor
+ * sees the ticket number and the department and people to quote it to. Without OPEX, or if it
+ * cannot take the request, the visitor's email app opens with everything filled in.
+ */
+export default function QuoteForm({ t, forms, form, values, spec, subjectSpec, search, email, locale, department }: Props) {
+  const id = useId();
+  const [copied, setCopied] = useState(false);
+  const panel = useRef<HTMLDivElement>(null);
+
+  const success = ({ number, reset, values: sent }: { number: number | null; reset: () => void; values: Record<string, unknown> }) => (
+    <div ref={(el) => void (panel.current = el, el?.focus())} tabIndex={-1} className={styles.quoteDone} role="status" aria-live="polite">
+      <p className={styles.quoteDoneTitle}>{t.quoteSentTitle}</p>
+      {number !== null && (
+        <div className={styles.ticket}>
+          <span className={styles.ticketLabel}>{t.quoteNumberLabel}</span>
+          <strong className={styles.ticketNumber} dir="ltr">
+            #{number}
+          </strong>
+          <button
+            type="button"
+            className={styles.copy}
+            onClick={async () => {
+              try {
+                await navigator.clipboard.writeText(String(number));
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              } catch {
+                /* clipboard blocked: the number stays visible */
+              }
+            }}
+          >
+            <span aria-live="polite">{copied ? t.numberCopied : t.copyNumber}</span>
+          </button>
+        </div>
+      )}
+      {department && (
+        <div className={styles.followUp}>
+          <p>{t.quoteFollowUp.replace("{department}", lp(department.name, locale))}</p>
+          <ul>
+            {department.phones[0] && (
+              <li>
+                <span>{t.mainLine}</span>
+                <a href={telHref(department.phones[0])} dir="ltr">
+                  {department.phones[0]}
+                </a>
+              </li>
+            )}
+            {department.people.slice(0, 4).map((m) => (
+              <li key={lp(m.name, "fa")}>
+                <span>
+                  {lp(m.name, locale)} · {lp(m.role, locale)}
+                </span>
+                <span className={styles.reach}>
+                  {m.exts.length > 0 && (
+                    <span>
+                      {t.extShort} <span dir="ltr">{m.exts.join(" · ")}</span>
+                    </span>
+                  )}
+                  {(m.mobiles ?? []).slice(0, 1).map((n) => (
+                    <a key={n} href={telHref(n)} dir="ltr" aria-label={`${t.mobileShort} ${lp(m.name, locale)}: ${n}`}>
+                      {n}
+                    </a>
+                  ))}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {/* The confirmation email only goes out when the visitor gave an address. */}
+      {typeof sent.email === "string" && sent.email.trim() && <p className={styles.submitHint}>{t.quoteEmailNote}</p>}
+      <button type="button" className="btn btn--ghost" onClick={reset}>
+        <RollText text={t.newRequest} />
+      </button>
+    </div>
+  );
 
   return (
     <section id="quote" className={styles.quote} aria-labelledby={`${id}-title`}>
@@ -77,87 +122,24 @@ export default function QuoteForm({ t, spec, subjectSpec, search, email, locale,
           </ul>
         </div>
       </div>
-
-      <form
-        className={styles.form}
-        noValidate
-        onSubmit={async (e) => {
-          e.preventDefault();
-          if (status === "sending") return;
-          const errs = validateQuote(form);
-          setErrors(errs);
-          const first = Object.keys(errs)[0];
-          if (first) {
-            document.getElementById(`${id}-${first}`)?.focus();
-            return;
-          }
-          const subject = t.subject.replace("{spec}", subjectSpec);
-          const link = `${location.origin}${location.pathname}?${search}`;
-          const mail = () =>
-            (location.href = quoteMailto({ to: email, subject, spec, fields: fields.map((f) => [f.label, form[f.key]]), link: `${t.linkLabel}: ${link}` }));
-          if (!direct) return mail();
-          setStatus("sending");
-          const r = await sendInquiry(
-            "quote",
-            { locale, page: location.pathname, subject, spec: [...spec, link], fields: { name: form.name, email: form.email, company: form.company, phone: form.phone, quantity: form.quantity, message: form.message } },
-            { website: trap, shownAt },
-          );
-          if (r === "sent") {
-            setStatus("sent");
-            setForm(EMPTY_QUOTE);
-            return;
-          }
-          setStatus("idle");
-          mail();
-        }}
-      >
-        <Honeypot value={trap} onChange={setTrap} />
-        {fields.map((f) => {
-          const err = errorText(f.key);
-          const props = {
-            id: `${id}-${f.key}`,
-            name: f.key,
-            value: form[f.key],
-            autoComplete: f.auto,
-            required: !f.optional,
-            "aria-invalid": err ? true : undefined,
-            "aria-describedby": err ? `${id}-${f.key}-err` : undefined,
-            onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setForm({ ...form, [f.key]: e.target.value }),
-          };
-          return (
-            <div key={f.key} className={`${styles.input} ${f.wide ? styles.wide : ""}`}>
-              <label htmlFor={props.id}>
-                {f.label}
-                {f.optional && <span> ({t.optional})</span>}
-              </label>
-              {f.area ? (
-                <textarea rows={3} {...props} />
-              ) : (
-                <input type={f.type ?? "text"} dir={f.type === "email" || f.type === "tel" ? "ltr" : undefined} {...props} />
-              )}
-              {err && (
-                <span id={`${id}-${f.key}-err`} className={styles.error}>
-                  {err}
-                </span>
-              )}
-            </div>
-          );
-        })}
-        <div className={`${styles.wide} ${styles.submitRow}`}>
-          <button type="submit" className="btn" disabled={status === "sending"} aria-busy={status === "sending"}>
-            <RollText text={status === "sending" ? t.sending : direct ? t.submitDirect : t.submit} />
-          </button>
-          <p className={styles.submitHint} role={status === "sent" ? "status" : undefined}>
-            {status === "sent" ? (
-              <>
-                <strong>{t.sent}</strong> {t.sentLead}
-              </>
-            ) : (
-              (direct ? t.directHint : t.submitHint).replace("{email}", email)
-            )}
-          </p>
-        </div>
-      </form>
+      <div className={styles.quoteForm}>
+        <LazyOpexForm
+          form={form}
+          t={forms}
+          locale={locale}
+          page={typeof location === "undefined" ? `/${locale}` : location.pathname}
+          values={values}
+          context={{ subject: t.subject.replace("{spec}", subjectSpec), spec: [...spec, typeof location === "undefined" ? "" : `${location.origin}${location.pathname}?${search}`].filter(Boolean) }}
+          success={success}
+          onFallback={(v) => {
+            const link = `${location.origin}${location.pathname}?${search}`;
+            const rows = form.fields
+              .filter((f) => f.type !== "hidden" && f.type !== "file" && v[f.id] !== undefined && v[f.id] !== "")
+              .map((f): [string, string] => [lp(f.label as Record<string, string>, locale), String(v[f.id])]);
+            location.href = quoteMailto({ to: email, subject: t.subject.replace("{spec}", subjectSpec), spec, fields: rows, link: `${t.linkLabel}: ${link}` });
+          }}
+        />
+      </div>
     </section>
   );
 }

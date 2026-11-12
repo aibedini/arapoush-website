@@ -2,7 +2,29 @@
 
 Status: **agreed 2026-11-12**. Build order is T1 → T6, one commit per phase, as with P0–P13 and D1–D6.
 
-Progress: **T1–T4 done**.
+Progress: **T1–T5 done**. T6 (photo-to-3D) was dropped in favour of factory CAD (ADR 0006).
+
+T5 (2026-11-12): the quote.
+- **Form:** the OPEX system form `tube-quote`, editable in the form builder. Fields: name, company,
+  phone, email and contact method:
+  - phone call, WhatsApp, Telegram, email, or a visit;
+  - a best time, shown only for phone, WhatsApp or a visit.
+
+  Also quantity, needed-by date, artwork (up to 3 files) and notes.
+- **Configuration:** sent twice, so the ticket holds both the values and a readable copy:
+  - as hidden fields (`shape`, `diameter`, `length`, `closure`, `cap_colour`, `cap_hex`,
+    `body_colour`, `print`, `structure`, `link`);
+  - as ticket context lines.
+- **Ticket:**
+  - subject `Ø{diameter} × {length} {closure} — {name}`;
+  - routed to sales;
+  - a confirmation email with the number, in the visitor's language, when they gave an email.
+- **Sent panel:** the ticket number with a copy button, plus the department that follows it up.
+  - That department is `layout.quote.department`, a `page.contact` department. It shows the main line
+    and the people with extension and mobile.
+  - The email note appears only when an email was given.
+- **Without OPEX** (or on an outage), the visitor's email app opens with everything filled in.
+- **`OpexForm` embedding hooks:** hidden values, ticket context, a custom sent view and a fallback.
 
 T4 (2026-11-12): component-based page, live edit, related samples, SEO.
 - **Layout:** `product.tube.page` → `layout.sections`, with built-in sections and their styles:

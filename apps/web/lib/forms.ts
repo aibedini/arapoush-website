@@ -49,6 +49,10 @@ export async function sendInquiry(form: "quote" | "contact", payload: InquiryPay
 }
 
 /** Any form built in OPEX. */
-export function sendForm(slug: string, body: { locale: string; page: string; values: Record<string, unknown>; files?: { field: string; name: string; data: string }[] }, guard: { website: string; shownAt: number }) {
+export function sendForm(
+  slug: string,
+  body: { locale: string; page: string; values: Record<string, unknown>; files?: { field: string; name: string; data: string }[]; context?: { subject?: string; spec?: string[] } },
+  guard: { website: string; shownAt: number },
+) {
   return post(slug, { ...body, ...guard });
 }

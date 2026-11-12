@@ -1,5 +1,8 @@
 "use client";
 
+import type { Dictionary } from "@/lib/i18n";
+import type { PublicForm } from "@/lib/forms";
+import type { Department } from "@/lib/contactText";
 import { normalize } from "@/lib/configurator/model";
 import Samples from "./Samples";
 import QuoteForm from "./QuoteForm";
@@ -11,8 +14,20 @@ export function SamplesSection({ style = "grid" }: { style?: "grid" | "rail" }) 
   return <Samples t={c} locale={locale} product={cat} cfg={cfg} style={style} onApply={(patch) => setCfg(normalize(cat, { ...cfg, ...patch }))} />;
 }
 
-/** The quote request, pre-filled with the current selection. */
-export function QuoteSection({ email, direct }: { email: string; direct?: boolean }) {
-  const { spec, subjectSpec, search, c, locale } = useTube();
-  return <QuoteForm t={c} spec={spec} subjectSpec={subjectSpec} search={search} email={email} locale={locale} direct={direct} />;
+/** The quote request (OPEX form), carrying the current selection. */
+export function QuoteSection({ email, form, forms, department }: { email: string; form: PublicForm; forms: Dictionary["forms"]; department?: Department }) {
+  const { spec, subjectSpec, search, c, locale, cfg } = useTube();
+  const values = {
+    shape: cfg.shape,
+    diameter: String(cfg.d),
+    length: String(cfg.l),
+    closure: cfg.closure,
+    cap_colour: cfg.colour ?? "",
+    cap_hex: cfg.capHex ?? "",
+    body_colour: cfg.body ?? "",
+    print: cfg.print ?? "",
+    structure: cfg.structure,
+    link: search,
+  };
+  return <QuoteForm t={c} forms={forms} form={form} values={values} spec={spec} subjectSpec={subjectSpec} search={search} email={email} locale={locale} department={department} />;
 }

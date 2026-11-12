@@ -6,6 +6,7 @@ Generated from the commit history by `pnpm changelog` (Conventional Commits). Ph
 
 ### Features
 
+- **T4:** tube page built from OPEX sections, live-editable, with samples ranking and lighter pages (`b74a191`, 2026-11-12)
 - **T3:** live cap colour, body colour and print preview on the 3D tube (`de5a778`, 2026-11-12)
 - **T2:** every chart closure in 3D, plus factory STEP/GLB models with a mounting contract (`56d6ad6`, 2026-11-12)
 - **T1:** tube catalogue v3 from the Arapoush size charts, with chart import in OPEX (`3d98d70`, 2026-11-12)
