@@ -120,6 +120,14 @@ test("every documented route answers as its contract says", async () => {
     await ok("PUT", `/v1/manage/saved-replies/${reply.id}`, A, { title: "Thank you", team: null, body: { en: "Thank you {name}" } });
     await ok("DELETE", `/v1/manage/saved-replies/${reply.id}`, A);
     await ok("GET", "/v1/manage/helpdesk/mailbox", A);
+
+    // ── API references ──
+    await ok("GET", "/v1/docs/assets/init.js", {});
+    assert.ok((await ok("GET", "/v1/docs/assets/scalar.js", {})).body.length > 100_000);
+    assert.match((await ok("GET", "/docs/partner", {})).headers["content-security-policy"] as string, /script-src 'self'/);
+    await ok("GET", "/v1/manage/docs", R);
+    await ok("GET", "/v1/manage/docs/opex.json", R);
+    await ok("GET", "/v1/manage/docs/site.json", R);
   } finally {
     await t.close();
   }

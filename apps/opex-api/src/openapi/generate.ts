@@ -59,6 +59,7 @@ const TAG_TEXT: Record<string, string> = {
   Content: "Content types, drafts, revisions, publishing, schedules, previews and 3D renders.",
   Dashboard: "Console home counters.",
   Delivery: "Published content and forms for the website's server.",
+  Documentation: "The interactive API references and their files.",
   Forms: "The form builder: drafts, publishing and versions.",
   Helpdesk: "Tickets from forms and email: inbox, conversation, assignment, referral, notes, replies, teams, SLA, notifications.",
   Media: "The media library: uploads and files.",

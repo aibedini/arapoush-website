@@ -3,6 +3,7 @@ import { AUDIT } from "../audit/contract.ts";
 import { AUTH } from "../auth/contract.ts";
 import { CONTENT } from "../content/contract.ts";
 import { CR } from "../cr/contract.ts";
+import { DOCS } from "../docs/contract.ts";
 import { DELIVERY } from "../delivery/contract.ts";
 import { FORMS } from "../forms/contract.ts";
 import { MEDIA } from "../media/contract.ts";
@@ -14,4 +15,4 @@ import { RENDER } from "../render/contract.ts";
 import { TICKETS } from "../tickets/contract.ts";
 
 /** Every route contract OPEX serves (one per registered route; checked by openapi.test.ts). */
-export const CONTRACTS: RouteContract[] = [AUDIT, AUTH, CONTENT, CR, DELIVERY, FORMS, MEDIA, OAUTH, OPS, PARTNER, PARTNERS, RENDER, TICKETS].flatMap((g) => Object.values(g) as RouteContract[]);
+export const CONTRACTS: RouteContract[] = [AUDIT, AUTH, CONTENT, CR, DELIVERY, DOCS, FORMS, MEDIA, OAUTH, OPS, PARTNER, PARTNERS, RENDER, TICKETS].flatMap((g) => Object.values(g) as RouteContract[]);

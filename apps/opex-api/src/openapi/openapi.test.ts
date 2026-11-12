@@ -7,6 +7,7 @@ import { testApp } from "../testing.ts";
 import { CONTRACTS } from "./registry.ts";
 import { fullSpec, partnerSpec, siteSpec } from "./specs.ts";
 import { SITE } from "./site.ts";
+import { errorCatalogue, postmanCollection } from "./artifacts.ts";
 
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../../docs/api");
 
@@ -29,12 +30,15 @@ test("the committed OpenAPI files match the contracts (run pnpm docs:api)", () =
   const read = (n: string) => readFileSync(path.join(docs, n), "utf8").replace(/\r\n/g, "\n");
   assert.equal(read("opex.openapi.json"), JSON.stringify(fullSpec("https://opex.arapoush.com"), null, 2) + "\n");
   assert.equal(read("partner.openapi.json"), JSON.stringify(partnerSpec("https://opex.arapoush.com"), null, 2) + "\n");
+  assert.equal(read("site.openapi.json"), JSON.stringify(siteSpec("https://arapoush.com"), null, 2) + "\n");
+  assert.equal(read("errors.md"), errorCatalogue());
+  assert.equal(read("postman/opex.postman_collection.json"), JSON.stringify(postmanCollection(), null, 2) + "\n");
 });
 
 test("the partner view exposes no internal routes", () => {
   const paths = Object.keys((partnerSpec("https://x") as { paths: object }).paths);
   assert.ok(paths.length > 10);
-  for (const p of paths) assert.ok(/^\/(v1\/partner|oauth|\.well-known)\//.test(p), `internal route in the partner spec: ${p}`);
+  for (const p of paths) assert.ok(/^\/(v1\/partner|oauth|\.well-known|docs\/partner)/.test(p), `internal route in the partner spec: ${p}`);
 });
 
 test("every website route file has a contract (apps/web/app)", () => {

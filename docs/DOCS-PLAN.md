@@ -2,7 +2,9 @@
 
 Status: **agreed 2026-11-12**. Build order is D1 → D6, one commit per phase.
 
-Progress: **D1 and D2 done**.
+Progress: **D1, D2 and D3 done**.
+- References are live: `/docs/partner` (public) and `/v1/manage/docs` (console).
+- Error catalogue, Postman collection with environments, and guides in English and Persian.
 - Contract tests check every response the tests receive against its contract; 127 of 127 operations are exercised.
 - The breaking-change check is deterministic and needs no external binary.
 - 127 OPEX operations, 3 webhooks and 7 website routes are generated into `docs/api/` and pass Redocly lint (0 problems).

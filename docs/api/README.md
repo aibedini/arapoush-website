@@ -8,6 +8,29 @@
 
 All three are OpenAPI 3.1, **generated**. Never edit them by hand.
 
+| Also generated | What |
+|---|---|
+| `errors.md` | Every error code: HTTP status, meaning, routes |
+| `postman/opex.postman_collection.json` | Every route, grouped by tag. Console sign-in stores the CSRF token for you. |
+| `postman/local.postman_environment.json`, `postman/staging.postman_environment.json` | Base URLs and **placeholder** secrets; never put real tokens in them |
+
+## Reading the references
+
+| Where | Shows | Who |
+|---|---|---|
+| `https://opex.arapoush.com/docs/partner` | Partner API and OAuth | Public (AraCMS) |
+| Console → «مستندات API» (`/v1/manage/docs`) | Every OPEX route, the website routes and the partner API | Signed-in operators |
+
+Both are rendered by Scalar, self-hosted with a CSP that allows only this origin.
+
+Guides:
+- [guides/conventions.md](guides/conventions.md): versions, auth, errors, rate limits, idempotency,
+  concurrency, ids.
+- [guides/webhooks.md](guides/webhooks.md): payloads and signature verification in PHP and Node.
+- [guides/fa/README.md](guides/fa/README.md): the Persian guide for the team.
+- [../opex/aracms-integration.md](../opex/aracms-integration.md): the partner integration
+  walkthrough.
+
 ## Where the truth lives
 
 Each API module has a `contract.ts` next to its `routes.ts`, for example:

@@ -1,0 +1,4958 @@
+{
+  "info": {
+    "name": "OPEX + Arapoush website",
+    "_postman_id": "8f1c0b9e-0d5c-4c8e-9a51-opex00000001",
+    "description": "Generated from the route contracts (`pnpm docs:api`); do not edit by hand. Choose an environment (local or staging). Console routes: run **Sign-in and sessions → Step 1** then **Step 2** (the CSRF token is stored for you). Partner routes need DPoP proofs and RFC 9421 signatures per request: use the PHP reference client, or fill {{dpopProof}}, {{signatureInput}} and {{signature}} yourself. Never put production credentials in an environment.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "csrf",
+      "value": ""
+    },
+    {
+      "key": "challenge",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Access",
+      "item": [
+        {
+          "name": "Partner grants",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/grants",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "grants"
+              ]
+            },
+            "description": "Source: cr/manage.ts"
+          }
+        },
+        {
+          "name": "Grant a partner role, user or client access",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/grants",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "grants"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "null",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: cr/manage.ts"
+          }
+        },
+        {
+          "name": "Remove a grant",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/grants/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "grants",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: cr/manage.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Approval policies",
+      "item": [
+        {
+          "name": "Approval policies (highest priority first)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/policies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "policies"
+              ]
+            },
+            "description": "Source: cr/manage.ts"
+          }
+        },
+        {
+          "name": "Create a policy",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/policies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "policies"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "null",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: cr/manage.ts"
+          }
+        },
+        {
+          "name": "Delete a policy",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/policies/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "policies",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: cr/manage.ts"
+          }
+        },
+        {
+          "name": "Replace a policy",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/policies/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "policies",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "null",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: cr/manage.ts"
+          }
+        },
+        {
+          "name": "What would the policies decide for these items? (optionally with a draft policy)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/policies/simulate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "policies",
+                "simulate"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"type\": \"string\",\n      \"path\": \"string\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: cr/manage.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Audit",
+      "item": [
+        {
+          "name": "Search the audit log (who, what, where, when)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/audit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "audit"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "actor",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "client",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "ip",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "resource",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "path",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "result",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "from",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "to",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "before",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Source: audit/routes.ts"
+          }
+        },
+        {
+          "name": "Export matching events as JSON Lines (up to 50,000)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/audit/export",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "audit",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "actor",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "client",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "ip",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "resource",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "path",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "result",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "from",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "to",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "before",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Source: audit/routes.ts"
+          }
+        },
+        {
+          "name": "Recompute the hash chain over a range",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/audit/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "audit",
+                "verify"
+              ],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "to",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Source: audit/routes.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Change requests",
+      "item": [
+        {
+          "name": "Review queue (newest 300)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/change-requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "change-requests"
+              ],
+              "query": [
+                {
+                  "key": "state",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Source: cr/manage.ts"
+          }
+        },
+        {
+          "name": "A change request with each item's current draft value",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/change-requests/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "change-requests",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "`stale` is true when the draft no longer has the value the author started from.\n\nSource: cr/manage.ts"
+          }
+        },
+        {
+          "name": "Change one item's value before approving (recorded as an operator item)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/change-requests/:id/amend",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "change-requests",
+                ":id",
+                "amend"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"item\": \"string\",\n  \"value\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: cr/manage.ts"
+          }
+        },
+        {
+          "name": "Approve (optionally per item, optionally publish)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/change-requests/:id/approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "change-requests",
+                ":id",
+                "approve"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "With four-eyes the first approval is recorded and a second, different operator completes it. If the draft changed under the items, the request moves to needs_rebase with `conflicts`.\n\nSource: cr/manage.ts"
+          }
+        },
+        {
+          "name": "Publish an approved change request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/change-requests/:id/publish",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "change-requests",
+                ":id",
+                "publish"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: cr/manage.ts"
+          }
+        },
+        {
+          "name": "Reject with a reason (sent to the partner)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/change-requests/:id/reject",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "change-requests",
+                ":id",
+                "reject"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: cr/manage.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Content",
+      "item": [
+        {
+          "name": "Field-level differences between two revisions of one entry",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/diff",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "diff"
+              ],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "to",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Source: content/routes.ts"
+          }
+        },
+        {
+          "name": "Every entry with draft and publish state",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/entries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "entries"
+              ]
+            },
+            "description": "Source: content/routes.ts"
+          }
+        },
+        {
+          "name": "An entry for editing: draft, schema and what changed since publishing",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/entries/:type",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "entries",
+                ":type"
+              ],
+              "variable": [
+                {
+                  "key": "type",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: content/routes.ts"
+          }
+        },
+        {
+          "name": "Change single fields (path + value)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/entries/:type",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "entries",
+                ":type"
+              ],
+              "variable": [
+                {
+                  "key": "type",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"base_revision_id\": \"rev_01JD…\",\n  \"ops\": [\n    {\n      \"path\": \"/hero/slides[0]/title[0]@fa\",\n      \"value\": \"بسته‌بندی،\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Used by the visual editor for in-place text edits. Same concurrency and lock rules as saving the whole draft.\n\nSource: content/routes.ts"
+          }
+        },
+        {
+          "name": "Save a whole draft",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/entries/:type",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "entries",
+                ":type"
+              ],
+              "variable": [
+                {
+                  "key": "type",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {},\n  \"base_revision_id\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Creates a new draft revision. Open change requests touching changed fields move to needs_rebase. On the effervescent page, changed sizes or caps queue a 3D render.\n\nSource: content/routes.ts"
+          }
+        },
+        {
+          "name": "Publish the draft (or a given revision)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/entries/:type/publish",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "entries",
+                ":type",
+                "publish"
+              ],
+              "variable": [
+                {
+                  "key": "type",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "The website refreshes within seconds (content.published webhook). Publishing `global.*` (header, footer, contact) also needs a fresh step-up.\n\nSource: content/routes.ts"
+          }
+        },
+        {
+          "name": "Revision history (newest 200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/entries/:type/revisions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "entries",
+                ":type",
+                "revisions"
+              ],
+              "variable": [
+                {
+                  "key": "type",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: content/routes.ts"
+          }
+        },
+        {
+          "name": "Publish an earlier revision again",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/entries/:type/rollback",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "entries",
+                ":type",
+                "rollback"
+              ],
+              "variable": [
+                {
+                  "key": "type",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"revision_id\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: content/routes.ts"
+          }
+        },
+        {
+          "name": "Publish the draft at a time (null cancels)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/entries/:type/schedule",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "entries",
+                ":type",
+                "schedule"
+              ],
+              "variable": [
+                {
+                  "key": "type",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"at\": \"2026-11-12T09:00:00.000Z\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: content/routes.ts"
+          }
+        },
+        {
+          "name": "A 30-minute website link showing drafts",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/preview",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "preview"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "The console's preview and visual editor use it. Add `&edit=1` to the URL for the visual editor's in-place editing mode.\n\nSource: delivery/preview.ts"
+          }
+        },
+        {
+          "name": "Render the effervescent page's 3D images again",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/render",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "render"
+              ]
+            },
+            "description": "Queues a job for the current draft; older pending jobs are superseded. Jobs are also queued automatically when sizes or caps change.\n\nSource: render/routes.ts"
+          }
+        },
+        {
+          "name": "The newest 30 render jobs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/render/jobs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "render",
+                "jobs"
+              ]
+            },
+            "description": "Source: render/routes.ts"
+          }
+        },
+        {
+          "name": "One revision with its data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/revisions/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "revisions",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: content/routes.ts"
+          }
+        },
+        {
+          "name": "Content types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/types",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "types"
+              ]
+            },
+            "description": "Source: content/routes.ts"
+          }
+        },
+        {
+          "name": "One type with its full schema",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/types/:key",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "types",
+                ":key"
+              ],
+              "variable": [
+                {
+                  "key": "key",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: content/routes.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Console home: counts and the latest events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "dashboard"
+              ]
+            },
+            "description": "Source: audit/routes.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delivery",
+      "item": [
+        {
+          "name": "Everything the website renders, in one call",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{deliveryToken}}"
+              },
+              {
+                "key": "If-None-Match",
+                "value": "",
+                "description": "The ETag of a previous answer."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/delivery/bundle",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "delivery",
+                "bundle"
+              ]
+            },
+            "description": "Published content of every type plus published forms. The site fetches it at build time and after each `content.published` webhook. Supports `If-None-Match` (304).\n\nSource: delivery/routes.ts"
+          }
+        },
+        {
+          "name": "Published content of one type",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{deliveryToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/delivery/content/:type",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "delivery",
+                "content",
+                ":type"
+              ],
+              "variable": [
+                {
+                  "key": "type",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: delivery/routes.ts"
+          }
+        },
+        {
+          "name": "A published form's definition",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{deliveryToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/delivery/forms/:slug",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "delivery",
+                "forms",
+                ":slug"
+              ],
+              "variable": [
+                {
+                  "key": "slug",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "The website also receives every published form in the bundle (`form.<slug>`); this is for one-off reads.\n\nSource: forms/routes.ts"
+          }
+        },
+        {
+          "name": "Submit a form (becomes a helpdesk ticket)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{deliveryToken}}"
+              },
+              {
+                "key": "X-End-User-IP",
+                "value": "",
+                "description": "The visitor's IP (per-IP limit, audit)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/delivery/forms/:slug",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "delivery",
+                "forms",
+                ":slug"
+              ],
+              "variable": [
+                {
+                  "key": "slug",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"locale\": \"fa\",\n  \"page\": \"/fa/forms/sample-request\",\n  \"values\": {\n    \"name\": \"Sara Karimi\",\n    \"email\": \"sara@example.com\",\n    \"kind\": \"eff\",\n    \"qty\": \"20000\",\n    \"consent\": true\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Sent by the website's server (/api/forms/{slug}) with the visitor's IP in `X-End-User-IP`. Answers are validated against the published definition: unknown fields are refused and fields hidden by a condition are dropped. Files travel base64 in `files` (max 10 MB each, 5 in all, kinds allowed by the field, virus-scanned). Personal data is stored encrypted; the audit log never holds it. A sender blocked as spam gets 202 and nothing is stored. The P8 body shape (`subject`, `spec`, `fields`) is still accepted.\n\nSource: forms/routes.ts"
+          }
+        },
+        {
+          "name": "Drafts (optionally with one change request applied), for a preview link",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{deliveryToken}}"
+              },
+              {
+                "key": "opex-preview",
+                "value": "",
+                "description": "The preview token from the preview link."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/delivery/preview",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "delivery",
+                "preview"
+              ]
+            },
+            "description": "Called by the website's server while a preview cookie is set. Needs both the delivery token and the signed preview token; drafts never reach the public cache (no-store).\n\nSource: delivery/preview.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Documentation",
+      "item": [
+        {
+          "name": "Reference viewer bootstrap",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/docs/assets/init.js",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "docs",
+                "assets",
+                "init.js"
+              ]
+            },
+            "description": "Source: docs/routes.ts"
+          }
+        },
+        {
+          "name": "Reference viewer script (Scalar, self-hosted)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/docs/assets/scalar.js",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "docs",
+                "assets",
+                "scalar.js"
+              ]
+            },
+            "description": "Source: docs/routes.ts"
+          }
+        },
+        {
+          "name": "Interactive reference of every route (console sign-in)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/docs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "docs"
+              ]
+            },
+            "description": "Source: docs/routes.ts"
+          }
+        },
+        {
+          "name": "The full OPEX OpenAPI document",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/docs/opex.json",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "docs",
+                "opex.json"
+              ]
+            },
+            "description": "Source: docs/routes.ts"
+          }
+        },
+        {
+          "name": "The website routes OpenAPI document",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/docs/site.json",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "docs",
+                "site.json"
+              ]
+            },
+            "description": "Source: docs/routes.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Forms",
+      "item": [
+        {
+          "name": "All forms",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/forms",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "forms"
+              ]
+            },
+            "description": "Source: forms/routes.ts"
+          }
+        },
+        {
+          "name": "Create a form (a draft with name, email and message fields)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/forms",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "forms"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slug\": \"string\",\n  \"title\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: forms/routes.ts"
+          }
+        },
+        {
+          "name": "A form for the builder: draft, published version, issues, versions, teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/forms/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "forms",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: forms/routes.ts"
+          }
+        },
+        {
+          "name": "Save the builder's draft",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/forms/:id/draft",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "forms",
+                ":id",
+                "draft"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"definition\": null,\n  \"version\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Optimistic locking: send the `updated_at` you loaded as `version`. Issues are returned but do not block saving; they block publishing.\n\nSource: forms/routes.ts"
+          }
+        },
+        {
+          "name": "Copy a form's draft to a new form",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/forms/:id/duplicate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "forms",
+                ":id",
+                "duplicate"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slug\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: forms/routes.ts"
+          }
+        },
+        {
+          "name": "Publish the draft (new version; the website updates within seconds)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/forms/:id/publish",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "forms",
+                ":id",
+                "publish"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: forms/routes.ts"
+          }
+        },
+        {
+          "name": "Archive or restore a form",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/forms/:id/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "forms",
+                ":id",
+                "status"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"archived\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: forms/routes.ts"
+          }
+        },
+        {
+          "name": "One published version's definition",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/forms/:id/versions/:v",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "forms",
+                ":id",
+                "versions",
+                ":v"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                },
+                {
+                  "key": "v",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: forms/routes.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Helpdesk",
+      "item": [
+        {
+          "name": "Helpdesk email status: addresses, last poll, outbox counts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/helpdesk/mailbox",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "helpdesk",
+                "mailbox"
+              ]
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Operators who can take tickets, with their teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/helpdesk/people",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "helpdesk",
+                "people"
+              ]
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Mark yourself (un)available in a team (auto-assign skips you)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/me/availability",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "me",
+                "availability"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"team\": \"string\",\n  \"available\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Your preferences",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/me/prefs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "me",
+                "prefs"
+              ]
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Set your preferences",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/me/prefs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "me",
+                "prefs"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"emailNotifications\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Your notifications (newest 50) and unread count",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/notifications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "notifications"
+              ]
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Mark notifications read (all, or the given ids)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/notifications/read",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "notifications",
+                "read"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Saved replies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/saved-replies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "saved-replies"
+              ]
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Create a saved reply",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/saved-replies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "saved-replies"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"string\",\n  \"team\": \"string\",\n  \"body\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Delete a saved reply (its author or a super admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/saved-replies/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "saved-replies",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Replace a saved reply (its author or a super admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/saved-replies/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "saved-replies",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"string\",\n  \"team\": \"string\",\n  \"body\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Teams with members, SLA targets and open tickets",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/teams",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "teams"
+              ]
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Create a team",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/teams",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "teams"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"string\",\n  \"name\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Delete a team (its tickets become unrouted)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/teams/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "teams",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Rename, set SLA targets or auto-assign (team lead or super admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/teams/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "teams",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Replace the member list (team lead or super admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/teams/:id/members",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "teams",
+                ":id",
+                "members"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "[]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Ticket inbox (60 per page; text search scans the newest 1,000)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/tickets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "tickets"
+              ],
+              "query": [
+                {
+                  "key": "view",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "q",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "priority",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "team",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "assignee",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "form",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "tag",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "before",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Operators see tickets of their teams, tickets assigned to them and unrouted ones; super admins see all. Listing is audited (no personal data in the audit row).\n\nSource: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Erase a ticket and its personal data (privacy request)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/tickets/:ref",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "tickets",
+                ":ref"
+              ],
+              "variable": [
+                {
+                  "key": "ref",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Open a ticket: conversation, answers, readers, attachments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/tickets/:ref",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "tickets",
+                ":ref"
+              ],
+              "variable": [
+                {
+                  "key": "ref",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Opening is recorded: a `viewed` event (once per operator per 10 minutes), your read marker, and an audit row. A `new` ticket becomes `open` when its assignee (or anyone, if unassigned) opens it.\n\nSource: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Change status, priority, team or tags",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/tickets/:ref",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "tickets",
+                ":ref"
+              ],
+              "variable": [
+                {
+                  "key": "ref",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Each change is a timeline event. A priority change recomputes the SLA deadlines from the creation time.\n\nSource: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Set or clear the assignee",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/tickets/:ref/assign",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "tickets",
+                ":ref",
+                "assign"
+              ],
+              "variable": [
+                {
+                  "key": "ref",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assignee\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Download an attachment (decrypted; audited)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/tickets/:ref/attachments/:att",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "tickets",
+                ":ref",
+                "attachments",
+                ":att"
+              ],
+              "variable": [
+                {
+                  "key": "ref",
+                  "value": ""
+                },
+                {
+                  "key": "att",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Merge into another ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/tickets/:ref/merge",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "tickets",
+                ":ref",
+                "merge"
+              ],
+              "variable": [
+                {
+                  "key": "ref",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"into\": -9007199254740991\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Messages and attachments move to the target; this ticket closes with `merged_into`.\n\nSource: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Internal note (never emailed); mention colleagues to notify them",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/tickets/:ref/notes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "tickets",
+                ":ref",
+                "notes"
+              ],
+              "variable": [
+                {
+                  "key": "ref",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"body\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Refer to a colleague or team with an internal message (optionally transfer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/tickets/:ref/refer",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "tickets",
+                ":ref",
+                "refer"
+              ],
+              "variable": [
+                {
+                  "key": "ref",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Without `transfer` the ticket stays yours; the colleague (or every team member) is notified and can see it. With `transfer` to a team, auto-assign picks the next available member.\n\nSource: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Reply to the customer by email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/tickets/:ref/replies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "tickets",
+                ":ref",
+                "replies"
+              ],
+              "variable": [
+                {
+                  "key": "ref",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"body\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Sent from SUPPORT_ADDRESS with `[#number]` in the subject, a Message-ID and References, so the customer's answer threads back into this ticket. Sets the first response time; you become the assignee if there was none; the status changes to `status` (default pending).\n\nSource: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Mark (or unmark) as spam; optionally block the sender for 30 days",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/tickets/:ref/spam",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "tickets",
+                ":ref",
+                "spam"
+              ],
+              "variable": [
+                {
+                  "key": "ref",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"spam\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Change status, priority, team or assignee of up to 100 tickets",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/tickets/bulk",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "tickets",
+                "bulk"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ids\": [\n    \"string\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        },
+        {
+          "name": "Counts per view, plus your unread",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/tickets/counts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "tickets",
+                "counts"
+              ]
+            },
+            "description": "Source: tickets/routes.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Media",
+      "item": [
+        {
+          "name": "Media library (60 per page, newest first)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/media",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "media"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "cursor",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Source: media/routes.ts"
+          }
+        },
+        {
+          "name": "Upload a file to the media library",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/media",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "media"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "description": "One file as multipart/form-data (max 25 MB). Raster images are re-encoded to WebP and stripped of metadata; SVG and PDF are checked for active content; with ClamAV configured every file is scanned. Identical files are de-duplicated.\n\nSource: media/routes.ts"
+          }
+        },
+        {
+          "name": "Any asset, including private and unpublished ones (console only)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/media/:file/raw",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "media",
+                ":file",
+                "raw"
+              ],
+              "variable": [
+                {
+                  "key": "file",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: media/routes.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "OAuth",
+      "item": [
+        {
+          "name": "Public keys that sign OPEX tokens and audit archives",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/.well-known/jwks.json",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ".well-known",
+                "jwks.json"
+              ]
+            },
+            "description": "Source: oauth/routes.ts"
+          }
+        },
+        {
+          "name": "Authorization server metadata (RFC 8414)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/.well-known/oauth-authorization-server",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ".well-known",
+                "oauth-authorization-server"
+              ]
+            },
+            "description": "Source: oauth/routes.ts"
+          }
+        },
+        {
+          "name": "Sign-in page for AraCMS staff (start of the authorization code flow)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/oauth/authorize",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "oauth",
+                "authorize"
+              ],
+              "query": [
+                {
+                  "key": "response_type",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "client_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "code_challenge",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "code_challenge_method",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "state",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "scope",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "AraCMS redirects the user here; the user signs in with their OPEX partner account (password, then authenticator code) and is sent back to `redirect_uri` with `code` and `state`.\n\nSource: oauth/routes.ts"
+          }
+        },
+        {
+          "name": "Sign-in form steps (password, then authenticator code)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/oauth/authorize",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "oauth",
+                "authorize"
+              ]
+            },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "response_type",
+                  "value": "code"
+                },
+                {
+                  "key": "client_id",
+                  "value": "string"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "string"
+                },
+                {
+                  "key": "code_challenge",
+                  "value": "string"
+                },
+                {
+                  "key": "code_challenge_method",
+                  "value": "S256"
+                },
+                {
+                  "key": "stage",
+                  "value": "password"
+                }
+              ]
+            },
+            "description": "Posted by the sign-in page itself (`stage` = password | code). On success: 303 to `redirect_uri?code=…&state=…`.\n\nSource: oauth/routes.ts"
+          }
+        },
+        {
+          "name": "Revoke a refresh token (RFC 7009)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/oauth/revoke",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "oauth",
+                "revoke"
+              ]
+            },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "token",
+                  "value": "string"
+                },
+                {
+                  "key": "client_id",
+                  "value": "string"
+                },
+                {
+                  "key": "client_assertion_type",
+                  "value": "string"
+                },
+                {
+                  "key": "client_assertion",
+                  "value": "string"
+                }
+              ]
+            },
+            "description": "Answers 200 with `{}` for unknown clients and unknown tokens (no token probing). A known client must authenticate (private_key_jwt).\n\nSource: oauth/routes.ts"
+          }
+        },
+        {
+          "name": "Get tokens (authorization_code, refresh_token, client_credentials)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "DPoP",
+                "value": "",
+                "description": "DPoP proof for POST to this URL."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/oauth/token",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "oauth",
+                "token"
+              ]
+            },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                },
+                {
+                  "key": "client_id",
+                  "value": "string"
+                },
+                {
+                  "key": "client_assertion_type",
+                  "value": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+                },
+                {
+                  "key": "client_assertion",
+                  "value": "string"
+                }
+              ]
+            },
+            "description": "Client authentication is private_key_jwt only (`client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer`, ES256, aud = this URL, single-use jti). Every request needs a `DPoP` proof header; tokens are bound to that key. Errors follow RFC 6749 (`error`, `error_description`), not problem+json.\n\nSource: oauth/routes.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Operations",
+      "item": [
+        {
+          "name": "Liveness",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/healthz",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "healthz"
+              ]
+            },
+            "description": "Source: app.ts"
+          }
+        },
+        {
+          "name": "Prometheus metrics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{metricsToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/metrics",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "metrics"
+              ]
+            },
+            "description": "Counters and gauges for alerting (docs/opex/runbooks/alerts.md): audit chain, webhooks, change requests, tickets, emails, sessions.\n\nSource: ops/metrics.ts"
+          }
+        },
+        {
+          "name": "Readiness (database reachable)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/readyz",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "readyz"
+              ]
+            },
+            "description": "Source: app.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Operators",
+      "item": [
+        {
+          "name": "All console operators",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/operators",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "operators"
+              ]
+            },
+            "description": "Source: auth/routes.ts"
+          }
+        },
+        {
+          "name": "Invite an operator",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/operators",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "operators"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"someone@example.com\",\n  \"display_name\": \"string\",\n  \"role\": null,\n  \"password\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: auth/routes.ts"
+          }
+        },
+        {
+          "name": "Change role, status or name; reset MFA; unlock",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/operators/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "operators",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: auth/routes.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Partner",
+      "item": [
+        {
+          "name": "Interactive Partner API reference (this document)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/docs/partner",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "docs",
+                "partner"
+              ]
+            },
+            "description": "Source: docs/routes.ts"
+          }
+        },
+        {
+          "name": "Your change requests (your partner's, with cr.read_all)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "DPoP {{partnerAccessToken}}"
+              },
+              {
+                "key": "DPoP",
+                "value": "{{dpopProof}}",
+                "description": "A fresh DPoP proof per request; the PHP reference client makes them. Postman cannot sign these on its own."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/partner/change-requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "partner",
+                "change-requests"
+              ],
+              "query": [
+                {
+                  "key": "state",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Source: partner/routes.ts"
+          }
+        },
+        {
+          "name": "Propose changes (the policy engine decides at once)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "DPoP {{partnerAccessToken}}"
+              },
+              {
+                "key": "DPoP",
+                "value": "{{dpopProof}}",
+                "description": "A fresh DPoP proof per request; the PHP reference client makes them. Postman cannot sign these on its own."
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{$guid}}"
+              },
+              {
+                "key": "Signature-Input",
+                "value": "{{signatureInput}}"
+              },
+              {
+                "key": "Signature",
+                "value": "{{signature}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/partner/change-requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "partner",
+                "change-requests"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Fix flexo summary\",\n  \"items\": [\n    {\n      \"entry\": \"page.printing\",\n      \"base_revision_id\": \"rev_01JD…\",\n      \"path\": \"/tech/items[id=flexo]/summary\",\n      \"locale\": \"en\",\n      \"value\": \"Fast, economical flexographic printing.\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Every item is checked against your grants and the schema. The policy engine then auto-approves (and may publish), sends to review, or denies. Watch `cr.state_changed` webhooks or poll GET /v1/partner/change-requests/{id}.\n\nSource: partner/routes.ts"
+          }
+        },
+        {
+          "name": "One change request with per-item decisions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "DPoP {{partnerAccessToken}}"
+              },
+              {
+                "key": "DPoP",
+                "value": "{{dpopProof}}",
+                "description": "A fresh DPoP proof per request; the PHP reference client makes them. Postman cannot sign these on its own."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/partner/change-requests/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "partner",
+                "change-requests",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: partner/routes.ts"
+          }
+        },
+        {
+          "name": "After needs_rebase: confirm items against the newest revisions",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "DPoP {{partnerAccessToken}}"
+              },
+              {
+                "key": "DPoP",
+                "value": "{{dpopProof}}",
+                "description": "A fresh DPoP proof per request; the PHP reference client makes them. Postman cannot sign these on its own."
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{$guid}}"
+              },
+              {
+                "key": "Signature-Input",
+                "value": "{{signatureInput}}"
+              },
+              {
+                "key": "Signature",
+                "value": "{{signature}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/partner/change-requests/:id/resubmit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "partner",
+                "change-requests",
+                ":id",
+                "resubmit"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"base_revision_ids\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: partner/routes.ts"
+          }
+        },
+        {
+          "name": "Withdraw an open change request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "DPoP {{partnerAccessToken}}"
+              },
+              {
+                "key": "DPoP",
+                "value": "{{dpopProof}}",
+                "description": "A fresh DPoP proof per request; the PHP reference client makes them. Postman cannot sign these on its own."
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{$guid}}"
+              },
+              {
+                "key": "Signature-Input",
+                "value": "{{signatureInput}}"
+              },
+              {
+                "key": "Signature",
+                "value": "{{signature}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/partner/change-requests/:id/withdraw",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "partner",
+                "change-requests",
+                ":id",
+                "withdraw"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: partner/routes.ts"
+          }
+        },
+        {
+          "name": "Current draft of a type, projected to your grants",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "DPoP {{partnerAccessToken}}"
+              },
+              {
+                "key": "DPoP",
+                "value": "{{dpopProof}}",
+                "description": "A fresh DPoP proof per request; the PHP reference client makes them. Postman cannot sign these on its own."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/partner/content/:type",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "partner",
+                "content",
+                ":type"
+              ],
+              "variable": [
+                {
+                  "key": "type",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: partner/routes.ts"
+          }
+        },
+        {
+          "name": "Revisions of a type (or one revision's projected data)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "DPoP {{partnerAccessToken}}"
+              },
+              {
+                "key": "DPoP",
+                "value": "{{dpopProof}}",
+                "description": "A fresh DPoP proof per request; the PHP reference client makes them. Postman cannot sign these on its own."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/partner/content/:type/history",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "partner",
+                "content",
+                ":type",
+                "history"
+              ],
+              "variable": [
+                {
+                  "key": "type",
+                  "value": ""
+                }
+              ],
+              "query": [
+                {
+                  "key": "revision",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Source: partner/routes.ts"
+          }
+        },
+        {
+          "name": "Who am I: principal, scopes and grants",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "DPoP {{partnerAccessToken}}"
+              },
+              {
+                "key": "DPoP",
+                "value": "{{dpopProof}}",
+                "description": "A fresh DPoP proof per request; the PHP reference client makes them. Postman cannot sign these on its own."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/partner/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "partner",
+                "me"
+              ]
+            },
+            "description": "Source: partner/routes.ts"
+          }
+        },
+        {
+          "name": "Upload a file (raw bytes)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "DPoP {{partnerAccessToken}}"
+              },
+              {
+                "key": "DPoP",
+                "value": "{{dpopProof}}",
+                "description": "A fresh DPoP proof per request; the PHP reference client makes them. Postman cannot sign these on its own."
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{$guid}}"
+              },
+              {
+                "key": "Signature-Input",
+                "value": "{{signatureInput}}"
+              },
+              {
+                "key": "Signature",
+                "value": "{{signature}}"
+              },
+              {
+                "key": "X-Filename",
+                "value": "",
+                "description": "Original file name (sanitized; `.ai` files must be PDF-compatible)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/partner/media",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "partner",
+                "media"
+              ]
+            },
+            "body": {
+              "mode": "file",
+              "file": {
+                "src": ""
+              }
+            },
+            "description": "Raster images are re-encoded to WebP (metadata stripped); SVG and PDF are checked for active content; everything is virus-scanned. Use the returned `asset` id in a change request value. Max 25 MB.\n\nSource: partner/routes.ts"
+          }
+        },
+        {
+          "name": "Status of one of your uploads",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "DPoP {{partnerAccessToken}}"
+              },
+              {
+                "key": "DPoP",
+                "value": "{{dpopProof}}",
+                "description": "A fresh DPoP proof per request; the PHP reference client makes them. Postman cannot sign these on its own."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/partner/media/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "partner",
+                "media",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: partner/routes.ts"
+          }
+        },
+        {
+          "name": "This API description (OpenAPI 3.1, partner view)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/partner/openapi.json",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "partner",
+                "openapi.json"
+              ]
+            },
+            "description": "Source: partner/openapi.ts"
+          }
+        },
+        {
+          "name": "A 30-minute website link with your change request applied",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "DPoP {{partnerAccessToken}}"
+              },
+              {
+                "key": "DPoP",
+                "value": "{{dpopProof}}",
+                "description": "A fresh DPoP proof per request; the PHP reference client makes them. Postman cannot sign these on its own."
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{$guid}}"
+              },
+              {
+                "key": "Signature-Input",
+                "value": "{{signatureInput}}"
+              },
+              {
+                "key": "Signature",
+                "value": "{{signature}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/partner/previews",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "partner",
+                "previews"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cr\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: partner/routes.ts"
+          }
+        },
+        {
+          "name": "Content types and fields you may read and propose",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "DPoP {{partnerAccessToken}}"
+              },
+              {
+                "key": "DPoP",
+                "value": "{{dpopProof}}",
+                "description": "A fresh DPoP proof per request; the PHP reference client makes them. Postman cannot sign these on its own."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/partner/schema",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "partner",
+                "schema"
+              ]
+            },
+            "description": "AraCMS builds its edit forms from this: `schema` is what the caller may read, `proposable` what it may change (both projected to the caller's grants). Locked and operator-only fields are never proposable.\n\nSource: partner/routes.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Partners",
+      "item": [
+        {
+          "name": "Change a partner user's role or status; reset MFA; unlock",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/partner-users/:uid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "partner-users",
+                ":uid"
+              ],
+              "variable": [
+                {
+                  "key": "uid",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Disabling or resetting MFA signs the user out everywhere.\n\nSource: partners/admin.ts"
+          }
+        },
+        {
+          "name": "Partner clients (AraCMS)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/partners",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "partners"
+              ]
+            },
+            "description": "Source: partners/admin.ts"
+          }
+        },
+        {
+          "name": "Register a partner client",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/partners",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "partners"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"string\",\n  \"allowed_cidrs\": [],\n  \"jwks\": {\n    \"keys\": [\n      {\n        \"kty\": \"EC\"\n      }\n    ]\n  },\n  \"redirect_uris\": [],\n  \"scopes\": [\n    \"content:read\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: partners/admin.ts"
+          }
+        },
+        {
+          "name": "Change a partner (networks, keys, scopes, status…)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/partners/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "partners",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "New keys or disabling end every live session of this partner.\n\nSource: partners/admin.ts"
+          }
+        },
+        {
+          "name": "A partner's users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/partners/:id/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "partners",
+                ":id",
+                "users"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: partners/admin.ts"
+          }
+        },
+        {
+          "name": "Add a partner user (signs in at /oauth/authorize)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/partners/:id/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "partners",
+                ":id",
+                "users"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"someone@example.com\",\n  \"display_name\": \"string\",\n  \"role\": \"string\",\n  \"password\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: partners/admin.ts"
+          }
+        },
+        {
+          "name": "Set (or clear) a partner's webhook URL; a new secret is returned once",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/partners/:id/webhook",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "partners",
+                ":id",
+                "webhook"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: cr/manage.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Public files",
+      "item": [
+        {
+          "name": "A published media file",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/media/:file",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "media",
+                ":file"
+              ],
+              "variable": [
+                {
+                  "key": "file",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Public once the asset is used in published content and clean. Immutable: an id never changes content.\n\nSource: media/routes.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Render",
+      "item": [
+        {
+          "name": "Claim the oldest pending job (or one whose renderer died)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{renderToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/render/claim",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "render",
+                "claim"
+              ]
+            },
+            "description": "A running job whose renderer has not finished in 15 minutes can be claimed again. Each claim counts an attempt; three failed attempts leave the job failed.\n\nSource: render/routes.ts"
+          }
+        },
+        {
+          "name": "Upload one rendered image (PNG or WebP bytes)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{renderToken}}"
+              },
+              {
+                "key": "X-Filename",
+                "value": "",
+                "description": "File name, for the media library."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/render/jobs/:id/assets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "render",
+                "jobs",
+                ":id",
+                "assets"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "file",
+              "file": {
+                "src": ""
+              }
+            },
+            "description": "Source: render/routes.ts"
+          }
+        },
+        {
+          "name": "Finish: write the images and marks into a new draft revision",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{renderToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/render/jobs/:id/complete",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "render",
+                "jobs",
+                ":id",
+                "complete"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sizes\": [],\n  \"caps\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Only the rendered fields change (sizes[*].render, caps.variants[*].image, images.uses, images.posters); everything else in the draft stays.\n\nSource: render/routes.ts"
+          }
+        },
+        {
+          "name": "Report a failed attempt",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{renderToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/render/jobs/:id/fail",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "render",
+                "jobs",
+                ":id",
+                "fail"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"error\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: render/routes.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sign-in and sessions",
+      "item": [
+        {
+          "name": "A CSRF token for this session (send as X-CSRF-Token on writes)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/auth/csrf",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "auth",
+                "csrf"
+              ]
+            },
+            "description": "Source: auth/routes.ts"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) pm.collectionVariables.set(\"csrf\", pm.response.json().csrf);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Step 1: email and password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"someone@example.com\",\n  \"password\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Answers with a short-lived challenge for step 2. Five wrong passwords lock the account (15, 30, 60 … minutes, max 24 h). The answer never says whether the email exists.\n\nSource: auth/routes.ts"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) pm.collectionVariables.set(\"challenge\", pm.response.json().challenge);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sign out (revokes the session)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "auth",
+                "logout"
+              ]
+            },
+            "description": "Source: auth/routes.ts"
+          }
+        },
+        {
+          "name": "The signed-in operator",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Source: auth/routes.ts"
+          }
+        },
+        {
+          "name": "Step 2: authenticator code; starts the session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/auth/mfa",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "auth",
+                "mfa"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"challenge\": \"{{challenge}}\",\n  \"code\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Sets the `opex_session` cookie (HttpOnly, Secure in production, SameSite=Strict; ends after 15 minutes idle or 8 hours) and returns the CSRF token for writes. Each code works once.\n\nSource: auth/routes.ts"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) pm.collectionVariables.set(\"csrf\", pm.response.json().csrf);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "First sign-in: create the authenticator secret",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/auth/mfa/enroll",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "auth",
+                "mfa",
+                "enroll"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"challenge\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: auth/routes.ts"
+          }
+        },
+        {
+          "name": "Change your password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/auth/password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "auth",
+                "password"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current\": \"string\",\n  \"next\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: auth/routes.ts"
+          }
+        },
+        {
+          "name": "Confirm with the authenticator for sensitive actions (5 minutes)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/auth/step-up",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "auth",
+                "step-up"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: auth/routes.ts"
+          }
+        },
+        {
+          "name": "Active sessions (yours; everyone's for super admins with ?all=1)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/sessions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "sessions"
+              ],
+              "query": [
+                {
+                  "key": "all",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Source: auth/routes.ts"
+          }
+        },
+        {
+          "name": "Sign a session out (yours; anyone's for super admins)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/sessions/:id/revoke",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "sessions",
+                ":id",
+                "revoke"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: auth/routes.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "Webhook deliveries (newest 200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/webhooks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "webhooks"
+              ]
+            },
+            "description": "Source: cr/manage.ts"
+          }
+        },
+        {
+          "name": "Send a failed or pending delivery again now",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/webhooks/:id/retry",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "webhooks",
+                ":id",
+                "retry"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: cr/manage.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Website",
+      "item": [
+        {
+          "name": "A visitor sends a form (the browser posts here; the server forwards to OPEX)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{siteUrl}}/api/forms/:form",
+              "host": [
+                "{{siteUrl}}"
+              ],
+              "path": [
+                "api",
+                "forms",
+                ":form"
+              ],
+              "variable": [
+                {
+                  "key": "form",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"locale\": \"fa\",\n  \"page\": \"string\",\n  \"values\": {},\n  \"shownAt\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Adds the visitor's IP and the delivery token, so OPEX credentials never reach the browser. Bot checks here: a filled honeypot (`website`) or a form sent faster than 2.5 s after it was shown (or older than a day) gets 202 and is dropped. Body limit 16 MB (files are base64).\n\nSource: apps/web/app/api/forms/[form]/route.ts"
+          }
+        },
+        {
+          "name": "Open a draft preview (link from the OPEX console or a partner preview)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{siteUrl}}/api/opex/preview",
+              "host": [
+                "{{siteUrl}}"
+              ],
+              "path": [
+                "api",
+                "opex",
+                "preview"
+              ],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "path",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "edit",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "exit",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Stores the signed token in an HttpOnly cookie (`opex_preview`, 30 minutes; SameSite=None over https so it works inside the console frame), turns on draft mode and redirects to `path`. With `edit=1` the visual editor's bridge loads too (`opex_edit` cookie). `exit=1` leaves preview.\n\nSource: apps/web/app/api/opex/preview/route.ts"
+          }
+        },
+        {
+          "name": "Webhook receiver: OPEX published something; refresh the pages",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "OPEX-Signature",
+                "value": "",
+                "description": "t=<unix>, v1=<hex HMAC>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{siteUrl}}/api/opex/revalidate",
+              "host": [
+                "{{siteUrl}}"
+              ],
+              "path": [
+                "api",
+                "opex",
+                "revalidate"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"string\",\n  \"event\": \"string\",\n  \"data\": null,\n  \"created\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Verifies `OPEX-Signature` (HMAC-SHA256 with OPEX_WEBHOOK_SECRET over `t.body`, 5-minute window) and refuses a repeated event id, then revalidates the `opex` cache tag.\n\nSource: apps/web/app/api/opex/revalidate/route.ts"
+          }
+        },
+        {
+          "name": "All site text for AI assistants, per language",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{siteUrl}}/llms-full.txt",
+              "host": [
+                "{{siteUrl}}"
+              ],
+              "path": [
+                "llms-full.txt"
+              ]
+            },
+            "description": "Source: apps/web/app/llms-full.txt/route.ts"
+          }
+        },
+        {
+          "name": "Site summary for AI assistants (llmstxt.org)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{siteUrl}}/llms.txt",
+              "host": [
+                "{{siteUrl}}"
+              ],
+              "path": [
+                "llms.txt"
+              ]
+            },
+            "description": "Source: apps/web/app/llms.txt/route.ts"
+          }
+        },
+        {
+          "name": "Crawler rules (AI crawlers allowed)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{siteUrl}}/robots.txt",
+              "host": [
+                "{{siteUrl}}"
+              ],
+              "path": [
+                "robots.txt"
+              ]
+            },
+            "description": "Source: apps/web/app/robots.ts"
+          }
+        },
+        {
+          "name": "Sitemap with hreflang alternates and key images",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{siteUrl}}/sitemap.xml",
+              "host": [
+                "{{siteUrl}}"
+              ],
+              "path": [
+                "sitemap.xml"
+              ]
+            },
+            "description": "Source: apps/web/app/sitemap.ts"
+          }
+        }
+      ]
+    }
+  ]
+}

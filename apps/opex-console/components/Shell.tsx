@@ -7,9 +7,35 @@ import { api, ApiError, onStepUp, setCsrf } from "@/lib/api";
 import { atLeast, canWrite, MeContext, type Me } from "@/lib/hooks";
 import { ROLE } from "@/lib/fa";
 import { Dialog, ErrorNote, Loading } from "./ui";
-import { Bell, PaintBrush, ClockCounterClockwise, GitPullRequest, Handshake, IdentificationCard, Images, Key, ListChecks, PlugsConnected, ShieldCheck, SquaresFour, TextAa, Tray, UserCircle, UsersThree, type Icon } from "@phosphor-icons/react";
+import {
+  Bell,
+  BookOpenText,
+  PaintBrush,
+  ClockCounterClockwise,
+  GitPullRequest,
+  Handshake,
+  IdentificationCard,
+  Images,
+  Key,
+  ListChecks,
+  PlugsConnected,
+  ShieldCheck,
+  SquaresFour,
+  TextAa,
+  Tray,
+  UserCircle,
+  UsersThree,
+  type Icon,
+} from "@phosphor-icons/react";
 
-type Item = { href: string; label: string; icon: Icon; min?: Me["role"]; write?: boolean };
+type Item = {
+  href: string;
+  label: string;
+  icon: Icon;
+  min?: Me["role"];
+  write?: boolean;
+  external?: boolean;
+};
 /** Grouped by what operators do: daily work, the website, then settings. */
 const NAV: { group: string; items: Item[] }[] = [
   {
@@ -32,13 +58,44 @@ const NAV: { group: string; items: Item[] }[] = [
   {
     group: "تنظیمات",
     items: [
-      { href: "/helpdesk", label: "تیم‌ها و پاسخ‌های آماده", icon: UsersThree, min: "operator" },
-      { href: "/operators", label: "اپراتورها", icon: IdentificationCard, min: "operator" },
-      { href: "/partners", label: "شرکا (آراسی‌ام‌اس)", icon: Handshake, min: "operator" },
+      {
+        href: "/helpdesk",
+        label: "تیم‌ها و پاسخ‌های آماده",
+        icon: UsersThree,
+        min: "operator",
+      },
+      {
+        href: "/operators",
+        label: "اپراتورها",
+        icon: IdentificationCard,
+        min: "operator",
+      },
+      {
+        href: "/partners",
+        label: "شرکا (آراسی‌ام‌اس)",
+        icon: Handshake,
+        min: "operator",
+      },
       { href: "/access", label: "دسترسی‌ها", icon: Key, min: "operator" },
       { href: "/policies", label: "سیاست‌های تأیید", icon: ShieldCheck },
-      { href: "/webhooks", label: "وب‌هوک‌ها", icon: PlugsConnected, min: "operator" },
-      { href: "/audit", label: "گزارش رویدادها", icon: ClockCounterClockwise, min: "auditor" },
+      {
+        href: "/webhooks",
+        label: "وب‌هوک‌ها",
+        icon: PlugsConnected,
+        min: "operator",
+      },
+      {
+        href: "/audit",
+        label: "گزارش رویدادها",
+        icon: ClockCounterClockwise,
+        min: "auditor",
+      },
+      {
+        href: "/v1/manage/docs",
+        label: "مستندات API",
+        icon: BookOpenText,
+        external: true,
+      },
       { href: "/account", label: "حساب من", icon: UserCircle },
     ],
   },
@@ -51,7 +108,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    api<Me>("/v1/manage/auth/me").then(setMe).catch(() => {});
+    api<Me>("/v1/manage/auth/me")
+      .then(setMe)
+      .catch(() => {});
   }, []);
   useEffect(() => setMenu(false), [path]);
 
@@ -60,7 +119,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!me) return;
     let live = true;
-    const load = () => api<unknown[]>("/v1/manage/change-requests?state=pending_review").then((r) => live && setPending(r.length)).catch(() => {});
+    const load = () =>
+      api<unknown[]>("/v1/manage/change-requests?state=pending_review")
+        .then((r) => live && setPending(r.length))
+        .catch(() => {});
     load();
     const t = setInterval(load, 60_000);
     // The review page announces decisions, so the count is right at once.
@@ -76,7 +138,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!me || !canWrite(me)) return;
     let live = true;
-    const load = () => api<{ unread: number }>("/v1/manage/tickets/counts").then((c) => live && setTickets(c.unread)).catch(() => {});
+    const load = () =>
+      api<{ unread: number }>("/v1/manage/tickets/counts")
+        .then((c) => live && setTickets(c.unread))
+        .catch(() => {});
     load();
     const t = setInterval(load, 30_000);
     window.addEventListener("opex:tickets-changed", load);
@@ -88,7 +153,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
   }, [me, path]);
   useEffect(() => {
     const base = document.title.replace(/^\(\d+\) /, "");
-    document.title = pending + tickets ? `(${pending + tickets}) ${base}` : base;
+    document.title =
+      pending + tickets ? `(${pending + tickets}) ${base}` : base;
   }, [pending, tickets, path]);
 
   const logout = async () => {
@@ -107,14 +173,21 @@ export function Shell({ children }: { children: React.ReactNode }) {
       </div>
     );
 
-  const active = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
+  const active = (href: string) =>
+    href === "/" ? path === "/" : path.startsWith(href);
   return (
     <MeContext.Provider value={me}>
       <div className="topbar">
         <span className="brand" style={{ padding: 0 }}>
           <b>OPEX</b>
         </span>
-        <button type="button" className="btn sm" aria-expanded={menu} aria-controls="side" onClick={() => setMenu((m) => !m)}>
+        <button
+          type="button"
+          className="btn sm"
+          aria-expanded={menu}
+          aria-controls="side"
+          onClick={() => setMenu((m) => !m)}
+        >
           منو
         </button>
       </div>
@@ -126,19 +199,49 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </div>
           <nav className="nav" aria-label="بخش‌ها">
             {NAV.map((g) => {
-              const items = g.items.filter((n) => (!n.min || atLeast(me, n.min)) && (!n.write || canWrite(me)));
+              const items = g.items.filter(
+                (n) =>
+                  (!n.min || atLeast(me, n.min)) && (!n.write || canWrite(me)),
+              );
               if (!items.length) return null;
               return (
                 <div key={g.group} className="nav-group">
                   <div className="nav-h">{g.group}</div>
                   {items.map((n) => {
-                    const count = n.href === "/requests" ? pending : n.href === "/tickets" ? tickets : 0;
-                    return (
-                      <Link key={n.href} href={n.href} aria-current={active(n.href) ? "page" : undefined}>
-                        <n.icon size={18} weight={active(n.href) ? "fill" : "regular"} aria-hidden />
+                    const count =
+                      n.href === "/requests"
+                        ? pending
+                        : n.href === "/tickets"
+                          ? tickets
+                          : 0;
+                    return n.external ? (
+                      <a
+                        key={n.href}
+                        href={n.href}
+                        target="_blank"
+                        rel="noopener"
+                      >
+                        <n.icon size={18} aria-hidden />
+                        <span>{n.label}</span>
+                        <span className="sr-only">(در زبانهٔ تازه)</span>
+                      </a>
+                    ) : (
+                      <Link
+                        key={n.href}
+                        href={n.href}
+                        aria-current={active(n.href) ? "page" : undefined}
+                      >
+                        <n.icon
+                          size={18}
+                          weight={active(n.href) ? "fill" : "regular"}
+                          aria-hidden
+                        />
                         <span>{n.label}</span>
                         {count > 0 && (
-                          <span className={`badge ${n.href === "/tickets" ? "accent" : "warn"} nav-count`} aria-label={`${count} مورد تازه`}>
+                          <span
+                            className={`badge ${n.href === "/tickets" ? "accent" : "warn"} nav-count`}
+                            aria-label={`${count} مورد تازه`}
+                          >
                             {new Intl.NumberFormat("fa-IR").format(count)}
                           </span>
                         )}
@@ -150,7 +253,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
             })}
           </nav>
           <div className="me">
-            <div className="row" style={{ justifyContent: "space-between", flexWrap: "nowrap" }}>
+            <div
+              className="row"
+              style={{ justifyContent: "space-between", flexWrap: "nowrap" }}
+            >
               <div>
                 <div style={{ fontWeight: 600 }}>{me.display}</div>
                 <div className="small muted">{ROLE[me.role]}</div>
@@ -162,7 +268,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
                 خروج
               </button>
               {menu && (
-                <button type="button" className="btn sm ghost" onClick={() => setMenu(false)}>
+                <button
+                  type="button"
+                  className="btn sm ghost"
+                  onClick={() => setMenu(false)}
+                >
                   بستن منو
                 </button>
               )}
@@ -219,10 +329,23 @@ function StepUp() {
   return (
     <Dialog open={open} onClose={() => finish(false)} title="تأیید دوبارهٔ هویت">
       <form className="stack" onSubmit={submit}>
-        <p className="muted">این کار حساس است. کد شش‌رقمی برنامهٔ احراز هویت را وارد کنید. تأیید تا ۵ دقیقه معتبر می‌ماند.</p>
+        <p className="muted">
+          این کار حساس است. کد شش‌رقمی برنامهٔ احراز هویت را وارد کنید. تأیید تا
+          ۵ دقیقه معتبر می‌ماند.
+        </p>
         <label className="f">
           <span>کد احراز هویت</span>
-          <input className="code-input" inputMode="numeric" autoComplete="one-time-code" pattern="\d{6}" maxLength={6} required autoFocus value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))} />
+          <input
+            className="code-input"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            pattern="\d{6}"
+            maxLength={6}
+            required
+            autoFocus
+            value={code}
+            onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+          />
         </label>
         <ErrorNote error={error} />
         <div className="row">
@@ -238,13 +361,28 @@ function StepUp() {
   );
 }
 
-type Note = { id: string; kind: string; text: string; read_at: string | null; created_at: string; number: number | null };
+type Note = {
+  id: string;
+  kind: string;
+  text: string;
+  read_at: string | null;
+  created_at: string;
+  number: number | null;
+};
 /** The bell: assignments, referrals, mentions, customer replies and SLA alerts. */
 function Notifications() {
-  const [data, setData] = useState<{ unread: number; items: Note[] } | null>(null);
+  const [data, setData] = useState<{ unread: number; items: Note[] } | null>(
+    null,
+  );
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const load = useCallback(() => api<{ unread: number; items: Note[] }>("/v1/manage/notifications").then(setData).catch(() => {}), []);
+  const load = useCallback(
+    () =>
+      api<{ unread: number; items: Note[] }>("/v1/manage/notifications")
+        .then(setData)
+        .catch(() => {}),
+    [],
+  );
   useEffect(() => {
     load();
     const t = setInterval(load, 30_000);
@@ -252,16 +390,28 @@ function Notifications() {
   }, [load]);
   const go = async (n: Note) => {
     setOpen(false);
-    if (!n.read_at) await api("/v1/manage/notifications/read", { body: { ids: [n.id] } }).catch(() => {});
+    if (!n.read_at)
+      await api("/v1/manage/notifications/read", {
+        body: { ids: [n.id] },
+      }).catch(() => {});
     load();
     if (n.number) router.push(`/tickets/${n.number}`);
   };
   const unread = data?.unread ?? 0;
   return (
     <>
-      <button type="button" className="btn ghost icon-btn" aria-label={unread ? `اعلان‌ها، ${unread} خوانده‌نشده` : "اعلان‌ها"} onClick={() => setOpen(true)}>
+      <button
+        type="button"
+        className="btn ghost icon-btn"
+        aria-label={unread ? `اعلان‌ها، ${unread} خوانده‌نشده` : "اعلان‌ها"}
+        onClick={() => setOpen(true)}
+      >
         <Bell size={20} weight={unread ? "fill" : "regular"} aria-hidden />
-        {unread > 0 && <span className="dot-count">{new Intl.NumberFormat("fa-IR").format(Math.min(unread, 99))}</span>}
+        {unread > 0 && (
+          <span className="dot-count">
+            {new Intl.NumberFormat("fa-IR").format(Math.min(unread, 99))}
+          </span>
+        )}
       </button>
       <Dialog open={open} onClose={() => setOpen(false)} title="اعلان‌ها">
         {!data?.items.length ? (
@@ -271,15 +421,31 @@ function Notifications() {
             <ul className="notes-list">
               {data.items.map((n) => (
                 <li key={n.id}>
-                  <button type="button" className="note-item" data-unread={!n.read_at} onClick={() => go(n)}>
+                  <button
+                    type="button"
+                    className="note-item"
+                    data-unread={!n.read_at}
+                    onClick={() => go(n)}
+                  >
                     <span>{n.text}</span>
-                    <span className="small muted">{new Intl.DateTimeFormat("fa-IR", { dateStyle: "short", timeStyle: "short" }).format(new Date(n.created_at))}</span>
+                    <span className="small muted">
+                      {new Intl.DateTimeFormat("fa-IR", {
+                        dateStyle: "short",
+                        timeStyle: "short",
+                      }).format(new Date(n.created_at))}
+                    </span>
                   </button>
                 </li>
               ))}
             </ul>
             {unread > 0 && (
-              <button type="button" className="btn sm" onClick={() => api("/v1/manage/notifications/read", { body: {} }).then(load)}>
+              <button
+                type="button"
+                className="btn sm"
+                onClick={() =>
+                  api("/v1/manage/notifications/read", { body: {} }).then(load)
+                }
+              >
                 همه خوانده شد
               </button>
             )}

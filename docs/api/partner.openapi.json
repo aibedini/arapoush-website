@@ -202,6 +202,39 @@
         "x-audience": "oauth"
       }
     },
+    "/docs/partner": {
+      "get": {
+        "operationId": "docsPartner",
+        "summary": "Interactive Partner API reference (this document)",
+        "description": "**Source:** `apps/opex-api/src/docs/routes.ts`",
+        "tags": [
+          "Partner"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "The interactive reference (Scalar), CSP-locked to this origin."
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "partner"
+      }
+    },
     "/oauth/authorize": {
       "get": {
         "operationId": "oauthAuthorize",
