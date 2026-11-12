@@ -1669,9 +1669,9 @@
      "tr": "Aynı hacim şu ölçülerde de"
     },
     "viewerLabel": {
-     "fa": "مدل سه‌بعدی: تیوپ {shape}، {d} × {l} میلی‌متر، {closure}. با کلیدهای جهت بچرخانید و با + و − بزرگ‌نمایی کنید.",
-     "en": "3D model: {shape} tube, Ø{d} × {l} mm, {closure}. Arrow keys rotate, plus and minus zoom.",
-     "tr": "3D model: {shape} tüp, Ø{d} × {l} mm, {closure}. Ok tuşlarıyla döndürün, artı ve eksiyle yakınlaştırın."
+     "fa": "مدل سه‌بعدی: تیوپ {shape}، {d} × {l} میلی‌متر، {closure}. با کلیدهای جهت به چپ و راست و بالا و پایین بچرخانید و با + و − بزرگ‌نمایی کنید.",
+     "en": "3D model: {shape} tube, Ø{d} × {l} mm, {closure}. Arrow keys turn it left, right, up and down; plus and minus zoom.",
+     "tr": "3D model: {shape} tüp, Ø{d} × {l} mm, {closure}. Ok tuşlarıyla sağa, sola, yukarı ve aşağı döndürün; artı ve eksiyle yakınlaştırın."
     },
     "loading": {
      "fa": "در حال بارگذاری مدل سه‌بعدی…",
@@ -1684,7 +1684,7 @@
      "tr": "Bu tarayıcıda 3D önizleme kullanılamıyor — yapılandırma ve hacim yine de çalışır."
     },
     "hint": {
-     "fa": "برای چرخش بکشید · برای بزرگ‌نمایی اسکرول یا دو انگشت",
+     "fa": "برای چرخش در همهٔ جهت‌ها بکشید · برای بزرگ‌نمایی روی هر جا اسکرول یا دو انگشت",
      "en": "Drag to rotate · scroll or pinch to zoom",
      "tr": "Döndürmek için sürükleyin · yakınlaştırmak için kaydırın veya iki parmak"
     },
@@ -1703,13 +1703,23 @@
      "en": "Zoom out",
      "tr": "Uzaklaştır"
     },
+    "focusCap": {
+     "fa": "نمای نزدیک درب",
+     "en": "Close-up: cap",
+     "tr": "Yakın plan: kapak"
+    },
+    "focusBody": {
+     "fa": "نمای نزدیک بدنه",
+     "en": "Close-up: body",
+     "tr": "Yakın plan: gövde"
+    },
     "dimensions": {
      "fa": "ابعاد",
      "en": "Dimensions",
      "tr": "Ölçüler"
     },
     "inspect": {
-     "fa": "بررسی لایه‌ها",
+     "fa": "باز کردن و دیدن لایه‌ها",
      "en": "Inspect layers",
      "tr": "Katmanları incele"
     },

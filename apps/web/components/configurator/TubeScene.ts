@@ -9,7 +9,11 @@ import type { ClosureModel, ClosureModel3d, ClosureShape, ShapeModel } from "@/l
  * Visual model only — not production CAD.
  */
 
-const OVAL = { x: 1.12, z: 0.74 };
+/**
+ * Oval cross-section as multiples of the round radius. A round tube pressed oval keeps its
+ * perimeter (x + z = 2); 1.3 × 0.7 is the Arapoush oval's proportion, clearly not round from any side.
+ */
+const OVAL = { x: 1.3, z: 0.7 };
 const AXES: Record<string, THREE.Vector3> = {
   "+Y": new THREE.Vector3(0, 1, 0),
   "-Y": new THREE.Vector3(0, -1, 0),
@@ -63,6 +67,7 @@ export class TubeScene {
   private scene = new THREE.Scene();
   private camera = new THREE.PerspectiveCamera(30, 1, 0.1, 400);
   private controls: OrbitControls;
+  private fly: { t0: THREE.Vector3; p0: THREE.Vector3; t1: THREE.Vector3; p1: THREE.Vector3; start: number } | null = null;
   private pivot = new THREE.Group();
   private built: Built | null = null;
   private cfg: SceneSpec | null = null;
@@ -133,10 +138,16 @@ export class TubeScene {
     this.controls.enableDamping = !o.reducedMotion;
     this.controls.dampingFactor = 0.08;
     this.controls.enablePan = false;
-    this.controls.minPolarAngle = 0.25;
-    this.controls.maxPolarAngle = Math.PI / 2 + 0.12;
+    // All the way round: over the top and underneath (the poles are left out so "up" never flips).
+    this.controls.minPolarAngle = 0.02;
+    this.controls.maxPolarAngle = Math.PI - 0.02;
+    // The wheel and pinch zoom towards the pointer, so a cap or a print detail can be looked at closely.
+    this.controls.zoomToCursor = true;
     this.controls.autoRotateSpeed = 0.8;
-    this.controls.addEventListener("start", () => o.onInteract?.());
+    this.controls.addEventListener("start", () => {
+      this.fly = null;
+      o.onInteract?.();
+    });
     this.controls.addEventListener("change", () => this.invalidate());
     // OrbitControls claims every touch; give vertical swipes back to the page so it never traps scrolling.
     o.canvas.style.touchAction = "pan-y";
@@ -241,7 +252,46 @@ export class TubeScene {
     this.invalidate();
   }
 
+  /** Look closely at the closure or the body, or the whole tube again; keeps the viewing angle. */
+  focus(part: "cap" | "body" | "all") {
+    const b = this.built;
+    if (!b) return;
+    if (part === "all") return this.frameModel(false, true);
+    const w = Math.max(b.rx, b.rz) * 2;
+    const k = smooth(this.explodeTarget);
+    // The closure hangs below the neck top (y = 0); the body runs from the shoulder up to the seal.
+    const drop = b.capDrop * k;
+    const [lo, hi] = part === "cap" ? [b.floor - drop, Math.min(0.3, -b.floor * 0.1) - drop] : [0, b.L];
+    const vFov = THREE.MathUtils.degToRad(this.camera.fov);
+    const span = Math.max(hi - lo, (w * 1.15) / this.camera.aspect);
+    const dist = Math.max((span * 1.35) / 2 / Math.tan(vFov / 2), 2);
+    this.controls.minDistance = Math.min(this.controls.minDistance, dist * 0.5);
+    // Same side as now, but nearly level, so the floor ring never hides the cap.
+    const now = this.camera.position.clone().sub(this.controls.target);
+    const az = Math.atan2(now.x, now.z);
+    const lift = part === "cap" ? 0.12 : 0.2;
+    const dir = new THREE.Vector3(Math.sin(az), lift, Math.cos(az)).normalize();
+    const target = new THREE.Vector3(0, (lo + hi) / 2, 0);
+    this.flyTo(target, target.clone().add(dir.multiplyScalar(dist)));
+  }
+
+  private flyTo(target: THREE.Vector3, position: THREE.Vector3) {
+    if (this.o.reducedMotion) {
+      this.controls.target.copy(target);
+      this.camera.position.copy(position);
+      this.controls.update();
+    } else this.fly = { t0: this.controls.target.clone(), p0: this.camera.position.clone(), t1: target, p1: position, start: performance.now() };
+    this.invalidate();
+  }
+
   /** Keyboard / button equivalents of the pointer gestures. */
+  tilt(radians: number) {
+    const off = this.camera.position.clone().sub(this.controls.target);
+    const sph = new THREE.Spherical().setFromVector3(off);
+    sph.phi = THREE.MathUtils.clamp(sph.phi - radians, this.controls.minPolarAngle, this.controls.maxPolarAngle);
+    this.camera.position.copy(this.controls.target).add(new THREE.Vector3().setFromSpherical(sph));
+    this.controls.update();
+  }
   rotate(radians: number) {
     const off = this.camera.position.clone().sub(this.controls.target);
     off.applyAxisAngle(new THREE.Vector3(0, 1, 0), radians);
@@ -255,7 +305,7 @@ export class TubeScene {
     this.controls.update();
   }
   reset() {
-    this.frameModel(true);
+    this.frameModel(true, true);
     this.invalidate();
   }
 
@@ -301,8 +351,19 @@ export class TubeScene {
   private tick = (now: number) => {
     this.raf = 0;
     if (!this.visible || document.hidden || !this.built) return;
-    let busy = this.controls.update();
+    if (this.fly) {
+      const t = Math.min(1, (now - this.fly.start) / 650);
+      const k = ease(t);
+      this.controls.target.lerpVectors(this.fly.t0, this.fly.t1, k);
+      this.camera.position.lerpVectors(this.fly.p0, this.fly.p1, k);
+      if (t >= 1) this.fly = null;
+    }
+    let busy = this.controls.update() || !!this.fly;
     busy = this.controls.autoRotate || busy;
+    // Seen from underneath, the floor shadow would sit in front of the closure.
+    const above = this.camera.position.y > this.built.floor - this.built.capDrop * smooth(this.explode);
+    this.shadow.visible = above;
+    this.ring.visible = above;
     if (this.tween) {
       const t = Math.min(1, (now - this.tween.start) / 260);
       const k = ease(t);
@@ -335,9 +396,10 @@ export class TubeScene {
   }
 
   /** Fit the tube (and the exploded parts) in view; keeps the current orbit angle unless reset. */
-  private frameModel(resetAngle: boolean) {
+  private frameModel(resetAngle: boolean, animate = false) {
     const b = this.built;
     if (!b) return;
+    this.fly = null;
     const top = b.L + 1.6;
     const bottom = b.floor - b.capDrop * this.explodeTarget;
     const height = top - bottom;
@@ -351,11 +413,17 @@ export class TubeScene {
       resetAngle || this.camera.position.lengthSq() < 0.01
         ? new THREE.Vector3(0.28, 0.3, 0.91).normalize()
         : this.camera.position.clone().sub(this.controls.target).normalize();
-    this.controls.target.set(0, cy, 0);
-    this.camera.position.copy(this.controls.target).add(dir.multiplyScalar(dist));
-    this.controls.minDistance = dist * 0.45;
+    // Close enough to read a cap's ribs; the cap/body buttons go closer still.
+    this.controls.minDistance = Math.max(Math.max(b.rx, b.rz) * 2.2, 2);
     this.controls.maxDistance = dist * 1.9;
-    this.controls.update();
+    const target = new THREE.Vector3(0, cy, 0);
+    const position = target.clone().add(dir.multiplyScalar(dist));
+    if (animate) this.flyTo(target, position);
+    else {
+      this.controls.target.copy(target);
+      this.camera.position.copy(position);
+      this.controls.update();
+    }
     const footprint = Math.max(b.rx, b.rz);
     this.shadow.position.y = b.floor + 0.01;
     this.shadow.scale.setScalar(footprint * 5);

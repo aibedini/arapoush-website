@@ -16,6 +16,14 @@ T2.1 (2026-11-13): factory CAD in bulk.
   The two flip-tops with their lids open, the oval cap and the nozzle insert are marked
   "check in preview".
 
+Viewer (2026-11-13):
+- The tube turns all the way round, over the top and underneath; the floor shadow hides from below.
+- Wheel and pinch zoom towards the pointer.
+- «نمای نزدیک درب» and «نمای نزدیک بدنه» fly the camera to the closure or the body.
+- Arrow up and down tilt the tube; in fullscreen a vertical swipe tilts it instead of scrolling.
+- The oval cross-section is 1.3 × 0.7 of the round radius (same perimeter); it was 1.12 × 0.74,
+  which looked round from the default angle.
+
 T5 (2026-11-12): the quote.
 - **Form:** the OPEX system form `tube-quote`, editable in the form builder. Fields: name, company,
   phone, email and contact method:

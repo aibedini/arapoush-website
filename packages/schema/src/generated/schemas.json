@@ -1478,6 +1478,16 @@
          "localized": true,
          "multiline": false
         },
+        "focusCap": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "focusBody": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
         "dimensions": {
          "kind": "text",
          "localized": true,

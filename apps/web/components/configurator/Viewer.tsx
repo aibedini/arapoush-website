@@ -17,6 +17,8 @@ type Props = {
     autoRotate: string;
     zoomIn: string;
     zoomOut: string;
+    focusCap: string;
+    focusBody: string;
     dimensions: string;
     inspect: string;
     reset: string;
@@ -112,6 +114,15 @@ export default function Viewer({ cfg, label, labels, caption, fileName, t }: Pro
     scene.current?.setConfig(cfg);
   }, [cfg, labels]);
 
+  // In fullscreen the page can't scroll, so a vertical swipe tilts the tube instead (all the way round).
+  useEffect(() => {
+    const onFs = () => {
+      if (canvas.current) canvas.current.style.touchAction = document.fullscreenElement === stage.current ? "none" : "pan-y";
+    };
+    document.addEventListener("fullscreenchange", onFs);
+    return () => document.removeEventListener("fullscreenchange", onFs);
+  }, []);
+
   const s = () => scene.current;
   const toggle = (value: boolean, set: (v: boolean) => void, apply: (v: boolean) => void) => {
     set(!value);
@@ -134,6 +145,8 @@ export default function Viewer({ cfg, label, labels, caption, fileName, t }: Pro
           const keys: Record<string, () => void> = {
             ArrowLeft: () => v.rotate(-0.2),
             ArrowRight: () => v.rotate(0.2),
+            ArrowUp: () => v.tilt(0.2),
+            ArrowDown: () => v.tilt(-0.2),
             "+": () => v.zoom(0.85),
             "=": () => v.zoom(0.85),
             "-": () => v.zoom(1.18),
@@ -173,6 +186,12 @@ export default function Viewer({ cfg, label, labels, caption, fileName, t }: Pro
         <Tool label={t.zoomOut} disabled={!ready} onClick={() => s()?.zoom(1.18)}>
           <circle cx="11" cy="11" r="6.5" />
           <path d="M16 16l4 4M8.5 11h5" />
+        </Tool>
+        <Tool label={t.focusCap} disabled={!ready} onClick={() => s()?.focus("cap")}>
+          <path d="M7 4h10v5H7zM8.5 9v3M15.5 9v3M6 12h12v8H6z" />
+        </Tool>
+        <Tool label={t.focusBody} disabled={!ready} onClick={() => s()?.focus("body")}>
+          <path d="M8 3h8l1 4v14H7V7l1-4ZM7 7h10M10 12h4M10 15h4" />
         </Tool>
         <Tool label={t.dimensions} pressed={dims} disabled={!ready} onClick={() => toggle(dims, setDims, (v) => s()?.setDimensions(v))}>
           <path d="M4 7v10M20 7v10M4 12h16M7 9.5 4.5 12 7 14.5M17 9.5l2.5 2.5-2.5 2.5" />
