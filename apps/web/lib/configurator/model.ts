@@ -40,7 +40,17 @@ export type SizeRow = { l: number; ml?: number; status?: VolumeStatus };
 export type ShapeDef = { id: string; model: ShapeModel; name: Localized; image: string; sizes: Record<string, SizeRow[]>; aliases?: string[] };
 /** Colour family ids, as in the size charts: white, coloured, transparent, metallic silver / gold. */
 export type ColourId = "white" | "coloured" | "clear" | "metallicSilver" | "metallicGold";
-export type ColourFamily = { id: ColourId; name: Localized; kind: "solid" | "custom" | "clear" | "metallic"; swatch: string };
+/** `palette`: the swatches offered for a custom colour (the visitor may also pick any colour). */
+export type ColourFamily = { id: ColourId; name: Localized; kind: "solid" | "custom" | "clear" | "metallic"; swatch: string; palette?: string[] };
+/** Tube body colours (pigmented outer layer); `custom` lets the visitor pick any colour. */
+export type BodyColour = { id: string; name: Localized; hex: string };
+/** How a print method looks in 3D: flat inks, process halftone, raised silk ink, metallic foil, or a mix. */
+export type PrintEffect = "flat" | "halftone" | "raised" | "foil" | "combo";
+/**
+ * A print method offered in the configurator (ids match page.printing). `artwork` (optional) is the
+ * operator's sample design; without it the scene draws the Arapoush sample in the method's style.
+ */
+export type PrintDef = { id: string; name: Localized; effect: PrintEffect; note?: Localized; colours?: number; foil?: string; artwork?: string; shapes?: string[]; diameters?: number[] };
 /** A GLB in millimetres with its mounting: `axis` points from the mounting face to the tube. */
 export type ClosureModel3d = { src: string; modelId?: string; axis: "+Y" | "-Y" | "+X" | "-X" | "+Z" | "-Z"; anchorMm: number[]; neckDiameterMm: number; sizeMm?: number[] };
 export type ClosureDef = {
@@ -72,15 +82,22 @@ export type TubeProduct = {
   shapes: ShapeDef[];
   closures: ClosureDef[];
   colourFamilies?: ColourFamily[];
+  bodyColours?: BodyColour[];
+  prints?: PrintDef[];
   structures: StructureDef[];
   samples: SampleDef[];
 };
 
-export type TubeConfig = { shape: string; d: number; l: number; closure: string; structure: string };
+/**
+ * `colour`: the cap's colour family ("" when the closure lists none); `capHex`: the custom cap colour;
+ * `body`: tube body colour (hex); `print`: print method id ("" = no print).
+ */
+export type TubeConfig = { shape: string; d: number; l: number; closure: string; structure: string; colour?: string; capHex?: string; body?: string; print?: string };
 export type Capacity = { ml: number; status: VolumeStatus };
 
 /** Preferred starting point; ignored piece by piece when the catalogue doesn't offer it. */
-export const DEFAULT_CONFIG: TubeConfig = { shape: "circular", d: 30, l: 110, closure: "flipTop", structure: "" };
+export const DEFAULT_CONFIG: TubeConfig = { shape: "circular", d: 30, l: 110, closure: "flipTop", structure: "", colour: "white", capHex: "", body: "#fbfcfd", print: "flexo" };
+const HEX = /^#[0-9a-f]{6}$/i;
 
 /** Localised text with an English, then any, fallback — admin entries may miss a language. */
 export const loc = (text: Localized | undefined, locale: string) => text?.[locale] || text?.en || Object.values(text ?? {})[0] || "";
@@ -100,6 +117,24 @@ export const structuresFor = (cat: TubeProduct, shape: string, d?: number, closu
 export const coloursFor = (cat: TubeProduct, closure: string, shape: string, d: number): ColourFamily[] => {
   const ids = closureOf(cat, closure)?.colours?.[shape]?.[String(d)] ?? [];
   return (cat.colourFamilies ?? []).filter((f) => ids.includes(f.id));
+};
+
+/** Print methods offered for a shape and diameter, in catalogue order. */
+export const printsFor = (cat: TubeProduct, shape: string, d: number) =>
+  (cat.prints ?? []).filter((p) => (!p.shapes?.length || p.shapes.includes(shape)) && (!p.diameters?.length || p.diameters.includes(d)));
+export const printOf = (cat: TubeProduct, id: string | undefined) => (id ? cat.prints?.find((p) => p.id === id) : undefined);
+export const colourOf = (cat: TubeProduct, id: string | undefined) => cat.colourFamilies?.find((f) => f.id === id);
+
+/** What the scene paints: the cap's material, the body colour and the print style. */
+export const sceneLook = (cat: TubeProduct, c: TubeConfig) => {
+  const fam = colourOf(cat, c.colour);
+  const capHex = fam?.kind === "custom" ? c.capHex || fam.palette?.[0] || fam.swatch : fam?.swatch;
+  const print = printOf(cat, c.print);
+  return {
+    cap: fam && capHex ? { kind: fam.kind === "custom" ? ("solid" as const) : fam.kind, hex: capHex } : undefined,
+    body: c.body && HEX.test(c.body) ? c.body : "#fbfcfd",
+    print: print ? { effect: print.effect, foil: print.foil, artwork: print.artwork } : undefined,
+  };
 };
 
 /** 3D families for the scene: an eye-nozzle closure swaps in its own shoulder. */
@@ -170,7 +205,15 @@ export function normalize(cat: TubeProduct, input: Partial<Record<keyof TubeConf
   const closure = preferred(cat, shape, d, want)!;
   const structures = structuresFor(cat, shape, d, closure);
   const structure = structures.find((s) => s.id === input.structure)?.id ?? structures[0]?.id ?? "";
-  return { shape, d, l, closure, structure };
+  // Cap colour: one the closure comes in here (the chart), else its first, else none.
+  const families = coloursFor(cat, closure, shape, d);
+  const colour = families.find((f) => f.id === input.colour)?.id ?? families.find((f) => f.id === DEFAULT_CONFIG.colour)?.id ?? families[0]?.id ?? "";
+  const capHex = colourOf(cat, colour)?.kind === "custom" && typeof input.capHex === "string" && HEX.test(input.capHex) ? input.capHex.toLowerCase() : "";
+  const body = typeof input.body === "string" && HEX.test(input.body) ? input.body.toLowerCase() : (cat.bodyColours?.[0]?.hex ?? DEFAULT_CONFIG.body!);
+  const prints = printsFor(cat, shape, d);
+  const wantPrint = typeof input.print === "string" ? input.print : DEFAULT_CONFIG.print;
+  const print = wantPrint === "" ? "" : (prints.find((p) => p.id === wantPrint)?.id ?? "");
+  return { shape, d, l, closure, structure, colour, capHex, body, print };
 }
 
 /** Changing diameter keeps the volume as close as the new diameter allows (falls back to length). */
@@ -207,7 +250,8 @@ export function rankSamples(cat: TubeProduct, c: TubeConfig) {
 
 /** URL ⇄ config. Short keys keep shared links readable. */
 export const toSearch = (c: TubeConfig) =>
-  `shape=${encodeURIComponent(c.shape)}&d=${c.d}&l=${c.l}&cap=${encodeURIComponent(c.closure)}${c.structure ? `&st=${encodeURIComponent(c.structure)}` : ""}`;
+  `shape=${encodeURIComponent(c.shape)}&d=${c.d}&l=${c.l}&cap=${encodeURIComponent(c.closure)}${c.structure ? `&st=${encodeURIComponent(c.structure)}` : ""}` +
+  `${c.colour ? `&col=${encodeURIComponent(c.colour)}` : ""}${c.capHex ? `&ch=${c.capHex.slice(1)}` : ""}${c.body ? `&bc=${c.body.slice(1)}` : ""}&pr=${encodeURIComponent(c.print ?? "")}`;
 
 export const fromSearch = (cat: TubeProduct, search: string | URLSearchParams) => {
   const p = typeof search === "string" ? new URLSearchParams(search) : search;
@@ -221,10 +265,11 @@ export const fromSearch = (cat: TubeProduct, search: string | URLSearchParams) =
       shape = Object.keys(viaClosure.compat)[0];
     }
   }
-  return normalize(cat, { shape, d: p.get("d") ?? undefined, l: p.get("l") ?? undefined, closure, structure: p.get("st") ?? undefined });
+  const hex = (k: string) => (p.get(k) ? `#${p.get(k)}` : undefined);
+  return normalize(cat, { shape, d: p.get("d") ?? undefined, l: p.get("l") ?? undefined, closure, structure: p.get("st") ?? undefined, colour: p.get("col") ?? undefined, capHex: hex("ch"), body: hex("bc"), print: p.get("pr") ?? undefined });
 };
 
 export const isValid = (cat: TubeProduct, c: TubeConfig) => {
   const n = normalize(cat, c);
-  return n.shape === c.shape && n.d === c.d && n.l === c.l && n.closure === c.closure && n.structure === c.structure;
+  return n.shape === c.shape && n.d === c.d && n.l === c.l && n.closure === c.closure && n.structure === c.structure && (c.colour === undefined || n.colour === c.colour) && (c.print === undefined || n.print === c.print);
 };

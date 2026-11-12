@@ -8,7 +8,10 @@ const glide = { type: "spring" as const, stiffness: 420, damping: 36 };
 
 export type ChipItem = { key: string; content: ReactNode; label?: string };
 
-/** Single-choice chip row: animate-ui Highlight glides the pill, arrow keys rove (RTL-aware). */
+/**
+ * Single-choice chip row: animate-ui Highlight glides the pill, arrow keys rove (RTL-aware).
+ * `plain`: the same chips with a static selected style and no motion to hydrate, for secondary rows.
+ */
 export default function ChipGroup({
   items,
   value,
@@ -17,6 +20,7 @@ export default function ChipGroup({
   className = styles.chips,
   chipClass,
   pillClass = styles.chipPill,
+  plain,
 }: {
   items: ChipItem[];
   value: string;
@@ -25,9 +29,41 @@ export default function ChipGroup({
   className?: string;
   chipClass?: string;
   pillClass?: string;
+  plain?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const keys = items.map((i) => i.key);
+  const onKey = (e: React.KeyboardEvent) => {
+    const rtl = document.documentElement.dir === "rtl";
+    const fwd = e.key === "ArrowDown" || e.key === (rtl ? "ArrowLeft" : "ArrowRight");
+    const back = e.key === "ArrowUp" || e.key === (rtl ? "ArrowRight" : "ArrowLeft");
+    if (!fwd && !back) return;
+    e.preventDefault();
+    const next = keys[(keys.indexOf(value) + (fwd ? 1 : -1) + keys.length) % keys.length]!;
+    onChange(next);
+    ref.current?.querySelector<HTMLElement>(`[data-key="${next}"]`)?.focus();
+  };
+  if (plain)
+    return (
+      <div ref={ref} className={className} role="radiogroup" aria-labelledby={labelledBy}>
+        {items.map((item) => (
+          <button
+            key={item.key}
+            type="button"
+            role="radio"
+            aria-checked={value === item.key}
+            aria-label={item.label}
+            className={`${styles.chip} ${chipClass ?? ""} ${value === item.key ? styles.chipSolid : ""}`}
+            onClick={() => onChange(item.key)}
+            onKeyDown={onKey}
+            tabIndex={value === item.key ? 0 : -1}
+            data-key={item.key}
+          >
+            {item.content}
+          </button>
+        ))}
+      </div>
+    );
   return (
     <div ref={ref} className={className} role="radiogroup" aria-labelledby={labelledBy}>
       <Highlight controlledItems value={value} className={pillClass} transition={glide}>

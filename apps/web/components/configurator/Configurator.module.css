@@ -677,3 +677,79 @@
     animation-duration: 3s;
   }
 }
+
+/* ── Colour and print (T3) ── */
+.swatch {
+  display: inline-block;
+  inline-size: 14px;
+  block-size: 14px;
+  margin-inline-end: 6px;
+  border-radius: 50%;
+  border: 1px solid rgba(3, 29, 47, 0.25);
+  vertical-align: -2px;
+}
+.swatch[data-kind="clear"] {
+  background: linear-gradient(135deg, #ffffff 0 45%, #cfe0ec 45% 55%, #ffffff 55%) !important;
+}
+.swatch[data-kind="metallic"] {
+  box-shadow: inset -3px -3px 5px rgba(0, 0, 0, 0.25), inset 2px 2px 4px rgba(255, 255, 255, 0.7);
+}
+.palette {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-block-start: 10px;
+}
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.swatchBtn {
+  inline-size: 28px;
+  block-size: 28px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(3, 29, 47, 0.22);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.swatchBtn[aria-checked="true"] {
+  box-shadow: 0 0 0 2px var(--navy, #031d2f);
+}
+.swatchBtn:hover {
+  transform: scale(1.08);
+}
+.swatchBtn:focus-visible {
+  outline: 2px solid #a8530d;
+  outline-offset: 3px;
+}
+@media (hover: none) {
+  .swatchBtn:active {
+    transform: scale(0.94);
+  }
+}
+.custom {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-block-size: 32px;
+  font-size: 13px;
+  color: #3b4652;
+  cursor: pointer;
+}
+.custom input {
+  inline-size: 32px;
+  block-size: 32px;
+  padding: 0;
+  border: 1px solid rgba(3, 29, 47, 0.22);
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+}
+@media (prefers-reduced-motion: reduce) {
+  .swatchBtn {
+    transition: none;
+  }
+}

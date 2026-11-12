@@ -62,3 +62,14 @@ export const KeyboardRtl: Story = {
 };
 
 export const English: Story = { globals: { locale: "en" } };
+
+/** Secondary rows (cap colour, print): the same chips without the gliding pill or its motion. */
+export const Plain: Story = {
+  args: { plain: true },
+  play: async ({ canvasElement, args }) => {
+    const c = within(canvasElement);
+    await userEvent.click(c.getByRole("radio", { name: "Oval" }));
+    await expect(args.onChange).toHaveBeenCalledWith("oval");
+    await expect(c.getByRole("radio", { name: "Oval" })).toHaveAttribute("aria-checked", "true");
+  },
+};

@@ -214,6 +214,13 @@ a.videoLink:hover .playRing {
   background: transparent;
   border-color: transparent;
 }
+/* Plain chip rows (no gliding pill): the selected chip carries the pill's look itself. */
+.chipSolid {
+  color: #fff;
+  background: var(--navy-2);
+  border-color: transparent;
+  box-shadow: 0 8px 18px -10px rgba(14, 43, 70, 0.7);
+}
 /* Mode switch: a single track the pill glides inside. */
 /* Length tiles: length in mm over its fill volume, like the size chart's paired rings. */
 .lenChip {

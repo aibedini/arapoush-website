@@ -2,7 +2,27 @@
 
 Status: **agreed 2026-11-12**. Build order is T1 → T6, one commit per phase, as with P0–P13 and D1–D6.
 
-Progress: **T1 and T2 done**.
+Progress: **T1, T2 and T3 done**.
+
+T3 (2026-11-12): live colour and print.
+- **Cap colour:** the families the chart allows for that closure and diameter. A custom colour
+  comes from the operator's palette (`colourFamilies[coloured].palette`) or any colour.
+  - In 3D: white and coloured are gloss plastic, transparent uses transmission, and metallic silver
+    or gold are metallised. A factory GLB takes the chosen colour too.
+- **Body colour:** operator swatches (`bodyColours`) or any colour. It tints the wall and the crimp.
+- **Print:** methods from `prints` (ids match `page.printing`), filtered by shape and diameter, or no
+  print. Each draws the Arapoush sample in its style:
+  - flexo: flat inks;
+  - offset: halftone process, no overlaps;
+  - silk: opaque, raised ink (bump map);
+  - hot stamp: metallic foil (metalness map);
+  - combination: all of these.
+
+  An operator's sample artwork replaces the drawn sample. The note links to the printing page.
+- The link (`col`, `ch`, `bc`, `pr`), the spec card and the quote carry the choices. Everything is
+  validated: a colour the chart does not list falls back, and hex values only.
+- **Sample data:** the five print rows are a sample (every shape and diameter) until the client's
+  print chart arrives.
 
 T2 (2026-11-12, ADR 0006):
 - **Parametric caps:** every chart closure has a 3D shape.

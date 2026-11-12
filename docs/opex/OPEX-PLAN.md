@@ -679,6 +679,15 @@ How the import works:
 - Diameters a chart does not mention are kept unless "keep missing" is off.
 - A pre-v3 draft is upgraded on its first import.
 
+**Colour and print (T3).**
+- `colourFamilies[].palette`: the swatches for a custom cap colour.
+- `bodyColours`: id, name and hex.
+- `prints`: id (a `page.printing` method), name, `effect` (`flat`, `halftone`, `raised`, `foil` or
+  `combo`), `colours`, `foil` hex, optional `artwork` image, optional `shapes` and `diameters`, and a
+  note.
+
+The configurator offers only what the catalogue allows for the chosen closure, shape and diameter.
+
 **Closure 3D (T2, ADR 0006).**
 - `model` is the closure's 3D family: `param` or a built family.
 - `shape3d` holds the parametric caps: ratios of the tube radius, a top shape, ribs and pump.

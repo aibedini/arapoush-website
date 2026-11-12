@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { capacity, closuresFor, closuresForShape, coloursFor, diametersFor, fromSearch, isValid, lengthsFor, loc, normalize, rankSamples, sameVolume, sceneModels, structuresFor, toSearch, withDiameter, withShape, type TubeProduct } from "./model.ts";
+import { capacity, closuresFor, closuresForShape, coloursFor, printsFor, sceneLook, diametersFor, fromSearch, isValid, lengthsFor, loc, normalize, rankSamples, sameVolume, sceneModels, structuresFor, toSearch, withDiameter, withShape, type TubeProduct } from "./model.ts";
 
 const cat: TubeProduct = JSON.parse(readFileSync(new URL("../../content/products/multi-layer-tube.json", import.meta.url), "utf8"));
 
@@ -120,7 +120,7 @@ test("admin-added shapes and closures work without code changes", () => {
   extra.shapes.push({ id: "square", model: "oval", name: { en: "Square" }, image: "/x.webp", sizes: { "45": [{ l: 120, ml: 150, status: "chart" }] } });
   extra.closures.push({ id: "pump", model: "plain", name: { en: "Pump" }, image: "/y.webp", compat: { square: { "45": "confirm" } } });
   const c = normalize(extra, { shape: "square", d: 99, closure: "flipTop", structure: "pe-evoh-5" });
-  assert.deepEqual(c, { shape: "square", d: 45, l: 120, closure: "pump", structure: "pe-evoh-5" });
+  assert.deepEqual(c, { shape: "square", d: 45, l: 120, closure: "pump", structure: "pe-evoh-5", colour: "", capHex: "", body: "#fbfcfd", print: "flexo" });
   assert.equal(capacity(extra, c)?.ml, 150);
 });
 
@@ -159,4 +159,37 @@ test("structures are selectable, validated and limited by shape", () => {
   assert.ok(!structuresFor(two, "circular", 40, "screw").some((x) => x.id === "big"));
   const c = normalize(two, { shape: "circular", d: 40, l: 120, closure: "flipTop", structure: "abl" });
   assert.deepEqual(fromSearch(two, toSearch(c)), c);
+});
+
+test("cap colour follows the chart: kept when offered, replaced when not", () => {
+  const base = { shape: "circular", d: 30, l: 110, closure: "airless", structure: "pe-evoh-5" };
+  assert.equal(normalize(cat, { ...base, colour: "metallicSilver" }).colour, "metallicSilver");
+  // Airless at Ø30 has no clear or gold: back to the first family it offers.
+  assert.equal(normalize(cat, { ...base, colour: "clear" }).colour, "white");
+  assert.equal(normalize(cat, { ...base, closure: "flipTop", colour: "metallicGold" }).colour, "white");
+});
+
+test("a custom cap colour is only kept for the coloured family, and only as a hex", () => {
+  const base = { shape: "circular", d: 30, l: 110, closure: "flipTop", structure: "pe-evoh-5" };
+  assert.equal(normalize(cat, { ...base, colour: "coloured", capHex: "#C8102E" }).capHex, "#c8102e");
+  assert.equal(normalize(cat, { ...base, colour: "white", capHex: "#c8102e" }).capHex, "");
+  assert.equal(normalize(cat, { ...base, colour: "coloured", capHex: "red; x" }).capHex, "");
+});
+
+test("body colour and print: validated, defaulted, and round-trip through the link", () => {
+  const c = normalize(cat, { shape: "oval", d: 35, l: 100, closure: "ovalScrew", colour: "coloured", capHex: "#2e7d32", body: "#1d1f22", print: "hotstamp" });
+  assert.deepEqual([c.body, c.print, c.colour, c.capHex], ["#1d1f22", "hotstamp", "coloured", "#2e7d32"]);
+  assert.deepEqual(fromSearch(cat, toSearch(c)), c);
+  assert.equal(normalize(cat, { print: "laser" }).print, "", "unknown methods fall back to no print");
+  assert.equal(normalize(cat, { print: "" }).print, "");
+  assert.equal(normalize(cat, { body: "javascript:x" }).body, "#fbfcfd");
+  assert.deepEqual(printsFor(cat, "circular", 19).map((p) => p.id), ["flexo", "offset", "silk", "hotstamp", "combination"]);
+});
+
+test("the scene gets the cap material, body colour and print effect", () => {
+  const look = sceneLook(cat, normalize(cat, { shape: "circular", d: 30, l: 110, closure: "screw", colour: "metallicGold", body: "#c9ced3", print: "silk" }));
+  assert.deepEqual(look, { cap: { kind: "metallic", hex: "#c9a24a" }, body: "#c9ced3", print: { effect: "raised", foil: undefined, artwork: undefined } });
+  const custom = sceneLook(cat, normalize(cat, { shape: "circular", d: 30, l: 110, closure: "flipTop", colour: "coloured", capHex: "#e8893a", print: "" }));
+  assert.deepEqual(custom.cap, { kind: "solid", hex: "#e8893a" });
+  assert.equal(custom.print, undefined);
 });

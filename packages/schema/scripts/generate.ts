@@ -223,6 +223,16 @@ function tubeCatalogue(g: GroupField): GroupField {
       pump: { kind: "boolean", label: "Airless pump (parting line)" },
     },
   };
+  // T3: colour palette, body colours and print methods (ids match page.printing).
+  const family = item("colourFamilies");
+  family.fields.palette = { ...plainList, label: "Swatches offered (hex)" };
+  const print = item("prints");
+  print.fields.effect = { kind: "enum", values: ["flat", "halftone", "raised", "foil", "combo"], label: "Look in 3D" };
+  print.fields.foil = { kind: "text", localized: false, label: "Foil colour (hex)" };
+  print.fields.colours = { kind: "number", integer: true, min: 1, max: 20, label: "Up to this many colours" };
+  print.fields.artwork = { kind: "image", path: true, label: "Sample artwork (optional; replaces the drawn sample)" };
+  print.fields.shapes = { ...plainList, label: "Only on these shapes (empty: all)" };
+  print.fields.diameters = { kind: "list", label: "Only on these diameters (empty: all)", of: { kind: "number", integer: true } };
   // Set by approving a factory model (Catalogue → 3D models); never typed by hand.
   const mm: Field = { kind: "list", of: { kind: "number" } };
   closure.fields.model3d = {

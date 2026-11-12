@@ -16,7 +16,12 @@ import {
   loc,
   normalize,
   sameVolume,
+  sceneLook,
   sceneModels,
+  coloursFor,
+  colourOf,
+  printOf,
+  printsFor,
   shapeOf,
   structureOf,
   structuresFor,
@@ -73,9 +78,19 @@ export default function Configurator({ t, locale, product: cat, contact = fileCo
   const status = closureStatus(cat, cfg.closure, cfg.shape, cfg.d);
   const twins = sameVolume(cat, cfg);
   const size = `Ø${cfg.d} × ${cfg.l} mm`;
+  const families = coloursFor(cat, cfg.closure, cfg.shape, cfg.d);
+  const family = colourOf(cat, cfg.colour);
+  const capColourName = family ? `${loc(family.name, locale)}${family.kind === "custom" && cfg.capHex ? ` (${cfg.capHex.toUpperCase()})` : ""}` : "";
+  const bodyName = loc(cat.bodyColours?.find((b) => b.hex === cfg.body)?.name, locale) || (cfg.body ?? "").toUpperCase();
+  const prints = printsFor(cat, cfg.shape, cfg.d);
+  const print = printOf(cat, cfg.print);
+  const printName = print ? loc(print.name, locale) : c.noPrint;
   const spec = [
     `${shapeName} · ${size}`,
     closureName,
+    ...(capColourName ? [`${c.specColour}: ${capColourName}`] : []),
+    `${c.specBody}: ${bodyName}`,
+    `${c.specPrint}: ${printName}`,
     ...(structureName ? [structureName] : []),
     cap ? `${cap.ml} ml (${cap.status === "chart" ? c.statusChart : c.statusEstimate})` : c.noVolume,
   ];
@@ -84,6 +99,10 @@ export default function Configurator({ t, locale, product: cat, contact = fileCo
   const shapeKey = JSON.stringify([models.closureShape ?? null, models.closureModel ?? null]);
   // eslint-disable-next-line react-hooks/exhaustive-deps -- shapeKey stands for closureShape and closureModel by value
   const scene = useMemo(() => ({ d: cfg.d, l: cfg.l, shape: models.shape, closure: models.closure, closureShape: models.closureShape, closureModel: models.closureModel }), [cfg.d, cfg.l, models.shape, models.closure, shapeKey]);
+  const look = sceneLook(cat, cfg);
+  const lookKey = JSON.stringify(look);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- lookKey stands for look by value
+  const sceneCfg = useMemo(() => ({ ...scene, look }), [scene, lookKey]);
   const labels = useMemo(
     () => ({
       layers: (structure?.layers ?? []).map((l) => ({ name: loc(l.name, locale), color: l.color })),
@@ -120,7 +139,7 @@ export default function Configurator({ t, locale, product: cat, contact = fileCo
 
         <div className={styles.grid}>
           <Viewer
-            cfg={scene}
+            cfg={sceneCfg}
             label={fill(c.viewerLabel, { shape: shapeName, d: cfg.d, l: cfg.l, closure: closureName })}
             labels={labels}
             caption={`ARAPOUSH · ${shapeName} ${size} · ${closureName}`}
@@ -191,6 +210,69 @@ export default function Configurator({ t, locale, product: cat, contact = fileCo
               {status === "confirm" && <p className={styles.notice}>{fill(c.confirmNote, { closure: closureName })}</p>}
             </Field>
 
+
+            {families.length > 0 && (
+              <Field id={`${id}-cc`} title={c.capColour}>
+                <ChipGroup
+                  plain
+                  labelledBy={`${id}-cc`}
+                  value={cfg.colour ?? ""}
+                  onChange={(v) => setCfg(normalize(cat, { ...cfg, colour: v }))}
+                  items={families.map((f) => ({
+                    key: f.id,
+                    content: (
+                      <>
+                        <span className={styles.swatch} data-kind={f.kind} style={{ background: f.kind === "custom" ? (cfg.capHex || f.palette?.[0] || f.swatch) : f.swatch }} aria-hidden="true" />
+                        {loc(f.name, locale)}
+                      </>
+                    ),
+                  }))}
+                />
+                {family?.kind === "custom" && (
+                  <ColourPick
+                    id={`${id}-cap-hex`}
+                    palette={family.palette ?? []}
+                    value={cfg.capHex || family.palette?.[0] || family.swatch}
+                    paletteLabel={c.paletteLabel}
+                    customLabel={c.customColour}
+                    onChange={(hex) => setCfg(normalize(cat, { ...cfg, capHex: hex }))}
+                  />
+                )}
+              </Field>
+            )}
+
+            <Field id={`${id}-bc`} title={c.bodyColour}>
+              <ColourPick
+                id={`${id}-body-hex`}
+                palette={(cat.bodyColours ?? []).map((b) => b.hex)}
+                names={Object.fromEntries((cat.bodyColours ?? []).map((b) => [b.hex, loc(b.name, locale)]))}
+                value={cfg.body ?? "#fbfcfd"}
+                paletteLabel={c.bodyColour}
+                customLabel={c.customColour}
+                onChange={(hex) => setCfg(normalize(cat, { ...cfg, body: hex }))}
+              />
+            </Field>
+
+            {prints.length > 0 && (
+              <Field id={`${id}-pr`} title={c.printMethod}>
+                <ChipGroup
+                  plain
+                  labelledBy={`${id}-pr`}
+                  value={cfg.print ?? ""}
+                  onChange={(v) => setCfg(normalize(cat, { ...cfg, print: v }))}
+                  items={[{ key: "", content: c.noPrint }, ...prints.map((pm) => ({ key: pm.id, content: loc(pm.name, locale) }))]}
+                />
+                {print && (
+                  <p className={styles.notice}>
+                    {loc(print.note, locale)} {c.printSample}{" "}
+                    <a className="u-link" href={`/${locale}/printing#technologies`}>
+                      {c.printMore}
+                    </a>
+                  </p>
+                )}
+              </Field>
+            )}
+
             {structures.length > 1 && (
               <Field id={`${id}-w`} title={c.specStructure}>
                 <ChipGroup
@@ -241,6 +323,20 @@ export default function Configurator({ t, locale, product: cat, contact = fileCo
                 <dt>{c.specClosure}</dt>
                 <dd>{closureName}</dd>
               </div>
+              {capColourName && (
+                <div>
+                  <dt>{c.specColour}</dt>
+                  <dd>{capColourName}</dd>
+                </div>
+              )}
+              <div>
+                <dt>{c.specBody}</dt>
+                <dd>{bodyName}</dd>
+              </div>
+              <div>
+                <dt>{c.specPrint}</dt>
+                <dd>{printName}</dd>
+              </div>
               {structure && (
                 <div>
                   <dt>{c.specStructure}</dt>
@@ -284,6 +380,37 @@ export default function Configurator({ t, locale, product: cat, contact = fileCo
 
       <QuoteForm t={c} spec={spec} subjectSpec={`${shapeName} ${size}, ${closureName}`} search={toSearch(cfg)} email={contact.email} locale={locale} direct={direct} />
     </>
+  );
+}
+
+/**
+ * Swatches plus a native colour input (any colour). The swatches are a radio group; the input is
+ * labelled and always reachable by keyboard.
+ */
+function ColourPick({ id, palette, names, value, paletteLabel, customLabel, onChange }: { id: string; palette: string[]; names?: Record<string, string>; value: string; paletteLabel: string; customLabel: string; onChange: (hex: string) => void }) {
+  const lower = value.toLowerCase();
+  return (
+    <div className={styles.palette}>
+      <div role="radiogroup" aria-label={paletteLabel} className={styles.swatches}>
+        {palette.map((hex) => (
+          <button
+            key={hex}
+            type="button"
+            role="radio"
+            aria-checked={lower === hex.toLowerCase()}
+            aria-label={names?.[hex] ?? hex.toUpperCase()}
+            title={names?.[hex] ?? hex.toUpperCase()}
+            className={styles.swatchBtn}
+            style={{ background: hex }}
+            onClick={() => onChange(hex.toLowerCase())}
+          />
+        ))}
+      </div>
+      <label className={styles.custom} htmlFor={id}>
+        <input id={id} type="color" value={lower} onChange={(e) => onChange(e.target.value.toLowerCase())} />
+        <span>{customLabel}</span>
+      </label>
+    </div>
   );
 }
 

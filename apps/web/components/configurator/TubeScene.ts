@@ -20,7 +20,13 @@ const AXES: Record<string, THREE.Vector3> = {
 };
 
 /** What the mesh is built from: catalogue ids are mapped to geometry families before they get here. */
-export type SceneSpec = { d: number; l: number; shape: ShapeModel; closure: ClosureModel; closureShape?: ClosureShape; closureModel?: ClosureModel3d };
+/** How the tube is finished: cap material, body colour, print style (T3). */
+export type SceneLook = {
+  cap?: { kind: "solid" | "clear" | "metallic"; hex: string };
+  body?: string;
+  print?: { effect: "flat" | "halftone" | "raised" | "foil" | "combo"; foil?: string; artwork?: string };
+};
+export type SceneSpec = { d: number; l: number; shape: ShapeModel; closure: ClosureModel; closureShape?: ClosureShape; closureModel?: ClosureModel3d; look?: SceneLook };
 export type SceneLabels = {
   /** Wall layers of the selected structure, outside → inside. */
   layers: { name: string; color: string }[];
@@ -149,7 +155,7 @@ export class TubeScene {
   setConfig(cfg: SceneSpec) {
     const c = this.cfg;
     const layersKey = this.o.labels.layers.map((x) => x.color).join();
-    if (c && c.shape === cfg.shape && c.d === cfg.d && c.l === cfg.l && c.closure === cfg.closure && JSON.stringify(c.closureShape) === JSON.stringify(cfg.closureShape) && c.closureModel?.src === cfg.closureModel?.src && layersKey === this.layersKey) return this.invalidate();
+    if (c && JSON.stringify(c) === JSON.stringify(cfg) && layersKey === this.layersKey) return this.invalidate();
     this.layersKey = layersKey;
     const prev = this.built;
     this.cfg = cfg;
@@ -190,8 +196,13 @@ export class TubeScene {
       holder.quaternion.setFromUnitVectors(AXES[m.axis] ?? AXES["+Y"], new THREE.Vector3(0, 1, 0));
       holder.scale.setScalar(0.1); // 1 unit = 10 mm
       holder.updateMatrixWorld(true);
+      const chosen = capMaterial(this.cfg?.look?.cap);
       gltf.scene.traverse((o) => {
-        if ((o as THREE.Mesh).isMesh) (o as THREE.Mesh).castShadow = false;
+        const mesh = o as THREE.Mesh;
+        if (!mesh.isMesh) return;
+        mesh.castShadow = false;
+        // The visitor's cap colour wins over the CAD file's display colour.
+        if (chosen) mesh.material = chosen;
       });
       const box = new THREE.Box3().setFromObject(holder);
       [...b.closure.children].forEach((ch) => {
@@ -436,15 +447,27 @@ function buildTube(cfg: SceneSpec, font: string, layerColors: string[]): Built {
   const oz = oval ? OVAL.z : 1;
   const root = new THREE.Group();
 
+  const art = artwork(cfg, font);
   const body = new THREE.MeshPhysicalMaterial({
     color: 0xffffff,
-    map: artwork(cfg, font),
+    map: art.map,
     roughness: 0.34,
     clearcoat: 0.55,
     clearcoatRoughness: 0.22,
     sheen: 0.2,
     sheenColor: new THREE.Color(0xe9eef3),
   });
+  // Foil prints shine where the foil is (metalness/roughness map); silk ink stands proud (bump map).
+  if (art.pbr) {
+    body.metalnessMap = art.pbr;
+    body.roughnessMap = art.pbr;
+    body.metalness = 1;
+    body.roughness = 1;
+  }
+  if (art.bump) {
+    body.bumpMap = art.bump;
+    body.bumpScale = 2.2;
+  }
   const plastic = new THREE.MeshPhysicalMaterial({
     color: 0xf2f3f4,
     roughness: 0.38,
@@ -455,6 +478,7 @@ function buildTube(cfg: SceneSpec, font: string, layerColors: string[]): Built {
     color: 0xdfe4e8,
     roughness: 0.55,
   });
+  const capMat = capMaterial(cfg.look?.cap) ?? plastic;
 
   // Shoulder + body + crimp transition as one smooth surface.
   const eye = cfg.shape === "eyeNozzle";
@@ -493,7 +517,7 @@ function buildTube(cfg: SceneSpec, font: string, layerColors: string[]): Built {
 
   // Flat sealed crimp with its ribbed pattern.
   const flatHalf = (Math.PI * (r * ox + r * oz)) / 4;
-  const seal = new THREE.Mesh(new THREE.BoxGeometry(flatHalf * 2, sealH, 0.07, 1, 1, 1), sealMaterial(flatHalf * 2));
+  const seal = new THREE.Mesh(new THREE.BoxGeometry(flatHalf * 2, sealH, 0.07, 1, 1, 1), sealMaterial(flatHalf * 2, cfg.look?.body));
   seal.position.y = bodyTop + sealH / 2;
   root.add(seal);
 
@@ -516,7 +540,7 @@ function buildTube(cfg: SceneSpec, font: string, layerColors: string[]): Built {
         [neckR * 2.5, 0.25],
         [0, 0.25],
       ]),
-      plastic,
+      capMat,
     );
     closure.add(cap);
     floor = -capH;
@@ -526,7 +550,7 @@ function buildTube(cfg: SceneSpec, font: string, layerColors: string[]): Built {
     neck.position.y = -neckH / 2;
     const thread = new THREE.Mesh(new THREE.TubeGeometry(new Helix(neckR, -neckH * 0.85, -neckH * 0.15, 2.2), 160, 0.035, 8), plastic);
     root.add(neck, thread);
-    const built = cfg.closure === "param" ? buildParam(cfg.closureShape ?? {}, r, neckR, cfg.shape === "oval", plastic, shadowed) : buildClosure(cfg.closure, r, neckR, plastic, shadowed);
+    const built = cfg.closure === "param" ? buildParam(cfg.closureShape ?? {}, r, neckR, cfg.shape === "oval", capMat, shadowed) : buildClosure(cfg.closure, r, neckR, capMat, shadowed);
     closure.add(built.group);
     lid = built.lid;
     floor = built.floor;
@@ -799,58 +823,182 @@ class Helix extends THREE.Curve<THREE.Vector3> {
 
 /* ───────────────────────── textures ───────────────────────── */
 
-/** Print artwork wrapped around the body; drawn at the tube's real aspect so it never stretches. */
+/** Cap finish from the chosen colour family: matte-gloss plastic, frosted clear, or metallised. */
+function capMaterial(cap: SceneLook["cap"]) {
+  if (!cap) return null;
+  const color = new THREE.Color(cap.hex);
+  if (cap.kind === "metallic") return new THREE.MeshPhysicalMaterial({ color, metalness: 1, roughness: 0.24, clearcoat: 0.6, clearcoatRoughness: 0.1 });
+  if (cap.kind === "clear")
+    return new THREE.MeshPhysicalMaterial({ color, transmission: 0.92, roughness: 0.14, thickness: 0.5, ior: 1.5, transparent: true, opacity: 0.95, clearcoat: 0.4 });
+  return new THREE.MeshPhysicalMaterial({ color, roughness: 0.38, clearcoat: 0.3, clearcoatRoughness: 0.3 });
+}
+
+/**
+ * Print artwork wrapped around the body, drawn at the tube's real aspect so it never stretches.
+ * The Arapoush sample design (wordmark, navy sweep, warm line) is painted in the chosen method's
+ * style on the chosen body colour; an operator's sample artwork replaces it when the print has one.
+ *   flat: solid inks · halftone: process dots, no overlaps · raised: opaque silk ink (bump)
+ *   foil: metallic hot stamp only · combo: flexo sweep, silk line, foil wordmark
+ * Returns the colour map plus, when needed, a metalness/roughness map and a bump map.
+ */
 function artwork(cfg: SceneSpec, font: string) {
+  const look = cfg.look ?? {};
+  const effect = look.print?.effect;
+  const bodyHex = look.body ?? "#fbfcfd";
   const circumference = Math.PI * cfg.d;
   const W = 1024;
   const H = THREE.MathUtils.clamp(Math.round((W * cfg.l) / circumference), 256, 2048);
-  const c = document.createElement("canvas");
-  c.width = W;
-  c.height = H;
-  const x = c.getContext("2d")!;
-  x.fillStyle = "#fbfcfd";
+  const canvas = (): [HTMLCanvasElement, CanvasRenderingContext2D] => {
+    const c = document.createElement("canvas");
+    c.width = W;
+    c.height = H;
+    return [c, c.getContext("2d")!];
+  };
+  const [cc, x] = canvas();
+  const pbrCanvas = effect === "foil" || effect === "combo" ? canvas() : null;
+  const bumpCanvas = effect === "raised" || effect === "combo" ? canvas() : null;
+  const p = pbrCanvas?.[1];
+  const b = bumpCanvas?.[1];
+  // Base: body colour; plastic roughness in G, no metal in B; flat bump.
+  x.fillStyle = bodyHex;
   x.fillRect(0, 0, W, H);
+  if (p) {
+    p.fillStyle = "rgb(0,87,0)";
+    p.fillRect(0, 0, W, H);
+  }
+  if (b) {
+    b.fillStyle = "#000";
+    b.fillRect(0, 0, W, H);
+  }
+  const dark = new THREE.Color(bodyHex).getHSL({ h: 0, s: 0, l: 0 }).l < 0.45;
+  const foil = look.print?.foil ?? "#c9a24a";
+  const METAL = "rgb(0,46,255)"; // metal, polished
+
   const mm = W / circumference; // canvas px per mm around the tube
   const cx = W / 2; // front of the tube (u = 0.5 faces the camera at start)
-  // Wordmark ~ 70% of the front face width.
   const face = cfg.d * 0.95 * mm;
-  x.fillStyle = "#1f2f3d";
-  x.textAlign = "center";
   let size = face * 0.2;
   x.font = `700 ${size}px ${font}`;
-  const wordW = x.measureText("ARAPOUSH").width;
-  size *= Math.min(1, (face * 0.8) / wordW);
-  x.font = `700 ${size}px ${font}`;
+  size *= Math.min(1, (face * 0.8) / x.measureText("ARAPOUSH").width);
   const top = H * 0.36 + size; // clear of the crimp taper
-  x.fillText("ARAPOUSH", cx, top);
-  x.font = `500 ${size * 0.3}px ${font}`;
-  x.fillStyle = "#6c7c89";
-  x.fillText("MULTI-LAYER PLASTIC TUBE", cx, top + size * 0.7);
-  // Navy sweep near the shoulder, like the brand tubes.
-  const g = x.createLinearGradient(0, H * 0.6, 0, H);
-  g.addColorStop(0, "#5f86a8");
-  g.addColorStop(1, "#14385a");
-  x.fillStyle = g;
-  x.beginPath();
-  x.moveTo(0, H * 0.94);
-  x.bezierCurveTo(W * 0.3, H * 0.62, W * 0.62, H * 0.86, W, H * 0.6);
-  x.lineTo(W, H);
-  x.lineTo(0, H);
-  x.fill();
-  x.strokeStyle = "#e8893a";
-  x.lineWidth = Math.max(2, mm * 0.6);
-  x.beginPath();
-  x.moveTo(0, H * 0.91);
-  x.bezierCurveTo(W * 0.3, H * 0.59, W * 0.62, H * 0.83, W, H * 0.57);
-  x.stroke();
-  const t = new THREE.CanvasTexture(c);
-  t.colorSpace = THREE.SRGBColorSpace;
-  t.anisotropy = 8;
-  // flipY (default): canvas top lands at v = 1, the crimp end.
-  return t;
+
+  const sweep = (ctx: CanvasRenderingContext2D) => {
+    ctx.beginPath();
+    ctx.moveTo(0, H * 0.94);
+    ctx.bezierCurveTo(W * 0.3, H * 0.62, W * 0.62, H * 0.86, W, H * 0.6);
+    ctx.lineTo(W, H);
+    ctx.lineTo(0, H);
+    ctx.fill();
+  };
+  const line = (ctx: CanvasRenderingContext2D, width: number) => {
+    ctx.lineWidth = width;
+    ctx.beginPath();
+    ctx.moveTo(0, H * 0.91);
+    ctx.bezierCurveTo(W * 0.3, H * 0.59, W * 0.62, H * 0.83, W, H * 0.57);
+    ctx.stroke();
+  };
+  const words = (ctx: CanvasRenderingContext2D) => {
+    ctx.textAlign = "center";
+    ctx.font = `700 ${size}px ${font}`;
+    ctx.fillText("ARAPOUSH", cx, top);
+    ctx.font = `500 ${size * 0.3}px ${font}`;
+    ctx.fillText("MULTI-LAYER PLASTIC TUBE", cx, top + size * 0.7);
+  };
+  const ink = dark ? "#f4f6f8" : "#1f2f3d";
+  const lineW = Math.max(2, mm * 0.6);
+  const thick = effect === "raised" || effect === "combo";
+
+  if (effect && effect !== "foil") {
+    if (effect === "halftone") {
+      // Offset: process gradient with a halftone dot screen.
+      const g = x.createLinearGradient(0, H * 0.6, 0, H);
+      g.addColorStop(0, "#5f86a8");
+      g.addColorStop(1, "#14385a");
+      x.fillStyle = g;
+      sweep(x);
+      x.save();
+      sweep(x);
+      x.clip();
+      x.fillStyle = "rgba(255,255,255,0.18)";
+      const step = Math.max(4, mm * 0.9);
+      for (let yy = H * 0.55; yy < H; yy += step)
+        for (let xx = (Math.round(yy / step) % 2) * (step / 2); xx < W; xx += step) {
+          x.beginPath();
+          x.arc(xx, yy, Math.max(0.5, step * 0.22 * (1 - (yy - H * 0.55) / (H * 0.45))), 0, Math.PI * 2);
+          x.fill();
+        }
+      x.restore();
+    } else {
+      x.fillStyle = "#1d4a72";
+      sweep(x);
+      if (b && effect === "raised") {
+        b.fillStyle = "#fff";
+        sweep(b);
+      }
+    }
+    x.strokeStyle = "#e8893a";
+    line(x, thick ? lineW * 1.6 : lineW);
+    if (b) {
+      b.strokeStyle = "#fff";
+      line(b, lineW * 1.6);
+    }
+  }
+  if (effect) {
+    // Wordmark: ink, or foil for hot stamp and combination.
+    const foilWords = effect === "foil" || effect === "combo";
+    x.fillStyle = foilWords ? foil : ink;
+    words(x);
+    if (foilWords && p) {
+      p.fillStyle = METAL;
+      words(p);
+    }
+    if (b && effect === "raised") {
+      b.fillStyle = "#fff";
+      words(b);
+    }
+    if (effect === "foil") {
+      // Hot stamp is an accent: a foil line as well, on an otherwise plain body.
+      x.strokeStyle = foil;
+      line(x, lineW);
+      if (p) {
+        p.strokeStyle = METAL;
+        line(p, lineW);
+      }
+    }
+  } else {
+    // No print: a faint wordmark only, so the tube still reads as Arapoush.
+    x.globalAlpha = 0.35;
+    x.fillStyle = ink;
+    words(x);
+    x.globalAlpha = 1;
+  }
+
+  const tex = (c: HTMLCanvasElement | undefined, colour = false) => {
+    if (!c) return null;
+    const t = new THREE.CanvasTexture(c);
+    if (colour) t.colorSpace = THREE.SRGBColorSpace;
+    t.anisotropy = 8;
+    // flipY (default): canvas top lands at v = 1, the crimp end.
+    return t;
+  };
+  const map = tex(cc, true)!;
+  // An operator's sample artwork, centred on the front face over the body colour.
+  if (look.print?.artwork) {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      x.fillStyle = bodyHex;
+      x.fillRect(0, 0, W, H);
+      const k = Math.min((face * 1.6) / img.width, (H * 0.6) / img.height);
+      x.drawImage(img, cx - (img.width * k) / 2, H * 0.3, img.width * k, img.height * k);
+      map.needsUpdate = true;
+    };
+    img.src = look.print.artwork;
+  }
+  return { map, pbr: tex(pbrCanvas?.[0]), bump: tex(bumpCanvas?.[0]) };
 }
 
-function sealMaterial(w: number) {
+function sealMaterial(w: number, tint?: string) {
   const c = document.createElement("canvas");
   c.width = 256;
   c.height = 32;
@@ -862,7 +1010,8 @@ function sealMaterial(w: number) {
   for (let i = 0; i < n; i++) x.fillRect((i / n) * 256, 4, (256 / n) * 0.45, 24);
   const bump = new THREE.CanvasTexture(c);
   return new THREE.MeshPhysicalMaterial({
-    color: 0xf6f7f8,
+    // The crimp is the same pigmented tube wall, so it takes the body colour.
+    color: tint ? new THREE.Color(tint) : 0xf6f7f8,
     roughness: 0.45,
     bumpMap: bump,
     bumpScale: 1.2,

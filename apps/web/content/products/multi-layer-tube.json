@@ -1,5 +1,5 @@
 {
-  "$comment": "Tube product catalogue (v3). Shapes list their diameters and sizes; closures list where they fit (compat: shape → diameter → chart|confirm) and the colour families they come in there (colours: shape → diameter → ids). Sizes, compat and colours are imported from the Arapoush size charts (OPEX → Catalogue import, or `pnpm --filter @arapoush/opex-api tube:chart`). `aliases` are the chart wordings that map onto an entry. `model` is the 3D family (`param`: the parametric cap, shaped by `shape3d` in ratios of the tube radius); `shoulder` swaps the tube shoulder (eye-nozzle caps). Structures may be limited to shapes, diameters or closures. Samples are ranked by how well their tags match the selection.",
+  "$comment": "Tube product catalogue (v3). Shapes list their diameters and sizes; closures list where they fit (compat: shape → diameter → chart|confirm) and the colour families they come in there (colours: shape → diameter → ids). Sizes, compat and colours are imported from the Arapoush size charts (OPEX → Catalogue import, or `pnpm --filter @arapoush/opex-api tube:chart`). `aliases` are the chart wordings that map onto an entry. `model` is the 3D family (`param`: the parametric cap, shaped by `shape3d` in ratios of the tube radius); `shoulder` swaps the tube shoulder (eye-nozzle caps). Structures may be limited to shapes, diameters or closures. Samples are ranked by how well their tags match the selection. Prints are a sample (one row per method on page.printing, every shape and diameter) until the client sends its print chart; bodyColours and the coloured palette are operator data.",
   "version": 3,
   "updated": "2026-11-12",
   "images": {
@@ -1198,7 +1198,19 @@
         "tr": "Renkli"
       },
       "kind": "custom",
-      "swatch": "#1f5f9f"
+      "swatch": "#1f5f9f",
+      "palette": [
+        "#1f5f9f",
+        "#0e2b46",
+        "#c8102e",
+        "#e8893a",
+        "#f2a900",
+        "#2e7d32",
+        "#00838f",
+        "#6a1b9a",
+        "#e91e63",
+        "#111827"
+      ]
     },
     {
       "id": "clear",
@@ -1229,6 +1241,122 @@
       },
       "kind": "metallic",
       "swatch": "#c9a24a"
+    }
+  ],
+  "bodyColours": [
+    {
+      "id": "white",
+      "name": {
+        "fa": "سفید",
+        "en": "White",
+        "tr": "Beyaz"
+      },
+      "hex": "#fbfcfd"
+    },
+    {
+      "id": "natural",
+      "name": {
+        "fa": "طبیعی (نیمه‌شفاف)",
+        "en": "Natural (translucent)",
+        "tr": "Doğal (yarı saydam)"
+      },
+      "hex": "#eef2f3"
+    },
+    {
+      "id": "silver",
+      "name": {
+        "fa": "نقره‌ای",
+        "en": "Silver",
+        "tr": "Gümüş"
+      },
+      "hex": "#c9ced3"
+    },
+    {
+      "id": "black",
+      "name": {
+        "fa": "مشکی",
+        "en": "Black",
+        "tr": "Siyah"
+      },
+      "hex": "#1d1f22"
+    }
+  ],
+  "prints": [
+    {
+      "id": "flexo",
+      "name": {
+        "fa": "چاپ فلکسو",
+        "en": "Flexographic printing",
+        "tr": "Flekso baskı"
+      },
+      "effect": "flat",
+      "colours": 8,
+      "note": {
+        "fa": "رنگ‌های تخت و یکدست، مناسب طرح‌های گرافیکی؛ تا ۸ رنگ.",
+        "en": "Flat, even inks for graphic designs; up to 8 colours.",
+        "tr": "Grafik tasarımlar için düz, eşit mürekkepler; 8 renge kadar."
+      }
+    },
+    {
+      "id": "offset",
+      "name": {
+        "fa": "چاپ افست خشک",
+        "en": "Dry offset printing",
+        "tr": "Kuru ofset baskı"
+      },
+      "effect": "halftone",
+      "colours": 6,
+      "note": {
+        "fa": "چاپ ریز و دقیق با ترام؛ رنگ‌ها روی هم نمی‌آیند؛ تا ۶ رنگ.",
+        "en": "Fine halftone detail; colours do not overlap; up to 6 colours.",
+        "tr": "İnce raster detay; renkler üst üste binmez; 6 renge kadar."
+      }
+    },
+    {
+      "id": "silk",
+      "name": {
+        "fa": "چاپ سیلک اسکرین",
+        "en": "Silk screen printing",
+        "tr": "Serigrafi baskı"
+      },
+      "effect": "raised",
+      "colours": 5,
+      "note": {
+        "fa": "جوهر ضخیم و برجسته با پوشش کامل؛ تا ۵ رنگ.",
+        "en": "Thick, raised, fully opaque ink; up to 5 colours.",
+        "tr": "Kalın, kabarık, tam örtücü mürekkep; 5 renge kadar."
+      }
+    },
+    {
+      "id": "hotstamp",
+      "name": {
+        "fa": "هات استمپ",
+        "en": "Hot stamping",
+        "tr": "Sıcak baskı (hot stamp)"
+      },
+      "effect": "foil",
+      "foil": "#c9a24a",
+      "note": {
+        "fa": "فویل متالایز طلایی یا نقره‌ای برای تأکید روی بخشی از طرح.",
+        "en": "Gold or silver metallised foil to highlight part of the design.",
+        "tr": "Tasarımın bir kısmını vurgulamak için altın ya da gümüş metalize folyo."
+      }
+    },
+    {
+      "id": "combination",
+      "name": {
+        "fa": "چاپ ترکیبی",
+        "en": "Combination printing",
+        "tr": "Kombine baskı"
+      },
+      "effect": "combo",
+      "colours": 11,
+      "foil": "#c9a24a",
+      "note": {
+        "fa": "ترکیب چند روش روی یک تیوب؛ تا ۱۱ رنگ.",
+        "en": "Several methods on one tube; up to 11 colours.",
+        "tr": "Tek tüpte birkaç yöntem; 11 renge kadar."
+      }
     }
   ],
   "structures": [

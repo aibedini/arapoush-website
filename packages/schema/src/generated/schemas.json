@@ -1333,6 +1333,61 @@
          "localized": true,
          "multiline": false
         },
+        "capColour": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "bodyColour": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "customColour": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "paletteLabel": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "printMethod": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "noPrint": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "printMore": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "printSample": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "specColour": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "specBody": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "specPrint": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
         "sameVolume": {
          "kind": "text",
          "localized": true,
@@ -1912,6 +1967,109 @@
        "swatch": {
         "kind": "url",
         "internal": true
+       },
+       "palette": {
+        "kind": "list",
+        "of": {
+         "kind": "text",
+         "localized": false,
+         "multiline": false
+        },
+        "label": "Swatches offered (hex)"
+       }
+      }
+     },
+     "key": "id"
+    },
+    "bodyColours": {
+     "kind": "list",
+     "of": {
+      "kind": "group",
+      "fields": {
+       "id": {
+        "kind": "text",
+        "localized": false,
+        "multiline": false,
+        "locked": true
+       },
+       "name": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       },
+       "hex": {
+        "kind": "url",
+        "internal": true
+       }
+      }
+     },
+     "key": "id"
+    },
+    "prints": {
+     "kind": "list",
+     "of": {
+      "kind": "group",
+      "fields": {
+       "id": {
+        "kind": "text",
+        "localized": false,
+        "multiline": false,
+        "locked": true
+       },
+       "name": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       },
+       "effect": {
+        "kind": "enum",
+        "values": [
+         "flat",
+         "halftone",
+         "raised",
+         "foil",
+         "combo"
+        ],
+        "label": "Look in 3D"
+       },
+       "colours": {
+        "kind": "number",
+        "integer": true,
+        "min": 1,
+        "max": 20,
+        "label": "Up to this many colours"
+       },
+       "note": {
+        "kind": "text",
+        "localized": true,
+        "multiline": false
+       },
+       "foil": {
+        "kind": "text",
+        "localized": false,
+        "label": "Foil colour (hex)"
+       },
+       "artwork": {
+        "kind": "image",
+        "path": true,
+        "label": "Sample artwork (optional; replaces the drawn sample)"
+       },
+       "shapes": {
+        "kind": "list",
+        "of": {
+         "kind": "text",
+         "localized": false,
+         "multiline": false
+        },
+        "label": "Only on these shapes (empty: all)"
+       },
+       "diameters": {
+        "kind": "list",
+        "label": "Only on these diameters (empty: all)",
+        "of": {
+         "kind": "number",
+         "integer": true
+        }
        }
       }
      },
