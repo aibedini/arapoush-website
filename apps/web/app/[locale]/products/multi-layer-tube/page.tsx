@@ -17,7 +17,7 @@ import { getContactPage, pageForm } from "@/lib/contact";
 import { LayerStructure, ProductHero } from "@/components/product/ProductSections";
 import styles from "@/components/product/Product.module.css";
 import { getDictionary, isLocale, localeMeta, locales } from "@/lib/i18n";
-import { languageAlternates, pageUrl, productTubeJsonLd } from "@/lib/seo";
+import { languageAlternates, pageUrl, productTubeJsonLd, jsonLdHtml, ogBase } from "@/lib/seo";
 import { productPaths } from "@/lib/site";
 import { getTubeProduct } from "@/lib/products";
 import { ensureContent } from "@/lib/content";
@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       url,
       title: m.title,
       description: m.description,
-      locale: localeMeta[locale].og,
+      ...ogBase(locale, getDictionary(locale).common.brand),
       images: [{ url: og, width: hero.width, height: hero.height, alt: m.title }],
     },
     twitter: { card: "summary_large_image", title: m.title, description: m.description, images: [og] },
@@ -95,7 +95,7 @@ export default async function MultiLayerTubePage({ params }: { params: Params })
       <script
         type="application/ld+json"
         // `<` is escaped so dictionary text can never close the script tag.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productTubeJsonLd(t, product, locale, PATH)).replace(/</g, "\\u003c") }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(productTubeJsonLd(t, product, locale, PATH)) }}
       />
       <Header t={t} locale={locale} path={PATH} />
       <EditScope on={edit} entry="product.tube.page" label="صفحهٔ تیوب">

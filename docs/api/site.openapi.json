@@ -2,7 +2,7 @@
   "openapi": "3.1.1",
   "info": {
     "title": "Arapoush website routes",
-    "version": "1.11.0",
+    "version": "1.12.0",
     "description": "HTTP routes the Next.js website serves besides its pages: the form endpoint browsers post to, the OPEX publish webhook, draft previews, and files for crawlers and AI assistants.\n\nThese routes answer with plain JSON or empty bodies (not problem+json).",
     "license": {
       "name": "Proprietary",
@@ -29,6 +29,26 @@
     }
   ],
   "paths": {
+    "/.well-known/security.txt": {
+      "get": {
+        "operationId": "siteSecurityTxt",
+        "summary": "Security contact (RFC 9116) from Settings → Security",
+        "description": "**Source:** `apps/web/app/.well-known/security.txt/route.ts`",
+        "tags": [
+          "Website"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Contact, Expires, Preferred-Languages, Canonical and Policy lines."
+          },
+          "404": {
+            "description": "No security contact set yet."
+          }
+        },
+        "x-audience": "site"
+      }
+    },
     "/api/forms/{form}": {
       "post": {
         "operationId": "siteSubmitForm",

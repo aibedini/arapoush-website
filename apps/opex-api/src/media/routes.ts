@@ -66,9 +66,11 @@ export async function mediaModule(app: FastifyInstance, deps: Deps) {
     const { file } = req.params as { file: string };
     const m = /^(ast_[0-9A-Z]{26})\.(webp|svg|pdf|ai|glb)$/.exec(file);
     if (!m) throw notFound("Media");
-    const [a] = await db.q<{ mime: string }>(`SELECT mime FROM assets WHERE id = $1 AND tenant_id = $2`, [m[1], tenant]);
+    const [a] = await db.q<{ mime: string; status: string }>(`SELECT mime, status FROM assets WHERE id = $1 AND tenant_id = $2`, [m[1], tenant]);
     const p = path.join(config.MEDIA_DIR, file);
     if (!a || !existsSync(p)) throw notFound("Media");
+    // Unscanned or rejected files only for people who can upload (S2).
+    if (a.status !== "clean" && !req.principal!.permissions?.has("media.upload")) throw notFound("Media");
     return send(reply, p, a.mime, false);
   });
 }

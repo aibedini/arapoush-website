@@ -1,5 +1,32 @@
 # Backups, restore and the restore drill
 
+There are two backup paths. Use both.
+
+## Console backups (Settings → Backups, S4)
+
+- **Kinds:** *full* (database and media), *content* (pages, forms, media records, settings),
+  *database* (every table) and *media* (files only).
+- **Format:** a zip encrypted with AES-256-GCM, stored in `BACKUP_DIR` (`BACKUP_PATH` on the host).
+  The key is `BACKUP_KEY`, or is derived from `INQUIRY_KEY` when that is unset. Keep the key in the
+  password manager: an archive cannot be opened without it.
+- **Schedule:** off, daily or weekly at a chosen hour; the newest `keep` archives stay on the server.
+- **Remote copy:** SFTP (recommended), FTPS, FTP, S3-compatible storage (AWS, Arvan, MinIO, R2) or
+  WebDAV. Remote passwords and secret keys are stored encrypted and never shown again. "Test
+  connection" sends a small file.
+- **Never included:** sessions, refresh tokens, OAuth codes, replay caches and the audit log. A
+  restore therefore cannot rewrite history.
+- **Restore** needs `backup.restore`, a fresh step-up and typing `RESTORE`. It works from a stored
+  archive or an uploaded `.opexbak` (larger files: copy them into `BACKUP_DIR` and restore by id).
+  - A full safety backup (`pre_restore`) is made first. To undo a restore, restore that archive.
+  - *Content only* leaves people, tickets and partners as they are.
+  - Restoring people signs everyone out.
+- **Migration:** `009_permissions_settings_seo_backups.sql` adds the `backups` table. Rolling back
+  the code leaves the table unused; drop it only after copying the archives off the server.
+
+## Server backups (`infra/backup.sh`)
+
+For disaster recovery of the whole host.
+
 ## What is backed up
 
 | Data | Where | How |

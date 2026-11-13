@@ -121,7 +121,7 @@ export default function AboutStory({ c, locale }: { c: Story; locale: string }) 
               <span className={styles.node} aria-hidden="true" />
               {m.image ? (
                 <div className={styles.panelImg}>
-                  <Image data-zoom src={m.image.src} alt="" fill sizes="(max-width: 1099px) 88vw, 30vw" data-no-mirror />
+                  <Image data-zoom src={m.image.src} alt={t(m.title, locale)} fill sizes="(max-width: 1099px) 88vw, 30vw" data-no-mirror />
                 </div>
               ) : null}
               <h3 className={styles.panelTitle}>

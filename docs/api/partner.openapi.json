@@ -2,7 +2,7 @@
   "openapi": "3.1.1",
   "info": {
     "title": "OPEX Partner API",
-    "version": "1.11.0",
+    "version": "1.12.0",
     "description": "Read the website content you are granted and propose changes as change requests; OPEX's policy engine and operators decide.\n\n**Sign-in.** OAuth 2.1: authorization code with PKCE for AraCMS staff (they sign in on OPEX, never in AraCMS), or client credentials for the AraCMS server itself. Clients authenticate with `private_key_jwt` (ES256). Every access token is DPoP-bound: send `Authorization: DPoP <token>` and a fresh `DPoP` proof on each request.\n\n**Writes** (uploads, change requests, withdraw, resubmit, previews) also need an `Idempotency-Key` and an RFC 9421 HTTP message signature (alg ecdsa-p256-sha256) covering `@method`, `@path`, `idempotency-key`, `content-digest` (with a body) and `x-end-user-ip` (when sent), created within ±60 s, with a single-use nonce. The PHP reference client (clients/php-reference) does all of this.\n\n**Webhooks** tell you when your change requests move and when content is published; verify `OPEX-Signature` on the raw body.\n\n**Errors** are RFC 9457 `application/problem+json` with a stable `code` (the OAuth token endpoint uses RFC 6749 errors instead). Validation errors list `issues` (path + message). Every answer carries `X-Request-Id`; quote it when reporting a problem.\n\n**Rate limits** default to 600 requests per minute per IP; routes that differ say so. Over the limit: 429 `RATE_LIMITED` with `Retry-After`.\n\n**Timestamps** are ISO 8601 UTC. **Ids** are prefixed ULIDs (`cr_`, `ast_`, `rev_`, `tkt_`…): sortable by creation time.",
     "license": {
       "name": "Proprietary",

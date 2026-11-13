@@ -11,7 +11,7 @@ import { Sections, faqItems, normalizeLayout } from "@/lib/sections";
 import { editMode } from "@/lib/content/edit";
 import EditScope from "@/components/opex/EditScope";
 import homeLayout from "@/content/home-layout.json";
-import { homeJsonLd } from "@/lib/seo";
+import { homeJsonLd, jsonLdHtml } from "@/lib/seo";
 import { ensureContent, entry } from "@/lib/content";
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
@@ -30,13 +30,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <script
         type="application/ld+json"
         // `<` is escaped so dictionary text can never close the script tag.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd(t, locale)).replace(/</g, "\\u003c") }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(homeJsonLd(t, locale)) }}
       />
       <PageLoader logo={t.media.site.logoWhite} slogan={pt(getAbout().hero.slogan, locale)} />
       {faq.length > 0 && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) }).replace(/</g, "\u003c") }}
+          dangerouslySetInnerHTML={{ __html: jsonLdHtml({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) }) }}
         />
       )}
       <EditScope on={edit} entry="global.site" label="سربرگ">

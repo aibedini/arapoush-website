@@ -13,7 +13,9 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(__dirname, "../.."),
   async rewrites() {
     return [
-      { source: "/v1/:path*", destination: `${api}/v1/:path*` },
+      // Only the console API: partner, delivery and render routes are not reachable via this host (S2).
+      { source: "/v1/manage/:path*", destination: `${api}/v1/manage/:path*` },
+      { source: "/v1/docs/:path*", destination: `${api}/v1/docs/:path*` },
       { source: "/media/:path*", destination: `${api}/media/:path*` },
       { source: "/images/:path*", destination: `${site}/images/:path*` },
     ];

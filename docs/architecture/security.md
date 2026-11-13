@@ -31,19 +31,28 @@ This page is a map. The detail is elsewhere:
 
 Guard order, in `auth/guards.ts`:
 
-1. Network allowlist (`CONSOLE_ALLOWED_CIDRS`).
+1. Network allowlist (`CONSOLE_ALLOWED_CIDRS`), also on the sign-in routes.
 2. Session.
 3. CSRF on writes.
-4. Role.
+4. Permission (S1).
 
 Each denial is audited.
 
+- **Permissions (S1).** Every console route needs exactly one permission from the catalogue in
+  `src/authz/permissions.ts` (`ROUTE_PERMISSIONS`). A route missing from the map is denied to
+  everybody, and `authz/permissions.test.ts` fails. Effective permissions = the role's permissions
+  + the operator's own `perm_allow` − its own `perm_deny`; `super_admin` always has all of them.
+  Self-service routes (own session, password, preferences) only need a session.
+- **Roles.** The built-in `viewer`, `auditor`, `operator` and `super_admin` keep the access the old
+  role ranks gave (`BUILTIN_ROLES`). Custom roles live in the `roles` table. Nobody can give a
+  permission they do not hold (`ESCALATION`), change their own permissions, or demote or disable the
+  last active super admin (`LAST_ADMIN`).
 - **Sessions.**
   - The `opex_session` cookie is HttpOnly and SameSite=Strict, and Secure in production.
   - Sessions expire after 15 minutes idle and 8 hours absolute.
   - MFA (TOTP, replay-protected) is mandatory for every operator.
-- **Roles.** The order is `viewer` < `auditor` < `operator` < `super_admin`. Auditors read
-  everything and never pass a write guard.
+- **Lockout.** Wrong passwords, sign-in codes and step-up codes all count (atomically) toward the
+  exponential lockout; repeated step-up failures also end the session.
 - **Step-up.**
   - Sensitive actions need a second factor from the last 5 minutes. These include partner keys, user
     roles and locked fields.
@@ -107,3 +116,36 @@ All secrets come from the environment; none are in the repository. Each is docum
 `infra/.env.example`, and `pnpm docs:check` fails on an undocumented one.
 
 Key and token rotation is in [the key rotation runbook](../opex/runbooks/key-rotation.md).
+
+## Security review, November 2026 (S2)
+
+A white-box review following the Cloudflare security-audit method (authentication, public inputs,
+authorization, client side, deployment). Fixed:
+
+| Finding | Fix |
+|---|---|
+| JSON-LD on the home FAQ and contact page was not escaped (stored XSS from content) | One serializer, `apps/web/lib/jsonld.ts`; test |
+| Field paths accepted `__proto__` / `constructor` (prototype pollution) | `packages/schema/src/paths.ts` refuses them; test |
+| A partner proposing at a parent path could rewrite locked or operator-only fields | `evaluate()` checks every field under the path (`subtreeHas`, `leafPaths`); tests |
+| Operators could change locked fields through a parent path | Content PUT/PATCH use the same subtree check |
+| Amending a change request kept earlier approvals (four-eyes bypass) | Amending clears approvals |
+| Partner preview links showed every draft | Published content plus their own change request; never edit mode |
+| Any visitor could switch on draft mode with a made-up token | The site asks OPEX to verify the token first |
+| No lockout on the TOTP step (console and OAuth); racy lockout counter | Atomic counter for passwords and codes |
+| Sign-in routes skipped the console network allowlist | Allowlist on login, MFA and enrolment |
+| Refresh tokens kept scopes removed from the client | Intersected with the client's current scopes |
+| One visitor could exhaust the shared form rate limit | Keyed on the end-user IP the website asserts |
+| Viewers saw recent audit rows and unscanned uploads | Need `audit.read` / `media.upload` |
+| Webhook URLs could target internal addresses (SSRF) | `src/net/ssrf.ts` on save and on each delivery |
+| Console login open redirect; visual editor trusted any same-origin window | URL resolved against the origin; message source pinned |
+| Configurator SVG colour from content went into markup unescaped | Hex colours only |
+| xlsx import could allocate a huge grid or inflate a zip bomb | Row, column and inflated-size limits |
+| The console host proxied partner, delivery and render routes | Rewrites limited to `/v1/manage` and docs |
+| Console allowlist defaulted to the whole internet | Compose requires `CONSOLE_ALLOW` |
+| Site had no CSP; `/media` SVG lost its sandbox through the site | `object-src`, `base-uri`, `form-action`, `frame-ancestors`; sandbox on `/media` |
+| Next.js 15.5.28 advisories | Next 15.5.29 |
+| Token comparison leaked the length | Both sides hashed first |
+
+Still open (deployment decisions): a DMARC check before threading inbound mail into tickets,
+Turnstile required in production when confirmation emails are on, the `__Host-` cookie prefix, and
+pinning `install.sh` and the Caddy download by hash.

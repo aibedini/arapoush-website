@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import { CONTENT_TYPES, getAt, isLockedPath, setAt } from "@arapoush/schema";
+import { CONTENT_TYPES, getAt, setAt, subtreeHas } from "@arapoush/schema";
 import { CONTENT } from "./contract.ts";
 import type { Deps } from "../app.ts";
 import { audit } from "../audit/audit.ts";
@@ -54,7 +54,8 @@ export async function contentModule(app: FastifyInstance, deps: Deps) {
       const e = await getEntry(q, tenant, type, "main", true);
       // Locked fields can only change with super admin + fresh step-up.
       const current = e.draft_revision_id ? (await getRevision(q, e.draft_revision_id)).data : {};
-      const lockedChanged = diff(current, body.data).filter((c) => isLockedPath(t.schema, c.path));
+      // A change at a group or whole list item counts as locked when anything under it is (S2).
+      const lockedChanged = diff(current, body.data).filter((c) => subtreeHas(t.schema, c.path, "locked"));
       if (lockedChanged.length) {
         const p = req.principal!;
         const fresh = p.stepUpAt && Date.now() - p.stepUpAt.getTime() < 300_000;
@@ -80,7 +81,7 @@ export async function contentModule(app: FastifyInstance, deps: Deps) {
       const e = await getEntry(q, tenant, type, "main", true);
       let data: unknown = e.draft_revision_id ? (await getRevision(q, e.draft_revision_id)).data : {};
       for (const op of body.ops) {
-        if (isLockedPath(t.schema, op.path)) {
+        if (subtreeHas(t.schema, op.path, "locked")) {
           const p = req.principal!;
           if (p.role !== "super_admin") throw forbidden("FIELD_LOCKED", `${op.path} is locked`);
           if (!p.stepUpAt || Date.now() - p.stepUpAt.getTime() > 300_000) throw forbidden("STEP_UP_REQUIRED", `${op.path} is locked: confirm with your authenticator code`);

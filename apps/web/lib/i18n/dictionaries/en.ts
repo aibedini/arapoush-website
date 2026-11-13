@@ -19,7 +19,6 @@ const en = {
       { label: "Products", href: "#products" },
       { label: "Applications", href: "/applications" },
       { label: "Printing", href: "/printing" },
-      { label: "Media", href: "/media" },
       { label: "About", href: "/about" },
       { label: "Contact", href: "/contact" },
     ],

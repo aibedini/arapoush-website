@@ -8,6 +8,12 @@ export type Segment = { key: string } | { index: number } | { match: { key: stri
 export type FieldPath = { segments: Segment[]; locale?: string };
 
 const SEG = /^([^[\]]*)((?:\[[^\]]+\])*)$/;
+/** Keys that would reach Object.prototype (prototype pollution); never valid in a field path. */
+const FORBIDDEN_KEYS = new Set(["__proto__", "constructor", "prototype"]);
+const safeKey = (k: string, path: string) => {
+  if (FORBIDDEN_KEYS.has(k)) throw new Error(`Forbidden path segment "${k}" in ${path}`);
+  return k;
+};
 
 export function parsePath(path: string): FieldPath {
   if (!path.startsWith("/")) throw new Error(`Field path must start with "/": ${path}`);
@@ -15,7 +21,7 @@ export function parsePath(path: string): FieldPath {
   let locale: string | undefined;
   const at = path.lastIndexOf("@");
   if (at > 0 && !path.slice(at).includes("/")) {
-    locale = path.slice(at + 1);
+    locale = safeKey(path.slice(at + 1), path);
     body = path.slice(0, at);
   }
   const segments: Segment[] = [];
@@ -23,14 +29,14 @@ export function parsePath(path: string): FieldPath {
     if (raw === "") continue;
     const m = SEG.exec(raw);
     if (!m) throw new Error(`Bad path segment "${raw}" in ${path}`);
-    if (m[1]) segments.push({ key: m[1] });
+    if (m[1]) segments.push({ key: safeKey(m[1], path) });
     for (const sel of m[2]!.match(/\[[^\]]+\]/g) ?? []) {
       const inner = sel.slice(1, -1);
       if (/^\d+$/.test(inner)) segments.push({ index: Number(inner) });
       else {
         const eq = inner.indexOf("=");
         if (eq < 1) throw new Error(`Bad selector ${sel} in ${path}`);
-        segments.push({ match: { key: inner.slice(0, eq), value: inner.slice(eq + 1) } });
+        segments.push({ match: { key: safeKey(inner.slice(0, eq), path), value: inner.slice(eq + 1) } });
       }
     }
   }
@@ -51,7 +57,7 @@ type Container = Record<string, unknown> | unknown[];
 
 function step(node: unknown, s: Segment): { parent: Container; slot: string | number } | null {
   if ("key" in s) {
-    if (!node || typeof node !== "object" || Array.isArray(node)) return null;
+    if (!node || typeof node !== "object" || Array.isArray(node) || FORBIDDEN_KEYS.has(s.key)) return null;
     return { parent: node as Record<string, unknown>, slot: s.key };
   }
   if (!Array.isArray(node)) return null;

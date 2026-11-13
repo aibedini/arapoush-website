@@ -11,8 +11,8 @@ import SelectionGuide from "@/components/printing/SelectionGuide";
 import SampleCarousel from "@/components/printing/SampleCarousel";
 import { Comparison, Downloads, PrintCta } from "@/components/printing/PrintSections";
 import styles from "@/components/printing/Printing.module.css";
-import { getDictionary, isLocale, localeMeta, locales } from "@/lib/i18n";
-import { languageAlternates, pageUrl, printingJsonLd } from "@/lib/seo";
+import { getDictionary, isLocale, locales } from "@/lib/i18n";
+import { languageAlternates, pageUrl, printingJsonLd, jsonLdHtml, ogBase } from "@/lib/seo";
 import { printingPath } from "@/lib/site";
 import { getPrinting, t } from "@/lib/printing";
 import { ensureContent } from "@/lib/content";
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     title,
     description,
     alternates: { canonical: url, languages: languageAlternates(PATH) },
-    openGraph: { type: "website", url, title, description, locale: localeMeta[locale].og, images: [og] },
+    openGraph: { type: "website", url, title, description, ...ogBase(locale, getDictionary(locale).common.brand), images: [og] },
     twitter: { card: "summary_large_image", title, description, images: [og.url] },
   };
 }
@@ -59,7 +59,7 @@ export default async function PrintingPage({ params }: { params: Params }) {
       <script
         type="application/ld+json"
         // `<` is escaped so content text can never close the script tag.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(printingJsonLd(dict, p, locale, PATH)).replace(/</g, "\\u003c") }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(printingJsonLd(dict, p, locale, PATH)) }}
       />
       <Header t={dict} locale={locale} path={PATH} />
       <EditScope on={edit} entry="page.printing" label="صفحهٔ چاپ">

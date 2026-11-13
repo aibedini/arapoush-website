@@ -1,3 +1,4 @@
+import { BUILTIN_ROLES, SELF, permissionFor } from "../authz/permissions.ts";
 import { z, type ZodType } from "zod";
 import { ProblemSchema, type Audience, type ErrorSpec, type RouteContract } from "./contract.ts";
 import { WEBHOOKS } from "./webhooks.ts";
@@ -105,7 +106,8 @@ export function genericErrors(c: RouteContract): ErrorSpec[] {
     e.push({ status: 401, code: "UNAUTHENTICATED", when: "No valid console session." });
     e.push({ status: 403, code: "NETWORK_DENIED", when: "The caller's network is not in CONSOLE_ALLOWED_CIDRS." });
     if (c.method !== "GET") e.push({ status: 403, code: "CSRF", when: "Missing or wrong X-CSRF-Token." });
-    if (c.role || c.roles) e.push({ status: 403, code: "ROLE_DENIED", when: `Role below ${c.roles?.join("/") ?? c.role}${c.method !== "GET" ? " (auditors never write)" : ""}.` });
+    const perm = permissionFor(c.method, c.path);
+    if (perm && perm !== SELF) e.push({ status: 403, code: "ROLE_DENIED", when: `The caller lacks the \`${perm}\` permission (role + own additions − removals).` });
     if (c.stepUp) e.push({ status: 403, code: "STEP_UP_REQUIRED", when: "No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry)." });
   }
   if (c.auth === "partner") {
@@ -179,7 +181,10 @@ function operation(c: RouteContract): Json {
   }
 
   const extra: string[] = [];
-  if (c.auth === "session") extra.push(`**Console role:** ${c.roles ? c.roles.join(" or ") : `${c.role ?? "viewer"} or above`}${c.stepUp ? "; fresh step-up (authenticator) required" : ""}.`);
+  if (c.auth === "session") {
+    const perm = permissionFor(c.method, c.path);
+    extra.push(`**Permission:** ${perm === SELF ? "any signed-in operator (your own account)" : `\`${perm ?? "none (denied)"}\``}; built-in roles with it by default: ${perm === SELF ? "all" : Object.entries(BUILTIN_ROLES).filter(([, r]) => perm && r.permissions.includes(perm)).map(([k]) => k).join(", ")}${c.stepUp ? "; fresh step-up (authenticator) required" : ""}.`);
+  }
   if (c.signed) extra.push("**Signed write:** Idempotency-Key and an RFC 9421 HTTP message signature are required (see the partner guide).");
   if (c.rateLimit) extra.push(`**Rate limit:** ${c.rateLimit}.`);
   if (c.audit?.length) extra.push(`**Audit:** records ${c.audit.map((a) => `\`${a}\``).join(", ")}.`);

@@ -2,6 +2,7 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import type { Db, Q } from "../db/index.ts";
 import { sha256, token, safeEqual } from "../ids.ts";
 import type { Principal } from "./principal.ts";
+import { effectivePermissions } from "../authz/permissions.ts";
 
 export const COOKIE = "opex_session";
 export const IDLE_MS = 15 * 60_000;
@@ -46,15 +47,17 @@ type SessionRow = {
   display_name: string;
   status: string;
   pkind: Principal["kind"];
+  perm_allow: unknown;
+  perm_deny: unknown;
 };
 
 /** Resolves the console session from the cookie, enforcing idle and absolute timeouts. */
-export async function loadConsoleSession(db: Db, tenant: string, req: FastifyRequest): Promise<(Principal & { csrfHash: string }) | null> {
+export async function loadConsoleSession(db: Db, tenant: string, req: FastifyRequest): Promise<(Principal & { csrfHash: string; permissions: Set<string> }) | null> {
   const raw = req.cookies[COOKIE];
   if (!raw || raw.length > 100) return null;
   const [s] = await db.q<SessionRow>(
     `SELECT s.id, s.principal_id, s.mfa, s.step_up_at, s.csrf_hash, s.last_seen_at, s.expires_at, s.revoked_at, s.kind,
-            p.role, p.display_name, p.status, p.kind AS pkind
+            p.role, p.display_name, p.status, p.kind AS pkind, p.perm_allow, p.perm_deny
        FROM sessions s JOIN principals p ON p.id = s.principal_id
       WHERE s.id = $1 AND s.tenant_id = $2`,
     [sha256(raw), tenant],
@@ -81,6 +84,7 @@ export async function loadConsoleSession(db: Db, tenant: string, req: FastifyReq
     scopes: [],
     authMethod: "password+totp",
     csrfHash: s.csrf_hash,
+    permissions: await effectivePermissions(db.q, tenant, s),
   };
 }
 

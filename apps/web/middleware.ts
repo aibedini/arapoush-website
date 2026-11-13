@@ -9,10 +9,11 @@ export function middleware(request: NextRequest) {
 
   const url = request.nextUrl.clone();
   url.pathname = `/${defaultLocale}${pathname === "/" ? "" : pathname}`;
-  return NextResponse.redirect(url);
+  // Permanent: the mapping never changes (search engines pass ranking straight through).
+  return NextResponse.redirect(url, 308);
 }
 
 export const config = {
   // /api (OPEX webhooks, preview) and /media (OPEX uploads) are not localized pages.
-  matcher: ["/((?!_next|images|media/|api/|favicon|.*\\..*).*)"],
+  matcher: ["/((?!_next/|images/|media/|api/|favicon|.*\\..*).*)"],
 };

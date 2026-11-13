@@ -17,6 +17,8 @@ export type Principal = {
   partnerClientId: string | null;
   scopes: string[];
   authMethod: string;
+  /** Console operators: effective permissions (authz/permissions.ts). */
+  permissions?: Set<string>;
 };
 
 declare module "fastify" {

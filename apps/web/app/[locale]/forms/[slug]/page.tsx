@@ -6,11 +6,11 @@ import ContactCTA from "@/components/sections/ContactCTA";
 import Reveals from "@/components/motion/Reveals";
 import TouchFeedback from "@/components/motion/TouchFeedback";
 import OpexForm from "@/components/forms/OpexForm";
-import { getDictionary, isLocale, localeMeta, locales } from "@/lib/i18n";
+import { getDictionary, isLocale, locales } from "@/lib/i18n";
 import { ensureContent } from "@/lib/content";
 import { getForm, pageForms } from "@/lib/content/forms";
 import { formPath } from "@/lib/forms";
-import { languageAlternates, pageUrl } from "@/lib/seo";
+import { languageAlternates, pageUrl, ogBase } from "@/lib/seo";
 import styles from "./FormPage.module.css";
 
 type Params = Promise<{ locale: string; slug: string }>;
@@ -27,17 +27,19 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   await ensureContent();
   const { locale, slug } = await params;
   const form = getForm(slug);
-  if (!isLocale(locale) || !form?.page?.enabled) return {};
+  // A missing form must not inherit the home page's canonical (SEO audit).
+  if (!isLocale(locale) || !form?.page?.enabled) return { robots: { index: false, follow: true } };
+  const t = getDictionary(locale);
   const path = formPath(slug);
   const title = pickL(form.page.title, locale) || pickL(form.title, locale);
-  const description = pickL(form.page.description, locale) || pickL(form.intro, locale) || getDictionary(locale).meta.description;
+  const description = pickL(form.page.description, locale) || pickL(form.intro, locale) || t.meta.description;
   const url = pageUrl(locale, path);
   return {
     title,
     description,
     alternates: { canonical: url, languages: languageAlternates(path) },
-    openGraph: { type: "website", url, title, description, locale: localeMeta[locale].og },
-    twitter: { card: "summary", title, description },
+    openGraph: { type: "website", url, title, description, ...ogBase(locale, t.common.brand), images: [{ url: t.media.site.og.src, width: t.media.site.og.width, height: t.media.site.og.height }] },
+    twitter: { card: "summary_large_image", title, description, images: [t.media.site.og.src] },
     // Operators choose per form whether its page is indexed.
     ...(form.page.indexable ? {} : { robots: { index: false, follow: true } }),
   };

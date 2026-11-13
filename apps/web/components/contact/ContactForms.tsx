@@ -1,4 +1,4 @@
-import OpexForm from "@/components/forms/OpexForm";
+import OpexForm from "@/components/forms/LazyOpexForm";
 import p from "@/components/printing/Printing.module.css";
 import type { Dictionary } from "@/lib/i18n";
 import type { PublicForm } from "@/lib/forms";

@@ -54,6 +54,12 @@ const Env = z.object({
   RENDER_TOKEN: z.string().min(24).optional(),
   /** Bearer token for GET /metrics (Prometheus). Unset: metrics are off. */
   METRICS_TOKEN: z.string().min(24).optional(),
+  /** Where backups are written (S4). Mount a separate volume here. */
+  BACKUP_DIR: z.string().default("./data/backups"),
+  /** Secret for backup encryption (32+ chars). Unset: derived from INQUIRY_KEY (then rotating that key needs a new backup). */
+  BACKUP_KEY: z.string().min(32).optional(),
+  /** Address the SEO engine crawls (S5); inside Docker the site's internal URL. Default: SITE_URL. */
+  SEO_CRAWL_URL: z.string().url().optional(),
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]).default("info"),
 });
 

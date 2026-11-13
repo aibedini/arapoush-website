@@ -20,7 +20,7 @@ services:
       SITE_DOMAIN: ${SITE_DOMAIN}
       OPEX_DOMAIN: ${OPEX_DOMAIN}
       CONSOLE_DOMAIN: ${CONSOLE_DOMAIN}
-      CONSOLE_ALLOW: ${CONSOLE_ALLOW:-0.0.0.0/0 ::/0}
+      CONSOLE_ALLOW: ${CONSOLE_ALLOW:?Set CONSOLE_ALLOW in infra/.env to the office/VPN CIDRs (S2); use "0.0.0.0/0 ::/0" only on purpose}
       ACME_EMAIL: ${ACME_EMAIL}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
@@ -81,9 +81,15 @@ services:
       AUDIT_ARCHIVE_DIR: /archive
       METRICS_TOKEN: ${METRICS_TOKEN}
       RENDER_TOKEN: ${RENDER_TOKEN}
+      # S4: console backups (encrypted .opexbak) on their own volume; keep BACKUP_KEY off the server too.
+      BACKUP_DIR: /backups
+      BACKUP_KEY: ${BACKUP_KEY:-}
+      # S5: the SEO engine crawls the site on the internal network (pages still name SITE_URL).
+      SEO_CRAWL_URL: http://web:3000
     volumes:
       - opex_data:/data
       - ${AUDIT_ARCHIVE_PATH:-./audit-archive}:/archive
+      - ${BACKUP_PATH:-./opex-backups}:/backups
     read_only: true
     tmpfs: ["/tmp"]
     depends_on:

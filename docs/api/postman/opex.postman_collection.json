@@ -474,6 +474,252 @@
       ]
     },
     {
+      "name": "Backups",
+      "item": [
+        {
+          "name": "Backups on the server, newest first",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/backups",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "backups"
+              ]
+            },
+            "description": "Source: backups/routes.ts"
+          }
+        },
+        {
+          "name": "Make a backup now (and send it to the remote, if one is set)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/backups",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "backups"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: backups/routes.ts"
+          }
+        },
+        {
+          "name": "Delete a stored archive",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/backups/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "backups",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: backups/routes.ts"
+          }
+        },
+        {
+          "name": "Download an archive (encrypted .opexbak)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/backups/:id/download",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "backups",
+                ":id",
+                "download"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: backups/routes.ts"
+          }
+        },
+        {
+          "name": "Automatic backup and remote copy settings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/backups/config",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "backups",
+                "config"
+              ]
+            },
+            "description": "Source: backups/routes.ts"
+          }
+        },
+        {
+          "name": "Change automatic backup and remote copy settings",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/backups/config",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "backups",
+                "config"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: backups/routes.ts"
+          }
+        },
+        {
+          "name": "Send a small test file to the remote",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/backups/config/test",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "backups",
+                "config",
+                "test"
+              ]
+            },
+            "description": "Source: backups/routes.ts"
+          }
+        },
+        {
+          "name": "Restore a backup (a safety backup is made first)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/backups/restore",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "backups",
+                "restore"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"confirm\": \"RESTORE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Replaces the chosen data in one transaction. Sessions are signed out when people are restored. The audit log is never restored or rewritten.\n\nSource: backups/routes.ts"
+          }
+        }
+      ]
+    },
+    {
       "name": "Catalogue",
       "item": [
         {
@@ -3504,6 +3750,32 @@
           }
         },
         {
+          "name": "One operator with role, own permissions and effective permissions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/operators/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "operators",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: authz/routes.ts"
+          }
+        },
+        {
           "name": "Change role, status or name; reset MFA; unlock",
           "request": {
             "method": "PATCH",
@@ -3546,6 +3818,205 @@
               }
             },
             "description": "Source: auth/routes.ts"
+          }
+        },
+        {
+          "name": "Set an operator's own allowed and denied permissions",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/operators/:id/permissions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "operators",
+                ":id",
+                "permissions"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"allow\": [],\n  \"deny\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: authz/routes.ts"
+          }
+        },
+        {
+          "name": "The permission catalogue and built-in roles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/permissions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "permissions"
+              ]
+            },
+            "description": "Every console function has one permission. The console uses this list to draw the per-user permission editor.\n\nSource: authz/routes.ts"
+          }
+        },
+        {
+          "name": "Built-in and custom roles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "roles"
+              ]
+            },
+            "description": "Source: authz/routes.ts"
+          }
+        },
+        {
+          "name": "Create a custom role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "roles"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"string\",\n  \"name\": \"string\",\n  \"permissions\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: authz/routes.ts"
+          }
+        },
+        {
+          "name": "Delete a custom role",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/roles/:key",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "roles",
+                ":key"
+              ],
+              "variable": [
+                {
+                  "key": "key",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: authz/routes.ts"
+          }
+        },
+        {
+          "name": "Change a custom role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/roles/:key",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "roles",
+                ":key"
+              ],
+              "variable": [
+                {
+                  "key": "key",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"string\",\n  \"permissions\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: authz/routes.ts"
           }
         }
       ]
@@ -4572,6 +5043,153 @@
       ]
     },
     {
+      "name": "SEO engine",
+      "item": [
+        {
+          "name": "SEO engine runs, newest first",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/seo/reports",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "seo",
+                "reports"
+              ]
+            },
+            "description": "Source: seo/routes.ts"
+          }
+        },
+        {
+          "name": "One SEO report: scores per category, site issues and every page's issues",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/seo/reports/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "seo",
+                "reports",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: seo/routes.ts"
+          }
+        },
+        {
+          "name": "Check the live site now",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/seo/run",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "seo",
+                "run"
+              ]
+            },
+            "description": "Crawls the sitemap (and Settings → SEO extra paths) and runs every rule: technical, on-page, hreflang, structured data, images, links, GEO/AI readiness, SXO, speed and security headers.\n\nSource: seo/routes.ts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Settings",
+      "item": [
+        {
+          "name": "Site settings and live status (SSL, security headers)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "settings"
+              ]
+            },
+            "description": "Company details, logo, addresses and the footer are content (`global.site`), edited in the console like any page. This route holds the rest.\n\nSource: settings/routes.ts"
+          }
+        },
+        {
+          "name": "Save one settings section",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/settings/:section",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "settings",
+                ":section"
+              ],
+              "variable": [
+                {
+                  "key": "section",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "The website is told to refresh (signed webhook), so analytics and indexing apply within seconds.\n\nSource: settings/routes.ts"
+          }
+        }
+      ]
+    },
+    {
       "name": "Sign-in and sessions",
       "item": [
         {
@@ -4975,6 +5593,24 @@
     {
       "name": "Website",
       "item": [
+        {
+          "name": "Security contact (RFC 9116) from Settings → Security",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{siteUrl}}/.well-known/security.txt",
+              "host": [
+                "{{siteUrl}}"
+              ],
+              "path": [
+                ".well-known",
+                "security.txt"
+              ]
+            },
+            "description": "Source: apps/web/app/.well-known/security.txt/route.ts"
+          }
+        },
         {
           "name": "A visitor sends a form (the browser posts here; the server forwards to OPEX)",
           "request": {

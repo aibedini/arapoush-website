@@ -16,7 +16,7 @@ import seed from "@arapoush/schema/generated/seed.json";
  */
 
 export type Entries = Record<string, unknown>;
-type Bundle = { entries: Record<string, { revision: string; number: number; data: unknown }> };
+type Bundle = { entries: Record<string, { revision: string; number: number; data: unknown; publishedAt?: string }> };
 
 const baseUrl = () => process.env.OPEX_DELIVERY_URL?.replace(/\/$/, "");
 const token = () => process.env.OPEX_DELIVERY_TOKEN;
@@ -31,7 +31,20 @@ let warned = false;
 // Per request: a preview (draft) bundle when the editor opened a preview link.
 const requestStore = cache(() => ({ preview: null as Entries | null }));
 
-const unwrap = (b: Bundle): Entries => Object.fromEntries(Object.entries(b.entries).map(([k, v]) => [k, v.data]));
+// When each published entry last changed (sitemap lastmod); filled from the bundle.
+const publishedDates = new Map<string, string>();
+
+const unwrap = (b: Bundle): Entries => {
+  for (const [k, v] of Object.entries(b.entries)) if (v.publishedAt) publishedDates.set(k, v.publishedAt);
+  return Object.fromEntries(Object.entries(b.entries).map(([k, v]) => [k, v.data]));
+};
+
+/** Latest publish time of the entries whose key starts with any prefix; undefined when unknown (snapshot). */
+export function lastPublished(...prefixes: string[]): Date | undefined {
+  let max = 0;
+  for (const [k, at] of publishedDates) if (prefixes.some((p) => k.startsWith(p))) max = Math.max(max, Date.parse(at) || 0);
+  return max ? new Date(max) : undefined;
+}
 
 async function fetchBundle(path: string, init: RequestInit & { next?: { tags?: string[]; revalidate?: number } }) {
   const res = await fetch(`${baseUrl()}${path}`, { ...init, headers: { authorization: `Bearer ${token()}`, ...(init.headers ?? {}) }, signal: AbortSignal.timeout(5000) });

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import OpexForm from "@/components/forms/OpexForm";
+import OpexForm from "@/components/forms/LazyOpexForm";
 import type { Dictionary } from "@/lib/i18n";
 import type { PublicForm } from "@/lib/forms";
 import { pickL } from "@arapoush/schema";

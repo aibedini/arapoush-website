@@ -177,7 +177,7 @@ export async function partnerModule(app: FastifyInstance, deps: Deps) {
       const { cr, locale } = PARTNER.preview.body.parse(req.body);
       const row = await own(req, cr);
       const [first] = await itemsOf(db.q, String(row.id));
-      const link = await previewLink(config, { sub: req.principal!.id, type: first?.type_key ?? "page.home.hero", locale, cr });
+      const link = await previewLink(config, { sub: req.principal!.id, type: first?.type_key ?? "page.home.hero", locale, cr, partner: true });
       await auditNow(db, tenant, { action: "content.preview", actor: actorOf(req), request: req.info, resource: { type: "change_request", id: cr, jti: link.jti } });
       return { url: link.url, expiresIn: link.expiresIn };
     }),

@@ -189,7 +189,7 @@ export default function Visual() {
   // Messages from the page in the frame.
   useEffect(() => {
     const h = (e: MessageEvent) => {
-      if (e.origin !== siteOrigin || e.data?.source !== "opex-site") return;
+      if (e.origin !== siteOrigin || e.source !== frame.current?.contentWindow || e.data?.source !== "opex-site") return;
       const m = e.data as { type: string; entry?: string; path?: string; value?: string; section?: string | null };
       if (m.type === "ready") sendContent();
       else if (m.type === "select" && m.entry) setSelected({ section: m.section ?? null, entry: m.entry });

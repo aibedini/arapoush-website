@@ -75,7 +75,8 @@ export const faqItems = (layout: SectionConfig[], locale: Locale) =>
   layout
     .filter((s) => s.enabled && s.type === "faq")
     .flatMap((s) => s.props?.items ?? [])
-    .map((it) => ({ q: it.q?.[locale] || it.q?.fa || "", a: it.a?.[locale] || it.a?.fa || "" }))
+    // No fallback to Persian: FAQPage markup on an en/tr page must be in that language (SEO audit).
+    .map((it) => ({ q: it.q?.[locale] || "", a: it.a?.[locale] || "" }))
     .filter((x) => x.q && x.a);
 
 export { BLOCK_KINDS };

@@ -5,15 +5,17 @@ import { forbidden, unauthorized } from "../http/problem.ts";
 import { ipAllowed } from "./cidr.ts";
 import { actorOf, type OperatorRole } from "./principal.ts";
 import { csrfMatches, loadConsoleSession } from "./sessions.ts";
+import { SELF, permissionFor } from "../authz/permissions.ts";
 
 const MUTATING = new Set(["POST", "PUT", "PATCH", "DELETE"]);
-const RANK: Record<OperatorRole, number> = { viewer: 1, auditor: 2, operator: 3, super_admin: 4 };
 
 /**
- * Operator guard for the console API: network allowlist → session → CSRF on writes → role.
- * `min` is the lowest role allowed; auditors are read-only (they never pass a write guard).
+ * Operator guard for the console API: network allowlist → session → CSRF on writes → permission.
+ * The permission comes from the route (`ROUTE_PERMISSIONS`, authz/permissions.ts), not from the
+ * caller: a route missing from that map is denied to everybody. `_min` documents the built-in role
+ * that had access before permissions existed; it is not used for the decision.
  */
-export function requireOperator(deps: Deps, min: OperatorRole = "viewer", opts: { roles?: OperatorRole[] } = {}) {
+export function requireOperator(deps: Deps, _min: OperatorRole = "viewer") {
   return async (req: FastifyRequest, _reply: FastifyReply) => {
     if (!ipAllowed(req.info.ip, deps.config.consoleCidrs)) {
       await deny(deps, req, "console.network", "IP not in the console allowlist");
@@ -23,11 +25,11 @@ export function requireOperator(deps: Deps, min: OperatorRole = "viewer", opts: 
     if (!s) throw unauthorized();
     if (MUTATING.has(req.method) && !csrfMatches(s.csrfHash, req.headers["x-csrf-token"] as string | undefined)) throw forbidden("CSRF", "Missing or invalid CSRF token");
     req.principal = s;
-    const role = (s.role ?? "viewer") as OperatorRole;
-    const ok = opts.roles ? opts.roles.includes(role) : RANK[role] >= RANK[min] && !(MUTATING.has(req.method) && role === "auditor");
-    if (!ok) {
-      await deny(deps, req, "console.role", `Role ${role} below ${opts.roles?.join("/") ?? min}`);
-      throw forbidden("ROLE_DENIED", "Your role does not allow this");
+    const need = permissionFor(req.method, req.routeOptions.url ?? "");
+    if (need === SELF) return;
+    if (!need || !s.permissions.has(need)) {
+      await deny(deps, req, "console.permission", `Missing permission ${need ?? "(route not mapped)"}`);
+      throw forbidden("ROLE_DENIED", "Your role does not allow this", { permission: need ?? null });
     }
   };
 }

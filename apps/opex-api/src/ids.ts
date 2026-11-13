@@ -38,10 +38,11 @@ export function ulid(prefix = ""): string {
 export const sha256 = (s: string | Buffer) => createHash("sha256").update(s).digest("hex");
 export const token = (bytes = 32) => randomBytes(bytes).toString("base64url");
 
+/** Constant time, including for different lengths (both sides are hashed first, S2). */
 export function safeEqual(a: string, b: string): boolean {
-  const x = Buffer.from(a);
-  const y = Buffer.from(b);
-  return x.length === y.length && timingSafeEqual(x, y);
+  const x = createHash("sha256").update(a).digest();
+  const y = createHash("sha256").update(b).digest();
+  return timingSafeEqual(x, y) && a.length === b.length;
 }
 
 /** Canonical JSON: keys sorted at every level, so equal data always hashes the same. */

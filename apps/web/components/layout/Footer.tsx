@@ -1,6 +1,6 @@
 import Image from "next/image";
 import RollText from "@/components/ui/RollText";
-import { productPaths } from "@/lib/site";
+import { localeHref, productPaths } from "@/lib/site";
 import type { Dictionary } from "@/lib/i18n";
 import MaybeLink from "@/components/ui/MaybeLink";
 import { Call, Instagram, LinkedIn, Location, Mail, PaperDownload } from "@/components/ui/icons";
@@ -57,7 +57,7 @@ export default function Footer({ t, locale }: { t: Dictionary; locale: string })
         <ul>
           {f.exploreLinks.map((label, i) => (
             <li key={label}>
-              <a href={(exploreHrefs[i] ?? "").startsWith("#") ? `${home}${exploreHrefs[i]}` : (exploreHrefs[i] ?? home)}>
+              <a href={(exploreHrefs[i] ?? "").startsWith("#") ? `${home}${exploreHrefs[i]}` : exploreHrefs[i] ? localeHref(locale, exploreHrefs[i]!) : home}>
                 <RollText text={label} />
               </a>
             </li>

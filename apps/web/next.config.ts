@@ -32,6 +32,8 @@ const nextConfig: NextConfig = {
   transpilePackages: ["@arapoush/schema"],
   images: {
     formats: ["image/avif", "image/webp"],
+    // Every quality the components ask for (Next 16 only allows listed values; 75 is the default).
+    qualities: [60, 65, 70, 75, 80, 85, 90],
     deviceSizes: [480, 768, 1024, 1280, 1440, 1920, 2560, 3840],
     minimumCacheTTL: 60 * 60 * 24 * 30,
   },
@@ -60,14 +62,19 @@ const nextConfig: NextConfig = {
       { source: "/images/:path*", headers: [{ key: "Cache-Control", value: year }] },
       { source: "/files/:path*", headers: [{ key: "Cache-Control", value: "public, max-age=86400" }] },
       { source: "/api/opex/:path*", headers: [{ key: "Cache-Control", value: "no-store" }, { key: "X-Robots-Tag", value: "noindex" }] },
+      // Uploaded media keeps OPEX's sandbox policy (an SVG never runs script on the site origin, S2).
+      { source: "/media/:path*", headers: [{ key: "Content-Security-Policy", value: "default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; sandbox" }, { key: "X-Content-Type-Options", value: "nosniff" }] },
       {
-        source: "/:path*",
+        source: "/:path((?!media/).*)",
         headers: [
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          // The OPEX console shows draft previews in frames; only that origin may embed the site.
-          opexConsole ? { key: "Content-Security-Policy", value: `frame-ancestors 'self' ${opexConsole}` } : { key: "X-Frame-Options", value: "SAMEORIGIN" },
-          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+          // The OPEX console shows draft previews in frames; only that origin may embed the site. No plugins,
+          // no <base> hijack, forms post only here (S2).
+          { key: "Content-Security-Policy", value: `object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'${opexConsole ? ` ${opexConsole}` : ""}; upgrade-insecure-requests` },
+          ...(opexConsole ? [] : [{ key: "X-Frame-Options", value: "SAMEORIGIN" }]),
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
         ],
       },
     ];

@@ -3,12 +3,15 @@ import type { FastifyInstance } from "fastify";
 import { SignJWT, jwtVerify } from "jose";
 import { z } from "zod";
 import type { Deps } from "../app.ts";
-import { audit, auditNow } from "../audit/audit.ts";
+import { audit, auditNow, type RequestInfo } from "../audit/audit.ts";
 import { badRequest, conflict, forbidden, notFound, unauthorized } from "../http/problem.ts";
 import { sha256, token, ulid } from "../ids.ts";
 import { requireOperator, requireStepUp } from "./guards.ts";
+import { ipAllowed } from "./cidr.ts";
 import { checkPasswordPolicy, dummyVerify, hashPassword, verifyPassword } from "./password.ts";
-import { actorOf } from "./principal.ts";
+import { actorOf, type Principal } from "./principal.ts";
+import type { Q } from "../db/index.ts";
+import { BUILTIN_ROLES, rolePermissions } from "../authz/permissions.ts";
 import { clearSessionCookie, createSession, setSessionCookie } from "./sessions.ts";
 import { newTotpSecret, verifyTotp } from "./totp.ts";
 
@@ -36,8 +39,33 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
     }
   };
 
+  /**
+   * One more failed password or code (S2). Atomic, so parallel guesses cannot share one count, and
+   * the second factor counts too. Exponential lockout after LOCK_AFTER failures: 15, 30, 60 … minutes
+   * (capped at 24 h).
+   */
+  const countFailure = async (id: string, display: string | undefined, info: RequestInfo) => {
+    const [r] = await db.q<{ n: number }>(`UPDATE principals SET failed_logins = failed_logins + 1 WHERE id = $1 RETURNING failed_logins AS n`, [id]);
+    const n = r?.n ?? 0;
+    const lockMin = n >= LOCK_AFTER ? Math.min(15 * 2 ** (n - LOCK_AFTER), 1440) : 0;
+    if (!lockMin) return;
+    await db.q(`UPDATE principals SET locked_until = clock_timestamp() + make_interval(mins => $2::int) WHERE id = $1`, [id, lockMin]);
+    await auditNow(db, tenant, { action: "auth.lockout", result: "failure", actor: { kind: "operator", id, display }, request: info, reason: `${n} failed attempts; locked ${lockMin} min` });
+  };
+  const isLocked = async (id: string) => {
+    const [r] = await db.q<{ locked_until: Date | null }>(`SELECT locked_until FROM principals WHERE id = $1`, [id]);
+    return !!r?.locked_until && new Date(r.locked_until).getTime() > Date.now();
+  };
+  /** The sign-in routes honour the console network allowlist too (S2). */
+  const networkOk = async (req: import("fastify").FastifyRequest) => {
+    if (ipAllowed(req.info.ip, config.consoleCidrs)) return;
+    await auditNow(db, tenant, { action: "authz.denied", result: "denied", actor: { kind: "anonymous", id: null }, request: req.info, resource: { rule: "console.network" }, reason: "IP not in the console allowlist" });
+    throw forbidden("NETWORK_DENIED", "Console access is not allowed from this network");
+  };
+
   // ── Sign in ──
   app.post("/v1/manage/auth/login", { config: { rateLimit: { max: 10, timeWindow: "1 minute" } } }, async (req) => {
+    await networkOk(req);
     const body = Login.parse(req.body);
     const email = body.email.toLowerCase();
     const [p] = await db.q<PrincipalRow>(
@@ -57,11 +85,7 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
     if (p.locked_until && new Date(p.locked_until).getTime() > Date.now()) throw await fail("account locked");
     if (p.status !== "active") throw await fail(`status ${p.status}`);
     if (!(await verifyPassword(p.secret, body.password))) {
-      const n = p.failed_logins + 1;
-      // Exponential lockout after LOCK_AFTER failures: 15, 30, 60 … minutes (capped at 24 h).
-      const lockMin = n >= LOCK_AFTER ? Math.min(15 * 2 ** (n - LOCK_AFTER), 1440) : 0;
-      await db.q(`UPDATE principals SET failed_logins = $2, locked_until = CASE WHEN $3::int > 0 THEN clock_timestamp() + make_interval(mins => $3::int) ELSE locked_until END WHERE id = $1`, [p.id, n, lockMin]);
-      if (lockMin) await auditNow(db, tenant, { action: "auth.lockout", result: "failure", actor: { kind: "operator", id: p.id, display: p.display_name }, request: req.info, reason: `${n} failed attempts; locked ${lockMin} min` });
+      await countFailure(p.id, p.display_name, req.info);
       throw await fail("wrong password");
     }
     const [totp] = await db.q<{ confirmed: boolean }>(`SELECT confirmed FROM credentials WHERE principal_id = $1 AND kind = 'totp'`, [p.id]);
@@ -71,6 +95,7 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
 
   // First sign-in: create a TOTP secret (shown once) for the authenticator app.
   app.post("/v1/manage/auth/mfa/enroll", { config: { rateLimit: { max: 10, timeWindow: "1 minute" } } }, async (req) => {
+    await networkOk(req);
     const { challenge: c } = AUTH.enroll.body.parse(req.body);
     const id = await readChallenge(c);
     const [existing] = await db.q<{ confirmed: boolean }>(`SELECT confirmed FROM credentials WHERE principal_id = $1 AND kind = 'totp'`, [id]);
@@ -85,13 +110,15 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
   });
 
   app.post("/v1/manage/auth/mfa", { config: { rateLimit: { max: 10, timeWindow: "1 minute" } } }, async (req, reply) => {
+    await networkOk(req);
     const body = Mfa.parse(req.body);
     const id = await readChallenge(body.challenge);
+    if (await isLocked(id)) throw unauthorized("The code is not valid");
     const [c] = await db.q<{ secret: string; confirmed: boolean; last_used_step: string | null }>(`SELECT secret, confirmed, last_used_step FROM credentials WHERE principal_id = $1 AND kind = 'totp'`, [id]);
     const step = c ? verifyTotp(c.secret, body.code, c.last_used_step === null ? null : Number(c.last_used_step)) : null;
     if (!c || step === null) {
       await auditNow(db, tenant, { action: "auth.mfa.failure", result: "failure", actor: { kind: "operator", id }, request: req.info });
-      await db.q(`UPDATE principals SET failed_logins = failed_logins + 1 WHERE id = $1`, [id]);
+      await countFailure(id, undefined, req.info);
       throw unauthorized("The code is not valid");
     }
     const [p] = await db.q<{ display_name: string; role: string; status: string }>(`SELECT display_name, role, status FROM principals WHERE id = $1`, [id]);
@@ -119,11 +146,15 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
     const step = c ? verifyTotp(c.secret, code, c.last_used_step === null ? null : Number(c.last_used_step)) : null;
     if (step === null) {
       await auditNow(db, tenant, { action: "auth.step_up.failure", result: "failure", actor: actorOf(req), request: req.info });
+      // A stolen cookie cannot guess codes forever: failures lock the account and end the session (S2).
+      await countFailure(me.id, me.display, req.info);
+      if (await isLocked(me.id)) await db.q(`UPDATE sessions SET revoked_at = clock_timestamp(), revoke_reason = 'step_up_lockout' WHERE id = $1 AND revoked_at IS NULL`, [me.sessionId]);
       throw unauthorized("The code is not valid");
     }
     await db.tx(async (q) => {
       await q(`UPDATE credentials SET last_used_step = $2, last_used_at = clock_timestamp() WHERE principal_id = $1 AND kind = 'totp'`, [me.id, step]);
       await q(`UPDATE sessions SET step_up_at = clock_timestamp() WHERE id = $1`, [me.sessionId]);
+      await q(`UPDATE principals SET failed_logins = 0 WHERE id = $1`, [me.id]);
       await audit(q, tenant, { action: "auth.step_up", actor: actorOf(req), request: req.info });
     });
     return { ok: true, validForSeconds: 300 };
@@ -131,7 +162,7 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
 
   app.get("/v1/manage/auth/me", { preHandler: requireOperator(deps) }, async (req) => {
     const p = req.principal!;
-    return { id: p.id, display: p.display, role: p.role, stepUpValid: !!p.stepUpAt && Date.now() - p.stepUpAt.getTime() < 300_000 };
+    return { id: p.id, display: p.display, role: p.role, stepUpValid: !!p.stepUpAt && Date.now() - p.stepUpAt.getTime() < 300_000, permissions: [...(p.permissions ?? [])].sort() };
   });
 
   // The console keeps the CSRF token in memory only; after a reload it fetches a fresh one.
@@ -171,7 +202,7 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
 
   // ── Sessions ──
   app.get("/v1/manage/sessions", { preHandler: requireOperator(deps) }, async (req) => {
-    const all = req.principal!.role === "super_admin" && AUTH.sessions.query.parse(req.query).all === "1";
+    const all = !!req.principal!.permissions?.has("sessions.manage") && AUTH.sessions.query.parse(req.query).all === "1";
     return db.q(
       `SELECT s.id, s.kind, s.ip, s.user_agent, s.created_at, s.last_seen_at, s.expires_at, s.client_id, p.display_name, p.kind AS principal_kind
          FROM sessions s JOIN principals p ON p.id = s.principal_id
@@ -186,7 +217,7 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
     const me = req.principal!;
     const [s] = await db.q<{ principal_id: string }>(`SELECT principal_id FROM sessions WHERE id = $1 AND tenant_id = $2`, [id, tenant]);
     if (!s) throw notFound("Session");
-    if (s.principal_id !== me.id && me.role !== "super_admin") throw forbidden();
+    if (s.principal_id !== me.id && !me.permissions?.has("sessions.manage")) throw forbidden();
     await db.tx(async (q) => {
       await q(`UPDATE sessions SET revoked_at = clock_timestamp(), revoke_reason = 'revoked_by_operator' WHERE id = $1 AND revoked_at IS NULL`, [id]);
       await q(`UPDATE refresh_tokens SET revoked_at = clock_timestamp() WHERE session_id = $1 AND revoked_at IS NULL`, [id]);
@@ -200,7 +231,8 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
   app.get("/v1/manage/operators", { preHandler: requireOperator(deps, "operator") }, async () =>
     db.q(
       `SELECT p.id, p.email, p.display_name, p.role, p.status, p.last_login_at, p.locked_until, p.created_at,
-              EXISTS (SELECT 1 FROM credentials c WHERE c.principal_id = p.id AND c.kind = 'totp' AND c.confirmed) AS mfa
+              EXISTS (SELECT 1 FROM credentials c WHERE c.principal_id = p.id AND c.kind = 'totp' AND c.confirmed) AS mfa,
+              p.perm_allow, p.perm_deny
          FROM principals p WHERE p.tenant_id = $1 AND p.kind = 'operator' ORDER BY p.created_at`,
       [tenant],
     ),
@@ -210,6 +242,7 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
     const body = NewOperator.parse(req.body);
     const policy = await checkPasswordPolicy(body.password, { email: body.email, online: config.isProd });
     if (policy) throw badRequest("WEAK_PASSWORD", policy);
+    await assertCanGrantRole(db.q, tenant, req.principal!, body.role);
     const id = ulid("prn_");
     const h = await hashPassword(body.password);
     await db.tx(async (q) => {
@@ -228,6 +261,11 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
     if (id === req.principal!.id && (body.role || body.status)) throw forbidden("SELF_CHANGE", "You cannot change your own role or status");
     const [before] = await db.q<Record<string, unknown>>(`SELECT role, status, display_name FROM principals WHERE id = $1 AND tenant_id = $2 AND kind = 'operator'`, [id, tenant]);
     if (!before) throw notFound("Operator");
+    if (body.role && body.role !== before.role) {
+      if (!req.principal!.permissions?.has("users.permissions")) throw forbidden("ESCALATION", "Changing a role needs the users.permissions permission");
+      await assertCanGrantRole(db.q, tenant, req.principal!, body.role);
+    }
+    if (before.role === "super_admin" && ((body.role && body.role !== "super_admin") || body.status === "disabled")) await assertNotLastAdmin(db.q, tenant, id);
     await db.tx(async (q) => {
       if (body.role) await q(`UPDATE principals SET role = $2 WHERE id = $1`, [id, body.role]);
       if (body.display_name) await q(`UPDATE principals SET display_name = $2 WHERE id = $1`, [id, body.display_name]);
@@ -242,6 +280,23 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
     });
     return { ok: true };
   });
+}
+
+/** Refuses roles that do not exist or carry permissions the caller lacks (no privilege escalation). */
+export async function assertCanGrantRole(q: Q, tenant: string, me: Principal, role: string) {
+  if (!BUILTIN_ROLES[role]) {
+    const [r] = await q(`SELECT 1 FROM roles WHERE tenant_id = $1 AND key = $2`, [tenant, role]);
+    if (!r) throw badRequest("UNKNOWN_ROLE", `No role ${role}`);
+  }
+  const mine = me.permissions ?? new Set<string>();
+  const missing = role === "super_admin" ? (me.role === "super_admin" ? [] : ["super_admin"]) : (await rolePermissions(q, tenant, role)).filter((p) => !mine.has(p));
+  if (missing.length) throw forbidden("ESCALATION", "You cannot give permissions you do not have", { missing });
+}
+
+/** At least one active super admin must remain. */
+export async function assertNotLastAdmin(q: Q, tenant: string, id: string) {
+  const [r] = await q<{ n: number }>(`SELECT count(*)::int AS n FROM principals WHERE tenant_id = $1 AND kind = 'operator' AND role = 'super_admin' AND status = 'active' AND id <> $2`, [tenant, id]);
+  if (!r || r.n < 1) throw conflict("LAST_ADMIN", "This is the last active super admin");
 }
 
 /** Bootstrap: the first super admin (CLI only; afterwards operators are created in the console). */

@@ -16,6 +16,10 @@ import { metricsModule } from "./ops/metrics.ts";
 import { renderModule } from "./render/routes.ts";
 import { docsModule } from "./docs/routes.ts";
 import { catalogueModule } from "./catalogue/routes.ts";
+import { authzModule } from "./authz/routes.ts";
+import { settingsModule } from "./settings/routes.ts";
+import { backupsModule } from "./backups/routes.ts";
+import { seoModule } from "./seo/routes.ts";
 
 /** Route modules, in registration order. Each phase adds its module here. */
-export const MODULES: Module[] = [authModule, oauthModule, partnerAdminModule, partnerModule, contentModule, deliveryModule, mediaModule, auditModule, previewModule, crManageModule, openApiModule, formsModule, ticketsModule, metricsModule, renderModule, docsModule, catalogueModule];
+export const MODULES: Module[] = [authModule, oauthModule, partnerAdminModule, partnerModule, contentModule, deliveryModule, mediaModule, auditModule, previewModule, crManageModule, openApiModule, formsModule, ticketsModule, metricsModule, renderModule, docsModule, catalogueModule, authzModule, settingsModule, backupsModule, seoModule];

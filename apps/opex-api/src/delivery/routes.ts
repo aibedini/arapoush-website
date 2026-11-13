@@ -4,6 +4,7 @@ import { CONTENT_TYPES } from "@arapoush/schema";
 import type { Deps } from "../app.ts";
 import { forbidden, notFound, unauthorized } from "../http/problem.ts";
 import { safeEqual } from "../ids.ts";
+import { loadSettings, publicSettings } from "../settings/service.ts";
 
 /**
  * Delivery API: published content only, for the website's server (never browsers). Bearer token
@@ -31,10 +32,21 @@ export async function deliveryModule(app: FastifyInstance, deps: Deps) {
   app.get("/v1/delivery/bundle", { preHandler: guard, config: { rateLimit: { max: 3000, timeWindow: "1 minute" } } }, async (req, reply) => {
     const rows = await published();
     const forms = await publishedForms((sql, params) => db.q(sql, params), tenant);
-    const etag = `"${rows.map((r) => r.revision_id).join(".")}.${forms.map((f) => `${f.key}@${f.version}`).join(".")}"`;
+    // Site settings (S3) travel with the content as a pseudo-entry, so one webhook refreshes both.
+    const { settings, updated } = await loadSettings(db.q, tenant);
+    const settingsRev = `settings@${Object.values(updated).map((u) => u.at).sort().pop() ?? "default"}`;
+    const etag = `"${rows.map((r) => r.revision_id).join(".")}.${forms.map((f) => `${f.key}@${f.version}`).join(".")}.${settingsRev}"`;
     reply.headers({ ...cache, ETag: etag });
     if (req.headers["if-none-match"] === etag) return reply.status(304).send();
-    return { generatedAt: new Date().toISOString(), types: CONTENT_TYPES.map((t) => t.key), entries: Object.fromEntries([...rows.map((r) => [r.type_key, { revision: r.revision_id, number: r.number, data: r.data }]), ...forms.map((f) => [f.key, { revision: `${f.key}@${f.version}`, number: f.version, data: f.data }])]) };
+    return {
+      generatedAt: new Date().toISOString(),
+      types: CONTENT_TYPES.map((t) => t.key),
+      entries: Object.fromEntries([
+        ...rows.map((r) => [r.type_key, { revision: r.revision_id, number: r.number, data: r.data, publishedAt: new Date(r.published_at).toISOString() }]),
+        ...forms.map((f) => [f.key, { revision: `${f.key}@${f.version}`, number: f.version, data: f.data }]),
+        ["settings.site", { revision: settingsRev, number: 0, data: publicSettings(settings) }],
+      ]),
+    };
   });
 
   app.get("/v1/delivery/content/:type", { preHandler: guard }, async (req, reply) => {

@@ -76,7 +76,7 @@ export default function TechExplorer({ c, locale, contact = fileContact }: { c: 
 
         <div ref={panel} id="tech-detail" className={styles.detail} aria-live="polite">
           <div key={tech.id} className={`${styles.macro} ${styles.detailIn}`}>
-            <Image src={tech.macro.src} alt="" fill sizes="(max-width: 1099px) 92vw, 44vw" data-no-mirror />
+            <Image src={tech.macro.src} alt={t(tech.name, locale)} fill sizes="(max-width: 1099px) 92vw, 44vw" data-no-mirror />
           </div>
           <div key={`${tech.id}-copy`} className={`${styles.detailCopy} ${styles.detailIn}`}>
             <h3 className={styles.detailTitle}>{t(tech.name, locale)}</h3>

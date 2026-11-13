@@ -58,7 +58,7 @@ export async function auditModule(app: FastifyInstance, deps: Deps) {
     return rows.map((r) => JSON.stringify(r)).join("\n") + "\n";
   });
 
-  app.get("/v1/manage/dashboard", { preHandler: requireOperator(deps) }, async () => {
+  app.get("/v1/manage/dashboard", { preHandler: requireOperator(deps) }, async (req) => {
     const one = async <T,>(sql: string, p: unknown[] = [tenant]) => ((await db.q<Record<string, T>>(sql, p))[0] ?? {}) as Record<string, T>;
     const [crs, entries, sec, hooks, head, inq] = await Promise.all([
       one<number>(`SELECT count(*) FILTER (WHERE state = 'pending_review')::int AS pending, count(*) FILTER (WHERE state = 'needs_rebase')::int AS rebase, count(*) FILTER (WHERE state IN ('approved','published') AND decided_at > clock_timestamp() - interval '7 days')::int AS approved7d FROM change_requests WHERE tenant_id = $1`),
@@ -68,7 +68,8 @@ export async function auditModule(app: FastifyInstance, deps: Deps) {
       one<string>(`SELECT seq::text, hash FROM audit_events WHERE tenant_id = $1 ORDER BY seq DESC LIMIT 1`),
       one<number>(`SELECT count(*) FILTER (WHERE status IN ('new','open','pending','on_hold'))::int AS open, count(*) FILTER (WHERE status = 'new')::int AS new, count(*) FILTER (WHERE status IN ('new','open','pending','on_hold') AND assignee_id IS NULL)::int AS unassigned, count(*) FILTER (WHERE status IN ('new','open','pending','on_hold') AND sla_breached)::int AS overdue, count(*) FILTER (WHERE created_at > clock_timestamp() - interval '7 days')::int AS week FROM tickets WHERE tenant_id = $1 AND merged_into IS NULL`),
     ]);
-    const recent = await db.q(`SELECT seq, ts, action, result, actor->>'display' AS who, actor->>'kind' AS kind, request->>'ip' AS ip, resource FROM audit_events WHERE tenant_id = $1 ORDER BY seq DESC LIMIT 12`, [tenant]);
+    // Recent audit rows (who, IP, resource) only for those who may read the audit log (S2).
+    const recent = !req.principal!.permissions?.has("audit.read") ? [] : await db.q(`SELECT seq, ts, action, result, actor->>'display' AS who, actor->>'kind' AS kind, request->>'ip' AS ip, resource FROM audit_events WHERE tenant_id = $1 ORDER BY seq DESC LIMIT 12`, [tenant]);
     return { crs, entries, security24h: sec, webhooks: hooks, auditHead: head, tickets: inq, recent };
   });
 }

@@ -328,7 +328,8 @@
      "kind": "group",
      "fields": {
       "brochure": {
-       "kind": "file"
+       "kind": "text",
+       "localized": true
       }
      }
     },

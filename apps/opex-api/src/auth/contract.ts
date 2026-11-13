@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { Iso, IsoOrNull, Ok, route } from "../openapi/contract.ts";
 
-export const RoleSchema = z.enum(["super_admin", "operator", "auditor", "viewer"]).meta({ id: "OperatorRole" });
+export const RoleSchema = z.string().regex(/^[a-z][a-z0-9_]{1,39}$/).describe("A built-in role (super_admin, operator, auditor, viewer) or the key of a custom role.").meta({ id: "OperatorRole" });
 export const LoginBody = z.strictObject({ email: z.string().email().max(200), password: z.string().min(1).max(200) });
 export const MfaBody = z.strictObject({ challenge: z.string().max(2000).describe("From the login answer (valid 5 minutes)."), code: z.string().regex(/^\d{6}$/) });
 export const NewOperatorBody = z.strictObject({ email: z.string().email().max(200), display_name: z.string().min(2).max(120), role: RoleSchema, password: z.string().max(200).describe("Temporary; checked against the password policy.") });
@@ -87,7 +87,7 @@ export const AUTH = {
     auth: "session",
     role: "viewer",
     source: S,
-    responses: { 200: { description: "Who you are.", schema: z.object({ id: z.string(), display: z.string(), role: RoleSchema, stepUpValid: z.boolean() }) } },
+    responses: { 200: { description: "Who you are.", schema: z.object({ id: z.string(), display: z.string(), role: RoleSchema, stepUpValid: z.boolean(), permissions: z.array(z.string()).describe("Your effective permissions (role + your own additions − removals).") }) } },
   }),
   csrf: route({
     id: "csrfToken",
@@ -170,7 +170,7 @@ export const AUTH = {
     responses: {
       200: {
         description: "Oldest first.",
-        schema: z.array(z.object({ id: z.string(), email: z.string().nullable(), display_name: z.string(), role: RoleSchema, status: z.string(), last_login_at: IsoOrNull, locked_until: IsoOrNull, created_at: Iso, mfa: z.boolean() })),
+        schema: z.array(z.object({ id: z.string(), email: z.string().nullable(), display_name: z.string(), role: RoleSchema, status: z.string(), last_login_at: IsoOrNull, locked_until: IsoOrNull, created_at: Iso, mfa: z.boolean(), perm_allow: z.array(z.string()), perm_deny: z.array(z.string()) })),
       },
     },
   }),
@@ -190,6 +190,8 @@ export const AUTH = {
     errors: [
       { status: 400, code: "WEAK_PASSWORD", when: "The temporary password fails the policy." },
       { status: 409, code: "EMAIL_TAKEN", when: "An account with this email exists." },
+      { status: 403, code: "ESCALATION", when: "You cannot give a role with permissions you do not have." },
+      { status: 400, code: "UNKNOWN_ROLE", when: "No such role." },
     ],
     audit: ["operator.create"],
   }),
@@ -210,6 +212,9 @@ export const AUTH = {
     errors: [
       { status: 404, code: "NOT_FOUND", when: "No such operator." },
       { status: 403, code: "SELF_CHANGE", when: "You cannot change your own role or status." },
+      { status: 403, code: "ESCALATION", when: "A role change needs users.permissions, and you cannot give a role with permissions you do not have." },
+      { status: 409, code: "LAST_ADMIN", when: "The last active super admin cannot be demoted or disabled." },
+      { status: 400, code: "UNKNOWN_ROLE", when: "No such role." },
     ],
     audit: ["operator.update"],
   }),

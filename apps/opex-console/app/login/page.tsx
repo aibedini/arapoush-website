@@ -47,7 +47,7 @@ function Login() {
       const r = await api<{ csrf: string }>("/v1/manage/auth/mfa", { body: { challenge: step.challenge, code }, retried: true, anonymous: true });
       setCsrf(r.csrf);
       // Only same-site paths: never redirect to another origin.
-      router.replace(next && next.startsWith("/") && !next.startsWith("//") ? next : "/");
+      router.replace(sameOriginPath(next));
     });
   };
 
@@ -118,4 +118,15 @@ export default function LoginPage() {
       <Login />
     </Suspense>
   );
+}
+
+/** `next` resolved against this origin; anything that leaves it (`//x`, `/\x`, schemes) goes home (S2). */
+function sameOriginPath(next: string | null | undefined): string {
+  if (!next) return "/";
+  try {
+    const u = new URL(next, window.location.origin);
+    return u.origin === window.location.origin ? u.pathname + u.search + u.hash : "/";
+  } catch {
+    return "/";
+  }
 }

@@ -24,7 +24,7 @@ function ProductCard({ n, img, href, dark, title, text, label }: CardProps) {
       <div className={styles.media} data-reveal-media>
         <div className={styles.mediaInner}>
           <div className={styles.drift} data-drift>
-            <Image src={img} alt="" fill sizes="(max-width: 767px) 92vw, (max-width: 1099px) 46vw, 29vw" data-no-mirror />
+            <Image src={img} alt={title.join(" ")} fill sizes="(max-width: 767px) 92vw, (max-width: 1099px) 46vw, 29vw" data-no-mirror />
           </div>
         </div>
       </div>

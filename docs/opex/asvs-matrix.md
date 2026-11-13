@@ -5,7 +5,10 @@ the code or config that implements it. Update this file in the same PR as the co
 
 | ASVS | Control | Phase | Where |
 |---|---|---|---|
-| V1.4 | Central access control at one trusted enforcement point | P2/P6 | `src/auth/guards.ts`, `src/authz/grants.ts` |
+| V1.4 | Central access control at one trusted enforcement point | P2/P6/S1 | `src/auth/guards.ts`, `src/authz/permissions.ts` (route → permission), `src/authz/grants.ts` |
+| V4.1.3 | Least privilege: one permission per console function, per-user allow/deny, no escalation | S1 | `src/authz/permissions.ts`, `src/authz/routes.ts` |
+| V5.5.3 | Prototype pollution: field paths refuse `__proto__`, `constructor`, `prototype` | S2 | `packages/schema/src/paths.ts` |
+| V12.6.1 | SSRF: calls to operator-chosen URLs refuse internal addresses | S2 | `src/net/ssrf.ts` |
 | V2.1 | Passwords ≥ 12 chars, breached-password check | P2 | `src/auth/password.ts` |
 | V2.4 | Argon2id hashing | P2 | `src/auth/password.ts` |
 | V2.8 | TOTP MFA, single use per time step | P2 | `src/auth/totp.ts`, `credentials.last_used_step` |

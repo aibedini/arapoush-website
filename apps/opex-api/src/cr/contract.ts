@@ -209,7 +209,7 @@ export const CR = {
     params: IdParam,
     body: z.strictObject({ url: z.string().url().nullable().describe("https only in production; null turns webhooks off.") }),
     responses: { 200: { description: "Show `secret` to the partner now; it is not shown again.", schema: z.object({ url: z.string().nullable(), secret: z.string().nullable() }) } },
-    errors: [{ status: 404, code: "NOT_FOUND", when: "No such partner." }],
+    errors: [{ status: 404, code: "NOT_FOUND", when: "No such partner." }, { status: 400, code: "PRIVATE_ADDRESS", when: "The URL resolves to an internal address (production)." }],
     audit: ["partner.webhook_set"],
   }),
   webhooks: route({

@@ -32,7 +32,7 @@ export default function IndustryShowcase({ c, locale }: { c: Applications["indus
           {c.items.map((x) => (
             <div key={x.id} id={x.id} role="tabpanel" aria-labelledby={`tab-${x.id}`} tabIndex={0} className={styles.panel} data-panel={x.id} style={{ "--accent": x.accent } as React.CSSProperties}>
               <div className={styles.panelMedia}>
-                <Image src={x.image.src} alt="" fill sizes="(max-width: 1099px) 92vw, 40vw" className={x.id === "industrial" ? styles.contain : undefined} data-no-mirror />
+                <Image src={x.image.src} alt={t(x.name, locale)} fill sizes="(max-width: 1099px) 92vw, 40vw" className={x.id === "industrial" ? styles.contain : undefined} data-no-mirror />
                 <span className={styles.panelLabel} lang={locale === "fa" ? "en" : undefined}>
                   {t(x.label, locale)}
                 </span>

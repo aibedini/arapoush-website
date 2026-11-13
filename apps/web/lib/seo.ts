@@ -21,6 +21,12 @@ export const languageAlternates = (path = "") => ({
 });
 
 /** schema.org graph for the home page: who we are, the site, the page and what we make. */
+/** Open Graph fields every page shares (a page's own openGraph replaces the layout's, so they go here). */
+export const ogBase = (locale: Locale, brand: string) => ({ siteName: brand, locale: localeMeta[locale].og, alternateLocale: locales.filter((l) => l !== locale).map((l) => localeMeta[l].og) });
+
+/** Name, url and logo on every page's Organization node (nodes are not merged across pages). */
+export const orgBase = (t: Dictionary) => ({ "@type": "Organization", "@id": `${siteUrl}/#organization`, name: "Arapoush Gostar", url: siteUrl, logo: `${siteUrl}${t.media.site.logo.src}` });
+
 export function homeJsonLd(t: Dictionary, locale: Locale) {
   const { contact, social } = t.site;
   const url = pageUrl(locale);
@@ -38,12 +44,8 @@ export function homeJsonLd(t: Dictionary, locale: Locale) {
         logo: `${siteUrl}${t.media.site.logo.src}`,
         email: contact.email,
         telephone: contact.phone,
-        address: {
-          "@type": "PostalAddress",
-          streetAddress: "No 3, Gooyabadi St, Zafar Ave",
-          addressLocality: "Tehran",
-          addressCountry: "IR",
-        },
+        // From content (global.site → contact), never hard-coded here.
+        address: { "@type": "PostalAddress", streetAddress: contact.address.join(" ").replace(/\s+/g, " ").trim(), addressCountry: "IR" },
         contactPoint: {
           "@type": "ContactPoint",
           contactType: "sales",
@@ -125,7 +127,7 @@ export function llmsText(full: boolean) {
     ...contactLines(getContactPage(), "en"),
   ];
   if (!full) {
-    lines.push("", "## Optional", `- [Full site text](${siteUrl}/llms-full.txt): every section of the home page in each language`);
+    lines.push("", "## Optional", `- [Full site text](${siteUrl}/llms-full.txt): every page of the site in each language`);
     return lines.join("\n") + "\n";
   }
   for (const l of locales) {
@@ -235,8 +237,7 @@ export function productTubeJsonLd(t: Dictionary, product: TubeProduct, locale: L
         "@type": "BreadcrumbList",
         itemListElement: [
           { "@type": "ListItem", position: 1, name: t.common.brand, item: pageUrl(locale) },
-          { "@type": "ListItem", position: 2, name: p.breadcrumb, item: `${pageUrl(locale)}#products` },
-          { "@type": "ListItem", position: 3, name: p.title.join(" "), item: url },
+          { "@type": "ListItem", position: 2, name: p.title.join(" "), item: url },
         ],
       },
     ],
@@ -293,8 +294,7 @@ export function productEffJsonLd(t: Dictionary, product: EffProduct, locale: Loc
         "@type": "BreadcrumbList",
         itemListElement: [
           { "@type": "ListItem", position: 1, name: t.common.brand, item: pageUrl(locale) },
-          { "@type": "ListItem", position: 2, name: e.breadcrumb, item: `${pageUrl(locale)}#products` },
-          { "@type": "ListItem", position: 3, name: e.eyebrow, item: url },
+          { "@type": "ListItem", position: 2, name: e.eyebrow, item: url },
         ],
       },
     ],
@@ -314,7 +314,7 @@ export function printingJsonLd(t: Dictionary, p: Printing, locale: Locale, path:
         url,
         name: tx(p.meta.title),
         description: tx(p.meta.description),
-        inLanguage: locale,
+        inLanguage: localeMeta[locale].intl,
         isPartOf: { "@id": `${siteUrl}/#website` },
         primaryImageOfPage: `${siteUrl}${t.media.printing.tubeGold.src}`,
         mainEntity: {
@@ -361,7 +361,7 @@ export function applicationsJsonLd(t: Dictionary, a: Applications, locale: Local
         url,
         name: tx(a.meta.title),
         description: tx(a.meta.description),
-        inLanguage: locale,
+        inLanguage: localeMeta[locale].intl,
         isPartOf: { "@id": `${siteUrl}/#website` },
         primaryImageOfPage: `${siteUrl}${a.industries.items[0]?.image.src ?? ""}`,
         mainEntity: {
@@ -413,15 +413,14 @@ export function aboutJsonLd(t: Dictionary, a: About, locale: Locale, path: strin
         url,
         name: tx(a.meta.title),
         description: tx(a.meta.description),
-        inLanguage: locale,
+        inLanguage: localeMeta[locale].intl,
         isPartOf: { "@id": `${siteUrl}/#website` },
         about: { "@id": `${siteUrl}/#organization` },
         primaryImageOfPage: abs(a.gallery.items[0]?.image.src ?? t.media.about.poster.src),
         image: a.gallery.items.map((g) => abs(g.image.src)),
       },
       {
-        "@type": "Organization",
-        "@id": `${siteUrl}/#organization`,
+        ...orgBase(t),
         foundingDate: "2004",
         foundingLocation: { "@type": "Place", name: "Caspian Industrial Town, Qazvin, Iran" },
         slogan: tx(a.hero.slogan),
@@ -487,14 +486,13 @@ export function contactJsonLd(t: Dictionary, c: Contact, locale: Locale, path: s
         url,
         name: tx(c.meta.title),
         description: tx(c.meta.description),
-        inLanguage: locale,
+        inLanguage: localeMeta[locale].intl,
         isPartOf: { "@id": `${siteUrl}/#website` },
         about: { "@id": org },
         primaryImageOfPage: `${siteUrl}${t.media.contact.hero.src}`,
       },
       {
-        "@type": "Organization",
-        "@id": org,
+        ...orgBase(t),
         contactPoint: c.directory.departments.map((d) => ({
           "@type": "ContactPoint",
           contactType: tx(d.name),
@@ -516,7 +514,7 @@ export function contactJsonLd(t: Dictionary, c: Contact, locale: Locale, path: s
       {
         "@type": "FAQPage",
         "@id": `${url}#faq`,
-        inLanguage: locale,
+        inLanguage: localeMeta[locale].intl,
         mainEntity: c.faq.groups.flatMap((g) => g.items.map((q) => ({ "@type": "Question", name: tx(q.q), acceptedAnswer: { "@type": "Answer", text: tx(q.a) } }))),
       },
       {
@@ -586,3 +584,6 @@ function blockFacts(l: Locale) {
       return lines.length ? [...lines, ""] : [];
     });
 }
+
+
+export { jsonLdHtml } from "./jsonld";

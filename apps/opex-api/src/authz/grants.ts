@@ -1,4 +1,4 @@
-import { LOCALES, globMatch, isLocalizedText, isLockedPath, isOperatorOnlyPath, matchPath, type Field, type GroupField } from "@arapoush/schema";
+import { LOCALES, globMatch, isLocalizedText, isLockedPath, isOperatorOnlyPath, leafPaths, matchPath, subtreeHas, type Field, type GroupField } from "@arapoush/schema";
 import type { Q } from "../db/index.ts";
 import type { Principal } from "../auth/principal.ts";
 
@@ -23,8 +23,14 @@ export const splitLocale = (p: string) => {
  * never grantable, whatever the grants say; `exclude` beats `fields`; expired grants are ignored.
  */
 export function evaluate(grants: Grant[], schema: GroupField | null, t: Target, now = Date.now()): Decision {
+  // A proposal replaces everything under its path, so it is checked against every field below it
+  // (S2: a partner proposing at "/" or a whole list item must not rewrite locked or operator-only fields).
+  const writes = t.action === "propose";
   if (schema && t.path !== "" && t.path !== "/" && isLockedPath(schema, t.path)) return { allow: false, reason: "locked" };
   if (schema && t.path !== "" && t.path !== "/" && isOperatorOnlyPath(schema, t.path)) return { allow: false, reason: "operator_only" };
+  if (schema && writes && subtreeHas(schema, t.path || "/", "locked")) return { allow: false, reason: "locked" };
+  if (schema && writes && subtreeHas(schema, t.path || "/", "operatorOnly")) return { allow: false, reason: "operator_only" };
+  const leaves = schema && writes ? leafPaths(schema, t.path || "/") : null;
   for (const g of grants) {
     if (g.expires_at && new Date(g.expires_at).getTime() <= now) continue;
     if (!g.actions.includes(t.action)) continue;
@@ -33,6 +39,8 @@ export function evaluate(grants: Grant[], schema: GroupField | null, t: Target, 
     const fields = g.scope.fields?.length ? g.scope.fields : ["/**"];
     if (path !== "/" && !fields.some((p) => matchPath(p, path))) continue;
     if (path !== "/" && (g.scope.exclude ?? []).some((p) => matchPath(p, path))) continue;
+    // Writes at a group: every field below must be inside the grant and none excluded.
+    if (leaves && !leaves.every((l) => fields.some((p) => matchPath(p, l)) && !(g.scope.exclude ?? []).some((p) => matchPath(p, l)))) continue;
     if (t.locale && g.scope.locales?.length && !g.scope.locales.includes(t.locale)) continue;
     return { allow: true, grant: g.id, reason: "granted" };
   }

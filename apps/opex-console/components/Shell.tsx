@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api, ApiError, onStepUp, setCsrf } from "@/lib/api";
-import { atLeast, canWrite, MeContext, type Me } from "@/lib/hooks";
+import { can, MeContext, type Me } from "@/lib/hooks";
 import { ROLE } from "@/lib/fa";
 import { Dialog, ErrorNote, Loading } from "./ui";
 import {
@@ -26,6 +26,9 @@ import {
   UserCircle,
   UsersThree,
   Package,
+  ChartLineUp,
+  GearSix,
+  Database,
   type Icon,
 } from "@phosphor-icons/react";
 
@@ -33,8 +36,8 @@ type Item = {
   href: string;
   label: string;
   icon: Icon;
-  min?: Me["role"];
-  write?: boolean;
+  /** Shown when the operator has this permission (S1). */
+  perm?: string;
   external?: boolean;
 };
 /** Grouped by what operators do: daily work, the website, then settings. */
@@ -42,62 +45,35 @@ const NAV: { group: string; items: Item[] }[] = [
   {
     group: "کار روزانه",
     items: [
-      { href: "/", label: "داشبورد", icon: SquaresFour },
-      { href: "/tickets", label: "صندوق تیکت‌ها", icon: Tray, write: true },
-      { href: "/requests", label: "درخواست‌های تغییر", icon: GitPullRequest },
+      { href: "/", label: "داشبورد", icon: SquaresFour, perm: "dashboard.read" },
+      { href: "/tickets", label: "صندوق تیکت‌ها", icon: Tray, perm: "tickets.read" },
+      { href: "/requests", label: "درخواست‌های تغییر", icon: GitPullRequest, perm: "cr.read" },
     ],
   },
   {
     group: "وب‌سایت",
     items: [
-      { href: "/visual", label: "ویرایشگر بصری", icon: PaintBrush },
-      { href: "/content", label: "محتوا (فیلدها)", icon: TextAa },
-      { href: "/catalogue", label: "کاتالوگ تیوب", icon: Package, write: true },
-      { href: "/forms", label: "فرم‌ها", icon: ListChecks },
-      { href: "/media", label: "رسانه", icon: Images },
+      { href: "/visual", label: "ویرایشگر بصری", icon: PaintBrush, perm: "preview.use" },
+      { href: "/content", label: "محتوا (فیلدها)", icon: TextAa, perm: "content.read" },
+      { href: "/catalogue", label: "کاتالوگ تیوب", icon: Package, perm: "catalogue.write" },
+      { href: "/forms", label: "فرم‌ها", icon: ListChecks, perm: "forms.read" },
+      { href: "/media", label: "رسانه", icon: Images, perm: "media.read" },
+      { href: "/seo", label: "سئو و هوش مصنوعی", icon: ChartLineUp, perm: "seo.read" },
     ],
   },
   {
     group: "تنظیمات",
     items: [
-      {
-        href: "/helpdesk",
-        label: "تیم‌ها و پاسخ‌های آماده",
-        icon: UsersThree,
-        min: "operator",
-      },
-      {
-        href: "/operators",
-        label: "اپراتورها",
-        icon: IdentificationCard,
-        min: "operator",
-      },
-      {
-        href: "/partners",
-        label: "شرکا (آراسی‌ام‌اس)",
-        icon: Handshake,
-        min: "operator",
-      },
-      { href: "/access", label: "دسترسی‌ها", icon: Key, min: "operator" },
-      { href: "/policies", label: "سیاست‌های تأیید", icon: ShieldCheck },
-      {
-        href: "/webhooks",
-        label: "وب‌هوک‌ها",
-        icon: PlugsConnected,
-        min: "operator",
-      },
-      {
-        href: "/audit",
-        label: "گزارش رویدادها",
-        icon: ClockCounterClockwise,
-        min: "auditor",
-      },
-      {
-        href: "/v1/manage/docs",
-        label: "مستندات API",
-        icon: BookOpenText,
-        external: true,
-      },
+      { href: "/settings", label: "تنظیمات سایت", icon: GearSix, perm: "settings.read" },
+      { href: "/backups", label: "پشتیبان‌گیری", icon: Database, perm: "backup.read" },
+      { href: "/helpdesk", label: "تیم‌ها و پاسخ‌های آماده", icon: UsersThree, perm: "teams.read" },
+      { href: "/operators", label: "کاربران و دسترسی‌ها", icon: IdentificationCard, perm: "users.read" },
+      { href: "/partners", label: "شرکا (آراسی‌ام‌اس)", icon: Handshake, perm: "partners.read" },
+      { href: "/access", label: "دسترسی‌های شرکا", icon: Key, perm: "grants.read" },
+      { href: "/policies", label: "سیاست‌های تأیید", icon: ShieldCheck, perm: "policies.read" },
+      { href: "/webhooks", label: "وب‌هوک‌ها", icon: PlugsConnected, perm: "webhooks.read" },
+      { href: "/audit", label: "گزارش رویدادها", icon: ClockCounterClockwise, perm: "audit.read" },
+      { href: "/v1/manage/docs", label: "مستندات API", icon: BookOpenText, external: true, perm: "docs.read" },
       { href: "/account", label: "حساب من", icon: UserCircle },
     ],
   },
@@ -138,7 +114,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   // Helpdesk: unread tickets for me (mine + unassigned).
   const [tickets, setTickets] = useState(0);
   useEffect(() => {
-    if (!me || !canWrite(me)) return;
+    if (!me || !can(me, "tickets.read")) return;
     let live = true;
     const load = () =>
       api<{ unread: number }>("/v1/manage/tickets/counts")
@@ -202,8 +178,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           <nav className="nav" aria-label="بخش‌ها">
             {NAV.map((g) => {
               const items = g.items.filter(
-                (n) =>
-                  (!n.min || atLeast(me, n.min)) && (!n.write || canWrite(me)),
+                (n) => !n.perm || can(me, n.perm),
               );
               if (!items.length) return null;
               return (

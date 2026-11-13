@@ -1,3 +1,4 @@
+import { assertPublicUrl } from "../net/ssrf.ts";
 import { CR, GrantBody, PolicyBody } from "./contract.ts";
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { getAt } from "@arapoush/schema";
@@ -133,6 +134,7 @@ export async function crManageModule(app: FastifyInstance, deps: Deps) {
   app.put("/v1/manage/partners/:id/webhook", { preHandler: admin }, async (req) => {
     const { id } = req.params as { id: string };
     const { url } = z.strictObject({ url: CR.setWebhook.body.shape.url.refine((u) => !u || u.startsWith("https://") || (!config.isProd && u.startsWith("http://")), "https only") }).parse(req.body);
+    if (url && config.isProd) await assertPublicUrl(url).catch(() => { throw badRequest("PRIVATE_ADDRESS", "The webhook URL points to an internal address"); });
     const secret = url ? token(32) : null;
     await db.tx(async (q) => {
       const [c] = await q(`UPDATE partner_clients SET webhook_url = $3, webhook_secret = $4 WHERE id = $1 AND tenant_id = $2 RETURNING id`, [id, tenant, url, secret]);

@@ -19,7 +19,7 @@
     "@arapoush/schema": "workspace:*",
     "gsap": "3.13.0",
     "motion": "14.9.0",
-    "next": "15.5.28",
+    "next": "15.5.29",
     "radix-ui": "1.8.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",

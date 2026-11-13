@@ -13,7 +13,7 @@ import CapCompare from "@/components/effervescent/CapCompare";
 import { Making, Uses } from "@/components/effervescent/EffSections";
 import styles from "@/components/effervescent/Effervescent.module.css";
 import { getDictionary, isLocale, localeMeta, locales } from "@/lib/i18n";
-import { languageAlternates, pageUrl, productEffJsonLd } from "@/lib/seo";
+import { languageAlternates, pageUrl, productEffJsonLd, jsonLdHtml, ogBase } from "@/lib/seo";
 import { productPaths } from "@/lib/site";
 import { getEffervescentProduct } from "@/lib/products";
 import { ensureContent, opexEnabled } from "@/lib/content";
@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       url,
       title: m.title,
       description: m.description,
-      locale: localeMeta[locale].og,
+      ...ogBase(locale, getDictionary(locale).common.brand),
       images: [{ url: og.src, width: og.width, height: og.height, alt: m.title }],
     },
     twitter: { card: "summary_large_image", title: m.title, description: m.description, images: [og.src] },
@@ -62,7 +62,7 @@ export default async function EffervescentTubePage({ params }: { params: Params 
       <script
         type="application/ld+json"
         // `<` is escaped so dictionary text can never close the script tag.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productEffJsonLd(t, product, locale, PATH)).replace(/</g, "\\u003c") }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(productEffJsonLd(t, product, locale, PATH)) }}
       />
       <Header t={t} locale={locale} path={PATH} />
       <EditScope on={edit} entry="product.effervescent.page" label="صفحهٔ قرص جوشان">

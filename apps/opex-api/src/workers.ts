@@ -8,6 +8,10 @@ export const JOBS: Job[] = [];
 // Registered by modules (kept here so the list is visible in one place).
 import { auditArchive, crExpiry, emailOutbox, mailboxPoll, scheduledPublish, siteWebhooks, slaCheck, ticketRetention } from "./content/jobs.ts";
 JOBS.push(scheduledPublish, siteWebhooks, crExpiry, emailOutbox, mailboxPoll, slaCheck, ticketRetention, auditArchive);
+import { scheduledBackup } from "./backups/routes.ts";
+JOBS.push(scheduledBackup);
+import { scheduledSeo } from "./seo/routes.ts";
+JOBS.push(scheduledSeo);
 
 export function startWorkers(deps: Deps, log: FastifyBaseLogger): () => void {
   const timers = JOBS.map((job) => {

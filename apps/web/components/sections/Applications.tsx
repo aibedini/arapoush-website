@@ -1,6 +1,6 @@
 import Image from "next/image";
 import RollText from "@/components/ui/RollText";
-import { links } from "@/lib/site";
+import { links, localeHref } from "@/lib/site";
 import type { SectionProps } from "@/lib/sections";
 import { byId } from "@/lib/content/pick";
 import { CircleArrow } from "@/components/ui/icons";
@@ -16,7 +16,7 @@ const visuals = [
   { id: "food", to: "food", h: 465, x: 1500 },
 ];
 
-export default function Applications({ t }: SectionProps) {
+export default function Applications({ t, locale }: SectionProps) {
   const a = t.applications;
   return (
     <section id="applications" className={styles.section} aria-labelledby="applications-title">
@@ -49,7 +49,7 @@ export default function Applications({ t }: SectionProps) {
             if (!item) return null;
             return (
               <li key={v.id} className={`at ${styles.slot}`} style={{ "--x": v.x, "--y": 259, "--w": 356 } as React.CSSProperties} data-reveal-item>
-                <a href={`${links.applications}#${v.to}`} className={styles.card} aria-label={`${item.title} — ${item.text}`}>
+                <a href={`${localeHref(locale, links.applications)}#${v.to}`} className={styles.card} aria-label={`${item.title} — ${item.text}`}>
                   <div className={styles.media} style={{ "--ih": v.h } as React.CSSProperties} data-reveal-media>
                     <div className={styles.mediaInner}>
                       <Image src={byId(t.media.applications.items, v.id)?.image.src ?? ""} alt="" fill sizes="(max-width: 767px) 46vw, (max-width: 1099px) 46vw, 19vw" />

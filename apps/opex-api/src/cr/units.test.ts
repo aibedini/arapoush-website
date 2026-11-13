@@ -21,6 +21,11 @@ test("grants: decision table (deny by default, exclude wins, locales, actions, e
     [[editor], "page.printing", "/tech/items[id=flexo]/id", null, "propose", false, "locked"],
     [[g({ types: ["*"] }, ["propose"])], "page.printing", "/tech/items[id=flexo]/sample", null, "propose", false, "operator_only"],
     [[g({ types: ["page.printing"] }, ["read"], { expires_at: new Date(Date.now() - 1000) })], "page.printing", "/hero/title", "fa", "read", false, "no_grant"],
+    // S2: a proposal at a parent replaces everything below it.
+    [[g({ types: ["*"] }, ["propose"])], "page.printing", "/tech/items[id=flexo]", null, "propose", false, "locked"],
+    [[g({ types: ["*"] }, ["propose"])], "page.printing", "/", null, "propose", false, "locked"],
+    [[g({ types: ["page.printing"], fields: ["/hero/title"] }, ["propose"])], "page.printing", "/hero", null, "propose", false, "no_grant"],
+    [[editor], "page.printing", "/hero", null, "propose", false, "no_grant"],
   ];
   for (const [grants, type, path, locale, action, allow, reason] of rows) {
     const d = evaluate(grants, printing, { type, path, locale, action });

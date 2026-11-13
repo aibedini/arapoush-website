@@ -1,3 +1,4 @@
+import { assertPublicUrl } from "../net/ssrf.ts";
 import { createHmac } from "node:crypto";
 import type { FastifyBaseLogger } from "fastify";
 import type { Deps } from "../app.ts";
@@ -48,6 +49,8 @@ export async function deliverPending(deps: Deps, log: FastifyBaseLogger, fetchIm
     let code = 0;
     let error: string | null = null;
     try {
+      // Partner endpoints are re-checked on every delivery (DNS can change after it was saved, S2).
+      if (d.target !== "site" && config.isProd) await assertPublicUrl(url);
       const res = await fetchImpl(url, { method: "POST", redirect: "error", headers: { "content-type": "application/json", "opex-signature": sign(secret, body) }, body, signal: AbortSignal.timeout(10_000) });
       code = res.status;
     } catch (e) {

@@ -19,7 +19,6 @@ const fa: Dictionary = {
       { label: "محصولات", href: "#products" },
       { label: "کاربردها", href: "/applications" },
       { label: "چاپ", href: "/printing" },
-      { label: "رسانه", href: "/media" },
       { label: "درباره ما", href: "/about" },
       { label: "تماس", href: "/contact" },
     ],

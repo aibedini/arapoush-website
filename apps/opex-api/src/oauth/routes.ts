@@ -146,8 +146,12 @@ export async function oauthModule(app: FastifyInstance, deps: Deps) {
         throw unauthorized("Sign-in expired; start again");
       }
       const [c] = await db.q<{ secret: string; confirmed: boolean; last_used_step: string | null }>(`SELECT secret, confirmed, last_used_step FROM credentials WHERE principal_id = $1 AND kind = 'totp'`, [uid]);
-      const step = c ? verifyTotp(c.secret, String(raw.code ?? ""), c.last_used_step === null ? null : Number(c.last_used_step)) : null;
+      // S2: the code step counts failures and honours the lock too (no unlimited TOTP guessing).
+      const [lk] = await db.q<{ locked_until: Date | null }>(`SELECT locked_until FROM principals WHERE id = $1`, [uid]);
+      const locked = !!lk?.locked_until && new Date(lk.locked_until).getTime() > Date.now();
+      const step = c && !locked ? verifyTotp(c.secret, String(raw.code ?? ""), c.last_used_step === null ? null : Number(c.last_used_step)) : null;
       if (step === null) {
+        if (!locked) await db.q(`UPDATE principals SET failed_logins = failed_logins + 1, locked_until = CASE WHEN failed_logins + 1 >= 5 THEN clock_timestamp() + interval '15 minutes' ELSE locked_until END WHERE id = $1`, [uid]);
         await auditNow(db, tenant, { action: "oauth.mfa.failure", result: "failure", actor: { ...anon, id: uid }, request: req.info });
         return page(reply.status(401), client, p, `<input type="hidden" name="stage" value="code"><input type="hidden" name="challenge" value="${esc(String(raw.challenge))}"><label for="c">کد ۶ رقمی</label><input id="c" type="text" name="code" inputmode="numeric" required dir="ltr"><button>ورود</button>`, "کد نادرست است.");
       }
@@ -256,7 +260,7 @@ export async function oauthModule(app: FastifyInstance, deps: Deps) {
         if (r.dpop_jkt && r.dpop_jkt !== jkt) return { error: "refresh token bound to another key" };
         await q(`UPDATE refresh_tokens SET used_at = clock_timestamp() WHERE token_hash = $1`, [h]);
         const [orig] = await q<{ scope: string }>(`SELECT scope FROM oauth_codes WHERE principal_id = $1 AND client_id = $2 ORDER BY expires_at DESC LIMIT 1`, [r.principal_id, r.client_id]);
-        const t = await issue(q, { principalId: r.principal_id, kind: "partner_user", client, scope: orig?.scope ?? "content:read", jkt, sessionId: r.session_id, family: r.family, refresh: true, ip: req.info.ip, ua });
+        const t = await issue(q, { principalId: r.principal_id, kind: "partner_user", client, scope: (orig?.scope ?? "content:read").split(" ").filter((x) => (client.scopes as string[]).includes(x)).join(" ") || "content:read", jkt, sessionId: r.session_id, family: r.family, refresh: true, ip: req.info.ip, ua });
         await audit(q, tenant, { action: "oauth.token.refreshed", actor: { kind: "partner_user", id: r.principal_id, via_client: r.client_id, session_id: r.session_id }, request: req.info });
         return { token: t };
       });

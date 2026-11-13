@@ -8,6 +8,9 @@ import type { Grid } from "@arapoush/schema";
  * reads). Throws `Error("NOT_XLSX")` for anything that is not a workbook.
  */
 const MAX_CELLS = 50_000;
+const MAX_ROWS = 5_000;
+const MAX_COLS = 200;
+const MAX_INFLATED = 32 * 1024 * 1024;
 
 const unescape = (s: string) =>
   s.replace(/&(lt|gt|amp|quot|apos|#(\d+)|#x([0-9a-f]+));/gi, (_, n: string, dec?: string, hex?: string) =>
@@ -23,7 +26,8 @@ const colIndex = (ref: string) => {
 export function readXlsx(bytes: Uint8Array): Grid {
   let files: Record<string, Uint8Array>;
   try {
-    files = unzipSync(bytes, { filter: (f) => f.name === "xl/workbook.xml" || f.name === "xl/_rels/workbook.xml.rels" || f.name === "xl/sharedStrings.xml" || f.name.startsWith("xl/worksheets/sheet") });
+    // Zip bombs: refuse entries that inflate past MAX_INFLATED (S2).
+    files = unzipSync(bytes, { filter: (f) => f.originalSize <= MAX_INFLATED && (f.name === "xl/workbook.xml" || f.name === "xl/_rels/workbook.xml.rels" || f.name === "xl/sharedStrings.xml" || f.name.startsWith("xl/worksheets/sheet")) });
   } catch {
     throw new Error("NOT_XLSX");
   }
@@ -56,6 +60,8 @@ export function readXlsx(bytes: Uint8Array): Grid {
     else if (v !== undefined) value = Number(v);
     const r = Number(ref[2]) - 1;
     const c = colIndex(ref[1]!);
+    // A far-away cell reference must not make the dense grid below allocate millions of slots (S2).
+    if (r >= MAX_ROWS || c >= MAX_COLS) throw new Error("TOO_LARGE");
     (grid[r] ??= [])[c] = value;
   }
   // Dense rows (holes → null) so callers can index safely.

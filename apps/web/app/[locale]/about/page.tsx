@@ -9,8 +9,8 @@ import AboutStory from "@/components/about/AboutStory";
 import FactoryGallery from "@/components/about/FactoryGallery";
 import Honours from "@/components/about/Honours";
 import styles from "@/components/printing/Printing.module.css";
-import { getDictionary, isLocale, localeMeta, locales } from "@/lib/i18n";
-import { aboutJsonLd, languageAlternates, pageUrl } from "@/lib/seo";
+import { getDictionary, isLocale, locales } from "@/lib/i18n";
+import { aboutJsonLd, languageAlternates, pageUrl, jsonLdHtml, ogBase } from "@/lib/seo";
 import { aboutPath } from "@/lib/site";
 import { getAbout, t } from "@/lib/about";
 import { ensureContent } from "@/lib/content";
@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     title,
     description,
     alternates: { canonical: url, languages: languageAlternates(PATH) },
-    openGraph: { type: "website", url, title, description, locale: localeMeta[locale].og, images: [og] },
+    openGraph: { type: "website", url, title, description, ...ogBase(locale, getDictionary(locale).common.brand), images: [og] },
     twitter: { card: "summary_large_image", title, description, images: [og.url] },
   };
 }
@@ -57,7 +57,7 @@ export default async function AboutPage({ params }: { params: Params }) {
       <script
         type="application/ld+json"
         // `<` is escaped so content text can never close the script tag.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutJsonLd(dict, a, locale, PATH)).replace(/</g, "\\u003c") }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(aboutJsonLd(dict, a, locale, PATH)) }}
       />
       <Header t={dict} locale={locale} path={PATH} />
       <EditScope on={edit} entry="page.about" label="صفحهٔ درباره آراپوش">

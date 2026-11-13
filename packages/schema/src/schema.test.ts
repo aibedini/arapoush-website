@@ -93,3 +93,9 @@ test("locks and operator-only flags come from overrides", () => {
   const site = contentType("global.site")!.schema;
   assert.ok(isLockedPath(site, "/images/logo"));
 });
+
+test("field paths refuse prototype keys (S2: prototype pollution)", () => {
+  for (const p of ["/__proto__@x", "/__proto__/toString", "/a/constructor/prototype", "/list[__proto__=1]", "/a@__proto__"]) assert.throws(() => parsePath(p), /Forbidden/);
+  assert.throws(() => setAt({ a: {} }, "/__proto__@polluted", "yes"));
+  assert.equal(({} as Record<string, unknown>).polluted, undefined);
+});

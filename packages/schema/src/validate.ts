@@ -194,3 +194,37 @@ export function isOperatorOnlyPath(schema: GroupField, path: string): boolean {
   }
   return false;
 }
+
+/**
+ * Field paths of every leaf under `path` (selectors dropped), e.g. `/hero/title`, `/tech/items/id`.
+ * Used to check a write aimed at a group or list against everything it would replace (S2).
+ */
+export function leafPaths(schema: GroupField, path: string): string[] {
+  const base = path.replace(/@.*$/, "").replace(/\[[^\]]*\]/g, "").replace(/\/+$/, "");
+  const start = base === "" ? schema : fieldAt(schema, path);
+  const out: string[] = [];
+  const walk = (f: Field | undefined, p: string, depth: number) => {
+    if (!f || depth > 20) return;
+    if (f.kind === "group") for (const [k, c] of Object.entries(f.fields)) walk(c, `${p}/${k}`, depth + 1);
+    else if (f.kind === "list" || f.kind === "map") walk(f.of, p, depth + 1);
+    else out.push(p || "/");
+  };
+  walk(start, base, 0);
+  return out;
+}
+
+/** True when `path` or any field under it is locked (or operator-only). */
+export function subtreeHas(schema: GroupField, path: string, flag: "locked" | "operatorOnly"): boolean {
+  const own = flag === "locked" ? isLockedPath(schema, path) : isOperatorOnlyPath(schema, path);
+  if (own) return true;
+  const base = path.replace(/@.*$/, "").replace(/\[[^\]]*\]/g, "").replace(/\/+$/, "");
+  const start = base === "" ? schema : fieldAt(schema, path);
+  const walk = (f: Field | undefined, depth: number): boolean => {
+    if (!f || depth > 20) return false;
+    if ((f as { locked?: boolean; operatorOnly?: boolean })[flag]) return true;
+    if (f.kind === "group") return Object.values(f.fields).some((c) => walk(c, depth + 1));
+    if (f.kind === "list" || f.kind === "map") return walk(f.of, depth + 1);
+    return false;
+  };
+  return walk(start, 0);
+}

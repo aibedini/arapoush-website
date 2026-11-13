@@ -14,6 +14,7 @@ import { sha256, safeEqual, token } from "../ids.ts";
 import { typeOrThrow } from "../content/service.ts";
 import { getAt, setAt } from "@arapoush/schema";
 import { applyItems } from "../cr/merge.ts";
+import { loadSettings, publicSettings } from "../settings/service.ts";
 
 /** Website page that shows each content type (first locale; the editor can switch language there). */
 export function pageFor(type: string, locale = "fa") {
@@ -29,9 +30,10 @@ export function pageFor(type: string, locale = "fa") {
 const keyOf = (config: Config) => new Uint8Array(Buffer.from(sha256(`opex-preview:${config.SESSION_SECRET}`), "hex"));
 
 /** A 30-minute preview link for the website: drafts, or drafts with one change request applied. */
-export async function previewLink(config: Config, o: { sub: string; type: string; locale: string; cr?: string; query?: string }) {
+export async function previewLink(config: Config, o: { sub: string; type: string; locale: string; cr?: string; query?: string; partner?: boolean }) {
   const jti = token(12);
-  const jwt = await new SignJWT({ scope: "preview", type: o.type, ...(o.cr ? { cr: o.cr } : {}) })
+  // Partner links (S2) only show published content plus their own change request, never other drafts.
+  const jwt = await new SignJWT({ scope: "preview", type: o.type, ...(o.cr ? { cr: o.cr } : {}), ...(o.partner ? { partner: true } : {}) })
     .setProtectedHeader({ alg: "HS256" })
     .setSubject(o.sub)
     .setAudience("opex-preview")
@@ -44,6 +46,7 @@ export async function previewLink(config: Config, o: { sub: string; type: string
   url.searchParams.set("token", jwt);
   url.searchParams.set("path", pageFor(o.type, o.locale));
   if (o.query) url.searchParams.set("q", o.query);
+  if (o.partner) url.searchParams.set("partner", "1");
   return { url: url.toString(), jti, expiresIn: 1800 };
 }
 
@@ -72,16 +75,17 @@ export async function previewModule(app: FastifyInstance, deps: Deps) {
   // Drafts of every entry (published where there is no draft), plus a CR's items when the link names one.
   app.get("/v1/delivery/preview", async (req, reply) => {
     deliveryGuard(req);
-    let payload: { scope?: unknown; cr?: unknown };
+    let payload: { scope?: unknown; cr?: unknown; partner?: unknown };
     try {
       ({ payload } = await jwtVerify(String(req.headers["opex-preview"] ?? ""), keyOf(config), { audience: "opex-preview", issuer: config.PUBLIC_URL, algorithms: ["HS256"] }));
       if (payload.scope !== "preview") throw new Error();
     } catch {
       throw unauthorized("Preview link expired");
     }
+    const partner = payload.partner === true;
     const rows = await db.q<{ type_key: string; revision_id: string; number: number; data: unknown }>(
       `SELECT e.type_key, r.id AS revision_id, r.number, r.data
-         FROM entries e JOIN revisions r ON r.id = COALESCE(e.draft_revision_id, e.published_revision_id)
+         FROM entries e JOIN revisions r ON r.id = ${partner ? "e.published_revision_id" : "COALESCE(e.draft_revision_id, e.published_revision_id)"}
         WHERE e.tenant_id = $1 ORDER BY e.type_key`,
       [tenant],
     );
@@ -111,8 +115,10 @@ export async function previewModule(app: FastifyInstance, deps: Deps) {
     }
     reply.header("Cache-Control", "no-store");
     // Forms preview as drafts (the builder's "view on site").
-    const forms = await db.q<{ slug: string; version: number; draft: FormDefinition }>(`SELECT slug, version, draft FROM forms WHERE tenant_id = $1 AND status <> 'archived'`, [tenant]);
+    const forms = partner ? [] : await db.q<{ slug: string; version: number; draft: FormDefinition }>(`SELECT slug, version, draft FROM forms WHERE tenant_id = $1 AND status <> 'archived'`, [tenant]);
     for (const f of forms) (entries as Record<string, unknown>)[`form.${f.slug}`] = { revision: `form.${f.slug}@draft`, number: f.version, data: publicDefinition(f.slug, f.version, f.draft) };
-    return { preview: true, cr: payload.cr ?? null, entries };
+    const { settings, updated } = await loadSettings(db.q, tenant);
+    (entries as Record<string, unknown>)["settings.site"] = { revision: `settings@${Object.values(updated).map((u) => u.at).sort().pop() ?? "default"}`, number: 0, data: publicSettings(settings) };
+    return { preview: true, cr: payload.cr ?? null, partner, entries };
   });
 }

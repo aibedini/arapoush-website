@@ -2,7 +2,7 @@ import { buildSpec } from "./generate.ts";
 import { CONTRACTS } from "./registry.ts";
 import { SITE } from "./site.ts";
 
-export const API_VERSION = "1.11.0";
+export const API_VERSION = "1.12.0";
 
 const COMMON = `
 **Errors** are RFC 9457 \`application/problem+json\` with a stable \`code\` (the OAuth token endpoint uses RFC 6749 errors instead). Validation errors list \`issues\` (path + message). Every answer carries \`X-Request-Id\`; quote it when reporting a problem.

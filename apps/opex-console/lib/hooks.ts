@@ -48,10 +48,13 @@ export function useAction() {
   return { busy, error, done, run, setError, setDone };
 }
 
-export type Me = { id: string; display: string; role: "super_admin" | "operator" | "auditor" | "viewer"; stepUpValid: boolean };
+export type Me = { id: string; display: string; role: string; stepUpValid: boolean; permissions: string[] };
 export const MeContext = createContext<Me | null>(null);
 export const useMe = () => useContext(MeContext);
-const RANK = { viewer: 1, auditor: 2, operator: 3, super_admin: 4 } as const;
-/** Read access by rank. Writes use canWrite: auditors outrank viewers but never write. */
-export const atLeast = (me: Me | null, role: keyof typeof RANK) => !!me && RANK[me.role] >= RANK[role];
-export const canWrite = (me: Me | null) => !!me && (me.role === "operator" || me.role === "super_admin");
+/** One function of the console (S1): the API decides, the console only hides what would be refused. */
+export const can = (me: Me | null, perm: string) => !!me && (me.role === "super_admin" || me.permissions?.includes(perm));
+const RANK: Record<string, number> = { viewer: 1, auditor: 2, operator: 3, super_admin: 4 };
+/** Built-in role rank (custom roles: decided by their permissions, see `can`). */
+export const atLeast = (me: Me | null, role: "viewer" | "auditor" | "operator" | "super_admin") => !!me && (RANK[me.role] ?? 0) >= RANK[role]!;
+/** Content and helpdesk writes. */
+export const canWrite = (me: Me | null) => can(me, "content.write") || can(me, "tickets.reply");

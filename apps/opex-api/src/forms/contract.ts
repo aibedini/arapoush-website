@@ -111,7 +111,7 @@ export const FORMS = {
     body: Submission,
     headers: [{ name: "X-End-User-IP", description: "The visitor's IP (per-IP limit, audit)." }],
     requestExample: { locale: "fa", page: "/fa/forms/sample-request", values: { name: "Sara Karimi", email: "sara@example.com", kind: "eff", qty: "20000", consent: true } },
-    rateLimit: "120 per minute per IP, plus the form's own per-visitor limit per 10 minutes",
+    rateLimit: "20 per minute per visitor (the end-user IP the website asserts), plus the form's own per-visitor limit per 10 minutes",
     responses: {
       201: { description: "Stored as a ticket.", schema: z.object({ id: z.string(), number: z.number().describe("Ticket number shown to the visitor, e.g. 1042") }), example: { id: "tkt_01JD…", number: 1042 } },
       202: { description: "Accepted silently (blocked sender); nothing stored.", schema: Ok },

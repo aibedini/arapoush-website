@@ -38,14 +38,15 @@ async function toError(r: Response) {
 }
 
 /** `anonymous`: sign-in calls made before a session exists (no CSRF token yet). */
-type Opts = { method?: string; body?: unknown; form?: FormData; raw?: boolean; retried?: boolean; anonymous?: boolean };
+type Opts = { method?: string; body?: unknown; form?: FormData; bytes?: Blob; raw?: boolean; retried?: boolean; anonymous?: boolean };
 
 export async function api<T = unknown>(path: string, opts: Opts = {}): Promise<T> {
-  const method = opts.method ?? (opts.body !== undefined || opts.form ? "POST" : "GET");
+  const method = opts.method ?? (opts.body !== undefined || opts.form || opts.bytes ? "POST" : "GET");
   const headers: Record<string, string> = { accept: "application/json" };
   if (method !== "GET" && !opts.anonymous) headers["x-csrf-token"] = await ensureCsrf();
   if (opts.body !== undefined) headers["content-type"] = "application/json";
-  const r = await fetch(path, { method, headers, credentials: "same-origin", cache: "no-store", body: opts.form ?? (opts.body !== undefined ? JSON.stringify(opts.body) : undefined) });
+  if (opts.bytes) headers["content-type"] = "application/octet-stream";
+  const r = await fetch(path, { method, headers, credentials: "same-origin", cache: "no-store", body: opts.bytes ?? opts.form ?? (opts.body !== undefined ? JSON.stringify(opts.body) : undefined) });
   if (!r.ok) {
     const e = await toError(r);
     if (!opts.retried && e.code === "CSRF") {

@@ -17,8 +17,8 @@ import type { FinderRefs } from "@/components/applications/SolutionFinder";
 import { getTubeProduct } from "@/lib/products";
 import { getPrinting } from "@/lib/printing";
 import styles from "@/components/applications/Applications.module.css";
-import { getDictionary, isLocale, localeMeta, locales } from "@/lib/i18n";
-import { applicationsJsonLd, languageAlternates, pageUrl } from "@/lib/seo";
+import { getDictionary, isLocale, locales } from "@/lib/i18n";
+import { applicationsJsonLd, languageAlternates, pageUrl, jsonLdHtml, ogBase } from "@/lib/seo";
 import { applicationsPath } from "@/lib/site";
 import { getApplications, t } from "@/lib/applications";
 import { ensureContent } from "@/lib/content";
@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     title,
     description,
     alternates: { canonical: url, languages: languageAlternates(PATH) },
-    openGraph: { type: "website", url, title, description, locale: localeMeta[locale].og, images: [og] },
+    openGraph: { type: "website", url, title, description, ...ogBase(locale, getDictionary(locale).common.brand), images: [og] },
     twitter: { card: "summary_large_image", title, description, images: [og.url] },
   };
 }
@@ -77,7 +77,7 @@ export default async function ApplicationsPage({ params }: { params: Params }) {
       <script
         type="application/ld+json"
         // `<` is escaped so content text can never close the script tag.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(applicationsJsonLd(dict, a, locale, PATH)).replace(/</g, "\\u003c") }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(applicationsJsonLd(dict, a, locale, PATH)) }}
       />
       <Header t={dict} locale={locale} path={PATH} />
       <EditScope on={edit} entry="page.applications" label="صفحهٔ کاربردها">

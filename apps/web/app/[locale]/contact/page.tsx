@@ -12,8 +12,8 @@ import Faq from "@/components/contact/Faq";
 import { Careers, Feedback, RequestSection } from "@/components/contact/ContactForms";
 import printStyles from "@/components/printing/Printing.module.css";
 import styles from "@/components/contact/Contact.module.css";
-import { getDictionary, isLocale, localeMeta, locales } from "@/lib/i18n";
-import { contactJsonLd, languageAlternates, pageUrl } from "@/lib/seo";
+import { getDictionary, isLocale, locales } from "@/lib/i18n";
+import { contactJsonLd, languageAlternates, pageUrl, jsonLdHtml, ogBase } from "@/lib/seo";
 import { contactPath } from "@/lib/site";
 import { getContactPage, pageForm, t } from "@/lib/contact";
 import type { PublicForm } from "@/lib/forms";
@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     title,
     description,
     alternates: { canonical: url, languages: languageAlternates(PATH) },
-    openGraph: { type: "website", url, title, description, locale: localeMeta[locale].og, images: [og] },
+    openGraph: { type: "website", url, title, description, ...ogBase(locale, getDictionary(locale).common.brand), images: [og] },
     twitter: { card: "summary_large_image", title, description, images: [og.url] },
   };
 }
@@ -67,7 +67,7 @@ export default async function ContactPage({ params }: { params: Params }) {
       <script
         type="application/ld+json"
         // `<` is escaped so content text can never close the script tag.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactJsonLd(dict, c, locale, PATH)).replace(/</g, "\u003c") }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(contactJsonLd(dict, c, locale, PATH)) }}
       />
       <Header t={dict} locale={locale} path={PATH} />
       <EditScope on={edit} entry="page.contact" label="صفحهٔ تماس">

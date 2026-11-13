@@ -495,7 +495,7 @@ export class TubeScene {
       anchors.forEach((a, i) => {
         const y = colY + i * 24;
         out.push(
-          `<g class="callout"><polyline points="${a.x.toFixed(1)},${a.y.toFixed(1)} ${(colX - 8).toFixed(1)},${y}"/><circle cx="${a.x.toFixed(1)}" cy="${a.y.toFixed(1)}" r="3" fill="${this.o.labels.layers[i]?.color ?? "#999"}"/><text x="${colX}" y="${y + 4}">${escapeXml(this.o.labels.layers[i]?.name ?? "")}</text></g>`,
+          `<g class="callout"><polyline points="${a.x.toFixed(1)},${a.y.toFixed(1)} ${(colX - 8).toFixed(1)},${y}"/><circle cx="${a.x.toFixed(1)}" cy="${a.y.toFixed(1)}" r="3" fill="${safeColor(this.o.labels.layers[i]?.color)}"/><text x="${colX}" y="${y + 4}">${escapeXml(this.o.labels.layers[i]?.name ?? "")}</text></g>`,
         );
       });
       const cap = project(new THREE.Vector3(reach * 1.2, -b.capDrop + b.floor * 0.5, 0));
@@ -1114,3 +1114,8 @@ function disposeTree(root: THREE.Object3D) {
 }
 
 const escapeXml = (s: string) => s.replace(/[<>&"]/g, (ch) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" })[ch]!);
+
+/** Only plain hex colours reach the SVG markup (S2: no attribute injection from content). */
+function safeColor(c: string | undefined): string {
+  return c && /^#[0-9a-f]{3,8}$/i.test(c) ? c : "#999";
+}

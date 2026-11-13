@@ -9,6 +9,8 @@ import "../globals.css";
 import { ensureContent } from "@/lib/content";
 import { editMode } from "@/lib/content/edit";
 import EditBridgeLoader from "@/components/opex/EditBridgeLoader";
+import Analytics from "@/components/analytics/Analytics";
+import { hasAnalytics, siteSettings } from "@/lib/settings";
 
 
 
@@ -26,6 +28,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const url = pageUrl(locale);
   const og = t.media.site.og;
   const image = { url: og.src, width: og.width, height: og.height, alt: t.common.brand };
+  const settings = siteSettings();
+  const v = settings.analytics.verification;
   return {
     metadataBase: new URL(siteUrl),
     title: t.meta.title,
@@ -43,9 +47,12 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       images: [image],
     },
     twitter: { card: "summary_large_image", title: t.meta.title, description: t.meta.description, images: [image.url] },
-    // Draft previews from the OPEX console are never indexed.
-    robots: (await draftMode()).isEnabled ? { index: false, follow: false } : { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
+    // Draft previews from the OPEX console are never indexed; nor is anything while Settings → SEO
+    // has indexing off (staging).
+    robots: (await draftMode()).isEnabled || !settings.indexing ? { index: false, follow: false } : { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
     formatDetection: { telephone: false, email: false, address: false },
+    // Search console ownership (Settings → Analytics).
+    verification: { google: v.google ?? undefined, yandex: v.yandex ?? undefined, other: v.bing ? { "msvalidate.01": v.bing } : undefined },
   };
 }
 
@@ -61,6 +68,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   if (!isLocale(locale)) notFound();
   const t = getDictionary(locale);
   const edit = await editMode();
+  const settings = siteSettings();
 
   return (
     <html
@@ -82,6 +90,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
           {t.common.skip}
         </a>
         {children}
+        {!edit && hasAnalytics(settings.analytics) && <Analytics a={settings.analytics} locale={locale} />}
         {edit && <EditBridgeLoader consoleOrigin={process.env.OPEX_CONSOLE_ORIGIN ?? ""} />}
       </body>
     </html>

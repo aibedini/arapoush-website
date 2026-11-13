@@ -1,11 +1,11 @@
 import { z } from "zod";
 import { Locale, route } from "../openapi/contract.ts";
 
-const EntryOut = z.object({ revision: z.string(), number: z.number(), data: z.unknown().describe("The entry's content (shape: GET /v1/partner/schema or packages/schema).") });
+const EntryOut = z.object({ revision: z.string(), number: z.number(), data: z.unknown().describe("The entry's content (shape: GET /v1/partner/schema or packages/schema)."), publishedAt: z.string().optional().describe("When this revision was published (sitemap lastmod).") });
 const Bundle = z.object({
   generatedAt: z.string(),
   types: z.array(z.string()).describe("Every content type key OPEX knows."),
-  entries: z.record(z.string(), EntryOut).describe("Published entries by type key, plus published forms as `form.<slug>`."),
+  entries: z.record(z.string(), EntryOut).describe("Published entries by type key, plus published forms as `form.<slug>` and the public site settings as `settings.site`."),
 });
 
 const tags = ["Delivery"];
@@ -51,7 +51,7 @@ export const DELIVERY = {
     auth: "delivery",
     source: "delivery/preview.ts",
     headers: [{ name: "opex-preview", required: true, description: "The preview token from the preview link." }],
-    responses: { 200: { description: "Draft entries (and draft forms).", schema: z.object({ preview: z.literal(true), cr: z.string().nullable(), entries: z.record(z.string(), EntryOut) }) } },
+    responses: { 200: { description: "Draft entries (and draft forms); a partner link gets published entries plus its change request.", schema: z.object({ preview: z.literal(true), cr: z.string().nullable(), partner: z.boolean().describe("A partner link: published content plus the partner's change request only."), entries: z.record(z.string(), EntryOut) }) } },
     errors: [{ status: 401, code: "UNAUTHENTICATED", when: "Missing, expired or forged preview token." }],
   }),
   managePreview: route({

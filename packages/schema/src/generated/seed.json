@@ -86,18 +86,6 @@
     },
     {
      "label": {
-      "fa": "رسانه",
-      "en": "Media",
-      "tr": "Medya"
-     },
-     "href": {
-      "fa": "/media",
-      "en": "/media",
-      "tr": "/media"
-     }
-    },
-    {
-     "label": {
       "fa": "درباره ما",
       "en": "About",
       "tr": "Hakkımızda"
@@ -355,7 +343,7 @@
    "linkedin": "https://www.linkedin.com/company/arapoush"
   },
   "links": {
-   "brochure": "/files/arapoush-catalog.pdf"
+   "brochure": null
   },
   "images": {
    "logo": {

@@ -92,7 +92,14 @@ export async function formsModule(app: FastifyInstance, deps: Deps) {
     return publicDefinition(f.slug, f.version, f.published);
   });
 
-  app.post("/v1/delivery/forms/:slug", { bodyLimit: 16 * 1024 * 1024, config: { rateLimit: { max: 120, timeWindow: "1 minute" } } }, async (req, reply) => {
+  // The website calls from one address, so the limit is per visitor (the asserted end-user IP, only
+  // trusted with the delivery token); otherwise one visitor could use up everyone's budget (S2).
+  const visitorKey = (r: FastifyRequest) => {
+    const auth = r.headers.authorization ?? "";
+    const asserted = r.headers["x-end-user-ip"];
+    return auth.startsWith("Bearer ") && safeEqual(auth.slice(7), config.DELIVERY_TOKEN) && typeof asserted === "string" && asserted.length < 64 ? `v:${asserted}` : r.ip;
+  };
+  app.post("/v1/delivery/forms/:slug", { bodyLimit: 16 * 1024 * 1024, config: { rateLimit: { max: 20, timeWindow: "1 minute", keyGenerator: visitorKey } } }, async (req, reply) => {
     site(req);
     const { slug } = req.params as { slug: string };
     const body = normalize(req.body);

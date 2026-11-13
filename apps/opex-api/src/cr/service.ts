@@ -311,6 +311,8 @@ export async function amendCr(deps: Deps, id: string, who: Who & { operatorId: s
     const clean = validateOrThrow(typeOrThrow(it.type_key), setAt(base.data, it.path, value));
     const newId = ulid("cit_");
     await q(`UPDATE change_items SET decision = 'rejected', decision_reason = 'amended by operator' WHERE id = $1`, [itemId]);
+    // Four-eyes: approvals given before the amendment did not see the new value (S2).
+    await q(`UPDATE change_requests SET approvals = '[]'::jsonb WHERE id = $1`, [id]);
     await q(`INSERT INTO change_items (id, cr_id, entry_id, base_revision_id, path, op, old_value, new_value, added_by, position) VALUES ($1,$2,$3,$4,$5,'set',$6,$7,$8,$9)`, [newId, id, it.entry_id, it.base_revision_id, it.path, JSON.stringify(it.old_value), JSON.stringify(getAt(clean, it.path)), who.operatorId, it.position]);
     await audit(q, tenant, { action: "cr.amended", actor: who.actor, request: who.request, resource: { type: "change_request", id, item: itemId, amendment: newId }, changes: [{ op: "replace", path: `${it.type_key}${it.path}`, old: it.new_value, new: getAt(clean, it.path) }] });
     return { id, item: newId };
