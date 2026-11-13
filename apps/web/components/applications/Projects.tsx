@@ -35,7 +35,7 @@ export default function Projects({ c, industries, locale }: { c: Applications["p
           <p className={styles.kicker} lang={locale === "fa" ? "en" : undefined}>
             {t(c.eyebrow, locale)}
           </p>
-          <h2 id="projects-title" className={styles.h2} data-reveal>
+          <h2 id="projects-title" className={styles.h2}>
             {t(c.title, locale)}
           </h2>
           <p className={styles.lead} data-reveal>

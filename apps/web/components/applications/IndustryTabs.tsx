@@ -46,6 +46,8 @@ export default function IndustryTabs({ items, label, children }: { items: { id: 
   const pick = (id: IndustryId, focus = false) => {
     setActive(id);
     history.replaceState(null, "", `#${id}`);
+    // The quote form follows the open industry.
+    dispatchEvent(new CustomEvent(PICK_INDUSTRY, { detail: id }));
     if (focus) document.getElementById(`tab-${id}`)?.focus();
   };
 

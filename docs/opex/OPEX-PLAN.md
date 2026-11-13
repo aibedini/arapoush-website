@@ -710,6 +710,8 @@ How the import works:
 - Diameters a chart does not mention are kept unless "keep missing" is off.
 - A pre-v3 draft is upgraded on its first import.
 
+**Applications page.** OPEX `page.applications`, with the system form `applications-quote`: industry-aware questions (storage for pharma and food, hazards for industrial), routed to sales with a tracking number. See `docs/opex/APPLICATIONS-PLAN.md`.
+
 **Tube quote (T5).** `layout.quote` = `{form, department}`: the OPEX form the quote section renders
 (default `tube-quote`, a system form) and the `page.contact` department shown with the ticket number.
 

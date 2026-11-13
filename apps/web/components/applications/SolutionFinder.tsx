@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import RollText from "@/components/ui/RollText";
 import { ASK_QUOTE, PICK_INDUSTRY, t, type Applications, type AskDetail, type L } from "@/lib/applicationsText";
@@ -24,6 +24,15 @@ export default function SolutionFinder({ c, industries, refs, locale }: { c: App
   const [industry, setIndustry] = useState(industries[0]!.id);
   const [content, setContent] = useState(c.contents[0]!.id);
   const [priority, setPriority] = useState(c.priorities[0]!.id);
+  // Both ways: a tab opened above sets the finder's industry too.
+  useEffect(() => {
+    const on = (e: Event) => {
+      const id = (e as CustomEvent<string>).detail;
+      if (industries.some((x) => x.id === id)) setIndustry(id as typeof industry);
+    };
+    addEventListener(PICK_INDUSTRY, on);
+    return () => removeEventListener(PICK_INDUSTRY, on);
+  }, [industries]);
   const ind = industries.find((x) => x.id === industry)!;
   const con = c.contents.find((x) => x.id === content)!;
   const pri = c.priorities.find((x) => x.id === priority)!;
@@ -66,9 +75,9 @@ export default function SolutionFinder({ c, industries, refs, locale }: { c: App
         {group("finder-priority", c.priority, c.priorities, priority, setPriority, (o) => t(o.label, locale))}
       </form>
 
-      <section className={styles.fResult} aria-live="polite" aria-labelledby="finder-result" style={{ "--accent": ind.accent } as React.CSSProperties}>
+      <section className={styles.fResult} aria-labelledby="finder-result" style={{ "--accent": ind.accent } as React.CSSProperties}>
         <p className={styles.fResultKicker}>{t(c.result, locale)}</p>
-        <h3 id="finder-result" className={styles.fResultTitle}>
+        <h3 id="finder-result" className={styles.fResultTitle} aria-live="polite">
           {t(ind.name, locale)} · {t(con.label, locale)} · {t(pri.label, locale)}
         </h3>
 
@@ -102,10 +111,12 @@ export default function SolutionFinder({ c, industries, refs, locale }: { c: App
           <div>
             <dt>{t(c.printLabel, locale)}</dt>
             <dd>
-              <ul className={styles.examples}>
+              <ul className={styles.fPrints}>
                 {prints.map((id) => (
                   <li key={id}>
-                    <a href={`/${locale}${printingPath}#technologies`}>{t(refs.techs[id], locale)}</a>
+                    <a href={`/${locale}${printingPath}#technologies`} className={styles.fPrint}>
+                      {t(refs.techs[id], locale)}
+                    </a>
                   </li>
                 ))}
               </ul>

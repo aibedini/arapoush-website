@@ -69,3 +69,27 @@ panel, for example `/tubes-food` → `/en/applications#food`.
 - P1: content, schema, hero, industry showcase, SEO, redirects and links.
 - P2: solution finder (closures from the catalogue, print names from page.printing) and engineering hotspots.
 - P3: sample projects (industry filter, native dialog lightbox), quality steps with the certificates link, and the FAQ filtered by industry.
+- P4:
+  - **Quote form:** the industry-aware `applications-quote` form, on ice with a compact navy heading
+    card.
+  - **OPEX:** the visual editor lists «کاربردها», and previews map `page.applications` to
+    `/{locale}/applications`.
+  - **Design review:**
+    - less navy;
+    - quality became a process rail;
+    - every engineering detail is in the HTML;
+    - the finder and tabs sync both ways;
+    - scroll fades on mobile;
+    - contrast and target fixes.
+  - **Stories:** `components/applications/Applications.stories.tsx`.
+- Lighthouse (production build, `/fa/applications`):
+  - mobile: Performance 84 and 94 (two runs); Accessibility, Best Practices and SEO 100;
+  - desktop: 100 / 100 / 100 / 100;
+  - `/en/applications`: Accessibility, Best Practices and SEO 100.
+
+## Shared fixes made here
+
+- `OpexForm` takes `initial`, which pre-fills visible fields.
+- Its field IDs now come from the form slug, not `useId`. The code-split form got different IDs on
+  the server and the client, so labels lost their fields after hydration (the tube quote too).
+

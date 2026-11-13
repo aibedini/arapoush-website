@@ -12,7 +12,6 @@ import styles from "./Applications.module.css";
  */
 export default function Engineering({ c, locale }: { c: Applications["engineering"]; locale: string }) {
   const [id, setId] = useState(c.spots[0]!.id);
-  const spot = c.spots.find((s) => s.id === id)!;
   return (
     <section id="engineering" className={`${styles.engineering} ${styles.onDark}`} aria-labelledby="eng-title">
       <div className={styles.inner}>
@@ -21,7 +20,7 @@ export default function Engineering({ c, locale }: { c: Applications["engineerin
             <p className={styles.kicker} lang={locale === "fa" ? "en" : undefined}>
               {t(c.eyebrow, locale)}
             </p>
-            <h2 id="eng-title" className={styles.h2} data-reveal>
+            <h2 id="eng-title" className={styles.h2}>
               {t(c.title, locale)}
             </h2>
             <p className={styles.lead} data-reveal>
@@ -30,7 +29,7 @@ export default function Engineering({ c, locale }: { c: Applications["engineerin
             <ul className={styles.engList}>
               {c.spots.map((s, i) => (
                 <li key={s.id}>
-                  <button type="button" className={styles.engItem} aria-pressed={s.id === id} aria-controls="eng-detail" onClick={() => setId(s.id)}>
+                  <button type="button" className={styles.engItem} aria-pressed={s.id === id} aria-controls={`eng-${s.id}`} onClick={() => setId(s.id)}>
                     <span className={styles.engNum} aria-hidden="true">
                       {new Intl.NumberFormat(locale === "fa" ? "fa-IR" : locale).format(i + 1)}
                     </span>
@@ -39,6 +38,19 @@ export default function Engineering({ c, locale }: { c: Applications["engineerin
                 </li>
               ))}
             </ul>
+            {/* Every detail is in the HTML (search engines read all five); one shows. */}
+            {c.spots.map((s) => (
+              <div key={s.id} id={`eng-${s.id}`} className={styles.engDetail} hidden={s.id !== id}>
+                <h3 className={styles.engDetailTitle}>{t(s.title, locale)}</h3>
+                <p>{t(s.text, locale)}</p>
+                {s.link && (
+                  <a href={`/${locale}${s.link.href}`} className={styles.engLink}>
+                    {t(s.link.label, locale)}
+                    <ArrowIcon className={styles.arrow} />
+                  </a>
+                )}
+              </div>
+            ))}
           </div>
 
           <div className={styles.engStage}>
@@ -58,18 +70,6 @@ export default function Engineering({ c, locale }: { c: Applications["engineerin
                   <PlusIcon />
                 </button>
               ))}
-            </div>
-            <div id="eng-detail" className={styles.engDetail} aria-live="polite">
-              <h3 key={spot.id} className={styles.engDetailTitle}>
-                {t(spot.title, locale)}
-              </h3>
-              <p>{t(spot.text, locale)}</p>
-              {spot.link && (
-                <a href={`/${locale}${spot.link.href}`} className={styles.engLink}>
-                  {t(spot.link.label, locale)}
-                  <ArrowIcon className={styles.arrow} />
-                </a>
-              )}
             </div>
           </div>
         </div>

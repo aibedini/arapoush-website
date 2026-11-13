@@ -136,7 +136,7 @@ export default function EditEntry() {
   const q = find.trim().toLowerCase();
   const fields = Object.entries(v.schema.fields).filter(([k, f]) => !q || k.toLowerCase().includes(q) || faLabel(k, f.label).includes(find.trim()) || JSON.stringify(data[k] ?? "").toLowerCase().includes(q));
   const changedCount = Object.keys(v.schema.fields).filter((k) => JSON.stringify(data[k]) !== JSON.stringify(orig[k])).length;
-  const VISUAL: Record<string, string> = { "product.tube.page": "tube", "product.effervescent.page": "eff", "page.printing": "printing", "page.about": "about" };
+  const VISUAL: Record<string, string> = { "product.tube.page": "tube", "product.effervescent.page": "eff", "page.printing": "printing", "page.about": "about", "page.applications": "applications" };
   const visualPage = key.startsWith("page.home") ? "home" : (VISUAL[key] ?? null);
   const unpublished = v.entry.draft_revision_id !== v.entry.published_revision_id;
 

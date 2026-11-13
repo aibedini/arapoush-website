@@ -32,10 +32,10 @@ export default function AppHero({ c, industries, locale }: { c: Applications["he
             </div>
           </div>
 
-          <ul className={styles.fan} aria-label={t(c.industriesLabel, locale)}>
+          <ul className={styles.fan} aria-hidden="true">
             {industries.map((x, i) => (
               <li key={x.id} className={styles.fanItem} style={{ "--i": i, "--n": industries.length, "--accent": x.accent } as React.CSSProperties}>
-                <a href={`#${x.id}`} className={styles.fanCard} data-industry={x.id}>
+                <a href={`#${x.id}`} className={styles.fanCard} data-industry={x.id} tabIndex={-1}>
                   <Image
                     src={x.image.src}
                     alt=""
@@ -53,7 +53,7 @@ export default function AppHero({ c, industries, locale }: { c: Applications["he
           </ul>
         </div>
 
-        <ul className={styles.chips} data-reveal-stagger>
+        <ul className={styles.chips} aria-label={t(c.industriesLabel, locale)} data-reveal-stagger>
           {industries.map((x) => {
             const Icon = INDUSTRY_ICONS[x.id];
             return (

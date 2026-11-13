@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { isVisible, pickL, validateSubmission, type FormField } from "@arapoush/schema";
 import type { Dictionary } from "@/lib/i18n";
 import { sendForm, type PublicForm } from "@/lib/forms";
@@ -29,17 +29,22 @@ const toBase64 = (f: File) =>
  * Embedding hooks (the tube quote, T5): `values` fills hidden fields from the page (the selected
  * configuration); `context` adds spec lines to the ticket; `success` replaces the sent view (it gets
  * the ticket number and a reset); `onFallback` runs when OPEX cannot take the submission (no OPEX, or
- * an outage) instead of showing the failure note, e.g. to open the visitor's email app.
+ * an outage) instead of showing the failure note, e.g. to open the visitor's email app. `initial`
+ * pre-fills visible fields (the applications page: the industry from the tab or the finder); a new
+ * object re-applies it, and the visitor can still change the value.
  */
 type Embed = {
   values?: Record<string, string>;
+  initial?: Record<string, string>;
   context?: { subject?: string; spec?: string[] };
   success?: (o: { number: number | null; reset: () => void; values: Record<string, unknown> }) => React.ReactNode;
   onFallback?: (values: Record<string, unknown>) => void;
 };
 
-export default function OpexForm({ form, t, locale, page, headingLevel = 2, values: given, context, success, onFallback }: { form: PublicForm; t: Dictionary["forms"]; locale: string; page: string; headingLevel?: 1 | 2 } & Embed) {
-  const uid = useId();
+export default function OpexForm({ form, t, locale, page, headingLevel = 2, values: given, initial, context, success, onFallback }: { form: PublicForm; t: Dictionary["forms"]; locale: string; page: string; headingLevel?: 1 | 2 } & Embed) {
+  // A stable prefix from the form, not useId: the form is code-split (LazyOpexForm), so React's ids
+  // differ between the server HTML and the client and every label lost its field on hydration.
+  const uid = `opex-${form.slug.replace(/[^a-z0-9-]/gi, "")}`;
   const [values, setValues] = useState<Record<string, unknown>>({});
   const [files, setFiles] = useState<Record<string, File[]>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -51,6 +56,16 @@ export default function OpexForm({ form, t, locale, page, headingLevel = 2, valu
   const done = useRef<HTMLDivElement>(null);
   const L = (l: Parameters<typeof pickL>[0]) => pickL(l, locale);
   const H = headingLevel === 1 ? "h1" : "h2";
+
+  // Visible fields the page pre-fills (only fields the form shows, only options it offers).
+  useEffect(() => {
+    if (!initial) return;
+    const ok = Object.entries(initial).filter(([k, v]) => {
+      const f = form.fields.find((x) => x.id === k && x.type !== "hidden");
+      return f && v && (!f.options?.length || f.options.some((o) => o.value === v));
+    });
+    if (ok.length) setValues((s) => ({ ...s, ...Object.fromEntries(ok) }));
+  }, [initial, form.fields]);
 
   // Hidden fields: fixed values, or {page} / {utm_*} from the address.
   const hidden = useMemo(() => {

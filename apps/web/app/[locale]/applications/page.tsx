@@ -11,6 +11,8 @@ import Engineering from "@/components/applications/Engineering";
 import Projects from "@/components/applications/Projects";
 import Quality from "@/components/applications/Quality";
 import Faq from "@/components/applications/Faq";
+import AppQuote from "@/components/applications/AppQuote";
+import { getContactPage, pageForm } from "@/lib/contact";
 import type { FinderRefs } from "@/components/applications/SolutionFinder";
 import { getTubeProduct } from "@/lib/products";
 import { getPrinting } from "@/lib/printing";
@@ -67,6 +69,9 @@ export default async function ApplicationsPage({ params }: { params: Params }) {
     techs: Object.fromEntries(getPrinting().tech.items.map((m) => [m.id, m.name])),
   };
 
+  const form = pageForm(a.quote.form);
+  const department = getContactPage().directory.departments.find((d) => d.id === a.quote.department);
+
   return (
     <>
       <script
@@ -83,6 +88,7 @@ export default async function ApplicationsPage({ params }: { params: Params }) {
           <Engineering c={a.engineering} locale={locale} />
           <Projects c={a.projects} industries={a.industries.items} locale={locale} />
           <Quality c={a.quality} locale={locale} />
+          {form && <AppQuote c={a.quote} form={form} forms={dict.forms} department={department} email={dict.site.contact.email} locale={locale} />}
           <Faq c={a.faq} industries={a.industries.items} locale={locale} />
         </main>
       </EditScope>

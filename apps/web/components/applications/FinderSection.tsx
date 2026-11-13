@@ -11,7 +11,7 @@ export default function FinderSection({ c, industries, refs, locale }: { c: Appl
           <p className={styles.kicker} lang={locale === "fa" ? "en" : undefined}>
             {t(c.eyebrow, locale)}
           </p>
-          <h2 id="finder-title" className={styles.h2} data-reveal>
+          <h2 id="finder-title" className={styles.h2}>
             {t(c.title, locale)}
           </h2>
           <p className={styles.lead} data-reveal>

@@ -14,7 +14,7 @@ export default function Quality({ c, locale }: { c: Applications["quality"]; loc
             <p className={styles.kicker} lang={locale === "fa" ? "en" : undefined}>
               {t(c.eyebrow, locale)}
             </p>
-            <h2 id="quality-title" className={styles.h2} data-reveal>
+            <h2 id="quality-title" className={styles.h2}>
               {t(c.title, locale)}
             </h2>
             <p className={styles.lead} data-reveal>

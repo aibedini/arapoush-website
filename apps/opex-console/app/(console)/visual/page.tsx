@@ -20,6 +20,7 @@ const PAGES: PageDef[] = [
   { key: "eff", label: "تیوب قرص جوشان", type: "product.effervescent.page", entries: ["product.effervescent.page", "global.site"] },
   { key: "printing", label: "چاپ", type: "page.printing", entries: ["page.printing", "global.site"] },
   { key: "about", label: "درباره آراپوش", type: "page.about", entries: ["page.about", "global.site"] },
+  { key: "applications", label: "کاربردها", type: "page.applications", entries: ["page.applications", "product.tube.catalogue", "page.printing", "global.site"] },
 ];
 const STYLE_LABEL: Record<string, string> = { media: "تصویر تمام‌عرض", compact: "کوتاه", viewerStart: "نمایشگر اول", viewerEnd: "گزینه‌ها اول", grid: "شبکه", rail: "ردیف لغزان", split: "کنار هم", stacked: "زیر هم" };
 const BLOCKS: Record<BlockKind, { label: string; text: string; icon: typeof Rows }> = {

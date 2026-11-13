@@ -20,7 +20,7 @@ export default function IndustryShowcase({ c, locale }: { c: Applications["indus
           <p className={styles.kicker} lang={locale === "fa" ? "en" : undefined}>
             {t(c.eyebrow, locale)}
           </p>
-          <h2 id="industries-title" className={styles.h2} data-reveal>
+          <h2 id="industries-title" className={styles.h2}>
             {t(c.title, locale)}
           </h2>
           <p className={styles.lead} data-reveal>
@@ -30,7 +30,7 @@ export default function IndustryShowcase({ c, locale }: { c: Applications["indus
 
         <IndustryTabs items={c.items.map((x) => ({ id: x.id, name: t(x.name, locale), accent: x.accent }))} label={t(c.tabsLabel, locale)}>
           {c.items.map((x) => (
-            <article key={x.id} id={x.id} role="tabpanel" aria-labelledby={`tab-${x.id}`} tabIndex={0} className={styles.panel} data-panel={x.id} style={{ "--accent": x.accent } as React.CSSProperties}>
+            <div key={x.id} id={x.id} role="tabpanel" aria-labelledby={`tab-${x.id}`} tabIndex={0} className={styles.panel} data-panel={x.id} style={{ "--accent": x.accent } as React.CSSProperties}>
               <div className={styles.panelMedia}>
                 <Image src={x.image.src} alt="" fill sizes="(max-width: 1099px) 92vw, 40vw" className={x.id === "industrial" ? styles.contain : undefined} data-no-mirror />
                 <span className={styles.panelLabel} lang={locale === "fa" ? "en" : undefined}>
@@ -96,7 +96,7 @@ export default function IndustryShowcase({ c, locale }: { c: Applications["indus
                 <summary>{t(c.readMore, locale)}</summary>
                 <p>{t(x.body, locale)}</p>
               </details>
-            </article>
+            </div>
           ))}
         </IndustryTabs>
       </div>

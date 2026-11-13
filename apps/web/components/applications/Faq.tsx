@@ -17,7 +17,7 @@ export default function Faq({ c, industries, locale }: { c: Applications["faq"];
           <p className={styles.kicker} lang={locale === "fa" ? "en" : undefined}>
             {t(c.eyebrow, locale)}
           </p>
-          <h2 id="faq-title" className={styles.h2} data-reveal>
+          <h2 id="faq-title" className={styles.h2}>
             {t(c.title, locale)}
           </h2>
         </header>
