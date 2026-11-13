@@ -15,9 +15,25 @@ With your domain and automatic HTTPS (point the domain's DNS `A` record to the s
 curl -fsSL https://raw.githubusercontent.com/aibedini/arapoush-website/main/install.sh | sudo DOMAIN=arapoush.com bash
 ```
 
-### Update to the latest release
+Run it in a terminal with no options and it asks what to install (website only, or the full platform),
+the domain and whether to update automatically.
+
+**Full platform** (website + OPEX console and API, Postgres, ClamAV, backups, settings — Docker). Point
+`DOMAIN`, `opex.DOMAIN` and `console.DOMAIN` at the server first:
 
 ```bash
+curl -fsSL https://raw.githubusercontent.com/aibedini/arapoush-website/main/install.sh | sudo MODE=full DOMAIN=arapoush.com bash
+```
+
+It installs Docker, generates every secret into `/srv/arapoush/infra/.env` (copy `BACKUP_KEY` and
+`INQUIRY_KEY` to your password manager), limits the console to your current IP (ask: `CONSOLE_ALLOW`),
+starts the stack and creates the first console admin (the temporary password is printed once). Updates take
+a database dump first and go back to the previous code if the new version does not start.
+
+### Menu, updates and maintenance
+
+```bash
+sudo arapoush          # menu: status, check, update, rollback, restart, logs, backup, admin, settings, uninstall
 sudo arapoush update
 ```
 
@@ -33,6 +49,10 @@ If the build fails or the new version doesn't start, the site keeps running, or 
 | `arapoush version` | Running version, commit and build date |
 | `sudo arapoush rollback` | Switch back to the previous build instantly |
 | `arapoush logs` / `sudo arapoush restart` | Follow logs / restart |
+| `sudo arapoush status` | Site answer, services, disk space |
+| `sudo arapoush backup` | Full platform: database dump now (encrypted archives: Console → Backups) |
+| `sudo arapoush admin` | Full platform: create a console admin |
+| `sudo arapoush config` | Edit the settings (`infra/.env` or `/etc/arapoush.conf`) |
 
 Automatic nightly updates: install once with `AUTO_UPDATE=1` (systemd).
 
@@ -86,9 +106,20 @@ curl -fsSL https://raw.githubusercontent.com/aibedini/arapoush-website/main/inst
 curl -fsSL https://raw.githubusercontent.com/aibedini/arapoush-website/main/install.sh | sudo DOMAIN=arapoush.com bash
 ```
 
-برای **به‌روزرسانی به آخرین نسخه**:
+اگر دستور را بدون گزینه در ترمینال اجرا کنید، می‌پرسد چه نصب شود (فقط سایت یا پلتفرم کامل)، دامنه و به‌روزرسانی خودکار.
+
+**پلتفرم کامل** (سایت + کنسول و API اپکس، پایگاه داده، پشتیبان‌گیری، تنظیمات — با Docker). اول دامنه، `opex.` و `console.` را به سرور وصل کنید:
 
 ```bash
+curl -fsSL https://raw.githubusercontent.com/aibedini/arapoush-website/main/install.sh | sudo MODE=full DOMAIN=arapoush.com bash
+```
+
+همهٔ کلیدها خودکار ساخته می‌شوند (`BACKUP_KEY` و `INQUIRY_KEY` را در جای امن نگه دارید)، کنسول فقط از IP فعلی شما باز است و اولین مدیر کنسول ساخته می‌شود.
+
+**منو و نگه‌داری** (به‌روزرسانی، وضعیت، بازگشت، لاگ، پشتیبان، ساخت مدیر، حذف):
+
+```bash
+sudo arapoush
 sudo arapoush update
 ```
 

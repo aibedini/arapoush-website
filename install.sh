@@ -6,10 +6,17 @@
 # With a domain (automatic HTTPS through Caddy):
 #   curl -fsSL https://raw.githubusercontent.com/aibedini/arapoush-website/main/install.sh | sudo DOMAIN=arapoush.com bash
 #
+# Website + OPEX console/API (Docker, Postgres, backups, settings) — the full platform:
+#   curl -fsSL https://raw.githubusercontent.com/aibedini/arapoush-website/main/install.sh | sudo MODE=full DOMAIN=arapoush.com bash
+#
+# Run it in a terminal without options and it asks (mode, domain, …). Afterwards `sudo arapoush`
+# opens a menu: status, update, check, rollback, restart, logs, backup, admin, uninstall.
+#
 # Update to the newest release (keeps DOMAIN, PORT, … from the first install):
 #   sudo arapoush update            # or: sudo arapoush update v1.2.0 / sudo arapoush update main
 #
 # Options (environment variables; saved in /etc/arapoush.conf and reused by updates):
+#   MODE=site|full         site: the website only (Node, no database). full: website + OPEX in Docker
 #   DOMAIN=example.com     serve on 80/443 with a free Let's Encrypt certificate (DNS must point here)
 #   WWW=1                  also answer on www.DOMAIN and redirect it to DOMAIN
 #   PORT=80                public port when no DOMAIN is set (default 80)
@@ -27,7 +34,7 @@ set -Eeuo pipefail
 
 # Settings from the first install; anything passed explicitly this time wins.
 CONF=/etc/arapoush.conf
-SAVED_KEYS="DOMAIN WWW PORT APP_PORT SITE_URL BRANCH APP_DIR NODE_MIRROR NPM_REGISTRY AUTO_UPDATE"
+SAVED_KEYS="MODE DOMAIN WWW PORT APP_PORT SITE_URL BRANCH APP_DIR NODE_MIRROR NPM_REGISTRY AUTO_UPDATE"
 if [ -f "$CONF" ] && [ "${UNINSTALL:-0}" != "1" ]; then
   while IFS='=' read -r key value; do
     case " $SAVED_KEYS " in *" $key "*) [ -n "${!key:-}" ] || printf -v "$key" '%s' "$value" ;; esac
@@ -38,7 +45,8 @@ REPO_URL="${REPO_URL:-https://github.com/aibedini/arapoush-website.git}"
 BRANCH="${BRANCH:-main}"
 VERSION="${VERSION:-latest}"
 AUTO_UPDATE="${AUTO_UPDATE:-0}"
-APP_DIR="${APP_DIR:-/opt/arapoush}"
+MODE="${MODE:-}"
+APP_DIR="${APP_DIR:-}"
 APP_USER="${APP_USER:-arapoush}"
 SERVICE="arapoush"
 DOMAIN="${DOMAIN:-}"
@@ -59,6 +67,31 @@ die()  { printf '%s✘ %s%s\n' "$c_err" "$*" "$c_off" >&2; exit 1; }
 trap 'die "Failed at line $LINENO: $BASH_COMMAND"' ERR
 
 have() { command -v "$1" >/dev/null 2>&1; }
+
+# Questions go to the terminal even under `curl | bash`; without one the default is used.
+ask() {
+  local ans=""
+  if [ -r /dev/tty ] && [ -w /dev/tty ] && [ "${NONINTERACTIVE:-0}" != 1 ]; then
+    printf "%s [%s]: " "$1" "$2" > /dev/tty; IFS= read -r ans < /dev/tty || ans=""
+  fi
+  printf "%s" "${ans:-$2}"
+}
+
+# First install in a terminal with no options: ask what to install.
+if [ -z "$MODE" ] && [ ! -f "$CONF" ] && [ "${UNINSTALL:-0}" != 1 ] && [ -r /dev/tty ] && [ "${NONINTERACTIVE:-0}" != 1 ]; then
+  printf "
+%sArapoush installer%s
+  1) Website only — fast, no database (content as built)
+  2) Full platform — website + OPEX console, API, database, backups (Docker)
+" "$c_info" "$c_off" > /dev/tty
+  case "$(ask "Choose" 1)" in 2) MODE=full ;; *) MODE=site ;; esac
+  [ -n "$DOMAIN" ] || DOMAIN="$(ask "Domain (empty: serve on this server IP over http)" "")"
+  [ "$MODE" = full ] || [ -z "$DOMAIN" ] || { case "$(ask "Also answer on www.$DOMAIN? (y/n)" n)" in y|Y) WWW=1 ;; esac; }
+  [ "$MODE" = full ] || { case "$(ask "Install new releases automatically every night? (y/n)" n)" in y|Y) AUTO_UPDATE=1 ;; esac; }
+fi
+MODE="${MODE:-site}"
+[ "$MODE" = site ] || [ "$MODE" = full ] || die "MODE must be site or full"
+[ -n "$APP_DIR" ] || { [ "$MODE" = full ] && APP_DIR=/srv/arapoush || APP_DIR=/opt/arapoush; }
 
 [ "$(id -u)" -eq 0 ] || die "Run as root, e.g.: curl -fsSL <url>/install.sh | sudo bash"
 [ "$(uname -s)" = "Linux" ] || die "This installer is for Linux."
@@ -114,6 +147,291 @@ if [ ${#need[@]} -gt 0 ] && [ -n "$PM" ]; then
   log "Installing ${need[*]}"
   pkg_install "${need[@]}"
 fi
+
+# ── Helper command (`arapoush`, with a menu) ─────────────────────────────────
+write_helper() {
+cat > /usr/local/bin/arapoush <<'HELPER'
+#!/usr/bin/env bash
+# Arapoush helper, written by install.sh. Run with no arguments for the menu.
+set -uo pipefail
+CONF=/etc/arapoush.conf
+REPO="https://github.com/aibedini/arapoush-website.git"
+INSTALLER="https://raw.githubusercontent.com/aibedini/arapoush-website/main/install.sh"
+val() { sed -n "s/^$1=//p" "$CONF" 2>/dev/null | tail -n1; }
+MODE="$(val MODE)"; MODE="${MODE:-site}"
+APP_DIR="$(val APP_DIR)"; [ -n "$APP_DIR" ] || { [ "$MODE" = full ] && APP_DIR=/srv/arapoush || APP_DIR=/opt/arapoush; }
+B=$'\033[1m'; G=$'\033[32m'; Y=$'\033[33m'; R=$'\033[31m'; N=$'\033[0m'
+
+as_root() { [ "$(id -u)" -eq 0 ] || exec sudo "$0" "$@"; }
+systemd() { command -v systemctl >/dev/null && [ -d /run/systemd/system ]; }
+compose() { docker compose -f "$APP_DIR/infra/docker-compose.prod.yml" --env-file "$APP_DIR/infra/.env" "$@"; }
+envv() { sed -n "s/^$1=//p" "$APP_DIR/infra/.env" 2>/dev/null | tail -n1; }
+latest() { git ls-remote --tags --refs "$REPO" 'v*' | awk -F/ '{print $NF}' | sort -t. -k1.2,1n -k2,2n -k3,3n | tail -n1; }
+current() {
+  if [ "$MODE" = full ]; then git -C "$APP_DIR" describe --tags --always 2>/dev/null
+  else sed -n 's/^version=//p' "$APP_DIR/current/.arapoush-release" 2>/dev/null; fi
+}
+site_url() { if [ "$MODE" = full ]; then echo "https://$(envv SITE_DOMAIN)"; else sed -n "s/^SITE_URL=//p" "$CONF" 2>/dev/null; fi; }
+confirm() { local a; read -r -p "$1 [y/N] " a </dev/tty; [ "$a" = y ] || [ "$a" = Y ]; }
+
+cmd_update() {
+  as_root update "$@"
+  echo "${B}Updating to ${1:-latest}…${N}"
+  curl -fsSL "$INSTALLER" | MODE="$MODE" APP_DIR="$APP_DIR" VERSION="${1:-latest}" bash
+}
+cmd_check() {
+  local l c; l="$(latest)"; c="$(current)"
+  if [ -n "$l" ] && [ "$l" != "$c" ]; then echo "${Y}Update available:${N} $c → $l   (sudo arapoush update)"
+  else echo "${G}Up to date:${N} $c"; fi
+}
+cmd_status() {
+  echo "${B}Mode:${N} $MODE   ${B}Version:${N} $(current)   ${B}Folder:${N} $APP_DIR"
+  local url; url="$(site_url)"
+  local code; code="$(curl -sk -o /dev/null -w '%{http_code}' --max-time 10 "$url/fa" || true)"
+  [ "$code" = 200 ] && echo "${G}●${N} Site $url/fa answers 200" || echo "${R}●${N} Site $url/fa answers $code"
+  if [ "$MODE" = full ]; then compose ps --format 'table {{.Service}}\t{{.State}}\t{{.Status}}'
+  elif systemd; then systemctl --no-pager --lines=0 status arapoush caddy-arapoush 2>/dev/null | grep -E '●|Active:' || true
+  else rc-service arapoush status 2>/dev/null || true; fi
+  df -h "$APP_DIR" | tail -n1 | awk '{print "Disk: " $4 " free of " $2}'
+}
+cmd_restart() {
+  as_root restart
+  if [ "$MODE" = full ]; then compose restart
+  elif systemd; then systemctl restart arapoush; else rc-service arapoush restart; fi
+  echo "${G}Restarted${N}"
+}
+cmd_logs() {
+  if [ "$MODE" = full ]; then compose logs -f --tail=100 ${1:-}
+  elif command -v journalctl >/dev/null; then journalctl -u arapoush -f; else tail -f /var/log/arapoush.log; fi
+}
+cmd_rollback() {
+  as_root rollback
+  if [ "$MODE" = full ]; then
+    local now prev; now="$(git -C "$APP_DIR" describe --tags --abbrev=0 2>/dev/null)"
+    prev="$(git -C "$APP_DIR" tag -l 'v*' | sort -t. -k1.2,1n -k2,2n -k3,3n | grep -B1 -xF "$now" | head -n1)"
+    [ -n "$prev" ] && [ "$prev" != "$now" ] || { echo "No earlier release to go back to."; return 1; }
+    confirm "Go back from $now to $prev? (the database stays as it is)" || return 0
+    git -C "$APP_DIR" checkout -q "$prev" && compose up -d --build --remove-orphans && echo "${G}Rolled back to $prev${N}"
+  else
+    local now prev; now="$(readlink -f "$APP_DIR/current")"
+    prev="$(ls -1dt "$APP_DIR"/releases/*/ | sed 's#/$##' | grep -vxF "$now" | head -n1 || true)"
+    [ -n "$prev" ] || { echo "No previous release to go back to."; return 1; }
+    ln -sfn "$prev" "$APP_DIR/current" && { systemd && systemctl restart arapoush || rc-service arapoush restart; }
+    echo "${G}Rolled back to $(basename "$prev")${N}"
+  fi
+}
+cmd_backup() {
+  as_root backup
+  [ "$MODE" = full ] || { echo "The website-only install keeps no data of its own (content is built in). Nothing to back up."; return 0; }
+  local stamp dir; stamp="$(date -u +%Y%m%dT%H%M%SZ)"; dir="$APP_DIR/db-dumps"; mkdir -p "$dir"
+  if [ -n "$(envv BACKUP_AGE_RECIPIENT)" ] && command -v age >/dev/null; then
+    (cd "$APP_DIR/infra" && BACKUP_DIR="$APP_DIR/server-backups" ./backup.sh) && echo "${G}Encrypted server backup written to $APP_DIR/server-backups${N}"
+  else
+    (umask 077; compose exec -T postgres pg_dump -U opex -d opex -Fc > "$dir/manual-$stamp.dump") && echo "${G}Database dump: $dir/manual-$stamp.dump${N}"
+    echo "Encrypted backups with media, schedules and FTP/SFTP/S3 copies: Console → پشتیبان‌گیری."
+  fi
+}
+cmd_admin() {
+  as_root admin
+  [ "$MODE" = full ] || { echo "Only the full platform has a console."; return 1; }
+  local email name pass
+  read -r -p "Admin email: " email </dev/tty; read -r -p "Display name: " name </dev/tty
+  pass="$(openssl rand -base64 24 | tr -d '/+=' | cut -c1-24)"
+  compose exec -T -e OPEX_NEW_PASSWORD="$pass" opex-api node --no-warnings src/cli.ts create-operator "$email" "${name:-Admin}" super_admin \
+    && echo "${G}Created.${N} Temporary password: ${B}$pass${N} (change it after the first sign-in)"
+}
+cmd_config() {
+  as_root config
+  if [ "$MODE" = full ]; then "${EDITOR:-nano}" "$APP_DIR/infra/.env" && confirm "Apply now (restart the stack)?" && compose up -d
+  else "${EDITOR:-nano}" "$CONF" && echo "Apply with: sudo arapoush update"; fi
+}
+cmd_uninstall() {
+  as_root uninstall
+  if [ "$MODE" = full ]; then
+    confirm "Stop and remove the platform containers? (data volumes and $APP_DIR are kept)" || return 0
+    compose down && rm -f /usr/local/bin/arapoush "$CONF" && echo "Removed. Data is still in Docker volumes and $APP_DIR."
+  else
+    confirm "Remove the Arapoush website?" || return 0
+    curl -fsSL "$INSTALLER" | UNINSTALL=1 bash
+  fi
+}
+
+menu() {
+  while true; do
+    echo
+    echo "${B}Arapoush ($MODE) — $(current)${N}   $(site_url)"
+    echo "  1) Status            2) Check for updates   3) Update to latest"
+    echo "  4) Update to a version / branch             5) Roll back"
+    echo "  6) Restart           7) Logs                8) Backup now"
+    [ "$MODE" = full ] && echo "  9) Create console admin                    10) Edit settings (.env)" || echo "  10) Edit settings"
+    echo "  11) Uninstall        0) Exit"
+    local c v; read -r -p "> " c </dev/tty || return 0
+    case "$c" in
+      1) cmd_status ;; 2) cmd_check ;; 3) cmd_update latest ;;
+      4) read -r -p "Version (e.g. v1.1.0) or branch: " v </dev/tty; [ -n "$v" ] && cmd_update "$v" ;;
+      5) cmd_rollback ;; 6) cmd_restart ;; 7) cmd_logs ;; 8) cmd_backup ;; 9) cmd_admin ;; 10) cmd_config ;; 11) cmd_uninstall ;;
+      0|q|"") return 0 ;;
+      *) echo "?" ;;
+    esac
+  done
+}
+
+case "${1:-}" in
+  "") if [ -t 0 ] || [ -r /dev/tty ]; then menu; else cmd_status; fi ;;
+  update) shift; cmd_update "${1:-latest}" ;;
+  check) cmd_check ;;
+  status) cmd_status ;;
+  version) current ;;
+  releases) [ "$MODE" = full ] && git -C "$APP_DIR" tag -l 'v*' || ls -1t "$APP_DIR/releases" ;;
+  rollback) cmd_rollback ;;
+  restart) cmd_restart ;;
+  logs) shift; cmd_logs "${1:-}" ;;
+  backup) cmd_backup ;;
+  admin) cmd_admin ;;
+  config) cmd_config ;;
+  uninstall) cmd_uninstall ;;
+  menu) menu ;;
+  *) echo "Usage: arapoush [menu|status|check|update [latest|vX.Y.Z|branch]|rollback|restart|logs [service]|backup|admin|config|version|releases|uninstall]" ;;
+esac
+HELPER
+chmod 755 /usr/local/bin/arapoush
+}
+
+# ── Full platform: website + OPEX (console, API, Postgres, ClamAV) in Docker ──
+# MODE=full. Everything runs from docker compose (infra/docker-compose.prod.yml) under $APP_DIR, with
+# secrets generated once into infra/.env. Updates take a database dump first and roll back the code
+# if the new version does not come up.
+compose() { docker compose -f "$APP_DIR/infra/docker-compose.prod.yml" --env-file "$APP_DIR/infra/.env" "$@"; }
+set_env() { # set_env KEY VALUE — replaces or appends one line of infra/.env (values may hold / & ' ")
+  local f="$APP_DIR/infra/.env" tmp; tmp="$(mktemp)"
+  grep -v "^$1=" "$f" > "$tmp" || true
+  printf '%s=%s\n' "$1" "$2" >> "$tmp"
+  cat "$tmp" > "$f"; rm -f "$tmp"
+}
+get_env() { sed -n "s/^$1=//p" "$APP_DIR/infra/.env" 2>/dev/null | tail -n1; }
+
+full_install() {
+  log "Full platform: website + OPEX console and API (Docker)"
+  if ! have docker || ! docker compose version >/dev/null 2>&1; then
+    log "Installing Docker and the compose plugin"
+    case "$PM" in
+      apt-get) pkg_install docker.io && { pkg_install docker-compose-v2 2>/dev/null || pkg_install docker-compose-plugin 2>/dev/null || true; } ;;
+      dnf|yum) pkg_install docker docker-compose-plugin 2>/dev/null || pkg_install moby-engine docker-compose 2>/dev/null || true ;;
+      pacman)  pkg_install docker docker-compose ;;
+      apk)     pkg_install docker docker-cli-compose ;;
+      zypper)  pkg_install docker docker-compose ;;
+    esac
+    if ! docker compose version >/dev/null 2>&1; then
+      warn "The distribution's packages did not provide 'docker compose'; using Docker's official script."
+      curl -fsSL https://get.docker.com | sh >/dev/null
+    fi
+    if [ "$INIT" = systemd ]; then systemctl enable --now docker -q; elif [ "$INIT" = openrc ]; then rc-update add docker default >/dev/null 2>&1 || true; rc-service docker start >/dev/null || true; fi
+  fi
+  docker compose version >/dev/null 2>&1 || die "Docker with the compose plugin is required for MODE=full"
+  have openssl || pkg_install openssl
+
+  # Source at the chosen release (or branch).
+  if [ "$VERSION" = latest ]; then
+    REF="$(git ls-remote --tags --refs "$REPO_URL" 'v*' | awk -F/ '{print $NF}' | sort -t. -k1.2,1n -k2,2n -k3,3n | tail -n1)"
+    [ -n "$REF" ] || REF="$BRANCH"
+  else REF="$VERSION"; fi
+  if [ -d "$APP_DIR/.git" ]; then
+    PREV_REF="$(git -C "$APP_DIR" rev-parse HEAD)"
+    git -C "$APP_DIR" fetch -q --tags origin
+    git -C "$APP_DIR" checkout -q "$REF" 2>/dev/null || git -C "$APP_DIR" checkout -q "origin/$REF"
+  else
+    PREV_REF=""
+    [ ! -e "$APP_DIR" ] || [ -z "$(ls -A "$APP_DIR" 2>/dev/null)" ] || die "$APP_DIR exists and is not a full-platform install. Use APP_DIR=/srv/arapoush or remove it."
+    git clone -q "$REPO_URL" "$APP_DIR"
+    git -C "$APP_DIR" checkout -q "$REF"
+  fi
+  SHA="$(git -C "$APP_DIR" rev-parse --short HEAD)"
+
+  # First install: settings and secrets.
+  local envf="$APP_DIR/infra/.env"
+  if [ ! -f "$envf" ]; then
+    [ -n "$DOMAIN" ] || die "MODE=full needs DOMAIN (the site's domain), e.g. DOMAIN=arapoush.com"
+    cp "$APP_DIR/infra/.env.example" "$envf"; chmod 600 "$envf"
+    local client_ip; client_ip="$(printf '%s' "${SSH_CLIENT:-}" | awk '{print $1}')"
+    [ -n "$client_ip" ] || client_ip="$(who -m 2>/dev/null | sed -n 's/.*(\([0-9a-fA-F.:]*\)).*/\1/p')"
+    OPEX_DOMAIN="${OPEX_DOMAIN:-$(ask "OPEX API domain" "opex.$DOMAIN")}"
+    CONSOLE_DOMAIN="${CONSOLE_DOMAIN:-$(ask "Console domain" "console.$DOMAIN")}"
+    ACME_EMAIL="${ACME_EMAIL:-$(ask "Email for Let's Encrypt" "admin@$DOMAIN")}"
+    local def_allow="0.0.0.0/0 ::/0"; [ -z "$client_ip" ] || { case "$client_ip" in *:*) def_allow="$client_ip/128" ;; *) def_allow="$client_ip/32" ;; esac; }
+    CONSOLE_ALLOW="${CONSOLE_ALLOW:-$(ask "Networks allowed to open the console (space separated CIDRs)" "$def_allow")}"
+    set_env SITE_DOMAIN "$DOMAIN"; set_env OPEX_DOMAIN "$OPEX_DOMAIN"; set_env CONSOLE_DOMAIN "$CONSOLE_DOMAIN"; set_env ACME_EMAIL "$ACME_EMAIL"
+    set_env CONSOLE_ALLOW "$CONSOLE_ALLOW"; set_env CONSOLE_ALLOWED_CIDRS "$(printf '%s' "$CONSOLE_ALLOW" | tr ' ' ',')"
+    set_env POSTGRES_PASSWORD "$(openssl rand -hex 24)"
+    set_env BACKUP_KEY "$(openssl rand -hex 32)"
+    set_env BACKUP_PATH "$APP_DIR/opex-backups"
+    set_env AUDIT_ARCHIVE_PATH "$APP_DIR/audit-archive"
+    mkdir -p "$APP_DIR/opex-backups" "$APP_DIR/audit-archive" "$APP_DIR/db-dumps"
+    log "Building the OPEX API image to generate keys"
+    compose build -q opex-api
+    compose run --rm --no-deps opex-api node --no-warnings src/cli.ts keys:generate | while IFS= read -r line; do
+      [ -n "$line" ] || continue
+      k="${line%%=*}"; v="${line#*=}"
+      set_env "$k" "$v"
+    done
+    [ -n "$(get_env SESSION_SECRET)" ] || die "Key generation failed (infra/.env has no SESSION_SECRET)"
+    warn "Secrets are in $envf. Copy BACKUP_KEY and INQUIRY_KEY to your password manager: without them backups and inquiries cannot be decrypted."
+  else
+    # Update: a database dump before anything changes.
+    if compose ps -q postgres >/dev/null 2>&1 && [ -n "$(compose ps -q postgres)" ]; then
+      local dump="$APP_DIR/db-dumps/pre-update-$(date -u +%Y%m%dT%H%M%SZ).dump"
+      mkdir -p "$APP_DIR/db-dumps"
+      log "Database dump before the update → $dump"
+      (umask 077; compose exec -T postgres pg_dump -U opex -d opex -Fc > "$dump") || warn "Dump failed; continuing (console backups still exist)"
+      ls -1t "$APP_DIR"/db-dumps/pre-update-*.dump 2>/dev/null | tail -n +6 | xargs -r rm -f
+    fi
+  fi
+
+  log "Building and starting the stack ($REF, $SHA) — the first build takes several minutes"
+  if ! compose up -d --build --remove-orphans; then
+    if [ -n "$PREV_REF" ]; then
+      warn "The new version did not build or start — going back to the previous one"
+      git -C "$APP_DIR" checkout -q "$PREV_REF"; compose up -d --build --remove-orphans || true
+    fi
+    die "docker compose up failed. Logs: arapoush logs"
+  fi
+  # The API runs as a non-root user: give it the backup and archive folders.
+  compose run --rm --no-deps --user root --entrypoint sh opex-api -c 'chown -R opex /backups /archive' >/dev/null 2>&1 || true
+
+  log "Waiting for the site to answer"
+  local code=000 site_domain; site_domain="$(get_env SITE_DOMAIN)"
+  for _ in $(seq 1 90); do
+    code="$(curl -sk -o /dev/null -w '%{http_code}' --resolve "$site_domain:443:127.0.0.1" "https://$site_domain/fa" || true)"
+    [ "$code" = 200 ] && break; sleep 2
+  done
+  [ "$code" = 200 ] || warn "The site did not answer yet (HTTP $code). DNS and certificates may still be pending: arapoush status"
+  compose exec -T opex-api node --no-warnings src/cli.ts site:revalidate >/dev/null 2>&1 || true
+
+  # First super admin (first install only).
+  if [ -z "$PREV_REF" ]; then
+    ADMIN_EMAIL="${ADMIN_EMAIL:-$(ask "Email of the first console admin" "admin@$DOMAIN")}"
+    local pass; pass="$(openssl rand -base64 24 | tr -d '/+=' | cut -c1-24)"
+    if compose exec -T -e OPEX_NEW_PASSWORD="$pass" opex-api node --no-warnings src/cli.ts create-operator "$ADMIN_EMAIL" "Admin" super_admin >/dev/null 2>&1; then
+      ADMIN_NOTE="Console admin: $ADMIN_EMAIL / temporary password: $pass (change it after the first sign-in; the authenticator is set up then)"
+    else
+      ADMIN_NOTE="Create the console admin with: sudo arapoush admin"
+    fi
+  fi
+
+  if [ "$INIT" = systemd ] && [ "$AUTO_UPDATE" = 1 ]; then warn "AUTO_UPDATE is for the website-only mode; full-platform updates stay manual (sudo arapoush update)."; fi
+  for key in $SAVED_KEYS; do printf '%s=%s\n' "$key" "${!key:-}"; done > "$CONF"; chmod 600 "$CONF"
+  write_helper
+  trap - ERR
+  echo
+  ok "Arapoush platform is up ($REF, $SHA)"
+  echo "   Site:    https://$(get_env SITE_DOMAIN)/fa"
+  echo "   Console: https://$(get_env CONSOLE_DOMAIN)   (only from: $(get_env CONSOLE_ALLOW))"
+  [ -z "${ADMIN_NOTE:-}" ] || echo "   $ADMIN_NOTE"
+  echo "   DNS: point $(get_env SITE_DOMAIN), $(get_env OPEX_DOMAIN) and $(get_env CONSOLE_DOMAIN) at this server."
+  echo "   Menu: sudo arapoush   (update, status, logs, backup, rollback …)"
+  exit 0
+}
+
+if [ "$MODE" = full ]; then full_install; fi
 
 # ── Node.js (official build, checksum-verified; Alpine uses its own package) ──
 node_ok() { have "$1" && "$1" -e 'const [a,b]=process.versions.node.split(".").map(Number);process.exit(a>20||(a===20&&b>=9)?0:1)'; }
@@ -248,7 +566,7 @@ if [ -f pnpm-workspace.yaml ]; then
   PNPM_VERSION="$(sed -n 's/.*"packageManager": *"pnpm@\([^"]*\)".*/\1/p' package.json)"
   [ -n "$PNPM_VERSION" ] || die "package.json does not pin a pnpm version (packageManager)"
   pnpm_run() { "$NODE_DIR/npx" --yes "pnpm@$PNPM_VERSION" "$@"; }
-  pnpm_run install --frozen-lockfile --reporter=silent
+  pnpm_run install --frozen-lockfile --reporter=silent --filter "@arapoush/web..."
   log "Building the site (SITE_URL=$SITE_URL) — this takes a few minutes"
   NEXT_PUBLIC_SITE_URL="$SITE_URL" NODE_OPTIONS="--max-old-space-size=1536" pnpm_run --filter @arapoush/web build --reporter=silent
   APP_SRC=apps/web
@@ -436,41 +754,7 @@ fi
 for key in $SAVED_KEYS; do printf '%s=%s\n' "$key" "${!key:-}"; done > "$CONF"
 chmod 600 "$CONF"
 
-cat > /usr/local/bin/arapoush <<'HELPER'
-#!/usr/bin/env bash
-# Arapoush website helper, written by install.sh.
-set -euo pipefail
-REPO="https://github.com/aibedini/arapoush-website.git"
-INSTALLER="https://raw.githubusercontent.com/aibedini/arapoush-website/main/install.sh"
-APP_DIR="$(sed -n 's/^APP_DIR=//p' /etc/arapoush.conf 2>/dev/null || true)"
-APP_DIR="${APP_DIR:-/opt/arapoush}"
-as_root() { [ "$(id -u)" -eq 0 ] || exec sudo "$0" "$@"; }
-restart() { if command -v systemctl >/dev/null && [ -d /run/systemd/system ]; then systemctl restart arapoush; else rc-service arapoush restart; fi; }
-current() { sed -n 's/^version=//p' "$APP_DIR/current/.arapoush-release" 2>/dev/null; }
-case "${1:-help}" in
-  update)
-    as_root "$@"
-    curl -fsSL "$INSTALLER" | VERSION="${2:-latest}" bash ;;
-  check)
-    latest="$(git ls-remote --tags --refs "$REPO" 'v*' | awk -F/ '{print $NF}' | sort -t. -k1.2,1n -k2,2n -k3,3n | tail -n1)"
-    if [ -n "$latest" ] && [ "$latest" != "$(current)" ]; then echo "Update available: $(current) → $latest   (sudo arapoush update)"
-    else echo "Up to date: $(current)"; fi ;;
-  version)  cat "$APP_DIR/current/.arapoush-release" ;;
-  releases) ls -1t "$APP_DIR/releases" ;;
-  rollback)
-    as_root "$@"
-    now="$(readlink -f "$APP_DIR/current")"
-    prev="$(ls -1dt "$APP_DIR"/releases/*/ | sed 's#/$##' | grep -vxF "$now" | head -n1 || true)"
-    [ -n "$prev" ] || { echo "No previous release to go back to."; exit 1; }
-    ln -sfn "$prev" "$APP_DIR/current" && restart
-    echo "Rolled back to $(basename "$prev")" ;;
-  restart)  as_root "$@"; restart ;;
-  logs)     if command -v journalctl >/dev/null; then journalctl -u arapoush -f; else tail -f /var/log/arapoush.log; fi ;;
-  uninstall) as_root "$@"; curl -fsSL "$INSTALLER" | UNINSTALL=1 bash ;;
-  *) echo "Usage: arapoush update [latest|vX.Y.Z|branch] | check | version | releases | rollback | restart | logs | uninstall" ;;
-esac
-HELPER
-chmod 755 /usr/local/bin/arapoush
+write_helper
 
 if [ "$INIT" = systemd ]; then
   if [ "$AUTO_UPDATE" = 1 ]; then
@@ -509,6 +793,6 @@ ok "Arapoush is live: $SITE_URL"
 echo "   Persian: $SITE_URL/fa   English: $SITE_URL/en   Turkish: $SITE_URL/tr"
 [ -z "$DOMAIN" ] || echo "   HTTPS certificate is issued automatically once $DOMAIN points to this server."
 echo "   Version: $REF ($SHA)"
-echo "   Update:  sudo arapoush update    ·  check: arapoush check  ·  undo: sudo arapoush rollback"
+echo "   Menu:    sudo arapoush   (update, check, rollback, restart, logs …)"
 [ "$AUTO_UPDATE" != 1 ] || echo "   New releases install automatically every night (AUTO_UPDATE=1)."
 if [ "$INIT" = systemd ]; then echo "   Logs:    journalctl -u $SERVICE -f"; fi

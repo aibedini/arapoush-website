@@ -58,6 +58,9 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     const opexConsole = process.env.OPEX_CONSOLE_ORIGIN?.replace(/\/$/, "");
+    // Only when the site is served over https: on a plain-http install (IP, no domain) the directive
+    // would send every asset to https and break the page.
+    const https = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://").startsWith("https://");
     return [
       { source: "/images/:path*", headers: [{ key: "Cache-Control", value: year }] },
       { source: "/files/:path*", headers: [{ key: "Cache-Control", value: "public, max-age=86400" }] },
@@ -71,7 +74,7 @@ const nextConfig: NextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           // The OPEX console shows draft previews in frames; only that origin may embed the site. No plugins,
           // no <base> hijack, forms post only here (S2).
-          { key: "Content-Security-Policy", value: `object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'${opexConsole ? ` ${opexConsole}` : ""}; upgrade-insecure-requests` },
+          { key: "Content-Security-Policy", value: `object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'${opexConsole ? ` ${opexConsole}` : ""}${https ? "; upgrade-insecure-requests" : ""}` },
           ...(opexConsole ? [] : [{ key: "X-Frame-Options", value: "SAMEORIGIN" }]),
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
           { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
