@@ -8,6 +8,9 @@ import AppHero from "@/components/applications/AppHero";
 import IndustryShowcase from "@/components/applications/IndustryShowcase";
 import FinderSection from "@/components/applications/FinderSection";
 import Engineering from "@/components/applications/Engineering";
+import Projects from "@/components/applications/Projects";
+import Quality from "@/components/applications/Quality";
+import Faq from "@/components/applications/Faq";
 import type { FinderRefs } from "@/components/applications/SolutionFinder";
 import { getTubeProduct } from "@/lib/products";
 import { getPrinting } from "@/lib/printing";
@@ -78,6 +81,9 @@ export default async function ApplicationsPage({ params }: { params: Params }) {
           <IndustryShowcase c={a.industries} locale={locale} />
           <FinderSection c={a.finder} industries={a.industries.items} refs={refs} locale={locale} />
           <Engineering c={a.engineering} locale={locale} />
+          <Projects c={a.projects} industries={a.industries.items} locale={locale} />
+          <Quality c={a.quality} locale={locale} />
+          <Faq c={a.faq} industries={a.industries.items} locale={locale} />
         </main>
       </EditScope>
       <ContactCTA t={dict} locale={locale} footerOnly />

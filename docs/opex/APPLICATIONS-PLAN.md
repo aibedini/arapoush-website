@@ -68,3 +68,4 @@ panel, for example `/tubes-food` → `/en/applications#food`.
 
 - P1: content, schema, hero, industry showcase, SEO, redirects and links.
 - P2: solution finder (closures from the catalogue, print names from page.printing) and engineering hotspots.
+- P3: sample projects (industry filter, native dialog lightbox), quality steps with the certificates link, and the FAQ filtered by industry.
