@@ -67,3 +67,4 @@ panel, for example `/tubes-food` → `/en/applications#food`.
 ## Progress
 
 - P1: content, schema, hero, industry showcase, SEO, redirects and links.
+- P2: solution finder (closures from the catalogue, print names from page.printing) and engineering hotspots.

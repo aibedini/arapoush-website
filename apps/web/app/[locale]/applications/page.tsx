@@ -6,6 +6,11 @@ import Reveals from "@/components/motion/Reveals";
 import TouchFeedback from "@/components/motion/TouchFeedback";
 import AppHero from "@/components/applications/AppHero";
 import IndustryShowcase from "@/components/applications/IndustryShowcase";
+import FinderSection from "@/components/applications/FinderSection";
+import Engineering from "@/components/applications/Engineering";
+import type { FinderRefs } from "@/components/applications/SolutionFinder";
+import { getTubeProduct } from "@/lib/products";
+import { getPrinting } from "@/lib/printing";
 import styles from "@/components/applications/Applications.module.css";
 import { getDictionary, isLocale, localeMeta, locales } from "@/lib/i18n";
 import { applicationsJsonLd, languageAlternates, pageUrl } from "@/lib/seo";
@@ -52,6 +57,12 @@ export default async function ApplicationsPage({ params }: { params: Params }) {
   if (!isLocale(locale)) notFound();
   const dict = getDictionary(locale);
   const a = getApplications();
+  // The finder suggests real closures (catalogue names and photos) and print methods (printing page).
+  const wanted = new Set(a.finder.contents.flatMap((x) => x.closures));
+  const refs: FinderRefs = {
+    closures: Object.fromEntries(getTubeProduct().closures.filter((x) => wanted.has(x.id) && x.image).map((x) => [x.id, { name: x.name, image: x.image }])),
+    techs: Object.fromEntries(getPrinting().tech.items.map((m) => [m.id, m.name])),
+  };
 
   return (
     <>
@@ -65,6 +76,8 @@ export default async function ApplicationsPage({ params }: { params: Params }) {
         <main id="main" className={styles.page}>
           <AppHero c={a.hero} industries={a.industries.items} locale={locale} />
           <IndustryShowcase c={a.industries} locale={locale} />
+          <FinderSection c={a.finder} industries={a.industries.items} refs={refs} locale={locale} />
+          <Engineering c={a.engineering} locale={locale} />
         </main>
       </EditScope>
       <ContactCTA t={dict} locale={locale} footerOnly />
