@@ -33,10 +33,12 @@ export function readXlsx(bytes: Uint8Array): Grid {
   }
   const wb = files["xl/workbook.xml"];
   if (!wb) throw new Error("NOT_XLSX");
-  // First sheet in workbook order, through its relationship id.
+  // First sheet in workbook order, through its relationship id. `rid` comes from an uploaded file,
+  // so it is escaped before going into a RegExp (no regex injection or ReDoS from a crafted .xlsx).
   const rid = /<sheet\b[^>]*\br:id="([^"]+)"/.exec(strFromU8(wb))?.[1];
+  const ridRe = rid?.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const rels = files["xl/_rels/workbook.xml.rels"] ? strFromU8(files["xl/_rels/workbook.xml.rels"]) : "";
-  const target = rid ? new RegExp(`<Relationship\\b[^>]*Id="${rid}"[^>]*Target="([^"]+)"`).exec(rels)?.[1] ?? new RegExp(`<Relationship\\b[^>]*Target="([^"]+)"[^>]*Id="${rid}"`).exec(rels)?.[1] : undefined;
+  const target = ridRe ? new RegExp(`<Relationship\\b[^>]*Id="${ridRe}"[^>]*Target="([^"]+)"`).exec(rels)?.[1] ?? new RegExp(`<Relationship\\b[^>]*Target="([^"]+)"[^>]*Id="${ridRe}"`).exec(rels)?.[1] : undefined;
   const path = target ? `xl/${target.replace(/^\/?xl\//, "")}` : "xl/worksheets/sheet1.xml";
   const sheet = files[path] ?? files["xl/worksheets/sheet1.xml"];
   if (!sheet) throw new Error("NOT_XLSX");
