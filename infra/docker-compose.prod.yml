@@ -123,16 +123,13 @@ services:
       # It only ever opens our own website. The container is the boundary (default seccomp, no
       # capabilities, read-only, internal network) instead of Chromium's user-namespace sandbox.
       CHROME_NO_SANDBOX: "1"
+      # Chromium keeps its profile and crash database under HOME: /tmp is the writable tmpfs.
+      HOME: /tmp
     cap_drop: [ALL]
     security_opt: ["no-new-privileges:true"]
     # Not read-only: Chromium's crashpad handler needs a writable database, and the browser will not
     # start without it. The other hardening stays: no capabilities, no-new-privileges, internal network.
     tmpfs: ["/tmp"]
-    volumes:
-      - type: tmpfs
-        target: /home/render
-        tmpfs:
-          mode: 1777
     shm_size: 512m
     depends_on: [opex-api, web]
     networks: [internal]
