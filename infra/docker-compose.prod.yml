@@ -125,9 +125,9 @@ services:
       CHROME_NO_SANDBOX: "1"
     cap_drop: [ALL]
     security_opt: ["no-new-privileges:true"]
-    read_only: true
+    # Not read-only: Chromium's crashpad handler needs a writable database, and the browser will not
+    # start without it. The other hardening stays: no capabilities, no-new-privileges, internal network.
     tmpfs: ["/tmp"]
-    # Chromium's profile lives in the home folder: a tmpfs owned by root would block the render user.
     volumes:
       - type: tmpfs
         target: /home/render
