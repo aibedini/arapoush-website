@@ -350,7 +350,7 @@ full_install() {
   # First install: settings and secrets.
   local envf="$APP_DIR/infra/.env"
   if [ ! -f "$envf" ]; then
-    [ -n "$DOMAIN" ] || die "MODE=full needs DOMAIN (the site's domain), e.g. DOMAIN=arapoush.com"
+    [ -n "$DOMAIN" ] || die "MODE=full needs DOMAIN (the site's domain), e.g. DOMAIN=arapoush.com. Without a domain, use a wildcard name for the server IP, e.g. DOMAIN=203-0-113-10.sslip.io (Let's Encrypt needs a name that resolves to this server)."
     cp "$APP_DIR/infra/.env.example" "$envf"; chmod 600 "$envf"
     local client_ip; client_ip="$(printf '%s' "${SSH_CLIENT:-}" | awk '{print $1}')"
     [ -n "$client_ip" ] || client_ip="$(who -m 2>/dev/null | sed -n 's/.*(\([0-9a-fA-F.:]*\)).*/\1/p')"
@@ -411,7 +411,9 @@ full_install() {
     ADMIN_EMAIL="${ADMIN_EMAIL:-$(ask "Email of the first console admin" "admin@$DOMAIN")}"
     local pass; pass="$(openssl rand -base64 24 | tr -d '/+=' | cut -c1-24)"
     if compose exec -T -e OPEX_NEW_PASSWORD="$pass" opex-api node --no-warnings src/cli.ts create-operator "$ADMIN_EMAIL" "Admin" super_admin >/dev/null 2>&1; then
-      ADMIN_NOTE="Console admin: $ADMIN_EMAIL / temporary password: $pass (change it after the first sign-in; the authenticator is set up then)"
+      # The password goes to a root-only file, not to the terminal or the install log.
+      ( umask 077; printf 'Console sign-in: https://%s\nEmail: %s\nTemporary password: %s\n\nChange the password at the first sign-in; the authenticator app is set up then.\n' "$(get_env CONSOLE_DOMAIN)" "$ADMIN_EMAIL" "$pass" > /root/arapoush-admin.txt )
+      ADMIN_NOTE="Console admin: $ADMIN_EMAIL — the temporary password is in /root/arapoush-admin.txt (root only; delete it after the first sign-in)"
     else
       ADMIN_NOTE="Create the console admin with: sudo arapoush admin"
     fi
