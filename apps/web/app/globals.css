@@ -185,9 +185,10 @@ ol {
 
 /* ── Typography ── */
 
+/* Headings are bold on every page (home, applications, contact, printing…): one weight scale. */
 .t-display {
   font-family: var(--font-sans);
-  font-weight: 300;
+  font-weight: 700;
   font-size: max(52px, calc(96 * var(--u)));
   line-height: 1;
   letter-spacing: -0.01em;
@@ -195,7 +196,7 @@ ol {
 
 .t-h2 {
   font-family: var(--font-sans);
-  font-weight: 300;
+  font-weight: 700;
   font-size: max(36px, calc(64 * var(--u)));
   line-height: 1.2;
   letter-spacing: -0.005em;
@@ -637,6 +638,11 @@ body *:lang(fa) {
 }
 .not-found__code {
   margin: 0;
+  /* Decorative: the number is drawn by CSS, so it is not page text (no contrast requirement). */
+}
+.not-found__code::before {
+  content: attr(data-code);
+  display: block;
   font-size: clamp(64px, 12vw, 140px);
   font-weight: 800;
   line-height: 1;

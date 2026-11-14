@@ -28,7 +28,7 @@
   text-align: center;
 }
 .h2 {
-  font: 300 max(30px, calc(56 * var(--u))) / 1.2 var(--font-sans);
+  font: 700 max(30px, calc(56 * var(--u))) / 1.2 var(--font-sans);
   letter-spacing: -0.005em;
   text-wrap: balance;
 }
@@ -95,7 +95,7 @@
 .qa summary::after {
   content: "+";
   flex: none;
-  font: 300 28px/1 var(--font-sans);
+  font: 700 28px/1 var(--font-sans);
   transition: transform 0.25s ease;
 }
 .qa[open] summary::after {

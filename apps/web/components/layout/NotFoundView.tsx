@@ -15,7 +15,7 @@ export default function NotFoundView() {
   const t = TEXT[l];
   return (
     <main id="main" className="not-found">
-      <p className="not-found__code" aria-hidden="true">404</p>
+      <p className="not-found__code" aria-hidden="true" data-code="404" />
       <h1>{t.title}</h1>
       <p>{t.lead}</p>
       <ul>

@@ -101,7 +101,7 @@
 .text {
   max-width: calc(252 * var(--u));
   min-width: 200px;
-  font: 300 max(14px, calc(18 * var(--u))) / 1.5 var(--font-ui);
+  font: 400 max(14px, calc(18 * var(--u))) / 1.5 var(--font-ui);
   opacity: 0.8;
 }
 

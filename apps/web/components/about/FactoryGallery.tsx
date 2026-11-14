@@ -94,7 +94,7 @@ export default function FactoryGallery({ c, locale }: { c: AboutGallery; locale:
             {items.map((g, i) => (
               <figure key={g.id} className={styles.shot} data-active={i === active || undefined} aria-label={fill(t(c.of, locale), { n: nf.format(i + 1), total: nf.format(items.length) })}>
                 <div className={styles.shotImg}>
-                  <Image src={g.image.src} alt={t(g.caption, locale)} fill sizes="(max-width: 767px) 86vw, 64vw" data-no-mirror />
+                  <Image src={g.image.src} alt="" fill sizes="(max-width: 767px) 86vw, 64vw" data-no-mirror />
                 </div>
                 <figcaption className={styles.shotCap}>
                   <span className={styles.shotNum} aria-hidden="true">
@@ -127,7 +127,7 @@ export default function FactoryGallery({ c, locale }: { c: AboutGallery; locale:
               <li key={g.id} className={styles.tile} data-reveal-item>
                 <figure>
                   <div className={styles.tileImg}>
-                    <Image src={g.image.src} alt={t(g.caption, locale)} fill sizes={i === 0 ? "(max-width: 767px) 92vw, 50vw" : "(max-width: 767px) 46vw, 25vw"} data-no-mirror />
+                    <Image src={g.image.src} alt="" fill sizes={i === 0 ? "(max-width: 767px) 92vw, 50vw" : "(max-width: 767px) 46vw, 25vw"} data-no-mirror />
                   </div>
                   <figcaption>{t(g.caption, locale)}</figcaption>
                 </figure>

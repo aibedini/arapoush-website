@@ -314,8 +314,18 @@
   border-radius: calc(var(--radius) * 0.75);
   background: rgba(255, 255, 255, 0.06);
 }
-.panelImg img {
+.panelImg {
+  isolation: isolate;
+}
+.panelBackdrop {
   object-fit: cover;
+  transform: scale(1.25);
+  filter: blur(22px) saturate(1.1) brightness(0.75);
+}
+.panelPhoto {
+  object-fit: contain;
+  padding: 10px;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.35));
 }
 .panelTitle {
   font: 700 max(18px, calc(26 * var(--u))) / 1.4 var(--font-sans);

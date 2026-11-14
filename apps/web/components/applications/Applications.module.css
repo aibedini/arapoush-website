@@ -128,34 +128,38 @@
   gap: max(16px, calc(26 * var(--u)));
   justify-items: start;
 }
-/* Five industry cards fanned out like a hand of cards; the middle one sits in front. */
+/* The five industries as a staggered masonry grid: cards of different heights, offset tops. */
 .fan {
-  position: relative;
-  height: max(340px, calc(620 * var(--u)));
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(5, minmax(0, 1fr));
+  grid-template-areas:
+    "a . c"
+    "a b c"
+    "a b e"
+    "d b e"
+    "d b .";
+  gap: max(10px, calc(16 * var(--u)));
+  height: max(380px, calc(640 * var(--u)));
   list-style: none;
   margin: 0;
   padding: 0;
 }
 .fanItem {
-  --o: calc(var(--i) - (var(--n) - 1) / 2);
-  position: absolute;
-  inset-block-end: 4%;
-  inset-inline-start: calc(50% - 11.5%);
-  width: 23%;
-  aspect-ratio: 9 / 15;
-  transform: translateX(calc(var(--o) * 78%)) translateY(calc(var(--o) * var(--o) * 5%)) rotate(calc(var(--o) * 7deg));
-  transform-origin: 50% 120%;
-  z-index: calc(10 - var(--o) * var(--o));
+  position: relative;
+  min-height: 0;
   animation: fanIn 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  animation-delay: calc(var(--i) * 70ms);
+  animation-delay: calc(var(--i) * 80ms);
 }
-:global([dir="rtl"]) .fanItem {
-  transform: translateX(calc(var(--o) * -78%)) translateY(calc(var(--o) * var(--o) * 5%)) rotate(calc(var(--o) * -7deg));
-}
+.fanItem:nth-child(1) { grid-area: a; }
+.fanItem:nth-child(2) { grid-area: b; }
+.fanItem:nth-child(3) { grid-area: c; }
+.fanItem:nth-child(4) { grid-area: d; }
+.fanItem:nth-child(5) { grid-area: e; }
 @keyframes fanIn {
   from {
     opacity: 0;
-    transform: translateY(18%) rotate(0deg);
+    transform: translateY(28px) scale(0.97);
   }
 }
 .fanCard {
@@ -164,14 +168,18 @@
   display: block;
   overflow: hidden;
   border-radius: var(--radius);
-  background: #fff;
+  background: #dfe7ef;
   box-shadow:
-    0 30px 60px -28px rgba(9, 38, 60, 0.45),
-    0 0 0 1px rgba(255, 255, 255, 0.7) inset;
-  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.45s;
+    0 24px 50px -30px rgba(9, 38, 60, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+  transition:
+    transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 0.55s,
+    opacity 0.45s;
 }
 .fanCard img {
   object-fit: cover;
+  transition: transform 1.1s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 /* A cut-out tube (no photo backdrop) sits on steel, turned like the others' tubes. */
 .fanCard[data-industry="industrial"] {
@@ -183,31 +191,112 @@
   object-fit: contain;
   transform: rotate(-62deg) scale(1.5);
 }
+/* Shade for the name, tinted with the industry's accent; deepens on hover. */
 .fanCard::after {
   content: "";
   position: absolute;
-  inset: 45% 0 0;
-  background: linear-gradient(transparent, rgba(9, 38, 60, 0.72));
+  inset: 0;
+  background: linear-gradient(180deg, transparent 38%, color-mix(in srgb, var(--accent, #0b2235) 35%, rgba(6, 26, 42, 0.86)));
+  opacity: 0.8;
+  transition: opacity 0.5s;
+}
+/* Accent line drawn across the top on hover. */
+.fanCard::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset-inline: 0;
+  inset-block-start: 0;
+  height: 3px;
+  background: var(--accent, var(--warm));
+  transform: scaleX(0);
+  transform-origin: var(--from, left) center;
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+:global([dir="rtl"]) .fanCard::before {
+  --from: right;
 }
 .fanName {
   position: absolute;
   z-index: 1;
-  inset-inline: 12px;
-  inset-block-end: 14px;
+  inset-inline: max(12px, calc(18 * var(--u)));
+  inset-block-end: max(12px, calc(18 * var(--u)));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   font: 700 max(14px, calc(20 * var(--u))) / 1.3 var(--font-sans);
   color: #fff;
+  transform: translateY(6px);
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.fanItem:has(.fanCard:hover) {
-  z-index: 20;
+.fanArrow {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: max(28px, calc(36 * var(--u)));
+  height: max(28px, calc(36 * var(--u)));
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--navy, #0b2235);
+  opacity: 0;
+  transform: translateX(var(--dx, -8px)) scale(0.8);
+  transition:
+    opacity 0.4s,
+    transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+:global([dir="rtl"]) .fanArrow {
+  --dx: 8px;
+}
+.fanArrow svg {
+  width: 55%;
+  height: 55%;
+}
+.fan:has(.fanCard:hover) .fanCard:not(:hover) {
+  opacity: 0.55;
 }
 .fanCard:hover,
 .fanCard:focus-visible {
-  transform: translateY(-6%) scale(1.04);
-  box-shadow: 0 40px 70px -26px rgba(9, 38, 60, 0.55);
+  transform: translateY(-8px);
+  box-shadow: 0 44px 70px -30px rgba(9, 38, 60, 0.6);
+}
+.fanCard:hover img,
+.fanCard:focus-visible img {
+  transform: scale(1.08);
+}
+.fanCard[data-industry="industrial"]:hover img {
+  transform: rotate(-62deg) scale(1.62);
+}
+.fanCard:hover::after,
+.fanCard:focus-visible::after {
+  opacity: 1;
+}
+.fanCard:hover::before,
+.fanCard:focus-visible::before {
+  transform: scaleX(1);
+}
+.fanCard:hover .fanName,
+.fanCard:focus-visible .fanName {
+  transform: translateY(0);
+}
+.fanCard:hover .fanArrow,
+.fanCard:focus-visible .fanArrow {
+  opacity: 1;
+  transform: none;
 }
 @media (hover: none) {
   .fanCard:active {
-    transform: translateY(-4%) scale(1.02);
+    transform: translateY(-4px);
+  }
+  .fanCard:active img {
+    transform: scale(1.05);
+  }
+  .fanCard:active::before {
+    transform: scaleX(1);
+  }
+  .fanCard:active .fanArrow {
+    opacity: 1;
+    transform: none;
   }
 }
 .chips {
@@ -528,8 +617,8 @@
     order: -1;
   }
   .fan {
-    height: max(300px, 62vw);
-    max-height: 520px;
+    height: max(320px, 64vw);
+    max-height: 560px;
   }
   .chips {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -566,9 +655,16 @@
   .needs {
     grid-template-columns: 1fr;
   }
-  .fanItem {
-    width: 26%;
-    inset-inline-start: calc(50% - 13%);
+  .fan {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(4, minmax(0, 1fr));
+    grid-template-areas:
+      "a b"
+      "a c"
+      "d c"
+      "d e";
+    height: min(118vw, 620px);
+    max-height: none;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -577,6 +673,11 @@
     animation: none !important;
   }
   .fanCard,
+  .fanCard img,
+  .fanCard::before,
+  .fanCard::after,
+  .fanName,
+  .fanArrow,
   .chip,
   .chipArrow,
   .more summary::before {

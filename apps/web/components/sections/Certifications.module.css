@@ -227,7 +227,7 @@
 }
 .fText {
   margin-top: calc(18 * var(--u));
-  font: 300 max(14px, calc(16 * var(--u))) / 1.3 var(--font-sans);
+  font: 400 max(14px, calc(16 * var(--u))) / 1.3 var(--font-sans);
   color: var(--slate);
 }
 

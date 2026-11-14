@@ -106,7 +106,7 @@
 .text {
   max-width: 218px;
   min-height: calc(42 * var(--u));
-  font: 300 14px/1.5 var(--font-ui);
+  font: 400 14px/1.5 var(--font-ui);
   color: rgba(0, 0, 0, 0.8);
   margin-bottom: calc(26 * var(--u));
 }

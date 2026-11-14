@@ -60,7 +60,9 @@ export default function AboutStory({ c, locale }: { c: Story; locale: string }) 
               pin: true,
               scrub: 0.6,
               start: "top top",
-              end: () => `+=${distance()}`,
+              // The track moves about twice as far as the page scrolls: the whole story (and
+              // today's figure) is reached in half the scrolling.
+              end: () => `+=${distance() * 0.5}`,
               invalidateOnRefresh: true,
               onUpdate: (st) => {
                 show(Math.round(st.progress * (total + 1)));
@@ -71,11 +73,6 @@ export default function AboutStory({ c, locale }: { c: Story; locale: string }) 
           tl.to(track, { x: () => (rtl ? 1 : -1) * distance() }, 0);
           if (ghost) tl.to(ghost, { x: () => (rtl ? 1 : -1) * distance() * 0.35 }, 0);
           if (bar) tl.fromTo(bar, { scaleX: 0 }, { scaleX: 1 }, 0);
-          // Each photo settles from a slight zoom as the track carries it in.
-          panels.forEach((p, i) => {
-            const img = p.querySelector("[data-zoom]");
-            if (img) tl.fromTo(img, { scale: 1.18 }, { scale: 1, duration: 0.25 }, Math.max(0, (i - 1) / (total + 1)));
-          });
         });
       }
 
@@ -121,7 +118,10 @@ export default function AboutStory({ c, locale }: { c: Story; locale: string }) 
               <span className={styles.node} aria-hidden="true" />
               {m.image ? (
                 <div className={styles.panelImg}>
-                  <Image data-zoom src={m.image.src} alt={t(m.title, locale)} fill sizes="(max-width: 1099px) 88vw, 30vw" data-no-mirror />
+                  {/* Certificates and documents are portrait: the whole photo shows (contain) on a
+                      blurred, enlarged copy of itself that fills the frame. Same URL, one download. */}
+                  <Image className={styles.panelBackdrop} src={m.image.src} alt="" aria-hidden="true" fill sizes="(max-width: 1099px) 88vw, 30vw" data-no-mirror />
+                  <Image className={styles.panelPhoto} src={m.image.src} alt={t(m.title, locale)} fill sizes="(max-width: 1099px) 88vw, 30vw" data-no-mirror />
                 </div>
               ) : null}
               <h3 className={styles.panelTitle}>

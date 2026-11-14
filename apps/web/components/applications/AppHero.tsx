@@ -5,7 +5,7 @@ import { ArrowIcon, INDUSTRY_ICONS } from "./AppIcons";
 import styles from "./Applications.module.css";
 
 /**
- * Hero: the title and lead on one side, the five industries as a fan of photo cards on the other.
+ * Hero: the title and lead on one side, the five industries as a staggered masonry grid on the other.
  * Cards and the chip row link to the industry's panel (#cosmetics…), which the showcase opens.
  */
 export default function AppHero({ c, industries, locale }: { c: Applications["hero"]; industries: Applications["industries"]["items"]; locale: string }) {
@@ -40,13 +40,18 @@ export default function AppHero({ c, industries, locale }: { c: Applications["he
                     src={x.image.src}
                     alt=""
                     fill
-                    sizes="(max-width: 767px) 30vw, 13vw"
-                    priority={i === 2}
-                    fetchPriority={i === 2 ? "high" : "low"}
-                    loading={i === 2 ? undefined : "eager"}
+                    sizes="(max-width: 767px) 48vw, (max-width: 1099px) 32vw, 17vw"
+                    priority={i === 1}
+                    fetchPriority={i === 1 ? "high" : "low"}
+                    loading={i === 1 ? undefined : "eager"}
                     data-no-mirror
                   />
-                  <span className={styles.fanName}>{t(x.name, locale)}</span>
+                  <span className={styles.fanName}>
+                    {t(x.name, locale)}
+                    <span className={styles.fanArrow}>
+                      <ArrowIcon />
+                    </span>
+                  </span>
                 </a>
               </li>
             ))}

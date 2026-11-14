@@ -108,16 +108,13 @@
   position: absolute;
   z-index: 3;
   inset-inline-start: calc(48 * var(--u));
-  top: calc(495 * var(--u));
+  /* Anchored above the slide controls (their offset + height + a gap), not from the top: on
+     shorter windows a top offset pushed the buttons onto the slide counter. */
+  bottom: calc(max(20px, calc(28 * var(--u))) + 44px + max(32px, 5svh));
   width: calc(760 * var(--u));
   display: flex;
   flex-direction: column;
   gap: calc(32 * var(--u));
-}
-@media (min-width: 1100px) {
-  .hero[data-active="1"] .content {
-    top: calc(380 * var(--u));
-  }
 }
 .copyStack {
   display: grid;
@@ -170,10 +167,6 @@
   color: var(--hero-ui);
 }
 @media (min-width: 1100px) and (max-height: 900px) {
-  .content,
-  .hero[data-active="1"] .content {
-    top: 28svh;
-  }
   .productsScroll {
     top: 22svh;
     width: min(calc(1070 * var(--u)), 110svh);
@@ -331,6 +324,7 @@
     position: relative;
     inset-inline-start: auto;
     top: auto;
+    bottom: auto;
     width: auto;
     padding: 8px var(--gutter) 0;
     gap: 24px;

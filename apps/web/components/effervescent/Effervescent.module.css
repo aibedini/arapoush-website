@@ -169,7 +169,7 @@
 .heroTitle {
   display: flex;
   flex-direction: column;
-  font: 300 max(40px, calc(92 * var(--u))) / 1.05 var(--font-sans);
+  font: 700 max(40px, calc(92 * var(--u))) / 1.05 var(--font-sans);
   letter-spacing: -0.02em;
   color: var(--navy);
 }
@@ -183,7 +183,7 @@
 }
 .heroLead {
   max-width: 30em;
-  font: 300 max(16px, calc(23 * var(--u))) / 1.5 var(--font-sans);
+  font: 400 max(16px, calc(23 * var(--u))) / 1.5 var(--font-sans);
   color: #3a4048;
 }
 :lang(fa) .heroLead {
@@ -292,7 +292,7 @@
   background: linear-gradient(90deg, var(--accent), #f6b36d);
 }
 .stepText {
-  font: 300 max(15px, calc(20 * var(--u))) / 1.6 var(--font-sans);
+  font: 400 max(15px, calc(20 * var(--u))) / 1.6 var(--font-sans);
   color: #3a4048;
 }
 :lang(fa) .stepText {
@@ -472,7 +472,7 @@
   align-items: baseline;
   gap: 6px;
   margin: 6px 0 0;
-  font: 300 max(44px, calc(72 * var(--u))) / 1 var(--font-sans);
+  font: 700 max(44px, calc(72 * var(--u))) / 1 var(--font-sans);
   letter-spacing: -0.02em;
   color: var(--navy);
 }
@@ -1110,7 +1110,7 @@
 }
 .stats dd {
   margin: 0;
-  font: 300 max(44px, calc(112 * var(--u))) / 1 var(--font-sans);
+  font: 700 max(44px, calc(112 * var(--u))) / 1 var(--font-sans);
   letter-spacing: -0.03em;
   color: #fff;
   text-align: start;
@@ -1356,7 +1356,7 @@
   stroke-linecap: round;
 }
 .sheetLead {
-  font: 300 15px/1.6 var(--font-sans);
+  font: 400 15px/1.6 var(--font-sans);
   color: #3a4048;
 }
 .sheetForm {
