@@ -3,7 +3,7 @@
 #   docker run -d --name arapoush --restart unless-stopped -p 80:3000 arapoush
 FROM node:22-alpine AS build
 WORKDIR /repo
-ENV NEXT_TELEMETRY_DISABLED=1
+ENV NEXT_TELEMETRY_DISABLED=1 CI=1
 RUN corepack enable
 # Manifests first, so dependency layers are cached until a lockfile or package.json changes.
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc turbo.json ./

@@ -4,6 +4,8 @@
 FROM node:22-alpine AS build
 WORKDIR /repo
 RUN corepack enable
+# CI=1: the root "prepare" script installs git hooks, which need .git and scripts/ (not in this image).
+ENV CI=1
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc turbo.json ./
 COPY apps/opex-api/package.json apps/opex-api/
 COPY packages/schema/package.json packages/schema/
