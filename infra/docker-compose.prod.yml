@@ -126,7 +126,13 @@ services:
     cap_drop: [ALL]
     security_opt: ["no-new-privileges:true"]
     read_only: true
-    tmpfs: ["/tmp", "/home/render"]
+    tmpfs: ["/tmp"]
+    # Chromium's profile lives in the home folder: a tmpfs owned by root would block the render user.
+    volumes:
+      - type: tmpfs
+        target: /home/render
+        tmpfs:
+          mode: 1777
     shm_size: 512m
     depends_on: [opex-api, web]
     networks: [internal]
