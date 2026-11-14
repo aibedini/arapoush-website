@@ -45,8 +45,26 @@ Each denial is audited.
   Self-service routes (own session, password, preferences) only need a session.
 - **Roles.** The built-in `viewer`, `auditor`, `operator` and `super_admin` keep the access the old
   role ranks gave (`BUILTIN_ROLES`). Custom roles live in the `roles` table. Nobody can give a
-  permission they do not hold (`ESCALATION`), change their own permissions, or demote or disable the
-  last active super admin (`LAST_ADMIN`).
+  permission they do not hold (`ESCALATION`), change their own permissions, or demote, disable or
+  delete the last active super admin (`LAST_ADMIN`).
+- **Managing operators (target protection).** Changing someone else (profile, role, permissions,
+  password, MFA, sessions, delete) needs every permission *they* hold, and only a super admin
+  manages a super admin (`ESCALATION`). Otherwise a custom "user admin" role could reset a super
+  admin's password and authenticator and take the account over. Your own role, status, email,
+  expiry and MFA are changed by another administrator (`SELF_CHANGE`).
+- **Account lifecycle.**
+  - New accounts and admin resets get a *temporary* password. OPEX can generate it (16 characters,
+    about 80 bits): it is returned once, with `Cache-Control: no-store`, and never logged or
+    audited.
+  - While `must_change_password` is set, every non-self-service route answers
+    `PASSWORD_CHANGE_REQUIRED`; changing the password lifts it. An admin reset also ends their
+    sessions and lifts a lockout.
+  - `access_expires_at` limits an account in time (contractors). After it, sign-in fails and
+    live sessions end on their next request.
+  - Delete is soft: credentials, sessions and team memberships are removed and the email is freed,
+    but the row stays so the audit trail and past work still name the person. Disable is the
+    reversible option.
+  - Changing an operator's email or resetting their MFA ends their sessions.
 - **Sessions.**
   - The `opex_session` cookie is HttpOnly and SameSite=Strict, and Secure in production.
   - Sessions expire after 15 minutes idle and 8 hours absolute.

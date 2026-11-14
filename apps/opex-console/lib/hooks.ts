@@ -48,7 +48,7 @@ export function useAction() {
   return { busy, error, done, run, setError, setDone };
 }
 
-export type Me = { id: string; display: string; role: string; stepUpValid: boolean; permissions: string[] };
+export type Me = { id: string; display: string; role: string; stepUpValid: boolean; permissions: string[]; mustChangePassword?: boolean };
 export const MeContext = createContext<Me | null>(null);
 export const useMe = () => useContext(MeContext);
 /** One function of the console (S1): the API decides, the console only hides what would be refused. */

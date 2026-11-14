@@ -1,5 +1,5 @@
-import { AUTH, LoginBody, MfaBody, NewOperatorBody, OperatorPatch } from "./contract.ts";
-import type { FastifyInstance } from "fastify";
+import { AUTH, LoginBody, MfaBody, NewOperatorBody, OperatorPatch, ResetPasswordBody } from "./contract.ts";
+import type { FastifyInstance, FastifyRequest } from "fastify";
 import { SignJWT, jwtVerify } from "jose";
 import { z } from "zod";
 import type { Deps } from "../app.ts";
@@ -8,18 +8,32 @@ import { badRequest, conflict, forbidden, notFound, unauthorized } from "../http
 import { sha256, token, ulid } from "../ids.ts";
 import { requireOperator, requireStepUp } from "./guards.ts";
 import { ipAllowed } from "./cidr.ts";
-import { checkPasswordPolicy, dummyVerify, hashPassword, verifyPassword } from "./password.ts";
+import { checkPasswordPolicy, dummyVerify, generatePassword, hashPassword, verifyPassword } from "./password.ts";
 import { actorOf, type Principal } from "./principal.ts";
 import type { Q } from "../db/index.ts";
-import { BUILTIN_ROLES, rolePermissions } from "../authz/permissions.ts";
-import { clearSessionCookie, createSession, setSessionCookie } from "./sessions.ts";
+import { BUILTIN_ROLES, effectivePermissions, rolePermissions } from "../authz/permissions.ts";
+import { accessExpired, clearSessionCookie, createSession, setSessionCookie } from "./sessions.ts";
 import { newTotpSecret, verifyTotp } from "./totp.ts";
 
 const LOCK_AFTER = 5;
 const Login = LoginBody;
 const Mfa = MfaBody;
 
-type PrincipalRow = { id: string; email: string; display_name: string; status: string; role: string | null; kind: string; failed_logins: number; locked_until: Date | null; secret: string | null };
+type PrincipalRow = { id: string; email: string; display_name: string; status: string; role: string | null; kind: string; failed_logins: number; locked_until: Date | null; secret: string | null; access_expires_at: Date | null; deleted_at: Date | null };
+type OperatorRow = {
+  id: string;
+  email: string | null;
+  display_name: string;
+  title: string | null;
+  notes: string;
+  role: string;
+  status: string;
+  perm_allow: unknown;
+  perm_deny: unknown;
+  must_change_password: boolean;
+  access_expires_at: Date | null;
+};
+const OPERATOR_COLS = `id, email, display_name, title, notes, role, status, perm_allow, perm_deny, must_change_password, access_expires_at`;
 
 /** Operator sign-in (password, then TOTP), session management and operator administration. */
 export async function authModule(app: FastifyInstance, deps: Deps) {
@@ -69,7 +83,7 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
     const body = Login.parse(req.body);
     const email = body.email.toLowerCase();
     const [p] = await db.q<PrincipalRow>(
-      `SELECT p.id, p.email, p.display_name, p.status, p.role, p.kind, p.failed_logins, p.locked_until, c.secret
+      `SELECT p.id, p.email, p.display_name, p.status, p.role, p.kind, p.failed_logins, p.locked_until, p.access_expires_at, p.deleted_at, c.secret
          FROM principals p LEFT JOIN credentials c ON c.principal_id = p.id AND c.kind = 'password'
         WHERE p.tenant_id = $1 AND p.email = $2 AND p.kind = 'operator'`,
       [tenant, email],
@@ -83,7 +97,8 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
       throw await fail(p ? "no password set" : "unknown email");
     }
     if (p.locked_until && new Date(p.locked_until).getTime() > Date.now()) throw await fail("account locked");
-    if (p.status !== "active") throw await fail(`status ${p.status}`);
+    if (p.status !== "active" || p.deleted_at) throw await fail(`status ${p.deleted_at ? "deleted" : p.status}`);
+    if (accessExpired(p.access_expires_at)) throw await fail("access expired");
     if (!(await verifyPassword(p.secret, body.password))) {
       await countFailure(p.id, p.display_name, req.info);
       throw await fail("wrong password");
@@ -121,8 +136,8 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
       await countFailure(id, undefined, req.info);
       throw unauthorized("The code is not valid");
     }
-    const [p] = await db.q<{ display_name: string; role: string; status: string }>(`SELECT display_name, role, status FROM principals WHERE id = $1`, [id]);
-    if (p?.status !== "active") throw unauthorized();
+    const [p] = await db.q<{ display_name: string; role: string; status: string; access_expires_at: Date | null; deleted_at: Date | null }>(`SELECT display_name, role, status, access_expires_at, deleted_at FROM principals WHERE id = $1`, [id]);
+    if (p?.status !== "active" || p.deleted_at || accessExpired(p.access_expires_at)) throw unauthorized();
     const s = await db.tx(async (q) => {
       await q(`UPDATE credentials SET confirmed = true, last_used_step = $2, last_used_at = clock_timestamp() WHERE principal_id = $1 AND kind = 'totp'`, [id, step]);
       await q(`UPDATE principals SET failed_logins = 0, locked_until = NULL, last_login_at = clock_timestamp() WHERE id = $1`, [id]);
@@ -162,7 +177,7 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
 
   app.get("/v1/manage/auth/me", { preHandler: requireOperator(deps) }, async (req) => {
     const p = req.principal!;
-    return { id: p.id, display: p.display, role: p.role, stepUpValid: !!p.stepUpAt && Date.now() - p.stepUpAt.getTime() < 300_000, permissions: [...(p.permissions ?? [])].sort() };
+    return { id: p.id, display: p.display, role: p.role, stepUpValid: !!p.stepUpAt && Date.now() - p.stepUpAt.getTime() < 300_000, permissions: [...(p.permissions ?? [])].sort(), mustChangePassword: !!p.mustChangePassword };
   });
 
   // The console keeps the CSRF token in memory only; after a reload it fetches a fresh one.
@@ -188,11 +203,13 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
     const me = req.principal!;
     const [row] = await db.q<{ secret: string; email: string }>(`SELECT c.secret, p.email FROM credentials c JOIN principals p ON p.id = c.principal_id WHERE c.principal_id = $1 AND c.kind = 'password'`, [me.id]);
     if (!row || !(await verifyPassword(row.secret, body.current))) throw unauthorized("Current password is incorrect");
+    if (body.next === body.current) throw badRequest("SAME_PASSWORD", "Choose a password different from the current one");
     const policy = await checkPasswordPolicy(body.next, { email: row.email, online: config.isProd });
     if (policy) throw badRequest("WEAK_PASSWORD", policy);
     const h = await hashPassword(body.next);
     await db.tx(async (q) => {
       await q(`UPDATE credentials SET secret = $2, created_at = clock_timestamp() WHERE principal_id = $1 AND kind = 'password'`, [me.id, h]);
+      await q(`UPDATE principals SET must_change_password = false WHERE id = $1`, [me.id]);
       // Every other session of this operator ends.
       await q(`UPDATE sessions SET revoked_at = clock_timestamp(), revoke_reason = 'password_changed' WHERE principal_id = $1 AND id <> $2 AND revoked_at IS NULL`, [me.id, me.sessionId]);
       await audit(q, tenant, { action: "auth.password.changed", actor: actorOf(req), request: req.info });
@@ -226,73 +243,195 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
     return { ok: true };
   });
 
-  // ── Operators (super admin) ──
-  const NewOperator = NewOperatorBody;
+  // ── Operators ──
+  /**
+   * Target protection: you may only manage an operator whose access you hold yourself, and only a super
+   * admin manages a super admin. Without it a custom "user admin" role could reset a super admin's
+   * password and authenticator and take the account over.
+   */
+  const manageable = async (req: FastifyRequest, id: string, allowSelf = false) => {
+    const [t] = await db.q<OperatorRow>(`SELECT ${OPERATOR_COLS} FROM principals WHERE id = $1 AND tenant_id = $2 AND kind = 'operator' AND deleted_at IS NULL`, [id, tenant]);
+    if (!t) throw notFound("Operator");
+    const me = req.principal!;
+    if (t.id === me.id) {
+      if (!allowSelf) throw forbidden("SELF_CHANGE", "Use your own account page for this");
+      return t;
+    }
+    if (t.role === "super_admin" && me.role !== "super_admin") throw forbidden("ESCALATION", "Only a super admin can manage a super admin");
+    const mine = me.permissions ?? new Set<string>();
+    const missing = [...(await effectivePermissions(db.q, tenant, t))].filter((p) => !mine.has(p));
+    if (missing.length) throw forbidden("ESCALATION", "This operator has permissions you do not have", { missing });
+    return t;
+  };
+  const idOf = (req: FastifyRequest) => z.object({ id: z.string().max(40) }).parse(req.params).id;
+  const futureOrNull = (at: string | null | undefined) => {
+    if (at && accessExpired(at)) throw badRequest("EXPIRY_PAST", "The access end must be in the future; disable the account to stop access now");
+  };
+  const endSessions = (q: Q, id: string, reason: string) =>
+    q<{ id: string }>(`UPDATE sessions SET revoked_at = clock_timestamp(), revoke_reason = $2 WHERE principal_id = $1 AND revoked_at IS NULL RETURNING id`, [id, reason]);
+  const admin = [requireOperator(deps, "super_admin"), requireStepUp(deps)];
+
   app.get("/v1/manage/operators", { preHandler: requireOperator(deps, "operator") }, async () =>
     db.q(
-      `SELECT p.id, p.email, p.display_name, p.role, p.status, p.last_login_at, p.locked_until, p.created_at,
+      `SELECT p.id, p.email, p.display_name, p.title, p.role, p.status, p.last_login_at, p.locked_until, p.created_at,
+              p.must_change_password, p.access_expires_at,
               EXISTS (SELECT 1 FROM credentials c WHERE c.principal_id = p.id AND c.kind = 'totp' AND c.confirmed) AS mfa,
+              (SELECT count(*)::int FROM sessions s WHERE s.principal_id = p.id AND s.kind = 'console' AND s.revoked_at IS NULL AND s.expires_at > clock_timestamp()) AS active_sessions,
               p.perm_allow, p.perm_deny
-         FROM principals p WHERE p.tenant_id = $1 AND p.kind = 'operator' ORDER BY p.created_at`,
+         FROM principals p WHERE p.tenant_id = $1 AND p.kind = 'operator' AND p.deleted_at IS NULL ORDER BY p.created_at`,
       [tenant],
     ),
   );
 
-  app.post("/v1/manage/operators", { preHandler: [requireOperator(deps, "super_admin"), requireStepUp(deps)] }, async (req) => {
-    const body = NewOperator.parse(req.body);
-    const policy = await checkPasswordPolicy(body.password, { email: body.email, online: config.isProd });
-    if (policy) throw badRequest("WEAK_PASSWORD", policy);
+  app.post("/v1/manage/operators", { preHandler: admin }, async (req, reply) => {
+    const body = NewOperatorBody.parse(req.body);
+    const email = body.email.toLowerCase();
+    const generated = !body.password;
+    const password = body.password ?? generatePassword();
+    if (!generated) {
+      const policy = await checkPasswordPolicy(password, { email, online: config.isProd });
+      if (policy) throw badRequest("WEAK_PASSWORD", policy);
+    }
+    futureOrNull(body.access_expires_at);
     await assertCanGrantRole(db.q, tenant, req.principal!, body.role);
     const id = ulid("prn_");
-    const h = await hashPassword(body.password);
+    const h = await hashPassword(password);
     await db.tx(async (q) => {
-      const [dup] = await q(`SELECT 1 FROM principals WHERE tenant_id = $1 AND email = $2`, [tenant, body.email.toLowerCase()]);
+      const [dup] = await q(`SELECT 1 FROM principals WHERE tenant_id = $1 AND email = $2`, [tenant, email]);
       if (dup) throw conflict("EMAIL_TAKEN", "An account with this email exists");
-      await q(`INSERT INTO principals (id, tenant_id, kind, email, display_name, role, created_by) VALUES ($1,$2,'operator',$3,$4,$5,$6)`, [id, tenant, body.email.toLowerCase(), body.display_name, body.role, req.principal!.id]);
+      await q(
+        `INSERT INTO principals (id, tenant_id, kind, email, display_name, title, role, must_change_password, access_expires_at, created_by)
+         VALUES ($1,$2,'operator',$3,$4,$5,$6,$7,$8,$9)`,
+        [id, tenant, email, body.display_name, body.title || null, body.role, body.must_change_password, body.access_expires_at ?? null, req.principal!.id],
+      );
       await q(`INSERT INTO credentials (principal_id, kind, secret, confirmed) VALUES ($1,'password',$2,true)`, [id, h]);
-      await audit(q, tenant, { action: "operator.create", actor: actorOf(req), request: req.info, resource: { type: "principal", id, email: body.email, role: body.role } });
+      await audit(q, tenant, {
+        action: "operator.create",
+        actor: actorOf(req),
+        request: req.info,
+        resource: { type: "principal", id, email, role: body.role, generated_password: generated, must_change_password: body.must_change_password, access_expires_at: body.access_expires_at ?? null },
+      });
     });
-    return { id };
+    // The temporary password is in this answer only: never stored in clear, logged or audited.
+    reply.header("Cache-Control", "no-store");
+    return generated ? { id, temporaryPassword: password } : { id };
   });
 
-  app.post("/v1/manage/operators/:id/reset-password", { preHandler: [requireOperator(deps, "super_admin"), requireStepUp(deps)] }, async (req) => {
-    const { id } = req.params as { id: string };
-    const body = AUTH.resetOperatorPassword.body!.parse(req.body);
-    const [op] = await db.q<{ email: string }>(`SELECT email FROM principals WHERE id = $1 AND tenant_id = $2 AND kind = 'operator'`, [id, tenant]);
-    if (!op) throw notFound("Operator");
-    const policy = await checkPasswordPolicy(body.password, { email: op.email, online: config.isProd });
-    if (policy) throw badRequest("WEAK_PASSWORD", policy);
-    const h = await hashPassword(body.password);
+  app.post("/v1/manage/operators/:id/reset-password", { preHandler: admin, config: { rateLimit: { max: 10, timeWindow: "1 minute" } } }, async (req, reply) => {
+    const id = idOf(req);
+    const body = ResetPasswordBody.parse(req.body ?? {});
+    const t = await manageable(req, id);
+    const generated = !body.password;
+    const password = body.password ?? generatePassword();
+    if (!generated) {
+      const policy = await checkPasswordPolicy(password, { email: t.email ?? undefined, online: config.isProd });
+      if (policy) throw badRequest("WEAK_PASSWORD", policy);
+    }
+    const h = await hashPassword(password);
     await db.tx(async (q) => {
       await q(`INSERT INTO credentials (principal_id, kind, secret, confirmed) VALUES ($1,'password',$2,true) ON CONFLICT (principal_id, kind) DO UPDATE SET secret = EXCLUDED.secret, created_at = clock_timestamp()`, [id, h]);
-      await q(`UPDATE sessions SET revoked_at = clock_timestamp(), revoke_reason = 'password_reset_by_admin' WHERE principal_id = $1 AND revoked_at IS NULL`, [id]);
-      await audit(q, tenant, { action: "operator.password_reset", actor: actorOf(req), request: req.info, resource: { type: "principal", id, email: op.email } });
+      // A temporary password: they choose their own at the next sign-in. A lockout ends with it.
+      await q(`UPDATE principals SET must_change_password = true, failed_logins = 0, locked_until = NULL WHERE id = $1`, [id]);
+      await endSessions(q, id, "password_reset_by_admin");
+      await audit(q, tenant, { action: "operator.password_reset", actor: actorOf(req), request: req.info, resource: { type: "principal", id, generated_password: generated } });
+    });
+    reply.header("Cache-Control", "no-store");
+    return generated ? { ok: true as const, temporaryPassword: password } : { ok: true as const };
+  });
+
+  app.post("/v1/manage/operators/:id/sessions/revoke", { preHandler: admin }, async (req) => {
+    const id = idOf(req);
+    await manageable(req, id);
+    const revoked = await db.tx(async (q) => {
+      const rows = await endSessions(q, id, "revoked_by_admin");
+      await audit(q, tenant, { action: "operator.sessions_revoked", actor: actorOf(req), request: req.info, resource: { type: "principal", id, sessions: rows.length } });
+      return rows.length;
+    });
+    return { ok: true, revoked };
+  });
+
+  app.get("/v1/manage/operators/:id/activity", { preHandler: requireOperator(deps, "operator") }, async (req) => {
+    const id = idOf(req);
+    const { limit = 50 } = AUTH.operatorActivity.query.parse(req.query);
+    const [t] = await db.q(`SELECT 1 FROM principals WHERE id = $1 AND tenant_id = $2 AND kind = 'operator'`, [id, tenant]);
+    if (!t) throw notFound("Operator");
+    const rows = await db.q<{ seq: string; ts: Date; action: string; result: string; actor: { id?: string | null; display?: string } | null; request: { ip?: string | null } | null; reason: string | null }>(
+      `SELECT seq, ts, action, result, actor, request, reason FROM audit_events
+        WHERE tenant_id = $1 AND (actor->>'id' = $2 OR resource->>'id' = $2) ORDER BY seq DESC LIMIT $3`,
+      [tenant, id, limit],
+    );
+    return rows.map((r) => ({
+      seq: Number(r.seq),
+      ts: new Date(r.ts).toISOString(),
+      action: r.action,
+      result: r.result,
+      by_self: r.actor?.id === id,
+      actor: r.actor?.display ?? r.actor?.id ?? null,
+      ip: r.request?.ip ?? null,
+      reason: r.reason,
+    }));
+  });
+
+  app.patch("/v1/manage/operators/:id", { preHandler: admin }, async (req) => {
+    const id = idOf(req);
+    const body = OperatorPatch.parse(req.body);
+    const me = req.principal!;
+    // Your own account: name and title only. Everything else needs a second administrator.
+    const selfOnly = new Set(["display_name", "title"]);
+    if (id === me.id && Object.keys(body).some((k) => !selfOnly.has(k))) throw forbidden("SELF_CHANGE", "You cannot change your own role, status, email, expiry, notes or MFA");
+    const before = await manageable(req, id, true);
+    if (body.role && body.role !== before.role) {
+      if (!me.permissions?.has("users.permissions")) throw forbidden("ESCALATION", "Changing a role needs the users.permissions permission");
+      await assertCanGrantRole(db.q, tenant, me, body.role);
+    }
+    if (before.role === "super_admin" && ((body.role && body.role !== "super_admin") || body.status === "disabled")) await assertNotLastAdmin(db.q, tenant, id);
+    futureOrNull(body.access_expires_at);
+    const email = body.email?.toLowerCase();
+    const emailChanged = !!email && email !== before.email;
+    await db.tx(async (q) => {
+      if (emailChanged) {
+        const [dup] = await q(`SELECT 1 FROM principals WHERE tenant_id = $1 AND email = $2 AND id <> $3`, [tenant, email, id]);
+        if (dup) throw conflict("EMAIL_TAKEN", "An account with this email exists");
+        await q(`UPDATE principals SET email = $2 WHERE id = $1`, [id, email]);
+        await endSessions(q, id, "email_changed");
+      }
+      if (body.role) await q(`UPDATE principals SET role = $2 WHERE id = $1`, [id, body.role]);
+      if (body.display_name) await q(`UPDATE principals SET display_name = $2 WHERE id = $1`, [id, body.display_name]);
+      if (body.title !== undefined) await q(`UPDATE principals SET title = $2 WHERE id = $1`, [id, body.title || null]);
+      if (body.notes !== undefined) await q(`UPDATE principals SET notes = $2 WHERE id = $1`, [id, body.notes]);
+      if (body.access_expires_at !== undefined) await q(`UPDATE principals SET access_expires_at = $2 WHERE id = $1`, [id, body.access_expires_at]);
+      if (body.must_change_password !== undefined) await q(`UPDATE principals SET must_change_password = $2 WHERE id = $1`, [id, body.must_change_password]);
+      if (body.status) {
+        await q(`UPDATE principals SET status = $2 WHERE id = $1`, [id, body.status]);
+        if (body.status === "disabled") await endSessions(q, id, "disabled");
+      }
+      if (body.reset_mfa) {
+        await q(`DELETE FROM credentials WHERE principal_id = $1 AND kind = 'totp'`, [id]);
+        // A new authenticator is enrolled at sign-in, so a session made with the old one must not live on.
+        await endSessions(q, id, "mfa_reset");
+      }
+      if (body.unlock) await q(`UPDATE principals SET failed_logins = 0, locked_until = NULL WHERE id = $1`, [id]);
+      const changes = Object.entries(body).map(([k, v]) => ({ op: "replace", path: `/${k}`, old: (before as Record<string, unknown>)[k] ?? null, new: v }));
+      await audit(q, tenant, { action: "operator.update", actor: actorOf(req), request: req.info, resource: { type: "principal", id }, changes });
     });
     return { ok: true };
   });
 
-  app.patch("/v1/manage/operators/:id", { preHandler: [requireOperator(deps, "super_admin"), requireStepUp(deps)] }, async (req) => {
-    const { id } = req.params as { id: string };
-    const body = OperatorPatch.parse(req.body);
-    if (id === req.principal!.id && (body.role || body.status)) throw forbidden("SELF_CHANGE", "You cannot change your own role or status");
-    const [before] = await db.q<Record<string, unknown>>(`SELECT role, status, display_name FROM principals WHERE id = $1 AND tenant_id = $2 AND kind = 'operator'`, [id, tenant]);
-    if (!before) throw notFound("Operator");
-    if (body.role && body.role !== before.role) {
-      if (!req.principal!.permissions?.has("users.permissions")) throw forbidden("ESCALATION", "Changing a role needs the users.permissions permission");
-      await assertCanGrantRole(db.q, tenant, req.principal!, body.role);
-    }
-    if (before.role === "super_admin" && ((body.role && body.role !== "super_admin") || body.status === "disabled")) await assertNotLastAdmin(db.q, tenant, id);
+  app.delete("/v1/manage/operators/:id", { preHandler: admin }, async (req) => {
+    const id = idOf(req);
+    const t = await manageable(req, id);
+    if (t.role === "super_admin") await assertNotLastAdmin(db.q, tenant, id);
     await db.tx(async (q) => {
-      if (body.role) await q(`UPDATE principals SET role = $2 WHERE id = $1`, [id, body.role]);
-      if (body.display_name) await q(`UPDATE principals SET display_name = $2 WHERE id = $1`, [id, body.display_name]);
-      if (body.status) {
-        await q(`UPDATE principals SET status = $2 WHERE id = $1`, [id, body.status]);
-        if (body.status === "disabled") await q(`UPDATE sessions SET revoked_at = clock_timestamp(), revoke_reason = 'disabled' WHERE principal_id = $1 AND revoked_at IS NULL`, [id]);
-      }
-      if (body.reset_mfa) await q(`DELETE FROM credentials WHERE principal_id = $1 AND kind = 'totp'`, [id]);
-      if (body.unlock) await q(`UPDATE principals SET failed_logins = 0, locked_until = NULL WHERE id = $1`, [id]);
-      const changes = Object.entries(body).map(([k, v]) => ({ op: "replace", path: `/${k}`, old: (before as Record<string, unknown>)[k] ?? null, new: v }));
-      await audit(q, tenant, { action: "operator.update", actor: actorOf(req), request: req.info, resource: { type: "principal", id }, changes });
+      // Soft delete: sign-in is gone for good and the email is free again, while audit events, tickets
+      // and revisions keep naming the person.
+      await q(`DELETE FROM credentials WHERE principal_id = $1`, [id]);
+      await q(`DELETE FROM team_members WHERE principal_id = $1`, [id]);
+      await endSessions(q, id, "deleted");
+      await q(
+        `UPDATE principals SET deleted_at = clock_timestamp(), status = 'disabled', email = NULL, perm_allow = '[]'::jsonb, perm_deny = '[]'::jsonb, must_change_password = false, failed_logins = 0, locked_until = NULL WHERE id = $1`,
+        [id],
+      );
+      await audit(q, tenant, { action: "operator.delete", actor: actorOf(req), request: req.info, resource: { type: "principal", id, email: t.email, display: t.display_name, role: t.role } });
     });
     return { ok: true };
   });

@@ -161,7 +161,7 @@ label.check { display: inline-flex; align-items: center; gap: 8px; min-block-siz
 input, select, textarea { min-inline-size: 0; font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 6px; padding: 7px 10px; min-block-size: 36px; inline-size: 100%; }
 textarea { resize: vertical; min-block-size: 72px; line-height: 1.7; }
 input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: 2px solid color-mix(in srgb, var(--accent) 25%, transparent); outline-offset: 0; }
-input[type="checkbox"] { inline-size: 18px; min-block-size: 18px; block-size: 18px; accent-color: var(--accent); }
+input[type="checkbox"], input[type="radio"] { inline-size: 18px; min-block-size: 18px; block-size: 18px; padding: 0; flex: none; accent-color: var(--accent); }
 input:disabled, textarea:disabled, select:disabled { background: var(--surface-2); color: var(--muted); }
 [dir="ltr"] { text-align: left; }
 

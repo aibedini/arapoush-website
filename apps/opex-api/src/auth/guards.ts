@@ -27,6 +27,8 @@ export function requireOperator(deps: Deps, _min: OperatorRole = "viewer") {
     req.principal = s;
     const need = permissionFor(req.method, req.routeOptions.url ?? "");
     if (need === SELF) return;
+    // A temporary password (new account or admin reset) only opens self-service until it is changed.
+    if (s.mustChangePassword) throw forbidden("PASSWORD_CHANGE_REQUIRED", "Change your temporary password first");
     if (!need || !s.permissions.has(need)) {
       await deny(deps, req, "console.permission", `Missing permission ${need ?? "(route not mapped)"}`);
       throw forbidden("ROLE_DENIED", "Your role does not allow this", { permission: need ?? null });

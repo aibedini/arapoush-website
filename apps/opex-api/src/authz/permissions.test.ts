@@ -51,12 +51,12 @@ test("custom roles and per-user allow/deny decide each function; no escalation (
     assert.equal((await req(admin, "PUT", `/v1/manage/operators/${viewer.id}/permissions`, { allow: ["root.everything"], deny: [] })).json().code, "UNKNOWN_PERMISSION");
     assert.equal((await req(admin, "PUT", `/v1/manage/operators/${admin.id}/permissions`, { allow: [], deny: ["users.read"] })).json().code, "SELF_CHANGE");
 
-    // A user admin (custom role) cannot give out super admin, nor demote the last super admin.
+    // A user admin (custom role) cannot give out super admin, nor touch a super admin at all.
     await req(admin, "POST", "/v1/manage/roles", { key: "user_admin", name: "User admin", permissions: [...BUILTIN_ROLES.viewer!.permissions, "users.read", "users.update", "users.permissions"] });
     const ua = await signIn(t.app, t, "user_admin");
     assert.equal((await req(ua, "PATCH", `/v1/manage/operators/${viewer.id}`, { role: "super_admin" })).json().code, "ESCALATION");
     assert.equal((await req(ua, "PATCH", `/v1/manage/operators/${viewer.id}`, { role: "operator" })).json().code, "ESCALATION");
-    assert.equal((await req(ua, "PATCH", `/v1/manage/operators/${admin.id}`, { role: "viewer" })).json().code, "LAST_ADMIN");
+    assert.equal((await req(ua, "PATCH", `/v1/manage/operators/${admin.id}`, { role: "viewer" })).json().code, "ESCALATION");
   } finally {
     await t.close();
   }

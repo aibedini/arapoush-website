@@ -23,10 +23,11 @@ export const COMMANDS: Record<string, (deps: Deps, args: string[]) => Promise<vo
     const policy = await checkPasswordPolicy(pw, { email });
     if (policy) throw new Error(`Password policy: ${policy}`);
     const h = await hashPassword(pw);
-    const [p] = await deps.db.q<{ id: string }>(`SELECT id FROM principals WHERE tenant_id = $1 AND email = $2 AND kind = 'operator'`, [deps.config.TENANT, email.toLowerCase()]);
+    const [p] = await deps.db.q<{ id: string }>(`SELECT id FROM principals WHERE tenant_id = $1 AND email = $2 AND kind = 'operator' AND deleted_at IS NULL`, [deps.config.TENANT, email.toLowerCase()]);
     if (!p) throw new Error(`No operator with email ${email}`);
     await deps.db.tx(async (q) => {
       await q(`INSERT INTO credentials (principal_id, kind, secret, confirmed) VALUES ($1,'password',$2,true) ON CONFLICT (principal_id, kind) DO UPDATE SET secret = EXCLUDED.secret, created_at = clock_timestamp()`, [p.id, h]);
+      await q(`UPDATE principals SET failed_logins = 0, locked_until = NULL WHERE id = $1`, [p.id]);
       await q(`UPDATE sessions SET revoked_at = clock_timestamp(), revoke_reason = 'password_reset_by_cli' WHERE principal_id = $1 AND revoked_at IS NULL`, [p.id]);
     });
     console.log(`password reset for ${email}; all their sessions ended`);

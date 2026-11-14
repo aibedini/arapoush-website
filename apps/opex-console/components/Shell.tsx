@@ -91,11 +91,15 @@ export function Shell({ children }: { children: React.ReactNode }) {
       .catch(() => {});
   }, []);
   useEffect(() => setMenu(false), [path]);
+  // A temporary password opens only the account page until it is changed (the API refuses the rest).
+  useEffect(() => {
+    if (me?.mustChangePassword && path !== "/account") router.replace("/account");
+  }, [me, path, router]);
 
   // Pending reviews: a count in the menu and the tab title, refreshed every minute and on navigation.
   const [pending, setPending] = useState(0);
   useEffect(() => {
-    if (!me) return;
+    if (!me || me.mustChangePassword) return;
     let live = true;
     const load = () =>
       api<unknown[]>("/v1/manage/change-requests?state=pending_review")
@@ -114,7 +118,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   // Helpdesk: unread tickets for me (mine + unassigned).
   const [tickets, setTickets] = useState(0);
   useEffect(() => {
-    if (!me || !can(me, "tickets.read")) return;
+    if (!me || me.mustChangePassword || !can(me, "tickets.read")) return;
     let live = true;
     const load = () =>
       api<{ unread: number }>("/v1/manage/tickets/counts")

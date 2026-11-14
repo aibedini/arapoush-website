@@ -1,5 +1,12 @@
 import { hash, verify } from "@node-rs/argon2";
-import { createHash } from "node:crypto";
+import { createHash, randomInt } from "node:crypto";
+
+/** A temporary password: 16 characters from an unambiguous alphabet (80 bits), grouped for reading aloud. */
+const ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+export function generatePassword() {
+  const c = Array.from({ length: 16 }, () => ALPHABET[randomInt(ALPHABET.length)]).join("");
+  return `${c.slice(0, 4)}-${c.slice(4, 8)}-${c.slice(8, 12)}-${c.slice(12)}`;
+}
 
 // Argon2id, m=64 MiB, t=3, p=1 (plan §3.2).
 const OPTS = { algorithm: 2, memoryCost: 65536, timeCost: 3, parallelism: 1 } as const;

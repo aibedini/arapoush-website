@@ -19,6 +19,8 @@ export type Principal = {
   authMethod: string;
   /** Console operators: effective permissions (authz/permissions.ts). */
   permissions?: Set<string>;
+  /** Signed in with a temporary password: only self-service routes until it is changed. */
+  mustChangePassword?: boolean;
 };
 
 declare module "fastify" {

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Iso, Ok, route } from "../openapi/contract.ts";
+import { Iso, IsoOrNull, Ok, route } from "../openapi/contract.ts";
 
 const S = "authz/routes.ts";
 const tags = ["Operators"];
@@ -43,18 +43,41 @@ export const AUTHZ = {
     path: "/v1/manage/operators/:id",
     audience: "manage",
     tags,
-    summary: "One operator with role, own permissions and effective permissions",
+    summary: "One operator: profile, security state, permissions and live sessions",
     auth: "session",
     role: "operator",
     source: S,
     params: z.object({ id: z.string().max(40) }),
     responses: {
       200: {
-        description: "The operator.",
-        schema: z.object({ id: z.string(), email: z.string().nullable(), display_name: z.string(), role: z.string(), status: z.string(), perm_allow: z.array(z.string()), perm_deny: z.array(z.string()), effective: z.array(z.string()) }),
+        description: "The operator. `sessions` is filled only for callers with sessions.manage (or for yourself); session ids are shortened.",
+        schema: z.object({
+          id: z.string(),
+          email: z.string().nullable(),
+          display_name: z.string(),
+          title: z.string().nullable(),
+          notes: z.string().describe("Admin-only note; empty unless you have users.update."),
+          role: z.string(),
+          status: z.string(),
+          mfa: z.boolean(),
+          last_login_at: IsoOrNull,
+          locked_until: IsoOrNull,
+          failed_logins: z.number().int(),
+          created_at: Iso,
+          created_by: z.string().nullable(),
+          must_change_password: z.boolean(),
+          access_expires_at: IsoOrNull,
+          password_changed_at: IsoOrNull,
+          perm_allow: z.array(z.string()),
+          perm_deny: z.array(z.string()),
+          effective: z.array(z.string()),
+          manageable: z.boolean().describe("Whether you may change this operator (it has no permission you lack; super admins only by super admins)."),
+          self: z.boolean(),
+          sessions: z.array(z.object({ id: z.string(), ip: z.string().nullable(), user_agent: z.string().nullable(), created_at: Iso, last_seen_at: Iso })),
+        }),
       },
     },
-    errors: [{ status: 404, code: "NOT_FOUND", when: "No such operator." }],
+    errors: [{ status: 404, code: "NOT_FOUND", when: "No such operator (or it was deleted)." }],
   }),
   setOperatorPermissions: route({
     id: "setOperatorPermissions",

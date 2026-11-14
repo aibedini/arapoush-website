@@ -35,6 +35,12 @@ Only ports 80 and 443 are public.
    ```bash
    docker compose … exec -e OPEX_NEW_PASSWORD='…' opex-api node --no-warnings src/cli.ts create-operator you@arapoush.com "Your Name" super_admin
    ```
+   Everyone else is invited in the console (**Users and permissions → New user**). If the only super
+   admin is locked out, reset the password from the server; it also lifts the lockout and ends
+   their sessions:
+   ```bash
+   docker compose … exec -e OPEX_NEW_PASSWORD='…' opex-api node --no-warnings src/cli.ts reset-password you@arapoush.com
+   ```
 7. **Check:**
    - `https://SITE_DOMAIN/fa` loads;
    - `https://CONSOLE_DOMAIN` (from an allowed IP) asks for sign-in;

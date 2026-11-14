@@ -2167,7 +2167,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `audit.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `audit.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -2365,7 +2365,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `audit.export` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `audit.export` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -2512,7 +2512,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `audit.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `audit.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -2875,6 +2875,10 @@
                         "type": "string"
                       },
                       "description": "Your effective permissions (role + your own additions − removals)."
+                    },
+                    "mustChangePassword": {
+                      "type": "boolean",
+                      "description": "Signed in with a temporary password: every other route answers PASSWORD_CHANGE_REQUIRED until it is changed."
                     }
                   },
                   "required": [
@@ -2882,7 +2886,8 @@
                     "display",
                     "role",
                     "stepUpValid",
-                    "permissions"
+                    "permissions",
+                    "mustChangePassword"
                   ],
                   "additionalProperties": false
                 }
@@ -3238,7 +3243,7 @@
         },
         "responses": {
           "200": {
-            "description": "Changed; your other sessions are signed out.",
+            "description": "Changed; your other sessions are signed out and a temporary-password lock is lifted.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3258,7 +3263,7 @@
             }
           },
           "400": {
-            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`WEAK_PASSWORD`: Shorter than 12 or longer than 128 characters, contains your email name, or (in production) appears in known breaches; `detail` says which.",
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`SAME_PASSWORD`: The new password is the current one.\n\n`WEAK_PASSWORD`: Shorter than 12 or longer than 128 characters, contains your email name, or (in production) appears in known breaches; `detail` says which.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -3623,7 +3628,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `backup.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `backup.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -3750,7 +3755,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `backup.run` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `backup.run` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -3879,7 +3884,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `backup.run` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `backup.run` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -3991,7 +3996,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `backup.run` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `backup.run` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -4300,7 +4305,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `backup.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `backup.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -4607,7 +4612,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `backup.configure` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `backup.configure` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -4706,7 +4711,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `backup.configure` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `backup.configure` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -4861,7 +4866,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `backup.restore` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `backup.restore` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -5205,7 +5210,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `catalogue.import` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `catalogue.import` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -5327,7 +5332,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `catalogue.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `catalogue.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -5472,7 +5477,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `catalogue.write` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `catalogue.write` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -5645,7 +5650,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `catalogue.approve` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `catalogue.approve` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -5790,7 +5795,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `catalogue.write` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `catalogue.write` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -5990,7 +5995,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `cr.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `cr.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -6289,7 +6294,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `cr.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `cr.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -6443,7 +6448,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `cr.review` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `cr.review` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -6642,7 +6647,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `cr.review` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: Publishing global.* content needs a fresh authenticator confirmation.",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `cr.review` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: Publishing global.* content needs a fresh authenticator confirmation.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -6796,7 +6801,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `cr.publish` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: Publishing global.* content needs a fresh authenticator confirmation.",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `cr.publish` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: Publishing global.* content needs a fresh authenticator confirmation.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -6971,7 +6976,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `cr.review` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `cr.review` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -7251,7 +7256,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `dashboard.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `dashboard.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -7364,7 +7369,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `content.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `content.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -7449,7 +7454,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `docs.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `docs.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -7529,7 +7534,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `docs.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `docs.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -7609,7 +7614,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `docs.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `docs.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -7787,7 +7792,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `content.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `content.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -8005,7 +8010,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `content.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `content.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -8209,7 +8214,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `content.write` permission (role + own additions − removals).\n\n`FIELD_LOCKED`: A locked field changed and you are not a super admin (`paths` lists them).\n\n`STEP_UP_REQUIRED`: A super admin changed a locked field without a fresh authenticator confirmation.",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `content.write` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`FIELD_LOCKED`: A locked field changed and you are not a super admin (`paths` lists them).\n\n`STEP_UP_REQUIRED`: A super admin changed a locked field without a fresh authenticator confirmation.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -8404,7 +8409,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `content.write` permission (role + own additions − removals).\n\n`FIELD_LOCKED`: A locked field changed and you are not a super admin (`paths` lists them).\n\n`STEP_UP_REQUIRED`: A super admin changed a locked field without a fresh authenticator confirmation.",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `content.write` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`FIELD_LOCKED`: A locked field changed and you are not a super admin (`paths` lists them).\n\n`STEP_UP_REQUIRED`: A super admin changed a locked field without a fresh authenticator confirmation.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -8568,7 +8573,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `content.publish` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: global.* entries need a fresh authenticator confirmation.",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `content.publish` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: global.* entries need a fresh authenticator confirmation.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -8753,7 +8758,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `content.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `content.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -8904,7 +8909,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `content.publish` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `content.publish` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -9061,7 +9066,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `content.publish` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `content.publish` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -9230,7 +9235,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `forms.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `forms.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -9355,7 +9360,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `forms.write` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `forms.write` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -9605,7 +9610,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `forms.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `forms.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -9780,7 +9785,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `forms.write` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `forms.write` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -9944,7 +9949,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `forms.write` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `forms.write` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -10088,7 +10093,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `forms.publish` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `forms.publish` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -10240,7 +10245,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `forms.publish` permission (role + own additions − removals).\n\n`SYSTEM_FORM`: Built-in forms (quote, contact) cannot be archived.",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `forms.publish` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`SYSTEM_FORM`: Built-in forms (quote, contact) cannot be archived.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -10377,7 +10382,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `forms.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `forms.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -10476,7 +10481,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `grants.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `grants.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -10585,7 +10590,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `grants.manage` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `grants.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -10698,7 +10703,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `grants.manage` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `grants.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -10855,7 +10860,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `tickets.mailbox` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `tickets.mailbox` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -10975,7 +10980,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `tickets.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `tickets.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -11101,7 +11106,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -11482,7 +11487,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `media.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `media.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -11591,7 +11596,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `media.upload` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `media.upload` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -11702,7 +11707,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `media.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `media.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -12016,7 +12021,7 @@
     "/v1/manage/operators": {
       "get": {
         "operationId": "listOperators",
-        "summary": "All console operators",
+        "summary": "All console operators (deleted ones are left out)",
         "description": "**Permission:** `users.read`; built-in roles with it by default: super_admin, operator.\n\n**Source:** `apps/opex-api/src/auth/routes.ts`",
         "tags": [
           "Operators"
@@ -12047,6 +12052,12 @@
                       },
                       "display_name": {
                         "type": "string"
+                      },
+                      "title": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
                       },
                       "role": {
                         "$ref": "#/components/schemas/OperatorRole"
@@ -12089,6 +12100,27 @@
                       "mfa": {
                         "type": "boolean"
                       },
+                      "must_change_password": {
+                        "type": "boolean"
+                      },
+                      "access_expires_at": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                            "description": "ISO 8601 timestamp"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "active_sessions": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      },
                       "perm_allow": {
                         "type": "array",
                         "items": {
@@ -12106,12 +12138,16 @@
                       "id",
                       "email",
                       "display_name",
+                      "title",
                       "role",
                       "status",
                       "last_login_at",
                       "locked_until",
                       "created_at",
                       "mfa",
+                      "must_change_password",
+                      "access_expires_at",
+                      "active_sessions",
                       "perm_allow",
                       "perm_deny"
                     ],
@@ -12138,7 +12174,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `users.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `users.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -12206,16 +12242,46 @@
                     "$ref": "#/components/schemas/OperatorRole"
                   },
                   "password": {
+                    "description": "Temporary password, checked against the policy. Omit it and OPEX generates one and returns it once.",
                     "type": "string",
-                    "maxLength": 200,
-                    "description": "Temporary; checked against the password policy."
+                    "maxLength": 200
+                  },
+                  "title": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 120
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "description": "Job title (optional)."
+                  },
+                  "access_expires_at": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                        "description": "ISO 8601 timestamp"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "description": "Access ends at this time: no sign-in, live sessions end. null = no limit."
+                  },
+                  "must_change_password": {
+                    "default": true,
+                    "description": "Ask for a new password at first sign-in (default).",
+                    "type": "boolean"
                   }
                 },
                 "required": [
                   "email",
                   "display_name",
-                  "role",
-                  "password"
+                  "role"
                 ],
                 "additionalProperties": false
               }
@@ -12224,13 +12290,17 @@
         },
         "responses": {
           "200": {
-            "description": "Created; they set up an authenticator at first sign-in.",
+            "description": "Created; they set up an authenticator at first sign-in and (by default) choose their own password. `Cache-Control: no-store`.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
                     "id": {
+                      "type": "string"
+                    },
+                    "temporaryPassword": {
+                      "description": "Only when OPEX generated the password: shown once, never stored in clear or logged.",
                       "type": "string"
                     }
                   },
@@ -12243,7 +12313,7 @@
             }
           },
           "400": {
-            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`WEAK_PASSWORD`: The temporary password fails the policy.\n\n`UNKNOWN_ROLE`: No such role.",
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`WEAK_PASSWORD`: The temporary password fails the policy.\n\n`EXPIRY_PAST`: access_expires_at is not in the future (disable the account to stop access now).\n\n`UNKNOWN_ROLE`: No such role.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -12275,7 +12345,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `users.create` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).\n\n`ESCALATION`: You cannot give a role with permissions you do not have.",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `users.create` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).\n\n`ESCALATION`: You cannot give a role with permissions you do not have.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -12327,10 +12397,10 @@
       }
     },
     "/v1/manage/operators/{id}": {
-      "get": {
-        "operationId": "getOperator",
-        "summary": "One operator with role, own permissions and effective permissions",
-        "description": "**Permission:** `users.read`; built-in roles with it by default: super_admin, operator.\n\n**Source:** `apps/opex-api/src/authz/routes.ts`",
+      "delete": {
+        "operationId": "deleteOperator",
+        "summary": "Delete an operator",
+        "description": "Removes sign-in for good: credentials, sessions and team memberships are deleted and the email is freed. The row stays (as deleted) so the audit trail and past work still name them.\n\n**Permission:** `users.delete`; built-in roles with it by default: super_admin; fresh step-up (authenticator) required.\n\n**Audit:** records `operator.delete`.\n\n**Source:** `apps/opex-api/src/auth/routes.ts`",
         "tags": [
           "Operators"
         ],
@@ -12352,58 +12422,19 @@
         ],
         "responses": {
           "200": {
-            "description": "The operator.",
+            "description": "Deleted.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "email": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "display_name": {
-                      "type": "string"
-                    },
-                    "role": {
-                      "type": "string"
-                    },
-                    "status": {
-                      "type": "string"
-                    },
-                    "perm_allow": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    },
-                    "perm_deny": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    },
-                    "effective": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
+                    "ok": {
+                      "type": "boolean",
+                      "const": true
                     }
                   },
                   "required": [
-                    "id",
-                    "email",
-                    "display_name",
-                    "role",
-                    "status",
-                    "perm_allow",
-                    "perm_deny",
-                    "effective"
+                    "ok"
                   ],
                   "additionalProperties": false
                 }
@@ -12443,7 +12474,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `users.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `users.delete` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).\n\n`ESCALATION`: The operator has permissions you do not have (a super admin can only be managed by a super admin).\n\n`SELF_CHANGE`: You cannot delete yourself.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -12459,7 +12490,338 @@
             }
           },
           "404": {
-            "description": "`NOT_FOUND`: No such operator.",
+            "description": "`NOT_FOUND`: No such operator (or it was deleted).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`LAST_ADMIN`: The last active super admin cannot be deleted.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "LAST_ADMIN",
+                  "status": 409,
+                  "code": "LAST_ADMIN",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "manage"
+      },
+      "get": {
+        "operationId": "getOperator",
+        "summary": "One operator: profile, security state, permissions and live sessions",
+        "description": "**Permission:** `users.read`; built-in roles with it by default: super_admin, operator.\n\n**Source:** `apps/opex-api/src/authz/routes.ts`",
+        "tags": [
+          "Operators"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 40
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The operator. `sessions` is filled only for callers with sessions.manage (or for yourself); session ids are shortened.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "display_name": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "notes": {
+                      "type": "string",
+                      "description": "Admin-only note; empty unless you have users.update."
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "mfa": {
+                      "type": "boolean"
+                    },
+                    "last_login_at": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                          "description": "ISO 8601 timestamp"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "locked_until": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                          "description": "ISO 8601 timestamp"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "failed_logins": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                      "description": "ISO 8601 timestamp"
+                    },
+                    "created_by": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "must_change_password": {
+                      "type": "boolean"
+                    },
+                    "access_expires_at": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                          "description": "ISO 8601 timestamp"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "password_changed_at": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                          "description": "ISO 8601 timestamp"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "perm_allow": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "perm_deny": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "effective": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "manageable": {
+                      "type": "boolean",
+                      "description": "Whether you may change this operator (it has no permission you lack; super admins only by super admins)."
+                    },
+                    "self": {
+                      "type": "boolean"
+                    },
+                    "sessions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "ip": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "user_agent": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                            "description": "ISO 8601 timestamp"
+                          },
+                          "last_seen_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                            "description": "ISO 8601 timestamp"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "ip",
+                          "user_agent",
+                          "created_at",
+                          "last_seen_at"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "email",
+                    "display_name",
+                    "title",
+                    "notes",
+                    "role",
+                    "status",
+                    "mfa",
+                    "last_login_at",
+                    "locked_until",
+                    "failed_logins",
+                    "created_at",
+                    "created_by",
+                    "must_change_password",
+                    "access_expires_at",
+                    "password_changed_at",
+                    "perm_allow",
+                    "perm_deny",
+                    "effective",
+                    "manageable",
+                    "self",
+                    "sessions"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: No valid console session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `users.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NETWORK_DENIED",
+                  "status": 403,
+                  "code": "NETWORK_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: No such operator (or it was deleted).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -12495,7 +12857,7 @@
       },
       "patch": {
         "operationId": "updateOperator",
-        "summary": "Change role, status or name; reset MFA; unlock",
+        "summary": "Edit an operator: profile, role, status, access expiry; reset MFA; unlock",
         "description": "**Permission:** `users.update`; built-in roles with it by default: super_admin; fresh step-up (authenticator) required.\n\n**Audit:** records `operator.update`.\n\n**Source:** `apps/opex-api/src/auth/routes.ts`",
         "tags": [
           "Operators"
@@ -12538,6 +12900,48 @@
                     "minLength": 2,
                     "maxLength": 120
                   },
+                  "email": {
+                    "description": "Sign-in email; their sessions end when it changes.",
+                    "type": "string",
+                    "maxLength": 200,
+                    "format": "email",
+                    "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                  },
+                  "title": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 120
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "description": "Job title (optional)."
+                  },
+                  "notes": {
+                    "description": "Admin-only note.",
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  "access_expires_at": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                        "description": "ISO 8601 timestamp"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "description": "Access ends at this time: no sign-in, live sessions end. null = no limit."
+                  },
+                  "must_change_password": {
+                    "description": "Ask for a new password at their next request.",
+                    "type": "boolean"
+                  },
                   "reset_mfa": {
                     "description": "Forget the authenticator; the next sign-in enrols a new one.",
                     "type": "boolean"
@@ -12553,7 +12957,7 @@
         },
         "responses": {
           "200": {
-            "description": "Updated. Disabling also signs their sessions out.",
+            "description": "Updated. Disabling or changing the email also signs their sessions out.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12573,7 +12977,7 @@
             }
           },
           "400": {
-            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`UNKNOWN_ROLE`: No such role.",
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`EXPIRY_PAST`: access_expires_at is not in the future (disable the account to stop access now).\n\n`UNKNOWN_ROLE`: No such role.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -12605,7 +13009,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `users.update` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).\n\n`SELF_CHANGE`: You cannot change your own role or status.\n\n`ESCALATION`: A role change needs users.permissions, and you cannot give a role with permissions you do not have.",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `users.update` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).\n\n`SELF_CHANGE`: You cannot change your own role, status, email, expiry or MFA here.\n\n`ESCALATION`: A role change needs users.permissions; you cannot give a role with permissions you do not have, nor manage an operator who has more than you.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -12621,7 +13025,7 @@
             }
           },
           "404": {
-            "description": "`NOT_FOUND`: No such operator.",
+            "description": "`NOT_FOUND`: No such operator (or it was deleted).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -12637,16 +13041,199 @@
             }
           },
           "409": {
-            "description": "`LAST_ADMIN`: The last active super admin cannot be demoted or disabled.",
+            "description": "`EMAIL_TAKEN`: An account with this email exists.\n\n`LAST_ADMIN`: The last active super admin cannot be demoted or disabled.",
             "content": {
               "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/Problem"
                 },
                 "example": {
-                  "title": "LAST_ADMIN",
+                  "title": "EMAIL_TAKEN",
                   "status": 409,
-                  "code": "LAST_ADMIN",
+                  "code": "EMAIL_TAKEN",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "manage"
+      }
+    },
+    "/v1/manage/operators/{id}/activity": {
+      "get": {
+        "operationId": "operatorActivity",
+        "summary": "Recent audit events by or about an operator",
+        "description": "**Permission:** `users.read`; built-in roles with it by default: super_admin, operator.\n\n**Source:** `apps/opex-api/src/auth/routes.ts`",
+        "tags": [
+          "Operators"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 40
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Newest first (default 50). Change details stay in the audit log.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "seq": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      },
+                      "ts": {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                        "description": "ISO 8601 timestamp"
+                      },
+                      "action": {
+                        "type": "string"
+                      },
+                      "result": {
+                        "type": "string"
+                      },
+                      "by_self": {
+                        "type": "boolean"
+                      },
+                      "actor": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "ip": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "reason": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "seq",
+                      "ts",
+                      "action",
+                      "result",
+                      "by_self",
+                      "actor",
+                      "ip",
+                      "reason"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: No valid console session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `users.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NETWORK_DENIED",
+                  "status": 403,
+                  "code": "NETWORK_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: No such operator (or it was deleted).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
                   "instance": "req_01J…"
                 }
               }
@@ -12785,7 +13372,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `users.permissions` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).\n\n`SELF_CHANGE`: You cannot change your own permissions.\n\n`ESCALATION`: You cannot give permissions you do not have.",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `users.permissions` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).\n\n`SELF_CHANGE`: You cannot change your own permissions.\n\n`ESCALATION`: You cannot give permissions you do not have.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -12839,8 +13426,8 @@
     "/v1/manage/operators/{id}/reset-password": {
       "post": {
         "operationId": "resetOperatorPassword",
-        "summary": "Reset an operator's password (super admin)",
-        "description": "Sets a new temporary password for the operator. They must change it at next sign-in.\n\n**Permission:** `users.update`; built-in roles with it by default: super_admin; fresh step-up (authenticator) required.\n\n**Audit:** records `operator.password_reset`.\n\n**Source:** `apps/opex-api/src/auth/routes.ts`",
+        "summary": "Give an operator a new temporary password",
+        "description": "They must choose their own at the next sign-in. Their sessions end and a lockout is lifted. `Cache-Control: no-store`.\n\n**Permission:** `users.update`; built-in roles with it by default: super_admin; fresh step-up (authenticator) required.\n\n**Rate limit:** 10 per minute per IP.\n\n**Audit:** records `operator.password_reset`.\n\n**Source:** `apps/opex-api/src/auth/routes.ts`",
         "tags": [
           "Operators"
         ],
@@ -12868,14 +13455,11 @@
                 "type": "object",
                 "properties": {
                   "password": {
+                    "description": "Omit to have OPEX generate one (returned once).",
                     "type": "string",
-                    "minLength": 12,
                     "maxLength": 200
                   }
                 },
-                "required": [
-                  "password"
-                ],
                 "additionalProperties": false
               }
             }
@@ -12892,6 +13476,10 @@
                     "ok": {
                       "type": "boolean",
                       "const": true
+                    },
+                    "temporaryPassword": {
+                      "description": "Only when OPEX generated the password: shown once, never stored in clear or logged.",
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -12935,7 +13523,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `users.update` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `users.update` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).\n\n`ESCALATION`: The operator has permissions you do not have (a super admin can only be managed by a super admin).\n\n`SELF_CHANGE`: Use Change your password for your own account.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -12951,7 +13539,142 @@
             }
           },
           "404": {
-            "description": "`NOT_FOUND`: No such operator.",
+            "description": "`NOT_FOUND`: No such operator (or it was deleted).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 10 per minute per IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "manage"
+      }
+    },
+    "/v1/manage/operators/{id}/sessions/revoke": {
+      "post": {
+        "operationId": "revokeOperatorSessions",
+        "summary": "Sign an operator out everywhere",
+        "description": "**Permission:** `users.update`; built-in roles with it by default: super_admin; fresh step-up (authenticator) required.\n\n**Audit:** records `operator.sessions_revoked`.\n\n**Source:** `apps/opex-api/src/auth/routes.ts`",
+        "tags": [
+          "Operators"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 40
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Their console sessions (and refresh tokens) are revoked.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "const": true
+                    },
+                    "revoked": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "ok",
+                    "revoked"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: No valid console session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `users.update` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).\n\n`ESCALATION`: The operator has permissions you do not have (a super admin can only be managed by a super admin).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NETWORK_DENIED",
+                  "status": 403,
+                  "code": "NETWORK_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: No such operator (or it was deleted).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -13095,7 +13818,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `partners.manage` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `partners.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -13268,7 +13991,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `partners.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `partners.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -13498,7 +14221,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `partners.manage` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `partners.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -13738,7 +14461,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `partners.manage` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `partners.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -13930,7 +14653,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `partners.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `partners.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -14079,7 +14802,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `partners.manage` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `partners.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -14261,7 +14984,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `webhooks.manage` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `webhooks.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -14532,7 +15255,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `policies.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `policies.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -14641,7 +15364,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `policies.manage` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `policies.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -14754,7 +15477,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `policies.manage` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `policies.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -14890,7 +15613,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `policies.manage` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `policies.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -15084,7 +15807,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `policies.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `policies.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -15230,7 +15953,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `preview.use` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `preview.use` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -15347,7 +16070,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `render.run` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `render.run` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -15510,7 +16233,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `render.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `render.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -15613,7 +16336,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `content.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `content.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -15756,7 +16479,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `roles.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `roles.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -15896,7 +16619,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `roles.manage` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).\n\n`ESCALATION`: You cannot give permissions you do not have.",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `roles.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).\n\n`ESCALATION`: You cannot give permissions you do not have.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -16025,7 +16748,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `roles.manage` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `roles.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -16203,7 +16926,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `roles.manage` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).\n\n`ESCALATION`: You cannot give permissions you do not have.",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `roles.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).\n\n`ESCALATION`: You cannot give permissions you do not have.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -16348,7 +17071,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `tickets.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `tickets.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -16500,7 +17223,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.reply` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.reply` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -16613,7 +17336,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.reply` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.reply` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -16793,7 +17516,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.reply` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.reply` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -16971,7 +17694,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `seo.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `seo.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -17282,7 +18005,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `seo.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `seo.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -17383,7 +18106,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `seo.run` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `seo.run` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -18172,7 +18895,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `settings.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `settings.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -18304,7 +19027,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `settings.write` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `settings.write` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -18774,7 +19497,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `settings.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `settings.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -18918,7 +19641,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `teams.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `teams.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -19044,7 +19767,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `teams.manage` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `teams.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -19157,7 +19880,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `teams.manage` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `teams.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -19332,7 +20055,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `teams.manage` permission (role + own additions − removals). Or: Not a lead of this team or a super admin.",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `teams.manage` permission (role + own additions − removals). Or: Not a lead of this team or a super admin.\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -19493,7 +20216,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `teams.manage` permission (role + own additions − removals). Or: Not a lead of this team or a super admin.",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `teams.manage` permission (role + own additions − removals). Or: Not a lead of this team or a super admin.\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -19684,7 +20407,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `tickets.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `tickets.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -19819,7 +20542,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.delete` permission (role + own additions − removals).\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.delete` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`STEP_UP_REQUIRED`: No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -20471,7 +21194,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `tickets.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `tickets.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -20639,7 +21362,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.manage` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -20796,7 +21519,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.manage` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -20925,7 +21648,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `tickets.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `tickets.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -21077,7 +21800,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.manage` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -21236,7 +21959,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.reply` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.reply` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -21402,7 +22125,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.manage` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -21562,7 +22285,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.reply` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.reply` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -21715,7 +22438,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.manage` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -21885,7 +22608,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.manage` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `tickets.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -22018,7 +22741,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `tickets.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `tickets.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -22118,7 +22841,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `content.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `content.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -22251,7 +22974,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `content.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `content.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -22412,7 +23135,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `webhooks.read` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `webhooks.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -22525,7 +23248,7 @@
             }
           },
           "403": {
-            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `webhooks.manage` permission (role + own additions − removals).",
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `webhooks.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
             "content": {
               "application/problem+json": {
                 "schema": {

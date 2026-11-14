@@ -3693,7 +3693,7 @@
       "name": "Operators",
       "item": [
         {
-          "name": "All console operators",
+          "name": "All console operators (deleted ones are left out)",
           "request": {
             "method": "GET",
             "header": [],
@@ -3739,7 +3739,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"someone@example.com\",\n  \"display_name\": \"string\",\n  \"role\": null,\n  \"password\": \"string\"\n}",
+              "raw": "{\n  \"email\": \"someone@example.com\",\n  \"display_name\": \"string\",\n  \"role\": null\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -3750,7 +3750,39 @@
           }
         },
         {
-          "name": "One operator with role, own permissions and effective permissions",
+          "name": "Delete an operator",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/operators/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "operators",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Removes sign-in for good: credentials, sessions and team memberships are deleted and the email is freed. The row stays (as deleted) so the audit trail and past work still name them.\n\nSource: auth/routes.ts"
+          }
+        },
+        {
+          "name": "One operator: profile, security state, permissions and live sessions",
           "request": {
             "method": "GET",
             "header": [],
@@ -3776,7 +3808,7 @@
           }
         },
         {
-          "name": "Change role, status or name; reset MFA; unlock",
+          "name": "Edit an operator: profile, role, status, access expiry; reset MFA; unlock",
           "request": {
             "method": "PATCH",
             "header": [
@@ -3816,6 +3848,40 @@
                   "language": "json"
                 }
               }
+            },
+            "description": "Source: auth/routes.ts"
+          }
+        },
+        {
+          "name": "Recent audit events by or about an operator",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/operators/:id/activity",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "operators",
+                ":id",
+                "activity"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
             },
             "description": "Source: auth/routes.ts"
           }
@@ -3867,7 +3933,7 @@
           }
         },
         {
-          "name": "Reset an operator's password (super admin)",
+          "name": "Give an operator a new temporary password",
           "request": {
             "method": "POST",
             "header": [
@@ -3902,14 +3968,48 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"password\": \"string\"\n}",
+              "raw": "{}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
             },
-            "description": "Sets a new temporary password for the operator. They must change it at next sign-in.\n\nSource: auth/routes.ts"
+            "description": "They must choose their own at the next sign-in. Their sessions end and a lockout is lifted. `Cache-Control: no-store`.\n\nSource: auth/routes.ts"
+          }
+        },
+        {
+          "name": "Sign an operator out everywhere",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/operators/:id/sessions/revoke",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "operators",
+                ":id",
+                "sessions",
+                "revoke"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: auth/routes.ts"
           }
         },
         {

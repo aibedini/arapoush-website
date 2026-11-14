@@ -14,7 +14,8 @@ export default function Account() {
   const [all, setAll] = useState(false);
   const sessions = useApi<Session[]>(`/v1/manage/sessions${all ? "?all=1" : ""}`);
   const act = useAction();
-  const [pw, setPw] = useState({ current: "", next: "", again: "", totp: "" });
+  const [pw, setPw] = useState({ current: "", next: "", again: "" });
+  const forced = !!me?.mustChangePassword;
 
   const revoke = (s: Session) =>
     act.run(async () => {
@@ -25,18 +26,24 @@ export default function Account() {
     e.preventDefault();
     if (pw.next !== pw.again) return act.setError(new ApiError(0, "MISMATCH", "تکرار رمز تازه یکسان نیست."));
     act.run(async () => {
-      // Step-up first (TOTP), then change password
-      await api("/v1/manage/auth/step-up", { body: { code: pw.totp } });
+      // A step-up is asked for by the shell's dialog only when the last one is older than 5 minutes.
       await api("/v1/manage/auth/password", { body: { current: pw.current, next: pw.next } });
-      setPw({ current: "", next: "", again: "", totp: "" });
-      sessions.reload();
+      setPw({ current: "", next: "", again: "" });
+      // The temporary-password lock is lifted: load the console with the full menu.
+      if (forced) location.assign("/");
+      else sessions.reload();
     }, "رمز عبور تغییر کرد و نشست‌های دیگر شما پایان یافت.");
   };
 
   return (
     <>
-      <PageHead title="حساب من" sub={me ? `${me.display} · ${ROLE[me.role]}` : undefined} />
+      <PageHead title="حساب من" sub={me ? `${me.display} · ${ROLE[me.role] ?? me.role}` : undefined} />
       <div className="grid">
+        {forced && (
+          <div className="note warn" role="alert">
+            با رمز موقت وارد شده‌اید. برای دسترسی به بخش‌های کنسول، اول رمز خودتان را بگذارید: «رمز فعلی» همان رمز موقتی است که به شما داده‌اند.
+          </div>
+        )}
         <ErrorNote error={act.error} />
         {act.done && (
           <div className="note ok" role="status">
@@ -118,13 +125,10 @@ export default function Account() {
                 <span>تکرار رمز تازه</span>
                 <input type="password" dir="ltr" autoComplete="new-password" required minLength={12} value={pw.again} onChange={(e) => setPw({ ...pw, again: e.target.value })} />
               </label>
-              <label className="f">
-                <span>کد احراز هویت (Google Authenticator)</span>
-                <input type="text" dir="ltr" inputMode="numeric" pattern="\d{6}" maxLength={6} autoComplete="one-time-code" required placeholder="۶ رقم" value={pw.totp} onChange={(e) => setPw({ ...pw, totp: e.target.value.replace(/\D/g, "").slice(0, 6) })} />
-              </label>
               <button className="btn primary" disabled={act.busy}>
                 تغییر رمز
               </button>
+              <p className="small muted">اگر بیش از ۵ دقیقه از ورود یا آخرین تأیید گذشته باشد، کد برنامهٔ احراز هویت هم خواسته می‌شود. رمزی بلند و تازه بگذارید (یک جملهٔ چندکلمه‌ای خوب است).</p>
             </form>
           </section>
         </div>

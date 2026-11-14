@@ -108,6 +108,7 @@ export function genericErrors(c: RouteContract): ErrorSpec[] {
     if (c.method !== "GET") e.push({ status: 403, code: "CSRF", when: "Missing or wrong X-CSRF-Token." });
     const perm = permissionFor(c.method, c.path);
     if (perm && perm !== SELF) e.push({ status: 403, code: "ROLE_DENIED", when: `The caller lacks the \`${perm}\` permission (role + own additions − removals).` });
+    if (perm && perm !== SELF) e.push({ status: 403, code: "PASSWORD_CHANGE_REQUIRED", when: "Signed in with a temporary password: change it (POST /v1/manage/auth/password) first." });
     if (c.stepUp) e.push({ status: 403, code: "STEP_UP_REQUIRED", when: "No authenticator confirmation in the last 5 minutes (POST /v1/manage/auth/step-up, then retry)." });
   }
   if (c.auth === "partner") {

@@ -4,8 +4,33 @@ import { Iso, IsoOrNull, Ok, route } from "../openapi/contract.ts";
 export const RoleSchema = z.string().regex(/^[a-z][a-z0-9_]{1,39}$/).describe("A built-in role (super_admin, operator, auditor, viewer) or the key of a custom role.").meta({ id: "OperatorRole" });
 export const LoginBody = z.strictObject({ email: z.string().email().max(200), password: z.string().min(1).max(200) });
 export const MfaBody = z.strictObject({ challenge: z.string().max(2000).describe("From the login answer (valid 5 minutes)."), code: z.string().regex(/^\d{6}$/) });
-export const NewOperatorBody = z.strictObject({ email: z.string().email().max(200), display_name: z.string().min(2).max(120), role: RoleSchema, password: z.string().max(200).describe("Temporary; checked against the password policy.") });
-export const OperatorPatch = z.strictObject({ role: RoleSchema.optional(), status: z.enum(["active", "disabled"]).optional(), display_name: z.string().min(2).max(120).optional(), reset_mfa: z.boolean().optional().describe("Forget the authenticator; the next sign-in enrols a new one."), unlock: z.boolean().optional() });
+const Title = z.string().trim().max(120).nullable().describe("Job title (optional).");
+const Expiry = IsoOrNull.describe("Access ends at this time: no sign-in, live sessions end. null = no limit.");
+export const NewOperatorBody = z.strictObject({
+  email: z.string().email().max(200),
+  display_name: z.string().trim().min(2).max(120),
+  role: RoleSchema,
+  password: z.string().max(200).optional().describe("Temporary password, checked against the policy. Omit it and OPEX generates one and returns it once."),
+  title: Title.optional(),
+  access_expires_at: Expiry.optional(),
+  must_change_password: z.boolean().default(true).describe("Ask for a new password at first sign-in (default)."),
+});
+export const OperatorPatch = z.strictObject({
+  role: RoleSchema.optional(),
+  status: z.enum(["active", "disabled"]).optional(),
+  display_name: z.string().trim().min(2).max(120).optional(),
+  email: z.string().email().max(200).optional().describe("Sign-in email; their sessions end when it changes."),
+  title: Title.optional(),
+  notes: z.string().max(2000).optional().describe("Admin-only note."),
+  access_expires_at: Expiry.optional(),
+  must_change_password: z.boolean().optional().describe("Ask for a new password at their next request."),
+  reset_mfa: z.boolean().optional().describe("Forget the authenticator; the next sign-in enrols a new one."),
+  unlock: z.boolean().optional(),
+});
+export const ResetPasswordBody = z.strictObject({ password: z.string().max(200).optional().describe("Omit to have OPEX generate one (returned once).") });
+const TempPassword = z.string().optional().describe("Only when OPEX generated the password: shown once, never stored in clear or logged.");
+const Protected = { status: 403, code: "ESCALATION", when: "The operator has permissions you do not have (a super admin can only be managed by a super admin)." };
+const Gone = { status: 404, code: "NOT_FOUND", when: "No such operator (or it was deleted)." };
 
 const S = "auth/routes.ts";
 const tags = ["Sign-in and sessions"];
@@ -87,7 +112,19 @@ export const AUTH = {
     auth: "session",
     role: "viewer",
     source: S,
-    responses: { 200: { description: "Who you are.", schema: z.object({ id: z.string(), display: z.string(), role: RoleSchema, stepUpValid: z.boolean(), permissions: z.array(z.string()).describe("Your effective permissions (role + your own additions − removals).") }) } },
+    responses: {
+      200: {
+        description: "Who you are.",
+        schema: z.object({
+          id: z.string(),
+          display: z.string(),
+          role: RoleSchema,
+          stepUpValid: z.boolean(),
+          permissions: z.array(z.string()).describe("Your effective permissions (role + your own additions − removals)."),
+          mustChangePassword: z.boolean().describe("Signed in with a temporary password: every other route answers PASSWORD_CHANGE_REQUIRED until it is changed."),
+        }),
+      },
+    },
   }),
   csrf: route({
     id: "csrfToken",
@@ -114,9 +151,10 @@ export const AUTH = {
     stepUp: true,
     source: S,
     body: z.strictObject({ current: z.string().max(200), next: z.string().max(200) }),
-    responses: { 200: { description: "Changed; your other sessions are signed out.", schema: Ok } },
+    responses: { 200: { description: "Changed; your other sessions are signed out and a temporary-password lock is lifted.", schema: Ok } },
     errors: [
       { status: 401, code: "UNAUTHENTICATED", when: "Current password is incorrect." },
+      { status: 400, code: "SAME_PASSWORD", when: "The new password is the current one." },
       { status: 400, code: "WEAK_PASSWORD", when: "Shorter than 12 or longer than 128 characters, contains your email name, or (in production) appears in known breaches; `detail` says which." },
     ],
     audit: ["auth.password.changed"],
@@ -163,14 +201,32 @@ export const AUTH = {
     path: "/v1/manage/operators",
     audience: "manage",
     tags: ["Operators"],
-    summary: "All console operators",
+    summary: "All console operators (deleted ones are left out)",
     auth: "session",
     role: "operator",
     source: S,
     responses: {
       200: {
         description: "Oldest first.",
-        schema: z.array(z.object({ id: z.string(), email: z.string().nullable(), display_name: z.string(), role: RoleSchema, status: z.string(), last_login_at: IsoOrNull, locked_until: IsoOrNull, created_at: Iso, mfa: z.boolean(), perm_allow: z.array(z.string()), perm_deny: z.array(z.string()) })),
+        schema: z.array(
+          z.object({
+            id: z.string(),
+            email: z.string().nullable(),
+            display_name: z.string(),
+            title: z.string().nullable(),
+            role: RoleSchema,
+            status: z.string(),
+            last_login_at: IsoOrNull,
+            locked_until: IsoOrNull,
+            created_at: Iso,
+            mfa: z.boolean(),
+            must_change_password: z.boolean(),
+            access_expires_at: IsoOrNull,
+            active_sessions: z.number().int(),
+            perm_allow: z.array(z.string()),
+            perm_deny: z.array(z.string()),
+          }),
+        ),
       },
     },
   }),
@@ -186,11 +242,17 @@ export const AUTH = {
     stepUp: true,
     source: S,
     body: NewOperatorBody,
-    responses: { 200: { description: "Created; they set up an authenticator at first sign-in.", schema: z.object({ id: z.string() }) } },
+    responses: {
+      200: {
+        description: "Created; they set up an authenticator at first sign-in and (by default) choose their own password. `Cache-Control: no-store`.",
+        schema: z.object({ id: z.string(), temporaryPassword: TempPassword }),
+      },
+    },
     errors: [
       { status: 400, code: "WEAK_PASSWORD", when: "The temporary password fails the policy." },
       { status: 409, code: "EMAIL_TAKEN", when: "An account with this email exists." },
       { status: 403, code: "ESCALATION", when: "You cannot give a role with permissions you do not have." },
+      { status: 400, code: "EXPIRY_PAST", when: "access_expires_at is not in the future (disable the account to stop access now)." },
       { status: 400, code: "UNKNOWN_ROLE", when: "No such role." },
     ],
     audit: ["operator.create"],
@@ -201,20 +263,71 @@ export const AUTH = {
     path: "/v1/manage/operators/:id/reset-password",
     audience: "manage",
     tags: ["Operators"],
-    summary: "Reset an operator's password (super admin)",
-    description: "Sets a new temporary password for the operator. They must change it at next sign-in.",
+    summary: "Give an operator a new temporary password",
+    description: "They must choose their own at the next sign-in. Their sessions end and a lockout is lifted. `Cache-Control: no-store`.",
     auth: "session",
     role: "super_admin",
     stepUp: true,
     source: S,
     params: z.object({ id: z.string().max(40) }),
-    body: z.strictObject({ password: z.string().min(12).max(200) }),
-    responses: { 200: { description: "Password reset; all their sessions ended.", schema: Ok } },
-    errors: [
-      { status: 404, code: "NOT_FOUND", when: "No such operator." },
-      { status: 400, code: "WEAK_PASSWORD", when: "Password fails the policy." },
-    ],
+    body: ResetPasswordBody,
+    rateLimit: Rate,
+    responses: { 200: { description: "Password reset; all their sessions ended.", schema: z.object({ ok: z.literal(true), temporaryPassword: TempPassword }) } },
+    errors: [Gone, Protected, { status: 403, code: "SELF_CHANGE", when: "Use Change your password for your own account." }, { status: 400, code: "WEAK_PASSWORD", when: "Password fails the policy." }],
     audit: ["operator.password_reset"],
+  }),
+  revokeOperatorSessions: route({
+    id: "revokeOperatorSessions",
+    method: "POST",
+    path: "/v1/manage/operators/:id/sessions/revoke",
+    audience: "manage",
+    tags: ["Operators"],
+    summary: "Sign an operator out everywhere",
+    auth: "session",
+    role: "super_admin",
+    stepUp: true,
+    source: S,
+    params: z.object({ id: z.string().max(40) }),
+    responses: { 200: { description: "Their console sessions (and refresh tokens) are revoked.", schema: z.object({ ok: z.literal(true), revoked: z.number().int() }) } },
+    errors: [Gone, Protected],
+    audit: ["operator.sessions_revoked"],
+  }),
+  operatorActivity: route({
+    id: "operatorActivity",
+    method: "GET",
+    path: "/v1/manage/operators/:id/activity",
+    audience: "manage",
+    tags: ["Operators"],
+    summary: "Recent audit events by or about an operator",
+    auth: "session",
+    role: "operator",
+    source: S,
+    params: z.object({ id: z.string().max(40) }),
+    query: z.object({ limit: z.coerce.number().int().min(1).max(200).optional() }),
+    responses: {
+      200: {
+        description: "Newest first (default 50). Change details stay in the audit log.",
+        schema: z.array(z.object({ seq: z.number().int(), ts: Iso, action: z.string(), result: z.string(), by_self: z.boolean(), actor: z.string().nullable(), ip: z.string().nullable(), reason: z.string().nullable() })),
+      },
+    },
+    errors: [Gone],
+  }),
+  deleteOperator: route({
+    id: "deleteOperator",
+    method: "DELETE",
+    path: "/v1/manage/operators/:id",
+    audience: "manage",
+    tags: ["Operators"],
+    summary: "Delete an operator",
+    description: "Removes sign-in for good: credentials, sessions and team memberships are deleted and the email is freed. The row stays (as deleted) so the audit trail and past work still name them.",
+    auth: "session",
+    role: "super_admin",
+    stepUp: true,
+    source: S,
+    params: z.object({ id: z.string().max(40) }),
+    responses: { 200: { description: "Deleted.", schema: Ok } },
+    errors: [Gone, Protected, { status: 403, code: "SELF_CHANGE", when: "You cannot delete yourself." }, { status: 409, code: "LAST_ADMIN", when: "The last active super admin cannot be deleted." }],
+    audit: ["operator.delete"],
   }),
   updateOperator: route({
     id: "updateOperator",
@@ -222,18 +335,20 @@ export const AUTH = {
     path: "/v1/manage/operators/:id",
     audience: "manage",
     tags: ["Operators"],
-    summary: "Change role, status or name; reset MFA; unlock",
+    summary: "Edit an operator: profile, role, status, access expiry; reset MFA; unlock",
     auth: "session",
     role: "super_admin",
     stepUp: true,
     source: S,
     params: z.object({ id: z.string().max(40) }),
     body: OperatorPatch,
-    responses: { 200: { description: "Updated. Disabling also signs their sessions out.", schema: Ok } },
+    responses: { 200: { description: "Updated. Disabling or changing the email also signs their sessions out.", schema: Ok } },
     errors: [
-      { status: 404, code: "NOT_FOUND", when: "No such operator." },
-      { status: 403, code: "SELF_CHANGE", when: "You cannot change your own role or status." },
-      { status: 403, code: "ESCALATION", when: "A role change needs users.permissions, and you cannot give a role with permissions you do not have." },
+      Gone,
+      { status: 403, code: "SELF_CHANGE", when: "You cannot change your own role, status, email, expiry or MFA here." },
+      { status: 403, code: "ESCALATION", when: "A role change needs users.permissions; you cannot give a role with permissions you do not have, nor manage an operator who has more than you." },
+      { status: 409, code: "EMAIL_TAKEN", when: "An account with this email exists." },
+      { status: 400, code: "EXPIRY_PAST", when: "access_expires_at is not in the future (disable the account to stop access now)." },
       { status: 409, code: "LAST_ADMIN", when: "The last active super admin cannot be demoted or disabled." },
       { status: 400, code: "UNKNOWN_ROLE", when: "No such role." },
     ],
