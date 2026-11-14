@@ -6,6 +6,8 @@ import { canonical, sha256, ulid } from "../ids.ts";
 import { diff } from "../content/diff.ts";
 import { referencedMedia } from "../content/service.ts";
 import { enqueueSiteWebhook } from "../webhooks/outbox.ts";
+import type { Config } from "../config.ts";
+import { notifySubscribers } from "./community.ts";
 
 export type PostRow = {
   id: string;
@@ -60,7 +62,7 @@ export async function saveRevision(q: Q, tenant: string, o: { post: PostRow; dat
 }
 
 /** Makes the draft live: slugs (old ones keep redirecting), clean media made public, the site told. */
-export async function publishPost(q: Q, tenant: string, o: { id: string; actor: Actor; request: RequestInfo; trigger: "manual" | "schedule" }) {
+export async function publishPost(q: Q, tenant: string, o: { id: string; actor: Actor; request: RequestInfo; trigger: "manual" | "schedule"; config?: Config }) {
   const post = await loadPost(q, tenant, o.id, true);
   if (post.status === "archived") throw conflict("ARCHIVED", "The post is archived");
   if (!post.draft_revision_id) throw badRequest("NOTHING_LIVE", "The post has no content yet");
@@ -87,6 +89,8 @@ export async function publishPost(q: Q, tenant: string, o: { id: string; actor: 
   );
   await audit(q, tenant, { action: "blog.post.publish", actor: o.actor, request: o.request, resource: { type: "blog_post", id: post.id, revision: rev.id, number: rev.number, previous, live, trigger: o.trigger } });
   await enqueueSiteWebhook(q, tenant, "blog.published", { post: post.id, revision: rev.id, live });
+  // Subscribers hear about a post once, at its first publish with "notify" ticked.
+  if (o.config) await notifySubscribers(q, o.config, post.id, rev.data);
   return { live: live as Locale[] };
 }
 

@@ -9,7 +9,7 @@ import { ensureContent } from "@/lib/content";
 import { editMode } from "@/lib/content/edit";
 import { getDictionary, isLocale, locales } from "@/lib/i18n";
 import { jsonLdHtml } from "@/lib/seo";
-import { blogPath, getBlogPage, listPosts, tx } from "@/lib/blog";
+import { blogPath, getBlogPage, listPosts, tx, blogSettings } from "@/lib/blog";
 import { listJsonLd } from "@/lib/blogSeo";
 import { categoriesFor, listMetadata } from "@/lib/blogPages";
 
@@ -34,7 +34,7 @@ export default async function BlogIndex({ params }: { params: Params }) {
   await ensureContent();
   const edit = await editMode();
   const { locale } = await params;
-  if (!isLocale(locale)) notFound();
+  if (!isLocale(locale) || !blogSettings().enabled) notFound();
   const dict = getDictionary(locale);
   const page = getBlogPage();
   const [list, cats] = await Promise.all([listPosts(locale), categoriesFor(locale)]);

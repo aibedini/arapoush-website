@@ -1,10 +1,11 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
-import { FALLBACK, isLive, LOCALES, readingMinutes, wordCount, bodyText, type BlogPostData, type Locale } from "@arapoush/schema";
+import { commentsOpen, FALLBACK, isLive, LOCALES, readingMinutes, wordCount, bodyText, type BlogPostData, type Locale } from "@arapoush/schema";
 import type { Deps } from "../app.ts";
 import type { Q } from "../db/index.ts";
 import { forbidden, notFound, unauthorized } from "../http/problem.ts";
 import { safeEqual } from "../ids.ts";
 import { readPreviewToken } from "../delivery/preview.ts";
+import { blogSettings, publicComments } from "./community.ts";
 import { BLOG_DELIVERY } from "./contract.ts";
 
 type Loc = Partial<Record<Locale, string>>;
@@ -60,7 +61,18 @@ export function fullPost(p: LivePost, l: Locale, tax: Tax, all: LivePost[]) {
   const t = p.data.translations[l]!;
   const inLocale = all.filter((x) => x.id !== p.id && isLive(x.data.translations[l]));
   // Related: chosen ones first, then the same category, then the newest.
-  const related = [...p.data.relatedIds.map((id) => inLocale.find((x) => x.id === id)).filter((x): x is LivePost => !!x), ...inLocale.filter((x) => p.data.categoryId && x.data.categoryId === p.data.categoryId), ...inLocale]
+  // Related: chosen ones first, then the most similar (shared tags, category, keywords, title words).
+  const words = (d: BlogPostData) => {
+    const tt = d.translations[l]!;
+    return new Set([tt.title, tt.seo.keyphrase ?? "", ...(tt.keywords ?? [])].join(" ").toLowerCase().replace(/‌/g, " ").split(/[^p{L}p{N}]+/u).filter((w) => w.length > 2));
+  };
+  const mine = words(p.data);
+  const sim = (x: LivePost) => {
+    const theirs = words(x.data);
+    const overlap = [...mine].filter((w) => theirs.has(w)).length / Math.max(1, Math.min(mine.size, theirs.size));
+    return 3 * x.data.tagIds.filter((t) => p.data.tagIds.includes(t)).length + (p.data.categoryId && x.data.categoryId === p.data.categoryId ? 2 : 0) + 4 * overlap;
+  };
+  const related = [...p.data.relatedIds.map((id) => inLocale.find((x) => x.id === id)).filter((x): x is LivePost => !!x), ...[...inLocale].sort((a, b) => sim(b) - sim(a))]
     .filter((x, i, arr) => arr.findIndex((y) => y.id === x.id) === i)
     .slice(0, 3)
     .map((x) => card(x, l, tax));
@@ -71,6 +83,7 @@ export function fullPost(p: LivePost, l: Locale, tax: Tax, all: LivePost[]) {
     faq: t.faq.filter((f) => f.q.trim() && f.a.trim()),
     sources: t.sources,
     seo: t.seo,
+    keywords: (t.keywords ?? []).filter((x) => x.trim()),
     products: p.data.products,
     tags: p.data.tagIds.map((id) => tax.tag.get(id)).filter((x): x is TagRow => !!x).map((x) => ({ name: pick(x.name, l), slug: x.slug })),
     author: authorOut(tax.author.get(p.data.authorId ?? ""), l),
@@ -124,7 +137,8 @@ export async function blogDeliveryModule(app: FastifyInstance, deps: Deps) {
     reply.headers(cache);
     // An old slug: the page answers 301 to the current one, keeping its links and ranking.
     if (t.slug !== slug) return { redirect: t.slug };
-    return { post: fullPost(p, locale, tax, posts) };
+    const [settings, comments] = await Promise.all([blogSettings(db.q, tenant), publicComments(db.q, p.id, locale)]);
+    return { post: { ...fullPost(p, locale, tax, posts), comments, commentsOpen: commentsOpen(settings, p.data, p.first_published_at) } };
   });
 
   app.get("/v1/delivery/blog/index", { preHandler: guard, config: rate }, async (_req, reply) => {
@@ -160,7 +174,7 @@ export async function blogDeliveryModule(app: FastifyInstance, deps: Deps) {
     const draft: LivePost = { id: row.id, first_published_at: row.first_published_at ?? now, published_at: now, data: { ...row.data, translations: { ...row.data.translations, [locale]: { ...t, enabled: true, slug: t.slug || "preview" } } } };
     const [posts, tax] = await Promise.all([livePosts(), taxonomy(db.q, tenant)]);
     reply.header("Cache-Control", "no-store");
-    return { post: fullPost(draft, locale, tax, posts) };
+    return { post: { ...fullPost(draft, locale, tax, posts), comments: await publicComments(db.q, row.id, locale), commentsOpen: false } };
   });
 }
 
@@ -175,7 +189,7 @@ export const blogScheduledPublish: Job = {
     const due = await db.q<{ id: string }>(`SELECT id FROM blog_posts WHERE tenant_id = $1 AND scheduled_at IS NOT NULL AND scheduled_at <= clock_timestamp() AND status <> 'archived'`, [config.TENANT]);
     for (const p of due) {
       try {
-        await db.tx((q) => publishPost(q, config.TENANT, { id: p.id, actor: { ...SYSTEM_ACTOR, display: "Scheduler" }, request: SYSTEM_REQUEST, trigger: "schedule" }));
+        await db.tx((q) => publishPost(q, config.TENANT, { id: p.id, actor: { ...SYSTEM_ACTOR, display: "Scheduler" }, request: SYSTEM_REQUEST, trigger: "schedule", config }));
       } catch (e) {
         // A post that cannot go live (slug taken, image not clean) leaves the schedule (no retry every 30 s) and is logged.
         log.warn({ post: p.id, err: (e as Error).message }, "scheduled blog post not published");

@@ -2,13 +2,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { localeMeta, type Locale } from "@/lib/i18n";
 import { pageUrl } from "@/lib/seo";
-import { blogPath, categoryPath, fill, tx, type BlogPage, type BlogPost } from "@/lib/blog";
+import { blogPath, blogSettings, categoryPath, fill, tx, type BlogPage, type BlogPost } from "@/lib/blog";
+import { Comments, Newsletter } from "./community";
 import { ArticleBody, at, authorHref, Breadcrumbs, dateFmt, Inline, PostGrid, Toc } from "./parts";
 import styles from "./Blog.module.css";
 
 /** One article: head, cover, key takeaways, body, FAQ, sources, author, related products and posts. */
 export default function Article({ post, page, locale }: { post: BlogPost; page: BlogPage; locale: Locale }) {
   const L = (k: keyof BlogPage["labels"]) => tx(page.labels[k], locale);
+  // Each part can be switched off for the whole journal in OPEX (blog settings).
+  const settings = blogSettings();
+  const on = settings.sections;
+  const toc = on.toc && post.body.filter((b) => b.kind === "h").length >= 2;
   const fmt = dateFmt(locale);
   const url = pageUrl(locale, blogPath(post.slug));
   const updated = post.modifiedAt.slice(0, 10) !== post.publishedAt.slice(0, 10);
@@ -53,7 +58,7 @@ export default function Article({ post, page, locale }: { post: BlogPost; page: 
               {L("updated")}: <time dateTime={post.modifiedAt}>{fmt.format(new Date(post.modifiedAt))}</time>
             </span>
           )}
-          <span>{fill(L("minutes"), { n: post.readingMinutes.toLocaleString(localeMeta[locale].intl) })}</span>
+          {on.readingTime && <span>{fill(L("minutes"), { n: post.readingMinutes.toLocaleString(localeMeta[locale].intl) })}</span>}
           {post.reviewer && (
             <span>
               {L("reviewedBy")}: <Link href={authorHref(locale, post.reviewer.slug)}>{post.reviewer.name}</Link>
@@ -70,12 +75,14 @@ export default function Article({ post, page, locale }: { post: BlogPost; page: 
 
       <div className={styles.layout}>
         <article className={styles.article}>
-          <details className={`${styles.panel} ${styles.tocMobile}`}>
-            <summary>{tocTitle}</summary>
-            <Toc body={post.body} title={tocTitle} bare />
-          </details>
+          {toc && (
+            <details className={`${styles.panel} ${styles.tocMobile}`}>
+              <summary>{tocTitle}</summary>
+              <Toc body={post.body} title={tocTitle} bare />
+            </details>
+          )}
 
-          {post.keyTakeaways.length > 0 && (
+          {on.takeaways && post.keyTakeaways.length > 0 && (
             <section className={styles.takeaways} aria-labelledby="takeaways">
               <h2 id="takeaways">{L("takeaways")}</h2>
               <ul>
@@ -90,7 +97,7 @@ export default function Article({ post, page, locale }: { post: BlogPost; page: 
 
           <ArticleBody body={post.body} locale={locale} />
 
-          {post.faq.length > 0 && (
+          {on.faq && post.faq.length > 0 && (
             <section className={styles.section} aria-labelledby="faq">
               <h2 id="faq">{L("faq")}</h2>
               <div className={styles.faq}>
@@ -106,7 +113,7 @@ export default function Article({ post, page, locale }: { post: BlogPost; page: 
             </section>
           )}
 
-          {post.sources.length > 0 && (
+          {on.sources && post.sources.length > 0 && (
             <section className={styles.section} aria-labelledby="sources">
               <h2 id="sources">{L("sources")}</h2>
               <ol className={styles.sources}>
@@ -134,7 +141,7 @@ export default function Article({ post, page, locale }: { post: BlogPost; page: 
             </section>
           )}
 
-          {post.author && (
+          {on.authorBox && post.author && (
             <section className={styles.section} aria-label={L("by")}>
               <div className={styles.authorBox}>
                 {post.author.photo ? <Image src={post.author.photo.src} alt="" width={72} height={72} /> : <span />}
@@ -149,6 +156,7 @@ export default function Article({ post, page, locale }: { post: BlogPost; page: 
             </section>
           )}
 
+          {on.share && (
           <section className={styles.section} aria-labelledby="share">
             <h2 id="share">{L("share")}</h2>
             <div className={styles.share}>
@@ -159,11 +167,12 @@ export default function Article({ post, page, locale }: { post: BlogPost; page: 
               ))}
             </div>
           </section>
+          )}
         </article>
 
         <aside className={styles.aside}>
-          <Toc body={post.body} title={tocTitle} className={styles.toc} />
-          {post.products.length > 0 && (
+          {toc && <Toc body={post.body} title={tocTitle} className={styles.toc} />}
+          {on.products && post.products.length > 0 && (
             <nav className={styles.panel} aria-labelledby="products">
               <h2 id="products">{L("relatedProducts")}</h2>
               <ul className={styles.products}>
@@ -181,7 +190,13 @@ export default function Article({ post, page, locale }: { post: BlogPost; page: 
         </aside>
       </div>
 
-      {post.related.length > 0 && (
+      {on.comments && (post.commentsOpen || post.comments.length > 0) && (
+        <div className={styles.article}>
+          <Comments post={post} page={page} locale={locale} requireEmail={settings.comments.requireEmail} />
+        </div>
+      )}
+      {on.newsletter && <Newsletter page={page} locale={locale} back={at(locale, blogPath(post.slug))} />}
+      {on.related && post.related.length > 0 && (
         <section className={styles.section} aria-labelledby="related">
           <h2 id="related">{L("related")}</h2>
           <PostGrid items={post.related} page={page} locale={locale} />

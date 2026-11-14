@@ -149,7 +149,7 @@ export async function blogModule(app: FastifyInstance, deps: Deps) {
         return { status: p!.status, live: [] as string[], scheduledAt: new Date(at).toISOString() };
       });
     }
-    const r = await db.tx((q) => publishPost(q, tenant, { id, actor: actorOf(req), request: req.info, trigger: "manual" }));
+    const r = await db.tx((q) => publishPost(q, tenant, { id, actor: actorOf(req), request: req.info, trigger: "manual", config }));
     return { status: "published" as const, live: r.live, scheduledAt: null };
   });
 

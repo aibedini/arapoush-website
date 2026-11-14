@@ -5380,6 +5380,146 @@
        "kind": "text",
        "localized": true,
        "multiline": false
+      },
+      "comments": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "commentsCount": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "commentsEmpty": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "commentsClosed": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "commentWrite": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "commentName": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "commentEmail": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "commentBody": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "commentSubmit": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "commentPending": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "commentApproved": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "commentError": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "reply": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "team": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "newsletterTitle": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "newsletterText": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "newsletterEmail": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "newsletterSubmit": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "newsletterSent": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "newsletterConfirm": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "newsletterUnsubscribe": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "newsletterConfirmed": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "newsletterUnsubscribed": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "newsletterInvalid": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "search": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "searchPlaceholder": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "searchResults": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "searchNone": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
       }
      }
     },

@@ -19,7 +19,7 @@ export async function loadSettings(q: Q, tenant: string): Promise<{ settings: Si
 
 /** What the website needs (no secrets): analytics ids, verification tokens, indexing, security.txt. */
 export function publicSettings(s: SiteSettings) {
-  return { analytics: s.analytics, indexing: s.seo.indexing, security: s.security };
+  return { analytics: s.analytics, indexing: s.seo.indexing, security: s.security, blog: s.blog };
 }
 
 /** Certificate of the public site (SSL status in Settings). Never throws. */

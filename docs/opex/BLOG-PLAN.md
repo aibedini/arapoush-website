@@ -171,10 +171,75 @@ It also shows a Google result preview.
   - one post by locale and slug, with a redirect answer for an old slug;
   - taxonomy; sitemap feed; preview of one post.
 
-## 8. Later
+## 8. Switches, comments, newsletter, search, AI translation
 
-- Comments (needs moderation and spam control).
-- A newsletter.
-- AI-assisted translation drafts in the editor.
-- Search on the blog index.
-- Related-post suggestions by content similarity.
+**Blog settings** (console → Blog → Blog settings, permission `blog.manage`) are stored with the site
+settings and travel to the website in the content bundle:
+
+- **The whole journal on or off.** Off: every journal page answers 404, and the menu link, sitemap
+  entries, `llms.txt` lines and RSS disappear.
+- **Each part on or off:** comments, newsletter, search, related posts, share links, table of
+  contents, key takeaways, FAQ, sources, author box, reading time, related products, RSS, and the
+  home-page feed.
+- **Posts per page.**
+- **Comment rules:**
+  - moderation: `all`, `known` (writers already approved go straight up) or `none`;
+  - auto-close after N days;
+  - the most links a comment may carry;
+  - whether an email is required.
+
+**Comments:**
+
+- **Closing.** A post can close its own comments ("comments open" in the editor).
+- **Storage.** Comments are stored per language, with one level of replies. Email addresses are
+  encrypted (`INQUIRY_KEY`) and kept with a keyed hash.
+- **Spam controls:**
+  - a honeypot field;
+  - a link limit;
+  - 5 comments per 10 minutes per visitor (hashed IP), on top of a per-minute route limit;
+  - moderation.
+- **Moderation queue** (`blog.comments`): approve, spam, trash, delete, and answer as the team (a
+  reply approves the comment it answers).
+- **On the website**, approved comments are server-rendered, so the article stays static. They
+  appear in the article's JSON-LD (`commentCount`, `comment`).
+- **The form is plain HTML.** It posts to `/api/blog/comments`, which answers with a 303 back to
+  `#comment-pending` / `#comment-approved` / `#comment-error`, shown by CSS `:target`. The
+  article page ships no extra JavaScript.
+
+**Newsletter:**
+
+- **Double opt-in.** The sign-up form sends a confirmation email (SMTP). The link opens a page with
+  a button, so a mail scanner that follows links cannot confirm or cancel.
+- **Notify on publish.** "Email subscribers" on a post sends one email per confirmed subscriber, in
+  their language (or the post's first live one), at the post's first publish. Each email carries a
+  fresh unsubscribe token.
+- **Subscriber list** (`blog.newsletter`): CSV export and permanent removal.
+- **Content backups do not include subscribers;** full backups do.
+
+**Search:** `/{locale}/blog/search?q=` (noindex, follow). The score weighs title, then keywords,
+then summary, takeaways and body. A GET form on the journal pages (no JavaScript) leads to it.
+
+**Related posts:** the ones chosen in the editor first. The rest are ranked by shared tags, the same
+category, and overlap of title and keyword words.
+
+**Keywords:**
+
+- Each translation has a focus keyphrase plus up to 15 secondary keywords.
+- They feed JSON-LD `keywords`, `article:tag` and the meta keywords.
+- New checklist items: secondary keywords present, keyphrase (or a keyword) in a heading, and
+  keyphrase density 0.4–3%.
+
+**AI translation draft:**
+
+- The editor can draft one language from another with Claude (`claude-opus-5-5`, structured
+  output, server-side refusal fallback).
+- The draft fills the form; nothing is saved until the editor saves.
+- It needs `ANTHROPIC_API_KEY` on the server, and is off without it.
+- The article text is sent to Anthropic's API, so leave the key unset if that is not acceptable.
+
+**Reserved slugs:** `page`, `category`, `author`, `preview`, `feed`, `search`,
+`newsletter`.
+
+## 9. Later
+
+- Bulk newsletter campaigns beyond "new post" (templates, scheduling).

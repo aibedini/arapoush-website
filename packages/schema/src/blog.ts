@@ -33,6 +33,8 @@ export type BlogTranslation = {
   faq: BlogFaq[];
   sources: BlogSource[];
   seo: BlogSeo;
+  /** Secondary keywords (the focus keyphrase is seo.keyphrase): JSON-LD keywords, article:tag, checks. */
+  keywords?: string[];
 };
 
 /** Pages a post can point readers to at its end. */
@@ -48,10 +50,36 @@ export type BlogPostData = {
   featured: boolean;
   products: BlogProduct[];
   relatedIds: string[];
+  /** Comments on this post (when comments are on for the blog). Missing = open. */
+  commentsOpen?: boolean;
+  /** Email confirmed subscribers when this post is first published. */
+  notifySubscribers?: boolean;
   translations: Partial<Record<Locale, BlogTranslation>>;
 };
 
-export const emptyTranslation = (): BlogTranslation => ({ enabled: false, title: "", slug: "", excerpt: "", body: [], keyTakeaways: [], faq: [], sources: [], seo: {} });
+/** Parts of the blog an editor can switch off as a whole (OPEX blog settings). */
+export const BLOG_SECTIONS = ["comments", "newsletter", "search", "related", "share", "toc", "takeaways", "faq", "sources", "authorBox", "readingTime", "products", "rss", "homeFeed"] as const;
+export type BlogSection = (typeof BLOG_SECTIONS)[number];
+export type BlogSettings = {
+  enabled: boolean;
+  perPage: number;
+  sections: Record<BlogSection, boolean>;
+  comments: { moderation: "all" | "known" | "none"; closeAfterDays: number; maxLinks: number; requireEmail: boolean };
+};
+export const DEFAULT_BLOG_SETTINGS: BlogSettings = {
+  enabled: true,
+  perPage: 12,
+  sections: Object.fromEntries(BLOG_SECTIONS.map((k) => [k, true])) as Record<BlogSection, boolean>,
+  comments: { moderation: "all", closeAfterDays: 0, maxLinks: 2, requireEmail: true },
+};
+/** Whether comments are open on a post: blog switch, post switch and the auto-close age. */
+export function commentsOpen(s: BlogSettings, d: Pick<BlogPostData, "commentsOpen">, firstPublishedAt: string | Date | null, now = Date.now()) {
+  if (!s.enabled || !s.sections.comments || d.commentsOpen === false) return false;
+  if (s.comments.closeAfterDays > 0 && firstPublishedAt && now - new Date(firstPublishedAt).getTime() > s.comments.closeAfterDays * 86_400_000) return false;
+  return true;
+}
+
+export const emptyTranslation = (): BlogTranslation => ({ enabled: false, title: "", slug: "", excerpt: "", body: [], keyTakeaways: [], faq: [], sources: [], seo: {}, keywords: [] });
 export const emptyPost = (): BlogPostData => ({ categoryId: null, tagIds: [], authorId: null, reviewerId: null, cover: null, featured: false, products: [], relatedIds: [], translations: { fa: { ...emptyTranslation(), enabled: true } } });
 
 /** A translation the website shows: switched on and complete enough to be a page. */
@@ -78,7 +106,7 @@ export function slugify(input: string) {
 }
 export const SLUG_RE = /^[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)*$/u;
 /** Blog paths of their own (/blog/page/2, /blog/category/…): a post cannot use these as its slug. */
-export const RESERVED_SLUGS = ["page", "category", "author", "preview", "feed"];
+export const RESERVED_SLUGS = ["page", "category", "author", "preview", "feed", "search", "newsletter"];
 export const validSlug = (s: string) => SLUG_RE.test(s) && !RESERVED_SLUGS.includes(s);
 
 // ── Inline markup: **bold**, *italic*, [text](url). Everything else is plain text. ──
@@ -185,6 +213,16 @@ export function blogChecks(d: BlogPostData, locale: Locale): BlogCheck[] {
     add("kp-desc", "seo", norm(desc).includes(kp) || "warn", "عبارت کلیدی در توضیح متا هست.", "عبارت کلیدی در توضیح متا نیست.");
     add("kp-first", "seo", (first?.kind === "p" && norm(stripInline(first.text)).includes(kp)) || "warn", "عبارت کلیدی در پاراگراف اول آمده.", "عبارت کلیدی را در پاراگراف اول بیاورید.");
     add("kp-slug", "seo", norm(t.slug.replace(/-/g, " ")).includes(kp) || "warn", "عبارت کلیدی در نشانی هست.", "عبارت کلیدی در نشانی (slug) نیست.");
+  }
+  const kws = (t.keywords ?? []).map(norm).filter(Boolean);
+  add("keywords", "seo", kws.length >= 2 || "warn", `کلمات کلیدی فرعی: ${kws.length}.`, "دو یا چند کلمهٔ کلیدی فرعی (مترادف‌ها و عبارت‌های نزدیک) اضافه کنید.");
+  if (kp) {
+    const h2s = t.body.filter((b) => b.kind === "h").map((b) => norm(stripInline((b as { text: string }).text)));
+    add("kp-heading", "seo", h2s.some((h) => h.includes(kp) || kws.some((k) => h.includes(k))) || "warn", "عبارت کلیدی یا مترادفش در یک سرتیتر آمده.", "عبارت کلیدی یا یکی از کلمات فرعی را در یک سرتیتر بیاورید.");
+    const total = Math.max(1, words);
+    const hits = norm(text).split(kp).length - 1;
+    const density = (hits * kp.split(" ").length * 100) / total;
+    add("kp-density", "seo", density >= 0.4 && density <= 3 ? true : "warn", `تکرار عبارت کلیدی مناسب است (${density.toFixed(1)}٪).`, density > 3 ? `عبارت کلیدی بیش از حد تکرار شده (${density.toFixed(1)}٪)؛ طبیعی بنویسید.` : `عبارت کلیدی کم تکرار شده (${density.toFixed(1)}٪).`);
   }
   const hs = t.body.filter((b) => b.kind === "h");
   const order = hs.every((h, i) => h.kind === "h" && (h.level === 2 || hs.slice(0, i).some((x) => x.kind === "h" && x.level === 2)));

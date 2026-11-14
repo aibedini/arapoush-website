@@ -21,6 +21,7 @@
     "tube:chart": "node --no-warnings src/catalogue/cli.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.8.0",
     "@arapoush/schema": "workspace:*",
     "@electric-sql/pglite": "0.5.12",
     "@fastify/cookie": "11.1.5",

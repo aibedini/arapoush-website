@@ -7,7 +7,7 @@ import styles from "@/components/blog/Blog.module.css";
 import { ensureContent } from "@/lib/content";
 import { getDictionary, isLocale } from "@/lib/i18n";
 import { jsonLdHtml, pageUrl } from "@/lib/seo";
-import { blogPath, fill, getBlogPage, listPosts, pagePath, tx } from "@/lib/blog";
+import { blogPath, fill, getBlogPage, listPosts, pagePath, tx, blogSettings } from "@/lib/blog";
 import { listJsonLd } from "@/lib/blogSeo";
 import { categoriesFor, listMetadata } from "@/lib/blogPages";
 
@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 export default async function BlogPageN({ params }: { params: Params }) {
   await ensureContent();
   const { locale, n } = await params;
-  if (!isLocale(locale)) notFound();
+  if (!isLocale(locale) || !blogSettings().enabled) notFound();
   const p = num(n);
   if (p === 1) permanentRedirect(`/${locale}${blogPath()}`);
   if (p < 2) notFound();

@@ -10,7 +10,7 @@ import { languageAlternates, pageUrl } from "@/lib/seo";
 import { applicationsPath, printingPath, productPaths, siteUrl } from "@/lib/site";
 import { pageForms } from "@/lib/content/forms";
 import { formPath } from "@/lib/forms";
-import { authorPath, blogPath, categoryPath, getBlogIndex, pagePath, PER_PAGE } from "@/lib/blog";
+import { authorPath, blogPath, blogSettings, categoryPath, getBlogIndex, pagePath, perPage } from "@/lib/blog";
 import { postAlternates } from "@/lib/blogSeo";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -49,6 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 /** Journal: every live, indexable translation with its own hreflang set; lists only where they have posts. */
 async function blogSitemap(): Promise<MetadataRoute.Sitemap> {
+  if (!blogSettings().enabled) return [];
   const { posts, categories, authors } = await getBlogIndex();
   const abs = (src: string) => (src.startsWith("http") ? src : `${siteUrl}${src}`);
   const live = posts.filter((p) => !p.noindex);
@@ -62,7 +63,7 @@ async function blogSitemap(): Promise<MetadataRoute.Sitemap> {
   for (const l of locales) {
     const mine = live.filter((p) => p.locale === l);
     if (!mine.length) continue;
-    const pages = Math.ceil(mine.length / PER_PAGE);
+    const pages = Math.ceil(mine.length / perPage());
     for (let n = 1; n <= pages; n++) out.push({ url: pageUrl(l, n === 1 ? blogPath() : pagePath(n)), ...newest(mine) });
     for (const c of categories) {
       const inCat = mine.filter((p) => p.category?.id === c.id);

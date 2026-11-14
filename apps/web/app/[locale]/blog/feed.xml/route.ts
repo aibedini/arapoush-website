@@ -1,6 +1,6 @@
 import { isLocale, localeMeta, locales } from "@/lib/i18n";
 import { pageUrl } from "@/lib/seo";
-import { blogPath, getBlogPage, listPosts, tx } from "@/lib/blog";
+import { blogPath, blogSettings, getBlogPage, listPosts, tx } from "@/lib/blog";
 import { abs } from "@/lib/blogSeo";
 import { ensureContent } from "@/lib/content";
 
@@ -16,6 +16,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ locale:
   const { locale } = await params;
   if (!isLocale(locale)) return new Response("Not found", { status: 404 });
   await ensureContent();
+  const s = blogSettings();
+  if (!s.enabled || !s.sections.rss) return new Response("Not found", { status: 404 });
   const page = getBlogPage();
   const { items } = await listPosts(locale, { per: 30 });
   const self = pageUrl(locale, "/blog/feed.xml");

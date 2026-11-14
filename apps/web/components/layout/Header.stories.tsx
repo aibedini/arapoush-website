@@ -38,6 +38,8 @@ export const MobileMenu: Story = {
     const button = c.getByRole("button", { name: t.nav.openMenu });
     await userEvent.click(button);
     await expect(c.getByRole("button", { name: t.nav.closeMenu })).toHaveAttribute("aria-expanded", "true");
+    // The menu animation loads with its first open; let it settle before the accessibility check.
+    await new Promise((r) => setTimeout(r, 1200));
   },
 };
 

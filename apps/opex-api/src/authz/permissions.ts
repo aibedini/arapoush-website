@@ -73,6 +73,8 @@ export const PERMISSIONS: PermissionDef[] = [
   P("blog.publish", "blog", "Publish, schedule, unpublish and restore posts", "انتشار، زمان‌بندی، برداشتن و بازگردانی مقاله", true),
   P("blog.manage", "blog", "Manage categories, tags and authors", "مدیریت دسته‌ها، برچسب‌ها و نویسنده‌ها", true),
   P("blog.delete", "blog", "Archive posts", "بایگانی مقاله", true),
+  P("blog.comments", "blog", "Moderate and answer comments", "بررسی و پاسخ به کامنت‌ها"),
+  P("blog.newsletter", "blog", "See and remove newsletter subscribers", "دیدن و حذف مشترکان خبرنامه", true),
 ];
 
 export type Permission = string;
@@ -86,7 +88,7 @@ const OPERATOR = [
   "content.write", "content.publish", "media.upload", "catalogue.write", "catalogue.approve", "catalogue.import", "forms.write", "forms.publish",
   "tickets.read", "tickets.reply", "tickets.manage", "tickets.mailbox", "cr.review", "cr.publish", "partners.read", "grants.read", "webhooks.read", "webhooks.manage",
   "users.read", "roles.read", "seo.run", "backup.read",
-  "blog.write", "blog.edit_others", "blog.publish", "blog.manage",
+  "blog.write", "blog.edit_others", "blog.publish", "blog.manage", "blog.comments",
 ];
 export const BUILTIN_ROLES: Record<string, { name: { en: string; fa: string }; permissions: string[] }> = {
   super_admin: { name: { en: "Super admin", fa: "مدیر کل" }, permissions: PERMISSIONS.map((p) => p.key) },
@@ -249,6 +251,15 @@ export const ROUTE_PERMISSIONS: Record<string, Permission> = {
   "POST /v1/manage/blog/authors": "blog.manage",
   "PUT /v1/manage/blog/authors/:id": "blog.manage",
   "DELETE /v1/manage/blog/authors/:id": "blog.manage",
+  "GET /v1/manage/blog/comments": "blog.comments",
+  "POST /v1/manage/blog/comments/:id/moderate": "blog.comments",
+  "POST /v1/manage/blog/comments/:id/reply": "blog.comments",
+  "DELETE /v1/manage/blog/comments/:id": "blog.comments",
+  "GET /v1/manage/blog/subscribers": "blog.newsletter",
+  "DELETE /v1/manage/blog/subscribers/:id": "blog.newsletter",
+  "GET /v1/manage/blog/settings": "blog.read",
+  "PUT /v1/manage/blog/settings": "blog.manage",
+  "POST /v1/manage/blog/posts/:id/translate": "blog.write",
   "GET /v1/manage/seo/reports": "seo.read",
   "GET /v1/manage/seo/reports/:id": "seo.read",
   "POST /v1/manage/seo/run": "seo.run",

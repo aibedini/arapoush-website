@@ -7,7 +7,7 @@ import styles from "@/components/blog/Blog.module.css";
 import { ensureContent } from "@/lib/content";
 import { getDictionary, isLocale, locales, type Locale } from "@/lib/i18n";
 import { jsonLdHtml, pageUrl } from "@/lib/seo";
-import { categoryPath, fill, getBlogIndex, getBlogPage, listPosts, tx } from "@/lib/blog";
+import { categoryPath, fill, getBlogIndex, getBlogPage, listPosts, tx, blogSettings } from "@/lib/blog";
 import { listJsonLd } from "@/lib/blogSeo";
 import { categoriesFor, listMetadata } from "@/lib/blogPages";
 
@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 export default async function BlogCategory({ params }: { params: Params }) {
   await ensureContent();
   const { locale, slug } = await params;
-  if (!isLocale(locale)) notFound();
+  if (!isLocale(locale) || !blogSettings().enabled) notFound();
   const { cat, cats } = await find(locale, slug);
   if (!cat) notFound();
   const dict = getDictionary(locale);

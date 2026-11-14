@@ -74,6 +74,8 @@ services:
       SMTP_URL: ${SMTP_URL}
       MAIL_FROM: ${MAIL_FROM:-OPEX <no-reply@arapoush.com>}
       TURNSTILE_SECRET: ${TURNSTILE_SECRET:-}
+      # Blog: AI translation drafts in the editor (optional).
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       SUPPORT_ADDRESS: ${SUPPORT_ADDRESS:-support@arapoush.com}
       SUPPORT_NAME: ${SUPPORT_NAME:-Arapoush}
       IMAP_URL: ${IMAP_URL:-}

@@ -8,7 +8,7 @@ import styles from "@/components/blog/Blog.module.css";
 import { ensureContent } from "@/lib/content";
 import { getDictionary, isLocale, type Locale } from "@/lib/i18n";
 import { jsonLdHtml } from "@/lib/seo";
-import { authorPath, blogPath, fill, getBlogIndex, getBlogPage, listPosts, tx, type BlogAuthor } from "@/lib/blog";
+import { authorPath, blogPath, fill, getBlogIndex, getBlogPage, listPosts, tx, type BlogAuthor, blogSettings } from "@/lib/blog";
 import { authorJsonLd } from "@/lib/blogSeo";
 import { listMetadata } from "@/lib/blogPages";
 
@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 export default async function BlogAuthorPage({ params }: { params: Params }) {
   await ensureContent();
   const { locale, slug } = await params;
-  if (!isLocale(locale)) notFound();
+  if (!isLocale(locale) || !blogSettings().enabled) notFound();
   const a = await findAuthor(locale, slug);
   if (!a) notFound();
   const dict = getDictionary(locale);

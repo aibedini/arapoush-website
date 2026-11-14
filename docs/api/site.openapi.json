@@ -84,6 +84,181 @@
         "x-audience": "site"
       }
     },
+    "/api/blog/comments": {
+      "post": {
+        "operationId": "siteBlogComment",
+        "summary": "A visitor's comment from the article's HTML form (no JavaScript)",
+        "description": "Forwarded to OPEX with the visitor's IP. Answers 303 back to the article with #comment-pending, #comment-approved or #comment-error (shown with CSS :target). A filled honeypot (`website`) gets #comment-pending and nothing is stored.\n\n**Source:** `apps/web/app/api/blog/comments/route.ts`",
+        "tags": [
+          "Website"
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "postId": {
+                    "type": "string"
+                  },
+                  "locale": {
+                    "type": "string",
+                    "enum": [
+                      "fa",
+                      "en",
+                      "tr"
+                    ]
+                  },
+                  "back": {
+                    "type": "string",
+                    "description": "/{locale}/blog/… only."
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "body": {
+                    "type": "string"
+                  },
+                  "parentId": {
+                    "type": "string"
+                  },
+                  "website": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "postId",
+                  "locale",
+                  "back",
+                  "name",
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "303": {
+            "description": "Back to the article with a result anchor."
+          },
+          "400": {
+            "description": "Missing or foreign `back` path."
+          }
+        },
+        "x-audience": "site"
+      }
+    },
+    "/api/blog/newsletter": {
+      "post": {
+        "operationId": "siteBlogNewsletter",
+        "summary": "Confirm or cancel a subscription (the button on the page the email links to)",
+        "description": "**Source:** `apps/web/app/api/blog/newsletter/route.ts`",
+        "tags": [
+          "Website"
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  },
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "confirm",
+                      "unsubscribe"
+                    ]
+                  },
+                  "locale": {
+                    "type": "string",
+                    "enum": [
+                      "fa",
+                      "en",
+                      "tr"
+                    ]
+                  }
+                },
+                "required": [
+                  "token",
+                  "action",
+                  "locale"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "303": {
+            "description": "To /{locale}/blog/newsletter?done=confirmed|unsubscribed|invalid."
+          }
+        },
+        "x-audience": "site"
+      }
+    },
+    "/api/blog/subscribe": {
+      "post": {
+        "operationId": "siteBlogSubscribe",
+        "summary": "Newsletter sign-up from the journal's HTML form (double opt-in)",
+        "description": "**Source:** `apps/web/app/api/blog/subscribe/route.ts`",
+        "tags": [
+          "Website"
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "locale": {
+                    "type": "string",
+                    "enum": [
+                      "fa",
+                      "en",
+                      "tr"
+                    ]
+                  },
+                  "back": {
+                    "type": "string"
+                  },
+                  "website": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "locale",
+                  "back"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "303": {
+            "description": "Back with #subscribed or #subscribe-error."
+          },
+          "400": {
+            "description": "Missing or foreign `back` path."
+          }
+        },
+        "x-audience": "site"
+      }
+    },
     "/api/forms/{form}": {
       "post": {
         "operationId": "siteSubmitForm",

@@ -57,7 +57,7 @@ export default function Footer({ t, locale }: { t: Dictionary; locale: string })
         <ul>
           {f.exploreLinks.map((label, i) => (
             <li key={label}>
-              <a href={(exploreHrefs[i] ?? "").startsWith("#") ? `${home}${exploreHrefs[i]}` : exploreHrefs[i] ? localeHref(locale, exploreHrefs[i]!) : home}>
+              <a href={exploreHrefs[i] === "/blog" && !t.nav.journal ? `${home}#insights` : (exploreHrefs[i] ?? "").startsWith("#") ? `${home}${exploreHrefs[i]}` : exploreHrefs[i] ? localeHref(locale, exploreHrefs[i]!) : home}>
                 <RollText text={label} />
               </a>
             </li>

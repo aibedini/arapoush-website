@@ -42,7 +42,11 @@ export function getDictionary(locale: Locale): Dictionary {
     const data = entry(type);
     if (data) copy = overlay(copy, pickLocale(data, locale));
   }
-  return { ...copy, media: getMedia(locale), site: siteSettings(locale) };
+  const out = { ...copy, media: getMedia(locale), site: siteSettings(locale) };
+  // The journal switched off in OPEX: no menu link (the header adds one only when `journal` is set).
+  if (!blogSettings().enabled) out.nav = { ...out.nav, journal: "", items: out.nav.items.filter((i) => i.href !== "/blog") };
+  return out;
 }
 
 export * from "./config";
+import { blogSettings } from "@/lib/blog";

@@ -730,3 +730,180 @@
     transform: none;
   }
 }
+
+/* ── Comments, newsletter, search (no JS: forms + :target messages) ── */
+.hp {
+  position: absolute;
+  inset-inline-start: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.notice {
+  display: none;
+  margin: 12px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #eef8f1;
+  color: #1c5a32;
+  font: 500 15px/1.7 var(--font-ui);
+}
+.notice:target {
+  display: block;
+}
+.noticeBad {
+  background: #fff1f0;
+  color: #8a1f17;
+}
+.muted {
+  color: var(--slate);
+}
+.count {
+  color: var(--slate);
+  font-weight: 500;
+}
+.comments,
+.replies {
+  display: grid;
+  gap: 14px;
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+}
+.replies {
+  margin: 10px 0 0;
+  padding-inline-start: 22px;
+  border-inline-start: 2px solid #e3e8ee;
+}
+.comment {
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid #e3e8ee;
+  padding: 14px 18px;
+}
+.comment[data-team] {
+  background: #f3f8fd;
+  border-color: #d6e4f2;
+}
+.comment[data-team] header {
+  color: #535d69;
+}
+.comment header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  font: 500 14px/1.5 var(--font-ui);
+  color: var(--slate);
+}
+.comment header strong {
+  color: var(--text);
+}
+.comment p {
+  margin: 8px 0 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  line-height: 1.85;
+}
+.replyBox {
+  margin-top: 8px;
+}
+.replyBox summary {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  color: #1d4f7a;
+  font: 600 14px/1 var(--font-ui);
+}
+.formTitle {
+  margin: 24px 0 10px;
+  font: 700 18px/1.4 var(--font-sans);
+}
+.form {
+  display: grid;
+  gap: 12px;
+  max-width: 40rem;
+}
+.form label,
+.nlForm label,
+.searchForm label {
+  display: grid;
+  gap: 4px;
+  font: 500 14px/1.4 var(--font-ui);
+  color: var(--slate);
+}
+.formRow {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+}
+.form input,
+.form textarea,
+.nlForm input,
+.searchForm input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #cdd5df;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--text);
+  font: 400 16px/1.6 var(--font-sans);
+}
+.form textarea {
+  resize: vertical;
+}
+.form input:focus-visible,
+.form textarea:focus-visible,
+.nlForm input:focus-visible,
+.searchForm input:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 1px;
+}
+.submit {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--navy);
+  color: #fff;
+  font: 600 15px/1 var(--font-ui);
+  cursor: pointer;
+}
+.submit:active {
+  transform: translateY(1px);
+}
+.newsletter {
+  display: grid;
+  gap: 14px;
+  margin-block-start: max(36px, calc(56 * var(--u)));
+  padding: max(20px, calc(32 * var(--u)));
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #eaf2fa, #fdf6f0);
+}
+.newsletter h2 {
+  margin: 0 0 4px;
+  font: 700 20px/1.4 var(--font-sans);
+}
+.newsletter p {
+  margin: 0;
+  color: var(--body);
+}
+.nlForm,
+.searchForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+}
+.nlForm label,
+.searchForm label {
+  flex: 1 1 240px;
+}
+.searchForm {
+  max-width: 36rem;
+}

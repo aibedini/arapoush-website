@@ -25,9 +25,9 @@ export default function Insights({ t, locale, posts }: SectionProps) {
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
   const fmt = new Intl.DateTimeFormat(localeMeta[locale].intl, { year: "numeric", month: "short", day: "numeric" });
-  const blogHref = `/${locale}/blog`;
+  const blogHref = t.nav.journal ? `/${locale}/blog` : null;
   // Real journal posts once there are three to fill the row; until then the section's own teasers.
-  const items = posts && posts.length >= 3
+  const items = posts && posts.length >= 3 && t.nav.journal
     ? posts.slice(0, 6).map((p, i) => ({
         id: p.id,
         date: p.publishedAt,

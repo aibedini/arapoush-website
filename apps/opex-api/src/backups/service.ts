@@ -19,7 +19,7 @@ import { BackupConfig, type BackupKind, type BackupConfigT } from "./contract.ts
  */
 const NEVER = new Set(["sessions", "refresh_tokens", "oauth_codes", "revoked_jti", "jti_seen", "idempotency_keys", "audit_events", "schema_migrations", "backups"]);
 /** "Content only": what the site shows and the forms it collects with, not people or tickets. */
-const CONTENT = ["content_types", "entries", "revisions", "publications", "assets", "forms", "form_versions", "site_settings", "cad_models", "render_jobs", "approval_policies", "blog_authors", "blog_categories", "blog_tags", "blog_posts", "blog_revisions", "blog_slugs"];
+const CONTENT = ["content_types", "entries", "revisions", "publications", "assets", "forms", "form_versions", "site_settings", "cad_models", "render_jobs", "approval_policies", "blog_authors", "blog_categories", "blog_tags", "blog_posts", "blog_revisions", "blog_slugs", "blog_comments"];
 const MAGIC = Buffer.from("OPEXBAK1");
 
 /** BACKUP_KEY when set (keep it outside the server!), else derived from INQUIRY_KEY. */

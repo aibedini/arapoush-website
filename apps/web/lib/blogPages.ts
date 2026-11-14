@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getDictionary, localeMeta, locales, type Locale } from "@/lib/i18n";
 import { ogBase, pageUrl } from "@/lib/seo";
-import { authorPath, blogPath, getBlogIndex, tx, type BlogPage, type BlogPost } from "@/lib/blog";
+import { authorPath, blogPath, blogSettings, getBlogIndex, tx, type BlogPage, type BlogPost } from "@/lib/blog";
 import { abs, postAlternates } from "@/lib/blogSeo";
 
 /** hreflang for blog pages that exist in every language (index, pages); x-default Persian. */
@@ -17,7 +17,7 @@ export function listMetadata(o: { locale: Locale; path: string; title: string; d
   return {
     title: o.title,
     description: o.description,
-    alternates: { canonical: url, languages: o.languages ?? listAlternates(o.path), types: { "application/rss+xml": pageUrl(o.locale, "/blog/feed.xml") } },
+    alternates: { canonical: url, languages: o.languages ?? listAlternates(o.path), ...(blogSettings().sections.rss ? { types: { "application/rss+xml": pageUrl(o.locale, "/blog/feed.xml") } } : {}) },
     openGraph: { type: "website", url, title: o.title, description: o.description, ...ogBase(o.locale, brand), ...(o.image ? { images: [{ url: o.image }] } : {}) },
     twitter: { card: "summary_large_image", title: o.title, description: o.description },
     ...(o.empty ? { robots: { index: false, follow: true } } : {}),
@@ -42,7 +42,8 @@ export function articleMetadata(post: BlogPost, locale: Locale, opts: { noindex?
   return {
     title,
     description,
-    alternates: { canonical: post.seo.canonical || url, languages: postAlternates(post.alternates), types: { "application/rss+xml": pageUrl(locale, "/blog/feed.xml") } },
+    alternates: { canonical: post.seo.canonical || url, languages: postAlternates(post.alternates), ...(blogSettings().sections.rss ? { types: { "application/rss+xml": pageUrl(locale, "/blog/feed.xml") } } : {}) },
+    keywords: [post.seo.keyphrase, ...post.keywords, ...post.tags.map((t) => t.name)].filter((x): x is string => !!x),
     openGraph: {
       type: "article",
       url,
@@ -53,7 +54,7 @@ export function articleMetadata(post: BlogPost, locale: Locale, opts: { noindex?
       publishedTime: post.publishedAt,
       modifiedTime: post.modifiedAt,
       ...(post.category ? { section: post.category.name } : {}),
-      ...(post.tags.length ? { tags: post.tags.map((t) => t.name) } : {}),
+      ...(post.tags.length || post.keywords.length ? { tags: [...post.tags.map((t) => t.name), ...post.keywords] } : {}),
       ...(post.author ? { authors: [pageUrl(locale, authorPath(post.author.slug))] } : {}),
       ...(images ? { images } : {}),
     },

@@ -5,6 +5,7 @@ import type { BlogCard, BlogPage, BlogPost } from "@/lib/blog";
 import type { Locale } from "@/lib/i18n";
 import Article from "./Article";
 import ListView from "./ListView";
+import { Comments, Newsletter, SearchForm } from "./community";
 import styles from "./Blog.module.css";
 
 /**
@@ -51,6 +52,9 @@ const post: BlogPost = {
   wordCount: 160,
   alternates: { fa: "post-1" },
   related: [card(2), card(3)],
+  keywords: ["لایه مانع", "EVOH"],
+  comments: [{ id: "c1", name: "سارا", body: "خیلی مفید بود.", team: false, createdAt: "2026-11-11T08:00:00.000Z", replies: [{ id: "c2", name: "تیم آراپوش", body: "ممنون از شما!", team: true, createdAt: "2026-11-11T09:00:00.000Z" }] }],
+  commentsOpen: true,
 };
 
 const meta = {
@@ -105,6 +109,46 @@ export const ArticleEnglish: Story = {
   render: () => (
     <div className={styles.page} dir="ltr" lang="en">
       <Article post={{ ...post, locale: "en", title: "What is a multi-layer tube?", body: [{ id: "p", kind: "p", text: "A multi-layer tube has a **barrier** layer." }, { id: "h", kind: "h", level: 2, text: "Layers" }, { id: "h2", kind: "h", level: 2, text: "Comparison" }] }} page={page} locale="en" />
+    </div>
+  ),
+};
+
+/** Comments: approved ones with a team reply, the form (plain HTML, no JavaScript). */
+export const CommentsOpen: Story = {
+  render: () => (
+    <div className={styles.page}>
+      <div className={styles.inner}>
+        <Comments post={post} page={page} locale="fa" requireEmail />
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const c = within(canvasElement);
+    await expect(c.getByRole("heading", { level: 2, name: /دیدگاه‌ها/ })).toBeVisible();
+    await expect(c.getByRole("heading", { level: 3, name: page.labels.commentWrite.fa })).toBeVisible();
+    await expect(c.getAllByRole("button", { name: page.labels.commentSubmit.fa }).at(-1)!).toBeVisible();
+  },
+};
+
+/** Closed on this post: the comments stay, the form goes. */
+export const CommentsClosed: Story = {
+  render: () => (
+    <div className={styles.page}>
+      <div className={styles.inner}>
+        <Comments post={{ ...post, commentsOpen: false }} page={page} locale="fa" requireEmail />
+      </div>
+    </div>
+  ),
+};
+
+/** Newsletter sign-up and journal search (GET form). */
+export const NewsletterAndSearch: Story = {
+  render: () => (
+    <div className={styles.page}>
+      <div className={styles.inner}>
+        <SearchForm page={page} locale="fa" />
+        <Newsletter page={page} locale="fa" back="/fa/blog" />
+      </div>
     </div>
   ),
 };

@@ -13,7 +13,7 @@ import EditScope from "@/components/opex/EditScope";
 import homeLayout from "@/content/home-layout.json";
 import { homeJsonLd, jsonLdHtml } from "@/lib/seo";
 import { ensureContent, entry } from "@/lib/content";
-import { listPosts } from "@/lib/blog";
+import { blogSettings, listPosts } from "@/lib/blog";
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   await ensureContent();
@@ -23,7 +23,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   // Section order and visibility: OPEX page.home.layout (or content/home-layout.json without OPEX).
   const layout = normalizeLayout(entry<typeof homeLayout>("page.home.layout") ?? homeLayout);
   // Newest journal posts for "Insights" (only when that section is on the page).
-  const posts = layout.some((x) => x.enabled && x.type === "insights") ? (await listPosts(locale, { per: 6 })).items : [];
+  const posts = layout.some((x) => x.enabled && x.type === "insights") && blogSettings().enabled && blogSettings().sections.homeFeed ? (await listPosts(locale, { per: 6 })).items : [];
   const edit = await editMode();
   // FAQ blocks also become FAQPage structured data.
   const faq = faqItems(layout, locale);

@@ -959,6 +959,165 @@
           }
         },
         {
+          "name": "Comments to moderate (newest first)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "comments"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "post",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Delete a comment for good (with its replies)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/comments/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "comments",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Approve, mark as spam or move a comment to the trash",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/comments/:id/moderate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "comments",
+                ":id",
+                "moderate"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"pending\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Answer a comment as the Arapoush team (published at once)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/comments/:id/reply",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "comments",
+                ":id",
+                "reply"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"body\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
           "name": "Blog posts (newest change first)",
           "request": {
             "method": "GET",
@@ -1377,6 +1536,53 @@
           }
         },
         {
+          "name": "AI draft of one translation from another (Claude), not saved",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/posts/:id/translate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "posts",
+                ":id",
+                "translate"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from\": \"fa\",\n  \"to\": \"fa\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Needs ANTHROPIC_API_KEY on the server. The editor reviews the draft and saves it like any other edit.\n\nSource: blog/routes.ts"
+          }
+        },
+        {
           "name": "Take the post off the site (it stays in OPEX as a draft)",
           "request": {
             "method": "POST",
@@ -1399,6 +1605,118 @@
                 "posts",
                 ":id",
                 "unpublish"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Blog switches (whole journal and each part) and comment rules",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "settings"
+              ]
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Change the blog switches",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "settings"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Newsletter subscribers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/subscribers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "subscribers"
+              ]
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Remove a subscriber for good (privacy request)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/subscribers/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "subscribers",
+                ":id"
               ],
               "variable": [
                 {
@@ -2505,6 +2823,49 @@
       "name": "Delivery",
       "item": [
         {
+          "name": "A visitor's comment (the website forwards it with the visitor's IP)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{deliveryToken}}"
+              },
+              {
+                "key": "x-end-user-ip",
+                "value": "",
+                "description": "The visitor's IP (rate limits)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/delivery/blog/comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "delivery",
+                "blog",
+                "comments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"postId\": \"string\",\n  \"locale\": \"fa\",\n  \"name\": \"string\",\n  \"body\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: blog/delivery.ts"
+          }
+        },
+        {
           "name": "Every live translation, compact (sitemap, feeds, llms.txt)",
           "request": {
             "method": "GET",
@@ -2525,6 +2886,44 @@
                 "blog",
                 "index"
               ]
+            },
+            "description": "Source: blog/delivery.ts"
+          }
+        },
+        {
+          "name": "Confirm or cancel a subscription with the token from an email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{deliveryToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/delivery/blog/newsletter",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "delivery",
+                "blog",
+                "newsletter"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"string\",\n  \"action\": \"confirm\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Source: blog/delivery.ts"
           }
@@ -2663,6 +3062,81 @@
                   "disabled": true
                 }
               ]
+            },
+            "description": "Source: blog/delivery.ts"
+          }
+        },
+        {
+          "name": "Search live posts in one language",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{deliveryToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/delivery/blog/search",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "delivery",
+                "blog",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "locale",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "q",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Source: blog/delivery.ts"
+          }
+        },
+        {
+          "name": "Newsletter sign-up: sends a confirmation email (double opt-in)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{deliveryToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/delivery/blog/subscribe",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "delivery",
+                "blog",
+                "subscribe"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"someone@example.com\",\n  \"locale\": \"fa\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Source: blog/delivery.ts"
           }
@@ -6801,6 +7275,122 @@
               ]
             },
             "description": "Source: apps/web/app/.well-known/security.txt/route.ts"
+          }
+        },
+        {
+          "name": "A visitor's comment from the article's HTML form (no JavaScript)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{siteUrl}}/api/blog/comments",
+              "host": [
+                "{{siteUrl}}"
+              ],
+              "path": [
+                "api",
+                "blog",
+                "comments"
+              ]
+            },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "postId",
+                  "value": "string"
+                },
+                {
+                  "key": "locale",
+                  "value": "fa"
+                },
+                {
+                  "key": "back",
+                  "value": "string"
+                },
+                {
+                  "key": "name",
+                  "value": "string"
+                },
+                {
+                  "key": "body",
+                  "value": "string"
+                }
+              ]
+            },
+            "description": "Forwarded to OPEX with the visitor's IP. Answers 303 back to the article with #comment-pending, #comment-approved or #comment-error (shown with CSS :target). A filled honeypot (`website`) gets #comment-pending and nothing is stored.\n\nSource: apps/web/app/api/blog/comments/route.ts"
+          }
+        },
+        {
+          "name": "Confirm or cancel a subscription (the button on the page the email links to)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{siteUrl}}/api/blog/newsletter",
+              "host": [
+                "{{siteUrl}}"
+              ],
+              "path": [
+                "api",
+                "blog",
+                "newsletter"
+              ]
+            },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "token",
+                  "value": "string"
+                },
+                {
+                  "key": "action",
+                  "value": "confirm"
+                },
+                {
+                  "key": "locale",
+                  "value": "fa"
+                }
+              ]
+            },
+            "description": "Source: apps/web/app/api/blog/newsletter/route.ts"
+          }
+        },
+        {
+          "name": "Newsletter sign-up from the journal's HTML form (double opt-in)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{siteUrl}}/api/blog/subscribe",
+              "host": [
+                "{{siteUrl}}"
+              ],
+              "path": [
+                "api",
+                "blog",
+                "subscribe"
+              ]
+            },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "string"
+                },
+                {
+                  "key": "locale",
+                  "value": "fa"
+                },
+                {
+                  "key": "back",
+                  "value": "string"
+                }
+              ]
+            },
+            "description": "Source: apps/web/app/api/blog/subscribe/route.ts"
           }
         },
         {

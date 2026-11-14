@@ -9100,6 +9100,146 @@
     "fa": "پیش‌نمایش پیش‌نویس؛ این صفحه منتشر نشده است.",
     "en": "Draft preview; this page is not published.",
     "tr": "Taslak önizlemesi; bu sayfa yayımlanmadı."
+   },
+   "comments": {
+    "fa": "دیدگاه‌ها",
+    "en": "Comments",
+    "tr": "Yorumlar"
+   },
+   "commentsCount": {
+    "fa": "{n} دیدگاه",
+    "en": "{n} comments",
+    "tr": "{n} yorum"
+   },
+   "commentsEmpty": {
+    "fa": "نخستین دیدگاه را شما بنویسید.",
+    "en": "Be the first to comment.",
+    "tr": "İlk yorumu siz yazın."
+   },
+   "commentsClosed": {
+    "fa": "دیدگاه‌ها برای این مقاله بسته است.",
+    "en": "Comments are closed for this article.",
+    "tr": "Bu makale yorumlara kapalı."
+   },
+   "commentWrite": {
+    "fa": "دیدگاه خود را بنویسید",
+    "en": "Leave a comment",
+    "tr": "Yorum yazın"
+   },
+   "commentName": {
+    "fa": "نام",
+    "en": "Name",
+    "tr": "Ad"
+   },
+   "commentEmail": {
+    "fa": "ایمیل (نمایش داده نمی‌شود)",
+    "en": "Email (never shown)",
+    "tr": "E-posta (gösterilmez)"
+   },
+   "commentBody": {
+    "fa": "دیدگاه",
+    "en": "Comment",
+    "tr": "Yorum"
+   },
+   "commentSubmit": {
+    "fa": "ارسال دیدگاه",
+    "en": "Post comment",
+    "tr": "Yorumu gönder"
+   },
+   "commentPending": {
+    "fa": "دیدگاه شما رسید و پس از بررسی منتشر می‌شود.",
+    "en": "Thanks! Your comment will appear after review.",
+    "tr": "Teşekkürler! Yorumunuz incelendikten sonra yayımlanacak."
+   },
+   "commentApproved": {
+    "fa": "دیدگاه شما منتشر شد؛ تا لحظاتی دیگر اینجا دیده می‌شود.",
+    "en": "Your comment is published and will show here in a moment.",
+    "tr": "Yorumunuz yayımlandı; birazdan burada görünecek."
+   },
+   "commentError": {
+    "fa": "ارسال نشد. متن را کوتاه‌تر و با پیوند کمتر بنویسید یا کمی بعد دوباره امتحان کنید.",
+    "en": "It could not be sent. Use fewer links or try again shortly.",
+    "tr": "Gönderilemedi. Daha az bağlantı kullanın veya biraz sonra tekrar deneyin."
+   },
+   "reply": {
+    "fa": "پاسخ",
+    "en": "Reply",
+    "tr": "Yanıtla"
+   },
+   "team": {
+    "fa": "تیم آراپوش",
+    "en": "Arapoush team",
+    "tr": "Arapoush ekibi"
+   },
+   "newsletterTitle": {
+    "fa": "خبرنامهٔ مجله",
+    "en": "Journal newsletter",
+    "tr": "Dergi bülteni"
+   },
+   "newsletterText": {
+    "fa": "مقاله‌های تازه را در ایمیل خود بخوانید؛ ماهی چند بار، بدون تبلیغ.",
+    "en": "Get new articles by email, a few times a month, no ads.",
+    "tr": "Yeni makaleler e-postanıza gelsin; ayda birkaç kez, reklamsız."
+   },
+   "newsletterEmail": {
+    "fa": "ایمیل",
+    "en": "Email",
+    "tr": "E-posta"
+   },
+   "newsletterSubmit": {
+    "fa": "عضویت",
+    "en": "Subscribe",
+    "tr": "Abone ol"
+   },
+   "newsletterSent": {
+    "fa": "یک ایمیل تأیید فرستادیم؛ برای تکمیل عضویت آن را باز کنید.",
+    "en": "We sent a confirmation email; open it to finish.",
+    "tr": "Onay e-postası gönderdik; tamamlamak için açın."
+   },
+   "newsletterConfirm": {
+    "fa": "تأیید عضویت در خبرنامه",
+    "en": "Confirm your subscription",
+    "tr": "Aboneliğinizi onaylayın"
+   },
+   "newsletterUnsubscribe": {
+    "fa": "لغو عضویت از خبرنامه",
+    "en": "Unsubscribe from the newsletter",
+    "tr": "Bülten aboneliğinden çık"
+   },
+   "newsletterConfirmed": {
+    "fa": "عضویت شما تأیید شد. ممنون!",
+    "en": "You are subscribed. Thank you!",
+    "tr": "Aboneliğiniz onaylandı. Teşekkürler!"
+   },
+   "newsletterUnsubscribed": {
+    "fa": "عضویت شما لغو شد.",
+    "en": "You are unsubscribed.",
+    "tr": "Aboneliğiniz iptal edildi."
+   },
+   "newsletterInvalid": {
+    "fa": "این پیوند منقضی یا نامعتبر است.",
+    "en": "This link is invalid or has expired.",
+    "tr": "Bu bağlantı geçersiz veya süresi dolmuş."
+   },
+   "search": {
+    "fa": "جست‌وجو در مجله",
+    "en": "Search the journal",
+    "tr": "Dergide ara"
+   },
+   "searchPlaceholder": {
+    "fa": "مثلاً تیوب چندلایه",
+    "en": "e.g. multi-layer tube",
+    "tr": "ör. çok katmanlı tüp"
+   },
+   "searchResults": {
+    "fa": "{n} نتیجه برای «{q}»",
+    "en": "{n} results for “{q}”",
+    "tr": "“{q}” için {n} sonuç"
+   },
+   "searchNone": {
+    "fa": "نتیجه‌ای پیدا نشد. واژهٔ دیگری امتحان کنید.",
+    "en": "No results. Try another word.",
+    "tr": "Sonuç yok. Başka bir kelime deneyin."
    }
   },
   "products": {

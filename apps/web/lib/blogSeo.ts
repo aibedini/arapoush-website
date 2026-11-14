@@ -56,7 +56,14 @@ export function postJsonLd(t: Dictionary, page: BlogPage, post: BlogPost, locale
         wordCount: post.wordCount,
         timeRequired: `PT${post.readingMinutes}M`,
         ...(post.category ? { articleSection: post.category.name } : {}),
-        ...(post.tags.length || post.seo.keyphrase ? { keywords: [post.seo.keyphrase, ...post.tags.map((x) => x.name)].filter(Boolean).join(", ") } : {}),
+        ...(post.tags.length || post.seo.keyphrase || post.keywords.length ? { keywords: [...new Set([post.seo.keyphrase, ...post.keywords, ...post.tags.map((x) => x.name)].filter(Boolean))].join(", ") } : {}),
+        // Approved comments (people discussing the article: a signal of real engagement).
+        ...(post.comments.length
+          ? {
+              commentCount: post.comments.reduce((n, c) => n + 1 + (c.replies?.length ?? 0), 0),
+              comment: post.comments.slice(0, 20).map((c) => ({ "@type": "Comment", text: c.body, dateCreated: c.createdAt, author: c.team ? { "@id": `${siteUrl}/#organization` } : { "@type": "Person", name: c.name } })),
+            }
+          : {}),
         ...(post.author ? { author: person(post.author, locale) } : { author: { "@id": `${siteUrl}/#organization` } }),
         ...(post.reviewer ? { reviewedBy: person(post.reviewer, locale) } : {}),
         publisher: { "@id": `${siteUrl}/#organization` },

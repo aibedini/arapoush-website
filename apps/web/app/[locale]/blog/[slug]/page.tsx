@@ -7,7 +7,7 @@ import styles from "@/components/blog/Blog.module.css";
 import { ensureContent } from "@/lib/content";
 import { getDictionary, isLocale, locales } from "@/lib/i18n";
 import { jsonLdHtml } from "@/lib/seo";
-import { blogPath, getBlogPage, getPost } from "@/lib/blog";
+import { blogPath, getBlogPage, getPost, blogSettings } from "@/lib/blog";
 import { postJsonLd } from "@/lib/blogSeo";
 import { articleMetadata } from "@/lib/blogPages";
 
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 export default async function BlogArticle({ params }: { params: Params }) {
   await ensureContent();
   const { locale, slug } = await params;
-  if (!isLocale(locale)) notFound();
+  if (!isLocale(locale) || !blogSettings().enabled) notFound();
   const r = await load(locale, slug);
   // An old slug answers 301 to the current one; an unknown or unpublished one 404.
   if (r?.redirect) permanentRedirect(`/${locale}${blogPath(r.redirect)}`);

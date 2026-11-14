@@ -32,9 +32,26 @@ export const SecuritySettings = z.strictObject({
   contactEmail: z.string().email().max(200).nullable().default(null).describe("Published in /.well-known/security.txt."),
   policyUrl: z.string().url().regex(/^https:\/\//).nullable().default(null),
 });
-export const SECTIONS = { analytics: AnalyticsSettings, seo: SeoSettings, security: SecuritySettings } as const;
+const on = z.boolean().default(true);
+/** Blog (docs/opex/BLOG-PLAN.md): the whole journal and each of its parts can be switched off. */
+export const BlogSettings = z.strictObject({
+  enabled: on.describe("Off: every journal page answers 404 and the menu link disappears."),
+  perPage: z.number().int().min(6).max(48).default(12),
+  sections: z
+    .strictObject({ comments: on, newsletter: on, search: on, related: on, share: on, toc: on, takeaways: on, faq: on, sources: on, authorBox: on, readingTime: on, products: on, rss: on, homeFeed: on })
+    .default({ comments: true, newsletter: true, search: true, related: true, share: true, toc: true, takeaways: true, faq: true, sources: true, authorBox: true, readingTime: true, products: true, rss: true, homeFeed: true }),
+  comments: z
+    .strictObject({
+      moderation: z.enum(["all", "known", "none"]).default("all").describe("all: every comment waits for approval; known: approved writers go straight up; none: no review."),
+      closeAfterDays: z.number().int().min(0).max(3650).default(0).describe("0 = never close automatically."),
+      maxLinks: z.number().int().min(0).max(10).default(2).describe("Comments with more links are refused (spam)."),
+      requireEmail: z.boolean().default(true),
+    })
+    .default({ moderation: "all", closeAfterDays: 0, maxLinks: 2, requireEmail: true }),
+});
+export const SECTIONS = { analytics: AnalyticsSettings, seo: SeoSettings, security: SecuritySettings, blog: BlogSettings } as const;
 export type Section = keyof typeof SECTIONS;
-export type SiteSettings = { analytics: z.infer<typeof AnalyticsSettings>; seo: z.infer<typeof SeoSettings>; security: z.infer<typeof SecuritySettings> };
+export type SiteSettings = { analytics: z.infer<typeof AnalyticsSettings>; seo: z.infer<typeof SeoSettings>; security: z.infer<typeof SecuritySettings>; blog: z.infer<typeof BlogSettings> };
 
 const Status = z.object({
   ssl: z.object({ https: z.boolean(), validTo: Iso.nullable(), issuer: z.string().nullable(), daysLeft: z.number().nullable(), error: z.string().nullable() }),

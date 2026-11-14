@@ -1,7 +1,8 @@
 import raw from "@/content/blog.json";
-import type { BlogBlock, BlogFaq, BlogImage, BlogProduct, BlogSeo, BlogSource } from "@arapoush/schema";
+import { DEFAULT_BLOG_SETTINGS, type BlogBlock, type BlogFaq, type BlogImage, type BlogProduct, type BlogSeo, type BlogSettings, type BlogSource } from "@arapoush/schema";
 import type { Locale } from "@/lib/i18n";
 import { entry, opexEnabled } from "@/lib/content";
+import { overlay } from "@/lib/content/overlay";
 
 /**
  * Blog (docs/opex/BLOG-PLAN.md). Posts come from the OPEX Delivery API, not from the content bundle:
@@ -19,46 +20,26 @@ type Text = L;
 export type BlogPage = {
   meta: { title: Text; description: Text };
   hero: { eyebrow: Text; title: Text; lead: Text };
-  labels: Record<
-    | "home"
-    | "blog"
-    | "all"
-    | "featured"
-    | "latest"
-    | "readMore"
-    | "minutes"
-    | "published"
-    | "updated"
-    | "by"
-    | "reviewedBy"
-    | "toc"
-    | "takeaways"
-    | "faq"
-    | "sources"
-    | "related"
-    | "relatedProducts"
-    | "share"
-    | "page"
-    | "prev"
-    | "next"
-    | "pagination"
-    | "categories"
-    | "empty"
-    | "authorPosts"
-    | "categoryPosts"
-    | "backToBlog"
-    | "rss"
-    | "tags"
-    | "expertise"
-    | "preview",
-    Text
-  >;
+  labels: Record<keyof (typeof raw)["labels"], Text>;
   products: Record<BlogProduct, { title: Text; text: Text; href: string }>;
 };
 
+/** Blog switches from OPEX settings (whole journal, each part, comment rules), with safe defaults. */
+export function blogSettings(): BlogSettings {
+  const s = entry<{ blog?: Partial<BlogSettings> }>("settings.site")?.blog;
+  if (!s) return DEFAULT_BLOG_SETTINGS;
+  return {
+    ...DEFAULT_BLOG_SETTINGS,
+    ...s,
+    sections: { ...DEFAULT_BLOG_SETTINGS.sections, ...(s.sections ?? {}) },
+    comments: { ...DEFAULT_BLOG_SETTINGS.comments, ...(s.comments ?? {}) },
+  };
+}
+
 /** Blog page copy (OPEX `page.blog`, or content/blog.json without OPEX). */
 export function getBlogPage(): BlogPage {
-  const c = structuredClone(entry<Record<string, unknown>>("page.blog") ?? raw) as Record<string, unknown>;
+  // OPEX content over the code defaults: texts added later (new labels) keep their defaults until edited.
+  const c = overlay(structuredClone(raw) as Record<string, unknown>, entry<Record<string, unknown>>("page.blog")) as Record<string, unknown>;
   delete c.$comment;
   return c as unknown as BlogPage;
 }
@@ -91,7 +72,11 @@ export type BlogPost = BlogCard & {
   wordCount: number;
   alternates: Partial<Record<Locale, string>>;
   related: BlogCard[];
+  keywords: string[];
+  comments: BlogComment[];
+  commentsOpen: boolean;
 };
+export type BlogComment = { id: string; name: string; body: string; team: boolean; createdAt: string; replies?: BlogComment[] };
 type LocText = Partial<Record<Locale, string>>;
 export type BlogIndex = {
   posts: (BlogCard & { alternates: Partial<Record<Locale, string>>; noindex: boolean; keyTakeaways: string[] })[];
@@ -115,10 +100,12 @@ async function get<T>(path: string, init: RequestInit & { next?: { tags?: string
 }
 
 export const PER_PAGE = 12;
+/** Page size from the blog settings (OPEX), 12 by default. */
+export const perPage = () => blogSettings().perPage || PER_PAGE;
 const EMPTY: BlogList = { items: [], total: 0, page: 1, pages: 1 };
 
 export async function listPosts(locale: Locale, o: { page?: number; category?: string; tag?: string; author?: string; per?: number } = {}): Promise<BlogList> {
-  const q = new URLSearchParams({ locale, page: String(o.page ?? 1), per: String(o.per ?? PER_PAGE) });
+  const q = new URLSearchParams({ locale, page: String(o.page ?? 1), per: String(o.per ?? perPage()) });
   if (o.category) q.set("category", o.category);
   if (o.tag) q.set("tag", o.tag);
   if (o.author) q.set("author", o.author);
@@ -138,6 +125,30 @@ export async function getBlogIndex(): Promise<BlogIndex> {
 export async function getPreview(id: string, locale: Locale, token: string): Promise<BlogPost | null> {
   const r = await get<{ post: BlogPost }>(`/v1/delivery/blog/preview/${encodeURIComponent(id)}?locale=${locale}`, { cache: "no-store", headers: { "opex-preview": token } });
   return r.body?.post ?? null;
+}
+
+/** Live posts matching a query (noindex search page; never cached). */
+export async function searchPosts(locale: Locale, q: string): Promise<BlogCard[]> {
+  if (q.trim().length < 2) return [];
+  const r = await get<{ items: BlogCard[] }>(`/v1/delivery/blog/search?${new URLSearchParams({ locale, q: q.trim().slice(0, 100) })}`, { cache: "no-store" });
+  return r.body?.items ?? [];
+}
+
+/** Forwards a visitor's form to OPEX with the delivery token and the visitor's IP (comments, newsletter). */
+export async function postToOpex(path: string, body: unknown, ip?: string) {
+  if (!opexEnabled()) return { status: 503, body: null as unknown };
+  try {
+    const res = await fetch(`${base()}${path}`, {
+      method: "POST",
+      headers: { authorization: `Bearer ${process.env.OPEX_DELIVERY_TOKEN}`, "content-type": "application/json", ...(ip ? { "x-end-user-ip": ip } : {}) },
+      body: JSON.stringify(body),
+      cache: "no-store",
+      signal: AbortSignal.timeout(10_000),
+    });
+    return { status: res.status, body: (await res.json().catch(() => null)) as unknown };
+  } catch {
+    return { status: 503, body: null as unknown };
+  }
 }
 
 export const blogPath = (slug?: string) => (slug ? `/blog/${encodeURIComponent(slug)}` : "/blog");

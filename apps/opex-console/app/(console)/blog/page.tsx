@@ -29,6 +29,7 @@ export default function BlogList() {
   const posts = useApi<PostSummary[]>(`/v1/manage/blog/posts${qs}`);
   const tax = useApi<Taxonomy>("/v1/manage/blog/taxonomy");
   const act = useAction();
+  const comments = useApi<{ pending: number }>(can(me, "blog.comments") ? "/v1/manage/blog/comments?status=pending" : null);
   const all = useMemo(() => posts.data ?? [], [posts.data]);
   const shown = useMemo(() => {
     const n = q.trim().toLowerCase();
@@ -47,11 +48,24 @@ export default function BlogList() {
   return (
     <>
       <PageHead title="بلاگ (مجله)" sub="مقاله‌های سایت به سه زبان؛ با سئو و GEO، تاریخچهٔ نسخه‌ها، پیش‌نمایش، زمان‌بندی و بازبینی پیش از انتشار.">
+        {can(me, "blog.comments") && (
+          <Link className="btn" href="/blog/comments">
+            دیدگاه‌ها{comments.data?.pending ? ` (${num(comments.data.pending)})` : ""}
+          </Link>
+        )}
+        {can(me, "blog.newsletter") && (
+          <Link className="btn" href="/blog/subscribers">
+            خبرنامه
+          </Link>
+        )}
         {can(me, "blog.manage") && (
           <Link className="btn" href="/blog/settings">
             دسته‌ها، برچسب‌ها و نویسنده‌ها
           </Link>
         )}
+        <Link className="btn" href="/blog/config">
+          تنظیمات بلاگ
+        </Link>
         {can(me, "blog.write") && (
           <button type="button" className="btn primary" onClick={create} disabled={act.busy}>
             مقالهٔ تازه

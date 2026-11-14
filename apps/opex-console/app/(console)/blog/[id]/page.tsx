@@ -23,6 +23,7 @@ function clean(d: BlogPostData): BlogPostData {
         ...t,
         body: t.body.filter((b) => b.kind !== "image" || !!b.image.src).map((b) => (b.kind === "list" ? { ...b, items: b.items.filter((x) => x.trim()) } : b)),
         keyTakeaways: t.keyTakeaways.filter((x) => x.trim()),
+        keywords: (t.keywords ?? []).filter((x) => x.trim()),
         faq: t.faq.filter((f) => f.q.trim() || f.a.trim()),
         sources: t.sources.filter((s) => s.url.trim()),
         seo: { ...t.seo, canonical: t.seo.canonical?.trim() || undefined },
@@ -42,6 +43,7 @@ export default function PostEditor() {
   const tax = useApi<Taxonomy>("/v1/manage/blog/taxonomy");
   const others = useApi<PostSummary[]>("/v1/manage/blog/posts?status=published");
   const revs = useApi<Rev[]>(`/v1/manage/blog/posts/${id}/revisions`);
+  const blogEnv = useApi<{ env: { ai: boolean } }>("/v1/manage/blog/settings");
   const act = useAction();
   const [data, setData] = useState<BlogPostData | null>(null);
   const [base, setBase] = useState<string | null>(null);
@@ -114,6 +116,16 @@ export default function PostEditor() {
       const r = await api<{ url: string }>(`/v1/manage/blog/posts/${id}/preview`, { body: { locale: loc } });
       window.open(r.url, "_blank", "noopener");
     });
+  const ai = !!blogEnv.data?.env.ai;
+  /** AI draft of this language from another one: fills the fields; nothing is saved until "ذخیره". */
+  const translate = (from: Locale) =>
+    (!tr?.title || confirm(`متن فعلی ${LOCALE_NAME[loc]} با ترجمهٔ ماشینی جایگزین شود؟`)) &&
+    act.run(async () => {
+      const r = await api<Pick<BlogTranslation, "title" | "excerpt" | "body" | "keyTakeaways" | "faq" | "keywords"> & { seo: BlogTranslation["seo"] }>(`/v1/manage/blog/posts/${id}/translate`, { body: { from, to: loc } });
+      const src = data!.translations[from]!;
+      setTr({ ...r, sources: src.sources, seo: { ...src.seo, ...r.seo, canonical: undefined }, slug: slugify(r.title), enabled: data!.translations[loc]?.enabled ?? true });
+      slugTouched.current[loc] = false;
+    }, "پیش‌نویس ترجمه آماده شد؛ بخوانید، اصلاح کنید و ذخیره کنید.");
   const addTag = () =>
     act.run(async () => {
       const name = newTag.trim();
@@ -180,6 +192,16 @@ export default function PostEditor() {
               ))}
             </div>
 
+            {ai && editable && LOCALES.some((l) => l !== loc && data.translations[l]?.title) && (
+              <div className="row" style={{ gap: 6 }}>
+                <span className="small muted">پیش‌نویس ترجمه با هوش مصنوعی از:</span>
+                {LOCALES.filter((l) => l !== loc && data.translations[l]?.title).map((l) => (
+                  <button key={l} type="button" className="btn sm" disabled={act.busy} onClick={() => translate(l)}>
+                    {LOCALE_NAME[l]}
+                  </button>
+                ))}
+              </div>
+            )}
             {!tr ? (
               <section className="card">
                 <div className="card-body stack" style={{ alignItems: "start" }}>
@@ -242,6 +264,16 @@ export default function PostEditor() {
                   </div>
                   <div className="card-body">
                     <BlockEditor blocks={tr.body} onChange={(body) => setTr({ body })} readOnly={!editable} />
+                  </div>
+                </section>
+
+                <section className="card" aria-labelledby="kw-h">
+                  <div className="card-head">
+                    <h2 id="kw-h">کلمات کلیدی فرعی</h2>
+                  </div>
+                  <div className="card-body stack">
+                    <p className="small muted">مترادف‌ها و عبارت‌های نزدیک به عبارت کلیدی اصلی (در تنظیمات سئو). در داده‌های ساختاریافته، برچسب‌های مقاله و بررسی سئو به کار می‌روند.</p>
+                    <Lines values={tr.keywords ?? []} onChange={(keywords) => setTr({ keywords })} max={80} limit={15} label="کلمه" />
                   </div>
                 </section>
 
@@ -492,6 +524,14 @@ export default function PostEditor() {
                 <label className="check">
                   <input type="checkbox" checked={data.featured} onChange={(e) => update((d) => ({ ...d, featured: e.target.checked }))} />
                   مقالهٔ ویژه
+                </label>
+                <label className="check">
+                  <input type="checkbox" checked={data.commentsOpen !== false} onChange={(e) => update((d) => ({ ...d, commentsOpen: e.target.checked }))} />
+                  دیدگاه‌ها برای این مقاله باز باشد
+                </label>
+                <label className="check">
+                  <input type="checkbox" checked={!!data.notifySubscribers} disabled={!!p.firstPublishedAt} onChange={(e) => update((d) => ({ ...d, notifySubscribers: e.target.checked }))} />
+                  با نخستین انتشار، برای مشترکان خبرنامه ایمیل شود
                 </label>
               </div>
             </fieldset>

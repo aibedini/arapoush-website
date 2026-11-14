@@ -22,6 +22,7 @@ import { backupsModule } from "./backups/routes.ts";
 import { seoModule } from "./seo/routes.ts";
 import { blogModule } from "./blog/routes.ts";
 import { blogDeliveryModule } from "./blog/delivery.ts";
+import { blogCommunityModule } from "./blog/community.ts";
 
 /** Route modules, in registration order. Each phase adds its module here. */
-export const MODULES: Module[] = [authModule, oauthModule, partnerAdminModule, partnerModule, contentModule, deliveryModule, mediaModule, auditModule, previewModule, crManageModule, openApiModule, formsModule, ticketsModule, metricsModule, renderModule, docsModule, catalogueModule, authzModule, settingsModule, backupsModule, seoModule, blogModule, blogDeliveryModule];
+export const MODULES: Module[] = [authModule, oauthModule, partnerAdminModule, partnerModule, contentModule, deliveryModule, mediaModule, auditModule, previewModule, crManageModule, openApiModule, formsModule, ticketsModule, metricsModule, renderModule, docsModule, catalogueModule, authzModule, settingsModule, backupsModule, seoModule, blogModule, blogDeliveryModule, blogCommunityModule];

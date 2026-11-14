@@ -18,6 +18,9 @@ importers:
 
   apps/opex-api:
     dependencies:
+      '@anthropic-ai/sdk':
+        specifier: ^1.8.0
+        version: 1.8.0(zod@4.6.7)
       '@arapoush/schema':
         specifier: workspace:*
         version: link:../../packages/schema
@@ -123,7 +126,7 @@ importers:
         version: 2.1.10(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       next:
         specifier: 15.5.29
-        version: 15.5.29(@babel/core@7.29.13)(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 15.5.29(@babel/core@7.29.13)(@opentelemetry/api@1.10.0)(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react:
         specifier: 19.1.0
         version: 19.1.0
@@ -148,7 +151,7 @@ importers:
         version: 10.6.5(@vitest/browser-playwright@4.1.12)(@vitest/browser@4.1.12(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))(vitest@4.1.12))(react@19.1.0)(storybook@10.6.5(@types/react@19.1.6)(react@19.1.0))(vitest@4.1.12)
       '@storybook/nextjs-vite':
         specifier: 10.6.5
-        version: 10.6.5(@babel/core@7.29.13)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(next@15.5.29(@babel/core@7.29.13)(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@10.6.5(@types/react@19.1.6)(react@19.1.0))(typescript@5.8.3)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
+        version: 10.6.5(@babel/core@7.29.13)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(next@15.5.29(@babel/core@7.29.13)(@opentelemetry/api@1.10.0)(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@10.6.5(@types/react@19.1.6)(react@19.1.0))(typescript@5.8.3)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
       '@types/node':
         specifier: 22.15.29
         version: 22.15.29
@@ -181,7 +184,7 @@ importers:
         version: 8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1)
       vitest:
         specifier: 4.1.12
-        version: 4.1.12(@types/node@22.15.29)(@vitest/browser-playwright@4.1.12)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
+        version: 4.1.12(@opentelemetry/api@1.10.0)(@types/node@22.15.29)(@vitest/browser-playwright@4.1.12)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
 
   apps/opex-renderer:
     dependencies:
@@ -215,7 +218,7 @@ importers:
         version: 14.9.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       next:
         specifier: 15.5.29
-        version: 15.5.29(@babel/core@7.29.13)(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 15.5.29(@babel/core@7.29.13)(@opentelemetry/api@1.10.0)(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       radix-ui:
         specifier: 1.8.1
         version: 1.8.1(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -243,7 +246,7 @@ importers:
         version: 10.6.5(@vitest/browser-playwright@4.1.12)(@vitest/browser@4.1.12(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))(vitest@4.1.12))(react@19.1.0)(storybook@10.6.5(@types/react@19.1.6)(react@19.1.0))(vitest@4.1.12)
       '@storybook/nextjs-vite':
         specifier: 10.6.5
-        version: 10.6.5(@babel/core@7.29.13)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(next@15.5.29(@babel/core@7.29.13)(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@10.6.5(@types/react@19.1.6)(react@19.1.0))(typescript@5.8.3)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
+        version: 10.6.5(@babel/core@7.29.13)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(next@15.5.29(@babel/core@7.29.13)(@opentelemetry/api@1.10.0)(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@10.6.5(@types/react@19.1.6)(react@19.1.0))(typescript@5.8.3)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
       '@types/node':
         specifier: 22.15.29
         version: 22.15.29
@@ -279,7 +282,7 @@ importers:
         version: 8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1)
       vitest:
         specifier: 4.1.12
-        version: 4.1.12(@types/node@22.15.29)(@vitest/browser-playwright@4.1.12)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
+        version: 4.1.12(@opentelemetry/api@1.10.0)(@types/node@22.15.29)(@vitest/browser-playwright@4.1.12)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
 
   packages/config:
     dependencies:
@@ -368,6 +371,15 @@ packages:
       react-aria-components:
         optional: true
       shiki:
+        optional: true
+
+  '@anthropic-ai/sdk@1.8.0':
+    resolution: {integrity: sha512-yDOArk2+Qpd/djEKmZjrv7JZ+pn5iBHARJ9PAdvfhGf4H5wNqTgY/2K0/yDKdQdm8G8hrNQchMlBAHpPK7yBfg==}
+    hasBin: true
+    peerDependencies:
+      zod: ^3.25.0 || ^4.0.0
+    peerDependenciesMeta:
+      zod:
         optional: true
 
   '@babel/code-frame@7.29.7':
@@ -1205,6 +1217,10 @@ packages:
   '@nolyfill/is-core-module@1.0.39':
     resolution: {integrity: sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==}
     engines: {node: '>=12.4.0'}
+
+  '@opentelemetry/api@1.10.0':
+    resolution: {integrity: sha512-lMkyes8iHrG+mk6WH7X70MdCLI2RS0FwNBY1PyQ8UemaijE2m5mv5A0Niy3HtbYTFrgkUEQjFMXmSAk2hQDuPQ==}
+    engines: {node: '>=8.0.0'}
 
   '@oxc-parser/binding-android-arm-eabi@0.127.0':
     resolution: {integrity: sha512-0LC7ye4hvqbIKxAzThzvswgHLFu2AURKzYLeSVvLdu2TBOYWQDmHnTqPLeA597BcUCxiLqLsS4CJ5uoI5WYWCQ==}
@@ -2380,6 +2396,9 @@ packages:
     resolution: {integrity: sha512-oELmoyA6ML9jDRMV3kgcMQFKxUfBU0yFVn6yTctVaLT5ygXnxH52I3TZEgV9EhXJC68/uFvE5Daj1/25c0Xa/A==}
     peerDependencies:
       selderee: ~0.12.0
+
+  '@stablelib/base64@1.0.1':
+    resolution: {integrity: sha512-1bnPQqSxSuc3Ii6MhBysoWCg58j97aUjuCSZrGSmDxNqtytIi0k8utUenAwTZN4V5mXXYGsVUI9zeBqy+jBOSQ==}
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
@@ -3699,6 +3718,9 @@ packages:
   fast-querystring@1.1.2:
     resolution: {integrity: sha512-g6KuKWmFXc0fID8WWH0jit4g0AGBoJhCkJMb1RmbsSEUNvQ+ZC8D6CUZ+GtF8nMzSPXnhiePyyqqipzNNEnHjg==}
 
+  fast-sha256@1.3.0:
+    resolution: {integrity: sha512-n11RGP/lrWEFI/bWdygLxhI+pVeo1ZYIVwvvPkW7azl/rOy+F3HYRZ2K5zeE9mmkhQppyv9sQFx0JM9UabnpPQ==}
+
   fast-uri@3.1.9:
     resolution: {integrity: sha512-hS/0Wt3Ya043oKXs0sIxrMpKQITXhMLIrVAKKXi4gozGC9v7YRWVnXIZzjNPTO02M9BdxLCWqK1yRXgNziVyJQ==}
 
@@ -4190,6 +4212,10 @@ packages:
 
   json-schema-ref-resolver@3.0.1:
     resolution: {integrity: sha512-w+HwgljXpVwZ3IidoUR1qPZxSOQ+NRQWuVe6a5pe8XbHsNZE4UAwVPUvzZagn7yBKbJtt6UJnRFYbNTRPZI45Q==}
+
+  json-schema-to-ts@3.1.1:
+    resolution: {integrity: sha512-+DWg8jCJG2TEnpy7kOm/7/AxaYoaRbjVB4LFZLySZlWn8exGs3A4OLJR966cVvU26N7X9TWxl+Jsw7dzAqKT6g==}
+    engines: {node: '>=16'}
 
   json-schema-traverse@0.4.1:
     resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
@@ -5233,6 +5259,9 @@ packages:
   stackback@0.0.2:
     resolution: {integrity: sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==}
 
+  standardwebhooks@1.1.1:
+    resolution: {integrity: sha512-bCbX9ZEyFkWPsRz7Bl3NuQUJohmwGSev/yhr7vhaGPlc4AfIrspIRa6cPTBuI1ItmrTDJ4d/S2hCsfe4+vQGnQ==}
+
   std-env@4.3.0:
     resolution: {integrity: sha512-OtU/EgQ1kIm5KwqQpBC6ZEMXrZRui11w8zgfTWp8cdO9B8OaPsbA8bTHO2P+HNo1VlUTGMVBwPhydu6poeXiag==}
 
@@ -5427,6 +5456,9 @@ packages:
   truncate-json@3.0.1:
     resolution: {integrity: sha512-QVsbr1WhGLq2F0oDyYbqtOXcf3gcnL8C9H5EX8bBwAr8ZWvWGJzukpPrDrWgJMrNtgDbo74BIjI4kJu3q2xQWw==}
     engines: {node: '>=18.18.0'}
+
+  ts-algebra@2.0.0:
+    resolution: {integrity: sha512-FPAhNPFMrkwz76P7cdjdmiShwMynZYN6SgOujD1urY4oNm80Ou9oMdmbR45LotcKOXoy7wSmHkRFE6Mxbrhefw==}
 
   ts-api-utils@2.5.0:
     resolution: {integrity: sha512-OJ/ibxhPlqrMM0UiNHJ/0CKQkoKF243/AEmplt3qpRgkW8VG7IfOS41h7V8TjITqdByHzrjcS/2si+y4lIh8NA==}
@@ -5920,6 +5952,14 @@ snapshots:
       react-dom: 19.1.0(react@19.1.0)
     optionalDependencies:
       radix-ui: 1.8.1(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+
+  '@anthropic-ai/sdk@1.8.0(zod@4.6.7)':
+    dependencies:
+      '@opentelemetry/api': 1.10.0
+      json-schema-to-ts: 3.1.1
+      standardwebhooks: 1.1.1
+    optionalDependencies:
+      zod: 4.6.7
 
   '@babel/code-frame@7.29.7':
     dependencies:
@@ -6757,6 +6797,8 @@ snapshots:
       fastq: 1.20.3
 
   '@nolyfill/is-core-module@1.0.39': {}
+
+  '@opentelemetry/api@1.10.0': {}
 
   '@oxc-parser/binding-android-arm-eabi@0.127.0':
     optional: true
@@ -8153,6 +8195,8 @@ snapshots:
       domhandler: 5.0.3
       selderee: 0.12.0
 
+  '@stablelib/base64@1.0.1': {}
+
   '@standard-schema/spec@1.1.0': {}
 
   '@storybook/addon-a11y@10.6.5(storybook@10.6.5(@types/react@19.1.6)(react@19.1.0))':
@@ -8184,7 +8228,7 @@ snapshots:
     optionalDependencies:
       '@vitest/browser': 4.1.12(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))(vitest@4.1.12)
       '@vitest/browser-playwright': 4.1.12(playwright@1.64.1)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))(vitest@4.1.12)
-      vitest: 4.1.12(@types/node@22.15.29)(@vitest/browser-playwright@4.1.12)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
+      vitest: 4.1.12(@opentelemetry/api@1.10.0)(@types/node@22.15.29)(@vitest/browser-playwright@4.1.12)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
     transitivePeerDependencies:
       - react
 
@@ -8200,18 +8244,18 @@ snapshots:
     dependencies:
       react: 19.1.0
 
-  '@storybook/nextjs-vite@10.6.5(@babel/core@7.29.13)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(next@15.5.29(@babel/core@7.29.13)(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@10.6.5(@types/react@19.1.6)(react@19.1.0))(typescript@5.8.3)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))':
+  '@storybook/nextjs-vite@10.6.5(@babel/core@7.29.13)(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(next@15.5.29(@babel/core@7.29.13)(@opentelemetry/api@1.10.0)(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@10.6.5(@types/react@19.1.6)(react@19.1.0))(typescript@5.8.3)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))':
     dependencies:
       '@storybook/builder-vite': 10.6.5(storybook@10.6.5(@types/react@19.1.6)(react@19.1.0))(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
       '@storybook/react': 10.6.5(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@10.6.5(@types/react@19.1.6)(react@19.1.0))(typescript@5.8.3)
       '@storybook/react-vite': 10.6.5(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@10.6.5(@types/react@19.1.6)(react@19.1.0))(typescript@5.8.3)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
-      next: 15.5.29(@babel/core@7.29.13)(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      next: 15.5.29(@babel/core@7.29.13)(@opentelemetry/api@1.10.0)(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
       storybook: 10.6.5(@types/react@19.1.6)(react@19.1.0)
       styled-jsx: 5.1.6(@babel/core@7.29.13)(react@19.1.0)
       vite: 8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1)
-      vite-plugin-storybook-nextjs: 10.6.5(next@15.5.29(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(storybook@10.6.5(@types/react@19.1.6)(react@19.1.0))(typescript@5.8.3)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
+      vite-plugin-storybook-nextjs: 10.6.5(next@15.5.29(@opentelemetry/api@1.10.0)(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(storybook@10.6.5(@types/react@19.1.6)(react@19.1.0))(typescript@5.8.3)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
     optionalDependencies:
       '@types/react': 19.1.6
       '@types/react-dom': 19.1.5(@types/react@19.1.6)
@@ -8658,7 +8702,7 @@ snapshots:
       '@vitest/mocker': 4.1.12(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
       playwright: 1.64.1
       tinyrainbow: 3.2.0
-      vitest: 4.1.12(@types/node@22.15.29)(@vitest/browser-playwright@4.1.12)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
+      vitest: 4.1.12(@opentelemetry/api@1.10.0)(@types/node@22.15.29)(@vitest/browser-playwright@4.1.12)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
     transitivePeerDependencies:
       - bufferutil
       - msw
@@ -8674,7 +8718,7 @@ snapshots:
       pngjs: 7.0.0
       sirv: 3.0.2
       tinyrainbow: 3.2.0
-      vitest: 4.1.12(@types/node@22.15.29)(@vitest/browser-playwright@4.1.12)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
+      vitest: 4.1.12(@opentelemetry/api@1.10.0)(@types/node@22.15.29)(@vitest/browser-playwright@4.1.12)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
       ws: 8.22.2
     transitivePeerDependencies:
       - bufferutil
@@ -9674,6 +9718,8 @@ snapshots:
     dependencies:
       fast-decode-uri-component: 1.0.1
 
+  fast-sha256@1.3.0: {}
+
   fast-uri@3.1.9: {}
 
   fast-uri@4.2.3: {}
@@ -10249,6 +10295,11 @@ snapshots:
     dependencies:
       dequal: 2.0.3
 
+  json-schema-to-ts@3.1.1:
+    dependencies:
+      '@babel/runtime': 7.29.14
+      ts-algebra: 2.0.0
+
   json-schema-traverse@0.4.1: {}
 
   json-schema-traverse@1.0.0: {}
@@ -10823,7 +10874,7 @@ snapshots:
 
   neverpanic@0.0.8: {}
 
-  next@15.5.29(@babel/core@7.29.13)(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  next@15.5.29(@babel/core@7.29.13)(@opentelemetry/api@1.10.0)(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       '@next/env': 15.5.29
       '@swc/helpers': 0.5.15
@@ -10841,6 +10892,7 @@ snapshots:
       '@next/swc-linux-x64-musl': 15.5.29
       '@next/swc-win32-arm64-msvc': 15.5.29
       '@next/swc-win32-x64-msvc': 15.5.29
+      '@opentelemetry/api': 1.10.0
       sharp: 0.35.5(@types/node@22.15.29)
     transitivePeerDependencies:
       - '@babel/core'
@@ -11676,6 +11728,11 @@ snapshots:
 
   stackback@0.0.2: {}
 
+  standardwebhooks@1.1.1:
+    dependencies:
+      '@stablelib/base64': 1.0.1
+      fast-sha256: 1.3.0
+
   std-env@4.3.0: {}
 
   stop-iteration-iterator@1.1.0:
@@ -11869,6 +11926,8 @@ snapshots:
       guess-json-indent: 3.0.1
       string-byte-length: 3.0.1
       string-byte-slice: 3.0.1
+
+  ts-algebra@2.0.0: {}
 
   ts-api-utils@2.5.0(typescript@5.8.3):
     dependencies:
@@ -12119,13 +12178,13 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.4
 
-  vite-plugin-storybook-nextjs@10.6.5(next@15.5.29(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(storybook@10.6.5(@types/react@19.1.6)(react@19.1.0))(typescript@5.8.3)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1)):
+  vite-plugin-storybook-nextjs@10.6.5(next@15.5.29(@opentelemetry/api@1.10.0)(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(storybook@10.6.5(@types/react@19.1.6)(react@19.1.0))(typescript@5.8.3)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1)):
     dependencies:
       '@next/env': 15.5.28
       '@rollup/pluginutils': 5.5.1
       magic-string: 0.30.21
       module-alias: 2.3.5
-      next: 15.5.29(@babel/core@7.29.13)(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      next: 15.5.29(@babel/core@7.29.13)(@opentelemetry/api@1.10.0)(@types/node@22.15.29)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       pathe: 2.0.3
       probe-image-size: 7.5.0
       semver: 7.8.6
@@ -12163,7 +12222,7 @@ snapshots:
       tsx: 4.23.15
       yaml: 2.9.1
 
-  vitest@4.1.12(@types/node@22.15.29)(@vitest/browser-playwright@4.1.12)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1)):
+  vitest@4.1.12(@opentelemetry/api@1.10.0)(@types/node@22.15.29)(@vitest/browser-playwright@4.1.12)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1)):
     dependencies:
       '@vitest/expect': 4.1.12
       '@vitest/mocker': 4.1.12(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))
@@ -12186,6 +12245,7 @@ snapshots:
       vite: 8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
+      '@opentelemetry/api': 1.10.0
       '@types/node': 22.15.29
       '@vitest/browser-playwright': 4.1.12(playwright@1.64.1)(vite@8.3.5(@types/node@22.15.29)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1))(vitest@4.1.12)
     transitivePeerDependencies:

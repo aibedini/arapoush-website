@@ -130,6 +130,14 @@
   flex-wrap: wrap;
   gap: 12px;
 }
+/* Phones: one button per row, so the row count never depends on text width (no shift when the web
+   font replaces the fallback). */
+@media (max-width: 559px) {
+  .heroCtas {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
 .ghost {
   --btn-bg: rgba(255, 255, 255, 0.85);
   color: var(--text);

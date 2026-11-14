@@ -241,7 +241,8 @@
   .menuIndex {
     min-width: 22px;
     font: 500 11px/1 var(--font-inter);
-    color: var(--muted);
+    /* Darker than --muted: 11px text on the cream panel needs 4.5:1 (axe). */
+    color: #5c6066;
     transition: color 0.3s ease;
   }
   .menuLabel {

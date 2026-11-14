@@ -6,7 +6,9 @@ import { useEffect, useRef, useState } from "react";
 import RollText from "@/components/ui/RollText";
 import { Highlight, HighlightItem } from "@animate-ui/react/primitives/effects/highlight";
 import { Shine } from "@animate-ui/react/primitives/effects/shine";
-import { gsap, ease, registerGsap, prefersReducedMotion } from "@/lib/animations/motion";
+// GSAP loads on the first menu open, not with the page (it stays out of every page's startup JS).
+const motion = () => import("@/lib/animations/motion");
+const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 import { locales, localeMeta, type Dictionary, type Locale } from "@/lib/i18n";
 import { homeHref } from "@/lib/site";
 import { ArrowRight, ArrowRightCircle } from "@/components/ui/icons";
@@ -31,7 +33,7 @@ export default function Header({ t, locale, path = "", paths }: Props) {
   const to = (href: string) => homeHref(locale, href, onHome);
   // A page with its own nav item (printing, about, contact) marks it; home marks "Home"; product pages mark "Products".
   // The journal link is added when the menu (OPEX content, which replaces the whole list) lacks it.
-  const navItems = t.nav.items.some((i) => i.href === "/blog") ? t.nav.items : [...t.nav.items.slice(0, -1), { label: t.nav.journal, href: "/blog" }, ...t.nav.items.slice(-1)];
+  const navItems = t.nav.items.some((i) => i.href === "/blog") || !t.nav.journal ? t.nav.items : [...t.nav.items.slice(0, -1), { label: t.nav.journal, href: "/blog" }, ...t.nav.items.slice(-1)];
   const current = onHome ? "#top" : (navItems.find((i) => path && (i.href === path || (i.href.startsWith("/") && path.startsWith(`${i.href}/`))))?.href ?? "#products");
   const panel = useRef<HTMLDivElement>(null);
   const toggle = useRef<HTMLButtonElement>(null);
@@ -67,24 +69,24 @@ export default function Header({ t, locale, path = "", paths }: Props) {
 
   // Mobile/tablet menu: staggered reveal, scroll lock, Escape + focus containment.
   useEffect(() => {
-    registerGsap();
     const el = panel.current;
     if (!el) return;
     const items = el.querySelectorAll("[data-menu-item]");
-    const reduce = prefersReducedMotion();
+    const reduce = reducedMotion();
     const html = document.documentElement;
 
     const prevOpen = wasOpen.current;
     wasOpen.current = open;
     if (open) {
       html.style.overflow = "hidden";
-      gsap.set(el, { display: "flex" });
-      if (reduce) gsap.set([el, items], { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", y: 0 });
-      else {
-        gsap.fromTo(el, { clipPath: "inset(0% 0% 100% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.6, ease: ease.inOut });
-        // opacity (not autoAlpha) so links stay focusable while they animate in
-        gsap.fromTo(items, { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.05, delay: 0.18, ease: ease.out });
-      }
+      el.style.display = "flex";
+      if (!reduce)
+        void motion().then(({ gsap, ease, registerGsap }) => {
+          registerGsap();
+          gsap.fromTo(el, { clipPath: "inset(0% 0% 100% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.6, ease: ease.inOut });
+          // opacity (not autoAlpha) so links stay focusable while they animate in
+          gsap.fromTo(items, { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.05, delay: 0.18, ease: ease.out });
+        });
       el.querySelector<HTMLElement>("a, button")?.focus();
 
       const onKey = (e: KeyboardEvent) => {
@@ -104,10 +106,15 @@ export default function Header({ t, locale, path = "", paths }: Props) {
       return () => document.removeEventListener("keydown", onKey);
     }
 
+    // First render: the panel is closed by CSS, nothing to animate (and no GSAP to load).
+    if (!prevOpen) return;
     html.style.overflow = "";
-    if (prevOpen) toggle.current?.focus();
-    if (reduce) gsap.set(el, { display: "none" });
-    else gsap.to(el, { clipPath: "inset(0% 0% 100% 0%)", duration: 0.5, ease: ease.inOut, onComplete: () => void gsap.set(el, { display: "none" }) });
+    toggle.current?.focus();
+    if (reduce) el.style.display = "none";
+    else
+      void motion().then(({ gsap, ease }) => {
+        gsap.to(el, { clipPath: "inset(0% 0% 100% 0%)", duration: 0.5, ease: ease.inOut, onComplete: () => void (el.style.display = "none") });
+      });
   }, [open]);
 
   const close = () => setOpen(false);

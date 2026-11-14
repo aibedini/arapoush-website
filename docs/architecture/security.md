@@ -62,6 +62,17 @@ Each denial is audited.
   - Images must be site paths (`/images` or scanned `/media`). Publishing checks that the media is
     clean before making it public.
   - A blog preview token names one post (`blog.post:<id>`) and cannot open other drafts.
+  - Comments and newsletter addresses are personal data:
+    - **Storage:** emails are encrypted (`INQUIRY_KEY`) with a keyed hash for lookups. Comment
+      text is plain text, rendered escaped and never as markup.
+    - **Spam limits:** a honeypot, a link limit, per-visitor rate limits (hashed IP) and moderation.
+    - **Visibility:** only `blog.comments` / `blog.newsletter` holders see the emails.
+    - **Newsletter consent:** double opt-in, and confirming or cancelling needs a button press.
+      Each mailing rotates the subscriber's token.
+    - **Site forms:** they only send visitors back to `/{locale}/blog/…` paths (no open
+      redirect).
+  - AI translation sends the post's text to Anthropic's API. It is off unless `ANTHROPIC_API_KEY`
+    is set.
 - **Account lifecycle.**
   - New accounts and admin resets get a *temporary* password. OPEX can generate it (16 characters,
     about 80 bits): it is returned once, with `Cache-Control: no-store`, and never logged or
