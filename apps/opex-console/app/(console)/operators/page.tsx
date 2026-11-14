@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { can, useAction, useApi, useMe } from "@/lib/hooks";
 import { ago, ROLE } from "@/lib/fa";
 import { Dialog, ErrorNote, Loading, PageHead } from "@/components/ui";
@@ -37,6 +37,8 @@ export default function Operators() {
   const act = useAction();
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState<Op | null>(null);
+  const [resetting, setResetting] = useState<Op | null>(null);
+  const [resetPw, setResetPw] = useState({ password: "", again: "", totp: "" });
   const [roleEdit, setRoleEdit] = useState<Partial<Role> | null>(null);
   const [form, setForm] = useState({ email: "", display_name: "", role: "operator", password: "" });
   const roleKeys = roles.data?.map((r) => r.key) ?? ["super_admin", "operator", "auditor", "viewer"];
@@ -164,6 +166,11 @@ export default function Operators() {
                                   بازنشانی دومرحله‌ای
                                 </button>
                               )}
+                              {can(me, "users.update") && !self && (
+                                <button type="button" className="btn sm warn" onClick={() => { setResetting(o); setResetPw({ password: "", again: "", totp: "" }); }}>
+                                  ریست رمز
+                                </button>
+                              )}
                             </div>
                           </td>
                         </tr>
@@ -268,6 +275,42 @@ export default function Operators() {
           </div>
         </form>
       </Dialog>
+
+      {resetting && (
+        <Dialog open onClose={() => setResetting(null)} title={`ریست رمز: ${resetting.display_name}`}>
+          <form
+            className="stack"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (resetPw.password !== resetPw.again) return act.setError(new ApiError(0, "MISMATCH", "تکرار رمز یکسان نیست."));
+              act.run(async () => {
+                await api("/v1/manage/auth/step-up", { body: { code: resetPw.totp } });
+                await api(`/v1/manage/operators/${resetting.id}/reset-password`, { body: { password: resetPw.password } });
+                setResetting(null);
+                list.reload();
+              }, `رمز ${resetting.display_name} بازنشانی شد. نشست‌هایش پایان یافت.`);
+            }}
+          >
+            <label className="f">
+              <span>رمز تازه (حداقل ۱۲ نویسه)</span>
+              <input type="password" dir="ltr" autoComplete="new-password" required minLength={12} value={resetPw.password} onChange={(e) => setResetPw({ ...resetPw, password: e.target.value })} />
+            </label>
+            <label className="f">
+              <span>تکرار رمز تازه</span>
+              <input type="password" dir="ltr" autoComplete="new-password" required minLength={12} value={resetPw.again} onChange={(e) => setResetPw({ ...resetPw, again: e.target.value })} />
+            </label>
+            <label className="f">
+              <span>کد احراز هویت (Google Authenticator)</span>
+              <input type="text" dir="ltr" inputMode="numeric" pattern="\d{6}" maxLength={6} autoComplete="one-time-code" required placeholder="۶ رقم" value={resetPw.totp} onChange={(e) => setResetPw({ ...resetPw, totp: e.target.value.replace(/\D/g, "").slice(0, 6) })} />
+            </label>
+            <ErrorNote error={act.error} />
+            <div className="row">
+              <button className="btn primary" disabled={act.busy}>بازنشانی</button>
+              <button type="button" className="btn" onClick={() => setResetting(null)}>انصراف</button>
+            </div>
+          </form>
+        </Dialog>
+      )}
 
       {editing && cat.data && (
         <UserPermissions

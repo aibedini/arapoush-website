@@ -14,7 +14,7 @@ export default function Account() {
   const [all, setAll] = useState(false);
   const sessions = useApi<Session[]>(`/v1/manage/sessions${all ? "?all=1" : ""}`);
   const act = useAction();
-  const [pw, setPw] = useState({ current: "", next: "", again: "" });
+  const [pw, setPw] = useState({ current: "", next: "", again: "", totp: "" });
 
   const revoke = (s: Session) =>
     act.run(async () => {
@@ -25,8 +25,10 @@ export default function Account() {
     e.preventDefault();
     if (pw.next !== pw.again) return act.setError(new ApiError(0, "MISMATCH", "تکرار رمز تازه یکسان نیست."));
     act.run(async () => {
+      // Step-up first (TOTP), then change password
+      await api("/v1/manage/auth/step-up", { body: { code: pw.totp } });
       await api("/v1/manage/auth/password", { body: { current: pw.current, next: pw.next } });
-      setPw({ current: "", next: "", again: "" });
+      setPw({ current: "", next: "", again: "", totp: "" });
       sessions.reload();
     }, "رمز عبور تغییر کرد و نشست‌های دیگر شما پایان یافت.");
   };
@@ -116,10 +118,13 @@ export default function Account() {
                 <span>تکرار رمز تازه</span>
                 <input type="password" dir="ltr" autoComplete="new-password" required minLength={12} value={pw.again} onChange={(e) => setPw({ ...pw, again: e.target.value })} />
               </label>
+              <label className="f">
+                <span>کد احراز هویت (Google Authenticator)</span>
+                <input type="text" dir="ltr" inputMode="numeric" pattern="\d{6}" maxLength={6} autoComplete="one-time-code" required placeholder="۶ رقم" value={pw.totp} onChange={(e) => setPw({ ...pw, totp: e.target.value.replace(/\D/g, "").slice(0, 6) })} />
+              </label>
               <button className="btn primary" disabled={act.busy}>
                 تغییر رمز
               </button>
-              <p className="small muted">برای این کار کد برنامهٔ احراز هویت هم خواسته می‌شود.</p>
             </form>
           </section>
         </div>

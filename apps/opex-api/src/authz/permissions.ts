@@ -110,6 +110,7 @@ export const ROUTE_PERMISSIONS: Record<string, Permission> = {
   "GET /v1/manage/operators/:id": "users.read",
   "POST /v1/manage/operators": "users.create",
   "PATCH /v1/manage/operators/:id": "users.update",
+  "POST /v1/manage/operators/:id/reset-password": "users.update",
   "PUT /v1/manage/operators/:id/permissions": "users.permissions",
   "GET /v1/manage/roles": "roles.read",
   "POST /v1/manage/roles": "roles.manage",

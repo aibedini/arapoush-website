@@ -255,6 +255,22 @@ export async function authModule(app: FastifyInstance, deps: Deps) {
     return { id };
   });
 
+  app.post("/v1/manage/operators/:id/reset-password", { preHandler: [requireOperator(deps, "super_admin"), requireStepUp(deps)] }, async (req) => {
+    const { id } = req.params as { id: string };
+    const body = AUTH.resetOperatorPassword.body!.parse(req.body);
+    const [op] = await db.q<{ email: string }>(`SELECT email FROM principals WHERE id = $1 AND tenant_id = $2 AND kind = 'operator'`, [id, tenant]);
+    if (!op) throw notFound("Operator");
+    const policy = await checkPasswordPolicy(body.password, { email: op.email, online: config.isProd });
+    if (policy) throw badRequest("WEAK_PASSWORD", policy);
+    const h = await hashPassword(body.password);
+    await db.tx(async (q) => {
+      await q(`INSERT INTO credentials (principal_id, kind, secret, confirmed) VALUES ($1,'password',$2,true) ON CONFLICT (principal_id, kind) DO UPDATE SET secret = EXCLUDED.secret, created_at = clock_timestamp()`, [id, h]);
+      await q(`UPDATE sessions SET revoked_at = clock_timestamp(), revoke_reason = 'password_reset_by_admin' WHERE principal_id = $1 AND revoked_at IS NULL`, [id]);
+      await audit(q, tenant, { action: "operator.password_reset", actor: actorOf(req), request: req.info, resource: { type: "principal", id, email: op.email } });
+    });
+    return { ok: true };
+  });
+
   app.patch("/v1/manage/operators/:id", { preHandler: [requireOperator(deps, "super_admin"), requireStepUp(deps)] }, async (req) => {
     const { id } = req.params as { id: string };
     const body = OperatorPatch.parse(req.body);

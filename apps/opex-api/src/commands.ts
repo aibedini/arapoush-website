@@ -15,6 +15,23 @@ const b64 = (n: number) => randomBytes(n).toString("base64url");
 export const COMMANDS: Record<string, (deps: Deps, args: string[]) => Promise<void>> = {
   seed: async (deps) => console.log(`imported: ${(await seedContent(deps)).join(", ") || "nothing (all entries exist)"}`),
 
+  /** reset-password <email> — the new password is read from OPEX_NEW_PASSWORD. */
+  "reset-password": async (deps, [email]) => {
+    const pw = process.env.OPEX_NEW_PASSWORD;
+    if (!email || !pw) throw new Error("Usage: OPEX_NEW_PASSWORD=… cli reset-password <email>");
+    const { hashPassword, checkPasswordPolicy } = await import("./auth/password.ts");
+    const policy = await checkPasswordPolicy(pw, { email });
+    if (policy) throw new Error(`Password policy: ${policy}`);
+    const h = await hashPassword(pw);
+    const [p] = await deps.db.q<{ id: string }>(`SELECT id FROM principals WHERE tenant_id = $1 AND email = $2 AND kind = 'operator'`, [deps.config.TENANT, email.toLowerCase()]);
+    if (!p) throw new Error(`No operator with email ${email}`);
+    await deps.db.tx(async (q) => {
+      await q(`INSERT INTO credentials (principal_id, kind, secret, confirmed) VALUES ($1,'password',$2,true) ON CONFLICT (principal_id, kind) DO UPDATE SET secret = EXCLUDED.secret, created_at = clock_timestamp()`, [p.id, h]);
+      await q(`UPDATE sessions SET revoked_at = clock_timestamp(), revoke_reason = 'password_reset_by_cli' WHERE principal_id = $1 AND revoked_at IS NULL`, [p.id]);
+    });
+    console.log(`password reset for ${email}; all their sessions ended`);
+  },
+
   /** create-operator <email> <display name> <role> — the password is read from OPEX_NEW_PASSWORD. */
   "create-operator": async (deps, [email, name, role = "super_admin"]) => {
     const pw = process.env.OPEX_NEW_PASSWORD;
