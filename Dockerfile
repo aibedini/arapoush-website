@@ -25,7 +25,9 @@ RUN pnpm --filter @arapoush/web build
 
 FROM node:22-alpine
 WORKDIR /app
-ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 HOSTNAME=0.0.0.0 PORT=3000
+# The visual editor's bridge reads the console origin per request (edit mode is dynamic).
+ARG OPEX_CONSOLE_ORIGIN=
+ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 HOSTNAME=0.0.0.0 PORT=3000 OPEX_CONSOLE_ORIGIN=$OPEX_CONSOLE_ORIGIN
 RUN addgroup -S app && adduser -S app -G app
 # The standalone bundle keeps the monorepo shape: the server sits at apps/web/server.js.
 COPY --from=build --chown=app:app /repo/apps/web/.next/standalone ./

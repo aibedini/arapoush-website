@@ -44,6 +44,8 @@ services:
       OPEX_DELIVERY_URL: http://opex-api:4000
       OPEX_DELIVERY_TOKEN: ${DELIVERY_TOKEN}
       OPEX_WEBHOOK_SECRET: ${SITE_WEBHOOK_SECRET}
+      # Read at request time in edit mode: without it the visual editor's in-place bridge never loads.
+      OPEX_CONSOLE_ORIGIN: https://${CONSOLE_DOMAIN}
     # Not read-only: Next writes regenerated pages (after a publish) next to the build.
     networks: [internal]
 
