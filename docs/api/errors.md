@@ -34,7 +34,7 @@ Generated from the route contracts by `pnpm docs:api`; do not edit.
 | `MEDIA_REJECTED` | 400 | Type not allowed, active content, unreadable, malware, or the scanner is down (`detail` says which). / Type not allowed, active content, unreadable file or malware (`detail` says which). / Not a PNG/WebP or unreadable. | `POST /v1/manage/media`<br>`POST /v1/partner/media`<br>`POST /v1/render/jobs/:id/assets` |
 | `MFA_ENROLLED` | 409 | An authenticator is already set up. | `POST /v1/manage/auth/mfa/enroll` |
 | `MOUNTING_REQUIRED` | 400 | Set the mounting first: a model is never placed by guess. | `POST /v1/manage/catalogue/tube/models/:id/approve` |
-| `NETWORK_DENIED` | 403 | The caller's network is not in CONSOLE_ALLOWED_CIDRS. / The call does not come from the partner's allowed network (or mTLS certificate, when configured). | 132 routes |
+| `NETWORK_DENIED` | 403 | The caller's network is not in CONSOLE_ALLOWED_CIDRS. / The call does not come from the partner's allowed network (or mTLS certificate, when configured). | 133 routes |
 | `NO_CHART` | 400 | None of the files could be read as a size chart (`warnings` says why). | `POST /v1/manage/catalogue/tube/import` |
 | `NO_DRAFT` | 400 | The entry has no draft. | `POST /v1/manage/render` |
 | `NO_EMAIL` | 400 | The ticket has no customer email address. | `POST /v1/manage/tickets/:ref/replies` |
@@ -47,8 +47,8 @@ Generated from the route contracts by `pnpm docs:api`; do not edit.
 | `PATH_NOT_FOUND` | 400 | A path does not exist in the draft. / An item path does not exist in the draft. | `PATCH /v1/manage/entries/:type`<br>`POST /v1/partner/change-requests` |
 | `POLICY_TOO_BROAD` | 400 | Auto-approve policies must name the content types they cover. | `POST /v1/manage/policies`<br>`PUT /v1/manage/policies/:id` |
 | `PRIVATE_ADDRESS` | 400 | The URL resolves to an internal address (production). | `PUT /v1/manage/partners/:id/webhook` |
-| `RATE_LIMITED` | 429 | More than 600 requests per minute from one IP. / More than 10 per minute per IP. / More than 6 per hour. | 158 routes |
-| `ROLE_DENIED` | 403 | The caller lacks the `audit.read` permission (role + own additions − removals). / The caller lacks the `audit.export` permission (role + own additions − removals). / The caller lacks the `dashboard.read` permission (role + own additions − removals). | 108 routes |
+| `RATE_LIMITED` | 429 | More than 600 requests per minute from one IP. / More than 10 per minute per IP. / More than 6 per hour. | 159 routes |
+| `ROLE_DENIED` | 403 | The caller lacks the `audit.read` permission (role + own additions − removals). / The caller lacks the `audit.export` permission (role + own additions − removals). / The caller lacks the `dashboard.read` permission (role + own additions − removals). | 109 routes |
 | `ROLE_EXISTS` | 409 | The key is taken (or is a built-in role). | `POST /v1/manage/roles` |
 | `ROLE_IN_USE` | 409 | Operators still have this role. | `DELETE /v1/manage/roles/:key` |
 | `SCANNER_UNAVAILABLE` | 503 | A file could not be virus-scanned; try again. | `POST /v1/delivery/forms/:slug` |
@@ -61,7 +61,7 @@ Generated from the route contracts by `pnpm docs:api`; do not edit.
 | `SYSTEM_FORM` | 403 | Built-in forms (quote, contact) cannot be archived. | `POST /v1/manage/forms/:id/status` |
 | `TOO_LARGE` | 400 | Larger than 25 MB. | `POST /v1/manage/media` |
 | `TOO_MANY_INQUIRIES` | 429 | This visitor IP sent more than the form's limit in 10 minutes. | `POST /v1/delivery/forms/:slug` |
-| `UNAUTHENTICATED` | 401 | No valid console session. / Wrong email or password, account locked or not active (same message for all). / Challenge expired; sign in again. | 146 routes |
+| `UNAUTHENTICATED` | 401 | No valid console session. / Wrong email or password, account locked or not active (same message for all). / Challenge expired; sign in again. | 147 routes |
 | `UNKNOWN_ASSET` | 400, 403 | A value names an asset that is not yours and not public. / An asset was not uploaded by the renderer. | `POST /v1/partner/change-requests`<br>`POST /v1/render/jobs/:id/complete` |
 | `UNKNOWN_FORM` | 400 | No published form with this slug. | `POST /v1/delivery/forms/:slug` |
 | `UNKNOWN_ITEM` | 400 | A decision names an item not in this request. / No such set item. | `POST /v1/manage/change-requests/:id/amend`<br>`POST /v1/manage/change-requests/:id/approve` |
@@ -69,7 +69,7 @@ Generated from the route contracts by `pnpm docs:api`; do not edit.
 | `UNKNOWN_PERMISSION` | 400 | A permission key is not in the catalogue. | `POST /v1/manage/roles`<br>`PUT /v1/manage/operators/:id/permissions`<br>`PUT /v1/manage/roles/:key` |
 | `UNKNOWN_ROLE` | 400 | No such role. | `PATCH /v1/manage/operators/:id`<br>`POST /v1/manage/operators` |
 | `UNKNOWN_TEAM` | 400 | No such team. | `PATCH /v1/manage/tickets/:ref`<br>`POST /v1/manage/tickets/:ref/refer`<br>`POST /v1/manage/tickets/bulk` |
-| `VALIDATION_FAILED` | 400 | The request does not match the schema; `issues` lists each field. / The result does not match the catalogue schema (`issues`). / `shape` and `diameter` must come together, and the shape must offer that diameter. | 112 routes |
+| `VALIDATION_FAILED` | 400 | The request does not match the schema; `issues` lists each field. / The result does not match the catalogue schema (`issues`). / `shape` and `diameter` must come together, and the shape must offer that diameter. | 113 routes |
 | `VALUE_REQUIRED` | 400 | A set or insert item has no value. | `POST /v1/partner/change-requests` |
 | `WEAK_PASSWORD` | 400 | Shorter than 12 or longer than 128 characters, contains your email name, or (in production) appears in known breaches; `detail` says which. / The temporary password fails the policy. / The password fails the policy. | `POST /v1/manage/auth/password`<br>`POST /v1/manage/operators`<br>`POST /v1/manage/partners/:id/users` |
 | `WRONG_ENTRY` | 400 | The revision belongs to another entry. | `POST /v1/manage/entries/:type/publish`<br>`POST /v1/manage/entries/:type/rollback` |

@@ -42,7 +42,60 @@ const Status = z.object({
   env: z.object({ siteUrl: z.string(), publicUrl: z.string(), consoleAllowlist: z.array(z.string()), turnstile: z.boolean(), mail: z.boolean(), clamav: z.boolean() }),
 });
 
+const Level = z.enum(["ok", "warn", "fail"]);
+const Overview = z.object({
+  generatedAt: Iso,
+  score: z.number().int().min(0).max(100).describe("Share of best-practice checks passed (warnings count half)."),
+  services: z.array(z.object({ id: z.enum(["database", "website", "scanner", "mail", "renderer"]), ok: z.boolean(), latencyMs: z.number().nullable(), detail: z.string().nullable() })),
+  host: z.object({
+    memTotalBytes: z.number(),
+    memAvailableBytes: z.number(),
+    swapTotalBytes: z.number(),
+    swapFreeBytes: z.number(),
+    cpus: z.number(),
+    load: z.array(z.number()),
+    uptimeSeconds: z.number(),
+    apiRssBytes: z.number(),
+    apiUptimeSeconds: z.number(),
+    node: z.string(),
+  }),
+  disks: z.array(z.object({ id: z.string(), path: z.string(), totalBytes: z.number(), freeBytes: z.number() })),
+  storage: z.object({ databaseBytes: z.number(), mediaBytes: z.number(), mediaFiles: z.number(), backupsBytes: z.number(), backupFiles: z.number(), auditEvents: z.number() }),
+  activity: z.object({
+    entries: z.number(),
+    published: z.number(),
+    drafts: z.number(),
+    assets: z.number(),
+    assetBytes: z.number(),
+    ticketsOpen: z.number(),
+    ticketsWeek: z.number(),
+    operators: z.number(),
+    lockedOperators: z.number(),
+    lastBackupAt: Iso.nullable(),
+    lastBackupBytes: z.number().nullable(),
+    lastSeoAt: Iso.nullable(),
+    lastSeoScore: z.number().nullable(),
+    lastRenderAt: Iso.nullable(),
+  }),
+  ssl: Status.shape.ssl,
+  checks: z.array(z.object({ id: z.string(), area: z.enum(["security", "reliability", "performance", "seo", "operations"]), level: Level, value: z.string().nullable() })),
+});
+
 export const SETTINGS = {
+  overview: route({
+    id: "getSystemOverview",
+    method: "GET",
+    path: "/v1/manage/system/overview",
+    audience: "manage",
+    tags,
+    summary: "System overview: service health, memory, disk, storage, queues and best-practice checks",
+    description: "Computed on request and cached for 20 seconds (`fresh=1` skips the cache). Per-container memory is not visible to the API (it has no Docker access by design); `sudo arapoush status` on the server shows it.",
+    auth: "session",
+    role: "viewer",
+    source: S,
+    query: z.object({ fresh: z.enum(["1"]).optional() }),
+    responses: { 200: { description: "The overview.", schema: Overview } },
+  }),
   get: route({
     id: "getSettings",
     method: "GET",

@@ -210,6 +210,7 @@ export const ROUTE_PERMISSIONS: Record<string, Permission> = {
   "PATCH /v1/manage/partner-users/:uid": "partners.manage",
   // Settings, SEO, backups
   "GET /v1/manage/settings": "settings.read",
+  "GET /v1/manage/system/overview": "settings.read",
   "PUT /v1/manage/settings/:section": "settings.write",
   "GET /v1/manage/seo/reports": "seo.read",
   "GET /v1/manage/seo/reports/:id": "seo.read",

@@ -80,6 +80,25 @@ test("settings are validated, audited and travel with the content bundle (S3)", 
   }
 });
 
+test("system overview: services, storage and best-practice checks; read permission required", async () => {
+  const t = await testApp();
+  try {
+    const admin = await signIn(t.app, t);
+    const r = await t.app.inject({ method: "GET", url: "/v1/manage/system/overview?fresh=1", headers: as(admin) });
+    assert.equal(r.statusCode, 200, r.body);
+    const o = r.json();
+    assert.ok(o.score >= 0 && o.score <= 100);
+    assert.equal(o.services.find((s: { id: string }) => s.id === "database").ok, true);
+    assert.ok(o.host.memTotalBytes > 0);
+    assert.ok(o.checks.length > 10);
+    for (const c of o.checks) assert.ok(["ok", "warn", "fail"].includes(c.level), c.id);
+    // Without a session: refused.
+    assert.equal((await t.app.inject({ method: "GET", url: "/v1/manage/system/overview" })).statusCode, 401);
+  } finally {
+    await t.close();
+  }
+});
+
 test("backups: encrypted archive, restore with a safety copy, secrets masked (S4)", async () => {
   const t = await testApp();
   try {

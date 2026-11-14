@@ -6,6 +6,7 @@ import { api } from "@/lib/api";
 import { can, useAction, useApi, useMe } from "@/lib/hooks";
 import { ago } from "@/lib/fa";
 import { ErrorNote, Loading, PageHead } from "@/components/ui";
+import SystemOverview, { type Overview } from "@/components/SystemOverview";
 
 type Analytics = { ga4: string | null; gtm: string | null; clarity: string | null; yandex: string | null; matomo: { url: string; siteId: string } | null; consent: boolean; verification: { google: string | null; bing: string | null; yandex: string | null } };
 type Seo = { indexing: boolean; schedule: "off" | "daily" | "weekly"; afterPublish: boolean; minScore: number; pages: string[] };
@@ -21,8 +22,9 @@ type Settings = {
     env: { siteUrl: string; publicUrl: string; consoleAllowlist: string[]; turnstile: boolean; mail: boolean; clamav: boolean };
   };
 };
-type Tab = "company" | "analytics" | "seo" | "security";
+type Tab = "overview" | "company" | "analytics" | "seo" | "security";
 const TABS: [Tab, string][] = [
+  ["overview", "نمای کلی و سلامت"],
   ["company", "اطلاعات شرکت و فوتر"],
   ["analytics", "آنالیتیکس و تأیید مالکیت"],
   ["seo", "سئو و ایندکس"],
@@ -35,7 +37,12 @@ export default function SettingsPage() {
   const me = useMe();
   const s = useApi<Settings>("/v1/manage/settings");
   const act = useAction();
-  const [tab, setTab] = useState<Tab>("company");
+  const [tab, setTab] = useState<Tab>("overview");
+  // Links from the overview's checks open a tab directly (/settings?tab=seo).
+  useEffect(() => {
+    const t = new URLSearchParams(location.search).get("tab");
+    if (t && TABS.some(([k]) => k === t)) setTab(t as Tab);
+  }, []);
   const [a, setA] = useState<Analytics | null>(null);
   const [seo, setSeo] = useState<Seo | null>(null);
   const [sec, setSec] = useState<Security | null>(null);
@@ -69,7 +76,9 @@ export default function SettingsPage() {
             {act.done}
           </div>
         )}
-        {!s.data || !a || !seo || !sec ? (
+        {tab === "overview" ? (
+          <OverviewTab onTab={setTab} />
+        ) : !s.data || !a || !seo || !sec ? (
           <Loading />
         ) : tab === "company" ? (
           <section className="card">
@@ -251,6 +260,34 @@ export default function SettingsPage() {
           </>
         )}
       </div>
+    </>
+  );
+}
+
+const OVERVIEW = "/v1/manage/system/overview";
+
+/** Live health: refreshes every minute while the tab is visible; "check again" skips the cache. */
+function OverviewTab({ onTab }: { onTab: (t: Tab) => void }) {
+  const [path, setPath] = useState(OVERVIEW);
+  const o = useApi<Overview>(path);
+  const { reload } = o;
+  useEffect(() => {
+    const id = setInterval(() => document.visibilityState === "visible" && reload(), 60_000);
+    return () => clearInterval(id);
+  }, [reload]);
+  if (!o.data) return o.error ? <ErrorNote error={o.error} /> : <Loading rows={6} />;
+  return (
+    <>
+      <ErrorNote error={o.error} />
+      <SystemOverview
+        data={o.data}
+        busy={o.loading}
+        onRefresh={() => {
+          setPath(`${OVERVIEW}?fresh=1`);
+          reload();
+        }}
+        onSettingsTab={(t) => onTab(t as Tab)}
+      />
     </>
   );
 }

@@ -5186,6 +5186,33 @@
             },
             "description": "The website is told to refresh (signed webhook), so analytics and indexing apply within seconds.\n\nSource: settings/routes.ts"
           }
+        },
+        {
+          "name": "System overview: service health, memory, disk, storage, queues and best-practice checks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/system/overview",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "system",
+                "overview"
+              ],
+              "query": [
+                {
+                  "key": "fresh",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Computed on request and cached for 20 seconds (`fresh=1` skips the cache). Per-container memory is not visible to the API (it has no Docker access by design); `sudo arapoush status` on the server shows it.\n\nSource: settings/routes.ts"
+          }
         }
       ]
     },

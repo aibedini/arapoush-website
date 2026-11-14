@@ -18189,6 +18189,476 @@
         "x-audience": "manage"
       }
     },
+    "/v1/manage/system/overview": {
+      "get": {
+        "operationId": "getSystemOverview",
+        "summary": "System overview: service health, memory, disk, storage, queues and best-practice checks",
+        "description": "Computed on request and cached for 20 seconds (`fresh=1` skips the cache). Per-container memory is not visible to the API (it has no Docker access by design); `sudo arapoush status` on the server shows it.\n\n**Permission:** `settings.read`; built-in roles with it by default: super_admin, operator, auditor, viewer.\n\n**Source:** `apps/opex-api/src/settings/routes.ts`",
+        "tags": [
+          "Settings"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "fresh",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "1"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The overview.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "generatedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                      "description": "ISO 8601 timestamp"
+                    },
+                    "score": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Share of best-practice checks passed (warnings count half)."
+                    },
+                    "services": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "enum": [
+                              "database",
+                              "website",
+                              "scanner",
+                              "mail",
+                              "renderer"
+                            ]
+                          },
+                          "ok": {
+                            "type": "boolean"
+                          },
+                          "latencyMs": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "detail": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "ok",
+                          "latencyMs",
+                          "detail"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "host": {
+                      "type": "object",
+                      "properties": {
+                        "memTotalBytes": {
+                          "type": "number"
+                        },
+                        "memAvailableBytes": {
+                          "type": "number"
+                        },
+                        "swapTotalBytes": {
+                          "type": "number"
+                        },
+                        "swapFreeBytes": {
+                          "type": "number"
+                        },
+                        "cpus": {
+                          "type": "number"
+                        },
+                        "load": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          }
+                        },
+                        "uptimeSeconds": {
+                          "type": "number"
+                        },
+                        "apiRssBytes": {
+                          "type": "number"
+                        },
+                        "apiUptimeSeconds": {
+                          "type": "number"
+                        },
+                        "node": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "memTotalBytes",
+                        "memAvailableBytes",
+                        "swapTotalBytes",
+                        "swapFreeBytes",
+                        "cpus",
+                        "load",
+                        "uptimeSeconds",
+                        "apiRssBytes",
+                        "apiUptimeSeconds",
+                        "node"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "disks": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "path": {
+                            "type": "string"
+                          },
+                          "totalBytes": {
+                            "type": "number"
+                          },
+                          "freeBytes": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "path",
+                          "totalBytes",
+                          "freeBytes"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "storage": {
+                      "type": "object",
+                      "properties": {
+                        "databaseBytes": {
+                          "type": "number"
+                        },
+                        "mediaBytes": {
+                          "type": "number"
+                        },
+                        "mediaFiles": {
+                          "type": "number"
+                        },
+                        "backupsBytes": {
+                          "type": "number"
+                        },
+                        "backupFiles": {
+                          "type": "number"
+                        },
+                        "auditEvents": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "databaseBytes",
+                        "mediaBytes",
+                        "mediaFiles",
+                        "backupsBytes",
+                        "backupFiles",
+                        "auditEvents"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "activity": {
+                      "type": "object",
+                      "properties": {
+                        "entries": {
+                          "type": "number"
+                        },
+                        "published": {
+                          "type": "number"
+                        },
+                        "drafts": {
+                          "type": "number"
+                        },
+                        "assets": {
+                          "type": "number"
+                        },
+                        "assetBytes": {
+                          "type": "number"
+                        },
+                        "ticketsOpen": {
+                          "type": "number"
+                        },
+                        "ticketsWeek": {
+                          "type": "number"
+                        },
+                        "operators": {
+                          "type": "number"
+                        },
+                        "lockedOperators": {
+                          "type": "number"
+                        },
+                        "lastBackupAt": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "format": "date-time",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                              "description": "ISO 8601 timestamp"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "lastBackupBytes": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "lastSeoAt": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "format": "date-time",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                              "description": "ISO 8601 timestamp"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "lastSeoScore": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "lastRenderAt": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "format": "date-time",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                              "description": "ISO 8601 timestamp"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "entries",
+                        "published",
+                        "drafts",
+                        "assets",
+                        "assetBytes",
+                        "ticketsOpen",
+                        "ticketsWeek",
+                        "operators",
+                        "lockedOperators",
+                        "lastBackupAt",
+                        "lastBackupBytes",
+                        "lastSeoAt",
+                        "lastSeoScore",
+                        "lastRenderAt"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "ssl": {
+                      "type": "object",
+                      "properties": {
+                        "https": {
+                          "type": "boolean"
+                        },
+                        "validTo": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "format": "date-time",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+                              "description": "ISO 8601 timestamp"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "issuer": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "daysLeft": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "error": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "https",
+                        "validTo",
+                        "issuer",
+                        "daysLeft",
+                        "error"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "checks": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "area": {
+                            "type": "string",
+                            "enum": [
+                              "security",
+                              "reliability",
+                              "performance",
+                              "seo",
+                              "operations"
+                            ]
+                          },
+                          "level": {
+                            "type": "string",
+                            "enum": [
+                              "ok",
+                              "warn",
+                              "fail"
+                            ]
+                          },
+                          "value": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "area",
+                          "level",
+                          "value"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "generatedAt",
+                    "score",
+                    "services",
+                    "host",
+                    "disks",
+                    "storage",
+                    "activity",
+                    "ssl",
+                    "checks"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: No valid console session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `settings.read` permission (role + own additions − removals).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NETWORK_DENIED",
+                  "status": 403,
+                  "code": "NETWORK_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "manage"
+      }
+    },
     "/v1/manage/teams": {
       "get": {
         "operationId": "listTeams",

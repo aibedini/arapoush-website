@@ -6,6 +6,7 @@ import { actorOf } from "../auth/principal.ts";
 import { enqueueWebhook } from "../webhooks/outbox.ts";
 import { SECTIONS, SETTINGS } from "./contract.ts";
 import { crawlBase, headerStatus, loadSettings, sslStatus } from "./service.ts";
+import { systemOverview } from "./overview.ts";
 
 /** S3: site settings (analytics, verification, indexing, security contact) and live SSL/header status. */
 export async function settingsModule(app: FastifyInstance, deps: Deps) {
@@ -24,6 +25,12 @@ export async function settingsModule(app: FastifyInstance, deps: Deps) {
         env: { siteUrl: config.SITE_URL, publicUrl: config.PUBLIC_URL, consoleAllowlist: config.consoleCidrs, turnstile: !!config.TURNSTILE_SECRET, mail: !!config.SMTP_URL, clamav: !!config.CLAMAV },
       },
     };
+  });
+
+  // Overview: service health, memory, disk, storage per area, queues and best-practice checks.
+  app.get("/v1/manage/system/overview", { preHandler: requireOperator(deps), config: { rateLimit: { max: 30, timeWindow: "1 minute" } } }, async (req) => {
+    const { fresh } = SETTINGS.overview.query.parse(req.query);
+    return systemOverview(deps, fresh === "1");
   });
 
   app.put("/v1/manage/settings/:section", { preHandler: [requireOperator(deps, "super_admin"), requireStepUp(deps)] }, async (req) => {
