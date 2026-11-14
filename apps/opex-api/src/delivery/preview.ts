@@ -18,9 +18,11 @@ import { loadSettings, publicSettings } from "../settings/service.ts";
 
 /** Website page that shows each content type (first locale; the editor can switch language there). */
 export function pageFor(type: string, locale = "fa") {
+  if (type.startsWith("blog.post:")) return `/${locale}/blog/preview/${type.slice("blog.post:".length)}`;
   if (type === "page.printing") return `/${locale}/printing`;
   if (type === "page.about") return `/${locale}/about`;
   if (type === "page.applications") return `/${locale}/applications`;
+  if (type === "page.blog") return `/${locale}/blog`;
   if (type.startsWith("product.tube.")) return `/${locale}/products/multi-layer-tube`;
   if (type.startsWith("product.effervescent.")) return `/${locale}/products/effervescent-tube`;
   return `/${locale}`;
@@ -48,6 +50,16 @@ export async function previewLink(config: Config, o: { sub: string; type: string
   if (o.query) url.searchParams.set("q", o.query);
   if (o.partner) url.searchParams.set("partner", "1");
   return { url: url.toString(), jti, expiresIn: 1800 };
+}
+
+/** The payload of a valid preview token, or null (expired, forged, or not a preview token). */
+export async function readPreviewToken(config: Config, raw: string): Promise<{ type?: unknown; sub?: string; partner?: unknown } | null> {
+  try {
+    const { payload } = await jwtVerify(raw, keyOf(config), { audience: "opex-preview", issuer: config.PUBLIC_URL, algorithms: ["HS256"] });
+    return payload.scope === "preview" ? payload : null;
+  } catch {
+    return null;
+  }
 }
 
 /**

@@ -608,3 +608,23 @@ details.group:not([open]) > summary::before { transform: rotate(135deg); }
 .cm-drop:has(:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
 .cm-queue td { vertical-align: middle; }
 .cm-queue select { min-block-size: 32px; padding: 3px 8px; }
+
+/* ── Blog editor ── */
+.blog-editor { display: grid; gap: 16px; align-items: start; }
+@media (min-width: 1200px) { .blog-editor { grid-template-columns: minmax(0, 1fr) 380px; } .blog-editor > aside { position: sticky; inset-block-start: 12px; max-block-size: calc(100vh - 24px); overflow: auto; } }
+.be { display: grid; gap: 10px; }
+.be-block { display: grid; gap: 6px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.be-block:focus-within { border-color: var(--accent); }
+.be-block[data-kind="h"] { border-inline-start: 3px solid var(--accent); }
+.be-tools { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.be-title { font-size: 1.25rem; font-weight: 700; }
+.serp { padding: 12px 14px; border-radius: 8px; background: #fff; color: #202124; border: 1px solid var(--line); font-family: Arial, Tahoma, sans-serif; }
+.serp-url { font-size: 0.78rem; color: #4d5156; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.serp-title { font-size: 1.1rem; color: #1a0dab; line-height: 1.4; margin-block: 2px; }
+.serp-desc { font-size: 0.85rem; color: #4d5156; line-height: 1.6; }
+.checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 0.85rem; }
+.checks li { display: grid; grid-template-columns: 20px 1fr; gap: 6px; align-items: start; }
+.checks li > span:first-child { display: inline-grid; place-items: center; inline-size: 18px; block-size: 18px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; margin-block-start: 2px; }
+.checks li[data-level="good"] > span:first-child { background: var(--ok-soft); color: var(--ok); }
+.checks li[data-level="warn"] > span:first-child { background: var(--warn-soft); color: var(--warn); }
+.checks li[data-level="bad"] > span:first-child { background: var(--bad-soft); color: var(--bad); }

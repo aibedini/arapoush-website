@@ -14,12 +14,15 @@ const fa: Dictionary = {
     progress: "پیشرفت مطالعه",
   },
   nav: {
+    /** Menu label of the journal (added to the menu when OPEX content lacks it). */
+    journal: "مجله",
     items: [
       { label: "خانه", href: "#top" },
       { label: "محصولات", href: "#products" },
       { label: "کاربردها", href: "/applications" },
       { label: "چاپ", href: "/printing" },
       { label: "درباره ما", href: "/about" },
+      { label: "مجله", href: "/blog" },
       { label: "تماس", href: "/contact" },
     ],
     quote: "درخواست استعلام قیمت",

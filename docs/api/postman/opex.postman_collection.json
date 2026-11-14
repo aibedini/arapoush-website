@@ -720,6 +720,837 @@
       ]
     },
     {
+      "name": "Blog",
+      "item": [
+        {
+          "name": "Create a author",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/authors",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "authors"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slug\": \"string\",\n  \"name\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Delete a author",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/authors/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "authors",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Change a author",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/authors/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "authors",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slug\": \"string\",\n  \"name\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Create a category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "categories"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": {},\n  \"slug\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Delete a category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/categories/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "categories",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Change a category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/categories/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "categories",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": {},\n  \"slug\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Blog posts (newest change first)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/posts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "posts"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "q",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "mine",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Start a post (a Persian draft unless data is given)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/posts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "posts"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Archive a post (off the site, hidden from the list)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/posts/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "posts",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "One post: draft, state, slugs and what you may do",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/posts/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "posts",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Save the draft (a new revision)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/posts/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "posts",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"categoryId\": \"string\",\n    \"tagIds\": [],\n    \"authorId\": \"string\",\n    \"reviewerId\": \"string\",\n    \"cover\": {\n      \"src\": \"string\"\n    },\n    \"featured\": false,\n    \"products\": [],\n    \"relatedIds\": [],\n    \"translations\": {}\n  },\n  \"baseRevisionId\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Refused with 412 when the draft moved on since `baseRevisionId` (someone else saved).\n\nSource: blog/routes.ts"
+          }
+        },
+        {
+          "name": "A 30-minute preview link to the article page with the draft",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/posts/:id/preview",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "posts",
+                ":id",
+                "preview"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"locale\": \"fa\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Publish the draft now, or schedule it",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/posts/:id/publish",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "posts",
+                ":id",
+                "publish"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Every enabled, complete translation goes live with its slug; old slugs redirect (301). Referenced media must be scanned clean.\n\nSource: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Make an old revision the draft again",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/posts/:id/restore",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "posts",
+                ":id",
+                "restore"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"revisionId\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Revision history",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/posts/:id/revisions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "posts",
+                ":id",
+                "revisions"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "One revision's data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/posts/:id/revisions/:rev",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "posts",
+                ":id",
+                "revisions",
+                ":rev"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                },
+                {
+                  "key": "rev",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Send the draft for review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/posts/:id/submit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "posts",
+                ":id",
+                "submit"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Take the post off the site (it stays in OPEX as a draft)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/posts/:id/unpublish",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "posts",
+                ":id",
+                "unpublish"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Create a tag",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/tags",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "tags"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": {},\n  \"slug\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Delete a tag",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/tags/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "tags",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Change a tag",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/tags/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "tags",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": {},\n  \"slug\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        },
+        {
+          "name": "Categories, tags and authors",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/blog/taxonomy",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "blog",
+                "taxonomy"
+              ]
+            },
+            "description": "Source: blog/routes.ts"
+          }
+        }
+      ]
+    },
+    {
       "name": "Catalogue",
       "item": [
         {
@@ -1673,6 +2504,169 @@
     {
       "name": "Delivery",
       "item": [
+        {
+          "name": "Every live translation, compact (sitemap, feeds, llms.txt)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{deliveryToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/delivery/blog/index",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "delivery",
+                "blog",
+                "index"
+              ]
+            },
+            "description": "Source: blog/delivery.ts"
+          }
+        },
+        {
+          "name": "One live post by language and slug (or where an old slug moved)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{deliveryToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/delivery/blog/post",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "delivery",
+                "blog",
+                "post"
+              ],
+              "query": [
+                {
+                  "key": "locale",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "slug",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Source: blog/delivery.ts"
+          }
+        },
+        {
+          "name": "Live posts in one language, newest first",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{deliveryToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/delivery/blog/posts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "delivery",
+                "blog",
+                "posts"
+              ],
+              "query": [
+                {
+                  "key": "locale",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "per",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "tag",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "author",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Source: blog/delivery.ts"
+          }
+        },
+        {
+          "name": "One post's draft, with a preview token for that post",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{deliveryToken}}"
+              },
+              {
+                "key": "opex-preview",
+                "value": "",
+                "description": "The preview token from the link."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/delivery/blog/preview/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "delivery",
+                "blog",
+                "preview",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ],
+              "query": [
+                {
+                  "key": "locale",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Source: blog/delivery.ts"
+          }
+        },
         {
           "name": "Everything the website renders, in one call",
           "request": {
@@ -5766,6 +6760,31 @@
     {
       "name": "Website",
       "item": [
+        {
+          "name": "Journal RSS feed per language (the 30 newest articles)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{siteUrl}}/:locale/blog/feed.xml",
+              "host": [
+                "{{siteUrl}}"
+              ],
+              "path": [
+                ":locale",
+                "blog",
+                "feed.xml"
+              ],
+              "variable": [
+                {
+                  "key": "locale",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Source: apps/web/app/[locale]/blog/feed.xml/route.ts"
+          }
+        },
         {
           "name": "Security contact (RFC 9116) from Settings → Security",
           "request": {

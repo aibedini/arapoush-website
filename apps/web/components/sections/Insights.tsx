@@ -19,12 +19,31 @@ const visuals = [
   { id: "journal-3", date: "2026-09-10", tagBg: "#f4e8df", pos: "50% 30%" },
 ];
 
-export default function Insights({ t, locale }: SectionProps) {
+export default function Insights({ t, locale, posts }: SectionProps) {
   const ins = t.insights;
   const track = useRef<HTMLUListElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
   const fmt = new Intl.DateTimeFormat(localeMeta[locale].intl, { year: "numeric", month: "short", day: "numeric" });
+  const blogHref = `/${locale}/blog`;
+  // Real journal posts once there are three to fill the row; until then the section's own teasers.
+  const items = posts && posts.length >= 3
+    ? posts.slice(0, 6).map((p, i) => ({
+        id: p.id,
+        date: p.publishedAt,
+        tagBg: visuals[i % visuals.length]!.tagBg,
+        pos: "50% 50%",
+        image: p.cover?.src ?? "",
+        category: p.category?.name ?? "",
+        tag: p.author?.name ?? "",
+        title: p.title,
+        text: p.excerpt,
+        href: `/${locale}/blog/${encodeURIComponent(p.slug)}`,
+      }))
+    : visuals.flatMap((v, i) => {
+        const a = ins.articles[i];
+        return a ? [{ ...v, image: byId(t.media.insights.articles, v.id)?.image.src ?? "", category: a.category, tag: a.tag, title: a.title, text: a.text, href: links.articles }] : [];
+      });
 
   // RTL scrollLeft runs 0 → negative, so measure distance from the start edge.
   const sync = useCallback(() => {
@@ -119,7 +138,7 @@ export default function Insights({ t, locale }: SectionProps) {
             {ins.lead}
           </p>
           <div data-reveal>
-            <MaybeLink href={links.allArticles} className={`btn ${styles.allBtn}`}>
+            <MaybeLink href={links.allArticles ?? blogHref} className={`btn ${styles.allBtn}`}>
               <RollText text={ins.viewAll} />
               <span className="icon">
                 <ArrowRightCircle color="#A9ACAF" />
@@ -130,29 +149,30 @@ export default function Insights({ t, locale }: SectionProps) {
 
         <div className={styles.viewport}>
           <ul ref={track} className={styles.track} tabIndex={0} aria-label={ins.listLabel} data-reveal-stagger>
-            {visuals.map((v, i) => {
-              const a = ins.articles[i];
-              if (!a) return null;
+            {items.map((a) => {
+              const v = a;
               return (
                 <li key={v.id} className={styles.slide} data-reveal-item>
                   <article className={styles.card}>
                     <div className={`zoom-mask ${styles.media}`} data-reveal-media>
                       <div className={styles.mediaInner}>
-                        <Image src={byId(t.media.insights.articles, v.id)?.image.src ?? ""} alt="" fill sizes="(max-width: 767px) 46vw, (max-width: 1099px) 46vw, 25vw" style={{ objectPosition: v.pos }} draggable={false} />
+                        {a.image && <Image src={a.image} alt="" fill sizes="(max-width: 767px) 46vw, (max-width: 1099px) 46vw, 25vw" style={{ objectPosition: v.pos }} draggable={false} />}
                       </div>
-                      <span className={styles.category}>{a.category}</span>
+                      {a.category && <span className={styles.category}>{a.category}</span>}
                     </div>
                     <div className={styles.meta}>
                       <time className={styles.date} dateTime={v.date}>
                         {fmt.format(new Date(v.date))}
                       </time>
-                      <span className={styles.tag} style={{ background: v.tagBg }}>
-                        {a.tag}
-                      </span>
+                      {a.tag && (
+                        <span className={styles.tag} style={{ background: v.tagBg }}>
+                          {a.tag}
+                        </span>
+                      )}
                     </div>
                     <div className={styles.body}>
                       <h3 className={styles.title}>
-                        <MaybeLink href={links.articles} className={styles.titleLink}>
+                        <MaybeLink href={a.href} className={styles.titleLink}>
                           {a.title}
                         </MaybeLink>
                       </h3>
@@ -168,7 +188,7 @@ export default function Insights({ t, locale }: SectionProps) {
 
         <div className={`at ${styles.controls}`} style={{ "--x": 1338, "--y": 787, "--w": 534 } as React.CSSProperties}>
           <span className={styles.ctrlLine} aria-hidden="true" />
-          <MaybeLink href={links.allArticles} className={`u-link ${styles.ctrlText}`}>
+          <MaybeLink href={links.allArticles ?? blogHref} className={`u-link ${styles.ctrlText}`}>
             {ins.viewAll}
           </MaybeLink>
           <div className={styles.arrows}>

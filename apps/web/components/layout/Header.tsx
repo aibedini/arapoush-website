@@ -17,13 +17,22 @@ import styles from "./Header.module.css";
 
 const glide = { type: "spring" as const, stiffness: 380, damping: 34 };
 
-type Props = { t: Dictionary; locale: Locale; /** current path after the locale, e.g. "/products/multi-layer-tube"; "" on home */ path?: string };
+type Props = {
+  t: Dictionary;
+  locale: Locale;
+  /** current path after the locale, e.g. "/products/multi-layer-tube"; "" on home */
+  path?: string;
+  /** Per-language paths when they differ (a blog post's translated slugs); missing languages use `path`. */
+  paths?: Partial<Record<Locale, string>>;
+};
 
-export default function Header({ t, locale, path = "" }: Props) {
+export default function Header({ t, locale, path = "", paths }: Props) {
   const onHome = path === "";
   const to = (href: string) => homeHref(locale, href, onHome);
   // A page with its own nav item (printing, about, contact) marks it; home marks "Home"; product pages mark "Products".
-  const current = onHome ? "#top" : (t.nav.items.find((i) => path && i.href === path)?.href ?? "#products");
+  // The journal link is added when the menu (OPEX content, which replaces the whole list) lacks it.
+  const navItems = t.nav.items.some((i) => i.href === "/blog") ? t.nav.items : [...t.nav.items.slice(0, -1), { label: t.nav.journal, href: "/blog" }, ...t.nav.items.slice(-1)];
+  const current = onHome ? "#top" : (navItems.find((i) => path && (i.href === path || (i.href.startsWith("/") && path.startsWith(`${i.href}/`))))?.href ?? "#products");
   const panel = useRef<HTMLDivElement>(null);
   const toggle = useRef<HTMLButtonElement>(null);
   const [scrolled, setScrolled] = useState(false);
@@ -116,7 +125,7 @@ export default function Header({ t, locale, path = "" }: Props) {
             {/* animate-ui Highlight: a soft pill glides between links on hover */}
             <ul>
               <Highlight controlledItems hover className={styles.navPill} transition={glide}>
-                {t.nav.items.map((item) => (
+                {navItems.map((item) => (
                   <HighlightItem key={item.href} as="li" value={item.href} data-intro="nav">
                     <a className="u-link" href={to(item.href)} aria-current={item.href === current ? "page" : undefined}>
                       <RollText text={item.label} />
@@ -132,7 +141,7 @@ export default function Header({ t, locale, path = "" }: Props) {
               <SearchDialog t={t} triggerClassName={styles.iconBtn} iconClassName={styles.icon24} />
             </span>
             <span data-intro="nav" className={styles.desktopOnly}>
-              <LanguageSwitch locale={locale} label={t.nav.language} path={path} />
+              <LanguageSwitch locale={locale} label={t.nav.language} path={path} paths={paths} />
             </span>
             <Shine asChild enableOnHover color="#ffffff" opacity={0.25}>
               <a href="#contact" className={`btn ${styles.quote}`} data-intro="nav">
@@ -165,7 +174,7 @@ export default function Header({ t, locale, path = "" }: Props) {
         <nav aria-label={t.nav.mobile}>
           <ul>
             <Highlight controlledItems hover className={styles.menuPill} transition={glide}>
-              {t.nav.items.map((item, i) => (
+              {navItems.map((item, i) => (
                 <HighlightItem key={item.href} as="li" value={item.href} data-menu-item>
                   <a href={to(item.href)} onClick={close} tabIndex={tab} className={styles.menuLink}>
                     <span className={styles.menuIndex} aria-hidden="true">
@@ -186,7 +195,7 @@ export default function Header({ t, locale, path = "" }: Props) {
             <ul className={styles.langs} aria-label={t.nav.language}>
               {locales.map((l) => (
                 <li key={l}>
-                  <Link href={`/${l}${path}`} hrefLang={l} lang={l} tabIndex={tab} aria-current={l === locale ? "true" : undefined}>
+                  <Link href={`/${l}${paths?.[l] ?? path}`} hrefLang={l} lang={l} tabIndex={tab} aria-current={l === locale ? "true" : undefined}>
                     {localeMeta[l].label}
                   </Link>
                 </li>

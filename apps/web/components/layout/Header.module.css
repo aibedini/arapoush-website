@@ -139,6 +139,13 @@
   display: none;
 }
 
+/* Laptop widths: seven items (with the journal) only fit when the row starts closer to the logo. */
+@media (max-width: 1599px) {
+  .nav {
+    inset-inline-start: calc(400 * var(--u));
+  }
+}
+
 /* The menu row needs ~1360px at fixed 13px type; below that it collapses into the panel. */
 @media (max-width: 1359px) {
   .nav,

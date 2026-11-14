@@ -14,12 +14,15 @@ const en = {
     progress: "Reading progress",
   },
   nav: {
+    /** Menu label of the journal (added to the menu when OPEX content lacks it). */
+    journal: "Journal",
     items: [
       { label: "Home", href: "#top" },
       { label: "Products", href: "#products" },
       { label: "Applications", href: "/applications" },
       { label: "Printing", href: "/printing" },
       { label: "About", href: "/about" },
+      { label: "Journal", href: "/blog" },
       { label: "Contact", href: "/contact" },
     ],
     quote: "Request a quote",

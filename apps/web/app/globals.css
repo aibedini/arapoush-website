@@ -1,3 +1,14 @@
+/* Persian fallback sized to Vazirmatn's Persian glyph widths (measured: Arial's Arabic is 0.865×), so
+   text keeps its line breaks when the web font swaps in. Metrics overrides keep the line box. */
+@font-face {
+  font-family: "Vazirmatn Fallback";
+  src: local("Arial");
+  size-adjust: 115.6%;
+  ascent-override: 88.7%;
+  descent-override: 46.5%;
+  line-gap-override: 0%;
+}
+
 /* ─────────────────────────────────────────────────────────────
    ARAPOUSH — design tokens + layout system
    Desktop (≥1100px) is a fluid copy of the 1920px Figma frame:

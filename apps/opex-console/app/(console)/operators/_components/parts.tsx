@@ -41,6 +41,7 @@ export const GROUPS: Record<string, string> = {
   settings: "تنظیمات سایت",
   seo: "سئو",
   backup: "پشتیبان‌گیری",
+  blog: "بلاگ",
 };
 
 export const roleLabel = (k: string, roles?: Role[] | null) => ROLE[k] ?? roles?.find((r) => r.key === k)?.name ?? k;

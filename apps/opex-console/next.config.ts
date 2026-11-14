@@ -9,6 +9,8 @@ const site = process.env.SITE_URL ?? "http://127.0.0.1:3210";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // The blog editor shows search-result previews with the real site address.
+  env: { NEXT_PUBLIC_SITE_URL: site },
   output: "standalone",
   outputFileTracingRoot: path.join(__dirname, "../.."),
   async rewrites() {

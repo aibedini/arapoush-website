@@ -10,6 +10,8 @@ import { languageAlternates, pageUrl } from "@/lib/seo";
 import { applicationsPath, printingPath, productPaths, siteUrl } from "@/lib/site";
 import { pageForms } from "@/lib/content/forms";
 import { formPath } from "@/lib/forms";
+import { authorPath, blogPath, categoryPath, getBlogIndex, pagePath, PER_PAGE } from "@/lib/blog";
+import { postAlternates } from "@/lib/blogSeo";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   await ensureContent();
@@ -32,7 +34,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Form pages the operators marked as indexable (P11).
     ...pageForms().filter((f) => f.page.indexable).map((f) => ({ path: formPath(f.slug), types: [`form.${f.slug}`], images: [] as string[] })),
   ];
-  return pages.flatMap((p) =>
+  const site = pages.flatMap((p) =>
     locales.map((l) => ({
       url: pageUrl(l, p.path),
       // Real publish dates from OPEX (a lastmod that is always "now" teaches search engines to ignore
@@ -42,4 +44,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       images: p.images.map((i) => (i.startsWith("http") ? i : `${siteUrl}${i}`)),
     })),
   );
+  return [...site, ...(await blogSitemap())];
+}
+
+/** Journal: every live, indexable translation with its own hreflang set; lists only where they have posts. */
+async function blogSitemap(): Promise<MetadataRoute.Sitemap> {
+  const { posts, categories, authors } = await getBlogIndex();
+  const abs = (src: string) => (src.startsWith("http") ? src : `${siteUrl}${src}`);
+  const live = posts.filter((p) => !p.noindex);
+  const newest = (ls: typeof live) => (ls[0] ? { lastModified: new Date(Math.max(...ls.map((p) => Date.parse(p.modifiedAt)))) } : {});
+  const out: MetadataRoute.Sitemap = live.map((p) => ({
+    url: pageUrl(p.locale, blogPath(p.slug)),
+    lastModified: new Date(p.modifiedAt),
+    alternates: { languages: postAlternates(p.alternates) },
+    images: p.cover ? [abs(p.cover.src)] : [],
+  }));
+  for (const l of locales) {
+    const mine = live.filter((p) => p.locale === l);
+    if (!mine.length) continue;
+    const pages = Math.ceil(mine.length / PER_PAGE);
+    for (let n = 1; n <= pages; n++) out.push({ url: pageUrl(l, n === 1 ? blogPath() : pagePath(n)), ...newest(mine) });
+    for (const c of categories) {
+      const inCat = mine.filter((p) => p.category?.id === c.id);
+      if (c.slug[l] && inCat.length) out.push({ url: pageUrl(l, categoryPath(c.slug[l]!)), ...newest(inCat) });
+    }
+    for (const a of authors) {
+      const by = mine.filter((p) => p.author?.id === a.id);
+      if (by.length) out.push({ url: pageUrl(l, authorPath(a.slug)), ...newest(by) });
+    }
+  }
+  return out;
 }

@@ -1,5 +1,5 @@
 /** Console copy (Persian) and small formatters. */
-export const ROLE: Record<string, string> = { super_admin: "مدیر ارشد", operator: "اپراتور", auditor: "حسابرس", viewer: "بیننده" };
+export const ROLE: Record<string, string> = { super_admin: "مدیر ارشد", operator: "اپراتور", auditor: "حسابرس", viewer: "بیننده", blog_author: "نویسندهٔ بلاگ" };
 export const LOCALE_LABEL: Record<string, string> = { fa: "فارسی", en: "English", tr: "Türkçe" };
 export const RESULT: Record<string, string> = { success: "موفق", failure: "ناموفق", denied: "رد شد" };
 

@@ -183,6 +183,11 @@ const defs: Def[] = [
     data: json("content/applications.json"),
   },
   {
+    key: "page.blog",
+    label: "Blog: page texts (posts are in the blog section)",
+    data: json("content/blog.json"),
+  },
+  {
     key: "page.contact",
     label: "Contact page",
     data: {

@@ -1,0 +1,75 @@
+{
+  "$comment": "Blog page copy (OPEX page.blog). Posts themselves live in the OPEX blog, not here. {n} and {date} are placeholders.",
+  "meta": {
+    "title": { "fa": "مجله آراپوش | دانش بسته‌بندی تیوبی", "en": "Arapoush Journal | Tube Packaging Insights", "tr": "Arapoush Dergi | Tüp Ambalaj Bilgileri" },
+    "description": {
+      "fa": "مقاله‌های تخصصی آراپوش دربارهٔ تیوب چندلایه، تیوب قرص جوشان، چاپ روی تیوب، مواد، استانداردها و روندهای صنعت بسته‌بندی.",
+      "en": "Expert articles from Arapoush on multi-layer tubes, effervescent tablet tubes, tube printing, materials, standards and packaging industry trends.",
+      "tr": "Arapoush'tan çok katmanlı tüpler, efervesan tablet tüpleri, tüp baskısı, malzemeler, standartlar ve ambalaj sektörü trendleri üzerine uzman makaleler."
+    }
+  },
+  "hero": {
+    "eyebrow": { "fa": "مجله آراپوش", "en": "Arapoush Journal", "tr": "Arapoush Dergi" },
+    "title": { "fa": "دانش بسته‌بندی، از خط تولید", "en": "Packaging know-how, from the production line", "tr": "Üretim hattından ambalaj bilgisi" },
+    "lead": {
+      "fa": "راهنماها، تجربه‌های فنی و روندهای صنعت؛ نوشتهٔ مهندسان و کارشناسان آراپوش برای برندهای آرایشی، دارویی، بهداشتی و غذایی.",
+      "en": "Guides, engineering notes and industry trends, written by Arapoush engineers and specialists for cosmetic, pharmaceutical, hygiene and food brands.",
+      "tr": "Kozmetik, ilaç, hijyen ve gıda markaları için Arapoush mühendis ve uzmanlarının yazdığı rehberler, teknik notlar ve sektör trendleri."
+    }
+  },
+  "labels": {
+    "home": { "fa": "خانه", "en": "Home", "tr": "Ana sayfa" },
+    "blog": { "fa": "مجله", "en": "Journal", "tr": "Dergi" },
+    "all": { "fa": "همه", "en": "All", "tr": "Tümü" },
+    "featured": { "fa": "ویژه", "en": "Featured", "tr": "Öne çıkan" },
+    "latest": { "fa": "تازه‌ترین مقاله‌ها", "en": "Latest articles", "tr": "En yeni makaleler" },
+    "readMore": { "fa": "خواندن مقاله", "en": "Read article", "tr": "Makaleyi oku" },
+    "minutes": { "fa": "{n} دقیقه مطالعه", "en": "{n} min read", "tr": "{n} dk okuma" },
+    "published": { "fa": "انتشار", "en": "Published", "tr": "Yayın" },
+    "updated": { "fa": "به‌روزرسانی", "en": "Updated", "tr": "Güncelleme" },
+    "by": { "fa": "نویسنده", "en": "By", "tr": "Yazar" },
+    "reviewedBy": { "fa": "بازبینی فنی", "en": "Reviewed by", "tr": "Teknik inceleme" },
+    "toc": { "fa": "در این مقاله", "en": "In this article", "tr": "Bu makalede" },
+    "takeaways": { "fa": "نکته‌های کلیدی", "en": "Key takeaways", "tr": "Önemli noktalar" },
+    "faq": { "fa": "پرسش‌های متداول", "en": "Frequently asked questions", "tr": "Sık sorulan sorular" },
+    "sources": { "fa": "منابع", "en": "Sources", "tr": "Kaynaklar" },
+    "related": { "fa": "مقاله‌های مرتبط", "en": "Related articles", "tr": "İlgili makaleler" },
+    "relatedProducts": { "fa": "محصولات مرتبط", "en": "Related products", "tr": "İlgili ürünler" },
+    "share": { "fa": "اشتراک‌گذاری", "en": "Share", "tr": "Paylaş" },
+    "page": { "fa": "صفحهٔ {n}", "en": "Page {n}", "tr": "Sayfa {n}" },
+    "prev": { "fa": "صفحهٔ قبل", "en": "Previous page", "tr": "Önceki sayfa" },
+    "next": { "fa": "صفحهٔ بعد", "en": "Next page", "tr": "Sonraki sayfa" },
+    "pagination": { "fa": "صفحه‌بندی مقاله‌ها", "en": "Article pages", "tr": "Makale sayfaları" },
+    "categories": { "fa": "دسته‌ها", "en": "Categories", "tr": "Kategoriler" },
+    "empty": { "fa": "به‌زودی نخستین مقاله‌ها اینجا منتشر می‌شوند.", "en": "The first articles will be published here soon.", "tr": "İlk makaleler yakında burada yayımlanacak." },
+    "authorPosts": { "fa": "مقاله‌های {name}", "en": "Articles by {name}", "tr": "{name} makaleleri" },
+    "categoryPosts": { "fa": "مقاله‌های {name}", "en": "{name} articles", "tr": "{name} makaleleri" },
+    "backToBlog": { "fa": "بازگشت به مجله", "en": "Back to the journal", "tr": "Dergiye dön" },
+    "rss": { "fa": "خوراک RSS", "en": "RSS feed", "tr": "RSS akışı" },
+    "tags": { "fa": "برچسب‌ها", "en": "Tags", "tr": "Etiketler" },
+    "expertise": { "fa": "حوزه‌های تخصص", "en": "Expertise", "tr": "Uzmanlık alanları" },
+    "preview": { "fa": "پیش‌نمایش پیش‌نویس؛ این صفحه منتشر نشده است.", "en": "Draft preview; this page is not published.", "tr": "Taslak önizlemesi; bu sayfa yayımlanmadı." }
+  },
+  "products": {
+    "tube": {
+      "title": { "fa": "تیوب چندلایه", "en": "Multi-layer tubes", "tr": "Çok katmanlı tüpler" },
+      "text": { "fa": "از ۱۶ تا ۵۰ میلی‌متر، با درب‌ها و چاپ دلخواه.", "en": "16 to 50 mm, with the closures and print you choose.", "tr": "16–50 mm, istediğiniz kapak ve baskıyla." },
+      "href": "/products/multi-layer-tube"
+    },
+    "effervescent": {
+      "title": { "fa": "تیوب قرص جوشان", "en": "Effervescent tablet tubes", "tr": "Efervesan tablet tüpleri" },
+      "text": { "fa": "با درب رطوبت‌گیر برای ماندگاری قرص.", "en": "With a desiccant cap that keeps tablets dry.", "tr": "Tabletleri kuru tutan nem alıcı kapakla." },
+      "href": "/products/effervescent-tube"
+    },
+    "printing": {
+      "title": { "fa": "چاپ روی تیوب", "en": "Tube printing", "tr": "Tüp baskısı" },
+      "text": { "fa": "فلکسو، افست، سیلک و فویل؛ کدام برای برند شما؟", "en": "Flexo, offset, silk screen and foil: which suits your brand?", "tr": "Flekso, ofset, serigrafi ve yaldız: markanıza hangisi uygun?" },
+      "href": "/printing"
+    },
+    "applications": {
+      "title": { "fa": "کاربرد در صنایع", "en": "Applications by industry", "tr": "Sektörlere göre uygulamalar" },
+      "text": { "fa": "آرایشی، دارویی، بهداشتی، غذایی و صنعتی.", "en": "Cosmetics, pharma, hygiene, food and industrial.", "tr": "Kozmetik, ilaç, hijyen, gıda ve endüstri." },
+      "href": "/applications"
+    }
+  }
+}

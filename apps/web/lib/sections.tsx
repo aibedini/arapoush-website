@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import type { BlogCard } from "@/lib/blog";
 import { BLOCK_KINDS, isBlockKind, SECTION_ENTRY, type BlockKind, type BlockProps } from "@arapoush/schema";
 import type { Dictionary, Locale } from "@/lib/i18n";
 import Hero from "@/components/sections/Hero";
@@ -11,7 +12,8 @@ import Block from "@/components/sections/blocks/Block";
 import EditScope from "@/components/opex/EditScope";
 
 /** Every page section receives the same props, so any of them can be placed anywhere. */
-export type SectionProps = { t: Dictionary; locale: Locale };
+/** `posts`: the newest journal articles (home "Insights"); absent until the first is published. */
+export type SectionProps = { t: Dictionary; locale: Locale; posts?: BlogCard[] };
 
 export const sectionRegistry = {
   hero: { label: "Hero slideshow", Component: Hero },

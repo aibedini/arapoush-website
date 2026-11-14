@@ -54,6 +54,11 @@
     "nav": {
      "kind": "group",
      "fields": {
+      "journal": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
       "items": {
        "kind": "list",
        "of": {
@@ -5167,6 +5172,293 @@
           "localized": true,
           "multiline": true
          }
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "key": "page.blog",
+  "label": "Blog: page texts (posts are in the blog section)",
+  "singleton": true,
+  "version": 1,
+  "schema": {
+   "kind": "group",
+   "fields": {
+    "meta": {
+     "kind": "group",
+     "fields": {
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "description": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      }
+     }
+    },
+    "hero": {
+     "kind": "group",
+     "fields": {
+      "eyebrow": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "title": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "lead": {
+       "kind": "text",
+       "localized": true,
+       "multiline": true
+      }
+     }
+    },
+    "labels": {
+     "kind": "group",
+     "fields": {
+      "home": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "blog": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "all": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "featured": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "latest": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "readMore": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "minutes": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "published": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "updated": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "by": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "reviewedBy": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "toc": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "takeaways": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "faq": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "sources": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "related": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "relatedProducts": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "share": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "page": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "prev": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "next": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "pagination": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "categories": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "empty": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "authorPosts": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "categoryPosts": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "backToBlog": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "rss": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "tags": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "expertise": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      },
+      "preview": {
+       "kind": "text",
+       "localized": true,
+       "multiline": false
+      }
+     }
+    },
+    "products": {
+     "kind": "group",
+     "fields": {
+      "tube": {
+       "kind": "group",
+       "fields": {
+        "title": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "text": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "href": {
+         "kind": "url",
+         "internal": true
+        }
+       }
+      },
+      "effervescent": {
+       "kind": "group",
+       "fields": {
+        "title": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "text": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "href": {
+         "kind": "url",
+         "internal": true
+        }
+       }
+      },
+      "printing": {
+       "kind": "group",
+       "fields": {
+        "title": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "text": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "href": {
+         "kind": "url",
+         "internal": true
+        }
+       }
+      },
+      "applications": {
+       "kind": "group",
+       "fields": {
+        "title": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "text": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "href": {
+         "kind": "url",
+         "internal": true
         }
        }
       }

@@ -52,6 +52,16 @@ Each denial is audited.
   manages a super admin (`ESCALATION`). Otherwise a custom "user admin" role could reset a super
   admin's password and authenticator and take the account over. Your own role, status, email,
   expiry and MFA are changed by another administrator (`SELF_CHANGE`).
+- **Blog (docs/opex/BLOG-PLAN.md).**
+  - `blog.write` edits only one's own posts; `blog.edit_others` is needed for anyone else's
+    (`NOT_YOUR_POST`). Publishing, scheduling and restoring need `blog.publish`.
+  - The built-in `blog_author` role writes and sends for review but cannot publish.
+  - A post body is typed blocks, never HTML. Inline markup is `**bold**`, `*italic*` and
+    links, and links may only be site paths, `https:`, `mailto:` or `tel:`, so no
+    `javascript:`/`data:` link can be stored (`schema/blog.ts` `safeHref`, API validation).
+  - Images must be site paths (`/images` or scanned `/media`). Publishing checks that the media is
+    clean before making it public.
+  - A blog preview token names one post (`blog.post:<id>`) and cannot open other drafts.
 - **Account lifecycle.**
   - New accounts and admin resets get a *temporary* password. OPEX can generate it (16 characters,
     about 80 bits): it is returned once, with `Cache-Control: no-store`, and never logged or

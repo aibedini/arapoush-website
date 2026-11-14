@@ -40,3 +40,14 @@ export const MobileMenu: Story = {
     await expect(c.getByRole("button", { name: t.nav.closeMenu })).toHaveAttribute("aria-expanded", "true");
   },
 };
+
+/** A blog post: "Journal" is in the menu even when OPEX's menu lacks it, and the language switch
+ *  opens each translation's own slug (or the journal where there is none). */
+export const BlogPost: Story = {
+  args: { path: "/blog/tube", paths: { fa: "/blog/tube", en: "/blog", tr: "/blog" } },
+  globals: { viewport: { value: "desktop" } },
+  play: async ({ canvasElement }) => {
+    const c = within(canvasElement);
+    await expect(c.getAllByRole("link", { name: dict("fa").nav.journal })[0]).toHaveAttribute("href", "/fa/blog");
+  },
+};

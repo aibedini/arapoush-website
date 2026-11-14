@@ -14,12 +14,15 @@ const tr: Dictionary = {
     progress: "Okuma ilerlemesi",
   },
   nav: {
+    /** Menu label of the journal (added to the menu when OPEX content lacks it). */
+    journal: "Dergi",
     items: [
       { label: "Ana Sayfa", href: "#top" },
       { label: "Ürünler", href: "#products" },
       { label: "Uygulamalar", href: "/applications" },
       { label: "Baskı", href: "/printing" },
       { label: "Hakkımızda", href: "/about" },
+      { label: "Dergi", href: "/blog" },
       { label: "İletişim", href: "/contact" },
     ],
     quote: "Teklif isteyin",

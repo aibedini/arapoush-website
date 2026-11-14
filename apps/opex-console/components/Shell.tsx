@@ -29,6 +29,7 @@ import {
   ChartLineUp,
   GearSix,
   Database,
+  Article,
   type Icon,
 } from "@phosphor-icons/react";
 
@@ -53,6 +54,7 @@ const NAV: { group: string; items: Item[] }[] = [
   {
     group: "وب‌سایت",
     items: [
+      { href: "/blog", label: "بلاگ (مجله)", icon: Article, perm: "blog.read" },
       { href: "/visual", label: "ویرایشگر بصری", icon: PaintBrush, perm: "preview.use" },
       { href: "/content", label: "محتوا (فیلدها)", icon: TextAa, perm: "content.read" },
       { href: "/catalogue", label: "کاتالوگ تیوب", icon: Package, perm: "catalogue.write" },

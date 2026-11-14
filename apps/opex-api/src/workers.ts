@@ -12,6 +12,8 @@ import { scheduledBackup } from "./backups/routes.ts";
 JOBS.push(scheduledBackup);
 import { scheduledSeo } from "./seo/routes.ts";
 JOBS.push(scheduledSeo);
+import { blogScheduledPublish } from "./blog/delivery.ts";
+JOBS.push(blogScheduledPublish);
 
 export function startWorkers(deps: Deps, log: FastifyBaseLogger): () => void {
   const timers = JOBS.map((job) => {

@@ -26,7 +26,10 @@ export const vazirmatn = localFont({
   ],
   variable: "--font-vazir",
   display: "swap",
-  fallback: ["Tahoma", "sans-serif"],
+  // Our own fallback (app/globals.css "Vazirmatn Fallback"): next/font sizes it for Latin metrics, which
+  // leaves Persian text ~14% narrower than Vazirmatn, so lines re-wrap when the font arrives (CLS).
+  adjustFontFallback: false,
+  fallback: ["Vazirmatn Fallback", "Tahoma", "sans-serif"],
 });
 
 // Self-hosted (OFL) so builds and first paint never depend on a font CDN.

@@ -67,6 +67,12 @@ export const PERMISSIONS: PermissionDef[] = [
   P("backup.run", "backup", "Make and download backups", "گرفتن و دانلود پشتیبان", true),
   P("backup.restore", "backup", "Restore a backup (replaces data)", "بازگردانی پشتیبان (جایگزینی داده)", true),
   P("backup.configure", "backup", "Configure automatic and remote backups", "تنظیم پشتیبان خودکار و ارسال", true),
+  P("blog.read", "blog", "See blog posts and their history", "دیدن مقاله‌ها و تاریخچه‌شان"),
+  P("blog.write", "blog", "Write posts and edit your own drafts", "نوشتن مقاله و ویرایش پیش‌نویس‌های خود"),
+  P("blog.edit_others", "blog", "Edit other people's posts", "ویرایش مقاله‌های دیگران"),
+  P("blog.publish", "blog", "Publish, schedule, unpublish and restore posts", "انتشار، زمان‌بندی، برداشتن و بازگردانی مقاله", true),
+  P("blog.manage", "blog", "Manage categories, tags and authors", "مدیریت دسته‌ها، برچسب‌ها و نویسنده‌ها", true),
+  P("blog.delete", "blog", "Archive posts", "بایگانی مقاله", true),
 ];
 
 export type Permission = string;
@@ -74,18 +80,21 @@ export const PERMISSION_KEYS = new Set(PERMISSIONS.map((p) => p.key));
 export const SELF = "self";
 
 /** Built-in roles. They keep the access the old role ranks gave (viewer < auditor < operator < super_admin). */
-const VIEWER = ["dashboard.read", "content.read", "preview.use", "media.read", "catalogue.read", "render.read", "forms.read", "teams.read", "cr.read", "policies.read", "docs.read", "settings.read", "seo.read"];
+const VIEWER = ["dashboard.read", "content.read", "preview.use", "media.read", "catalogue.read", "render.read", "forms.read", "teams.read", "cr.read", "policies.read", "docs.read", "settings.read", "seo.read", "blog.read"];
 const OPERATOR = [
   ...VIEWER,
   "content.write", "content.publish", "media.upload", "catalogue.write", "catalogue.approve", "catalogue.import", "forms.write", "forms.publish",
   "tickets.read", "tickets.reply", "tickets.manage", "tickets.mailbox", "cr.review", "cr.publish", "partners.read", "grants.read", "webhooks.read", "webhooks.manage",
   "users.read", "roles.read", "seo.run", "backup.read",
+  "blog.write", "blog.edit_others", "blog.publish", "blog.manage",
 ];
 export const BUILTIN_ROLES: Record<string, { name: { en: string; fa: string }; permissions: string[] }> = {
   super_admin: { name: { en: "Super admin", fa: "مدیر کل" }, permissions: PERMISSIONS.map((p) => p.key) },
   operator: { name: { en: "Operator", fa: "اپراتور" }, permissions: OPERATOR },
   auditor: { name: { en: "Auditor", fa: "ممیز" }, permissions: [...VIEWER, "audit.read", "audit.export"] },
   viewer: { name: { en: "Viewer", fa: "بیننده" }, permissions: VIEWER },
+  // A freelance writer: drafts and previews own posts, uploads images, sends them for review; cannot publish.
+  blog_author: { name: { en: "Blog author", fa: "نویسندهٔ بلاگ" }, permissions: ["dashboard.read", "blog.read", "blog.write", "media.read", "media.upload", "preview.use"] },
 };
 
 /**
@@ -217,6 +226,29 @@ export const ROUTE_PERMISSIONS: Record<string, Permission> = {
   "GET /v1/manage/settings": "settings.read",
   "GET /v1/manage/system/overview": "settings.read",
   "PUT /v1/manage/settings/:section": "settings.write",
+  // Blog
+  "GET /v1/manage/blog/posts": "blog.read",
+  "POST /v1/manage/blog/posts": "blog.write",
+  "GET /v1/manage/blog/posts/:id": "blog.read",
+  "PUT /v1/manage/blog/posts/:id": "blog.write",
+  "DELETE /v1/manage/blog/posts/:id": "blog.delete",
+  "POST /v1/manage/blog/posts/:id/submit": "blog.write",
+  "POST /v1/manage/blog/posts/:id/publish": "blog.publish",
+  "POST /v1/manage/blog/posts/:id/unpublish": "blog.publish",
+  "POST /v1/manage/blog/posts/:id/restore": "blog.publish",
+  "GET /v1/manage/blog/posts/:id/revisions": "blog.read",
+  "GET /v1/manage/blog/posts/:id/revisions/:rev": "blog.read",
+  "POST /v1/manage/blog/posts/:id/preview": "preview.use",
+  "GET /v1/manage/blog/taxonomy": "blog.read",
+  "POST /v1/manage/blog/categories": "blog.manage",
+  "PUT /v1/manage/blog/categories/:id": "blog.manage",
+  "DELETE /v1/manage/blog/categories/:id": "blog.manage",
+  "POST /v1/manage/blog/tags": "blog.write",
+  "PUT /v1/manage/blog/tags/:id": "blog.manage",
+  "DELETE /v1/manage/blog/tags/:id": "blog.manage",
+  "POST /v1/manage/blog/authors": "blog.manage",
+  "PUT /v1/manage/blog/authors/:id": "blog.manage",
+  "DELETE /v1/manage/blog/authors/:id": "blog.manage",
   "GET /v1/manage/seo/reports": "seo.read",
   "GET /v1/manage/seo/reports/:id": "seo.read",
   "POST /v1/manage/seo/run": "seo.run",

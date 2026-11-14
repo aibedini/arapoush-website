@@ -11,6 +11,7 @@ import { getContactPage, mapLinks, telHref, type Contact } from "@/lib/contact";
 import { getEffervescentProduct, getTubeProduct, type EffProduct } from "@/lib/products";
 import { diametersFor, loc, type TubeProduct } from "@/lib/configurator/model";
 import { defaultLocale, getDictionary, localeMeta, locales, type Dictionary, type Locale } from "@/lib/i18n";
+import { blogPath, getBlogPage, type BlogIndex } from "@/lib/blog";
 
 export const pageUrl = (locale: Locale, path = "") => `${siteUrl}/${locale}${path}`;
 
@@ -96,7 +97,13 @@ export function homeJsonLd(t: Dictionary, locale: Locale) {
 }
 
 /** Plain-text summaries for AI assistants and answer engines (llms.txt convention). */
-export function llmsText(full: boolean) {
+/** Live journal posts per language (title, URL, summary; key takeaways in the full file). */
+function blogLines(blog: BlogIndex | undefined, l: Locale, full: boolean) {
+  const posts = (blog?.posts ?? []).filter((p) => p.locale === l && !p.noindex);
+  return posts.map((p) => [`- [${p.title}](${pageUrl(l, blogPath(p.slug))}): ${p.excerpt}`, ...(full ? p.keyTakeaways.map((k) => `  - ${k}`) : [])].join("\n"));
+}
+
+export function llmsText(full: boolean, blog?: BlogIndex) {
   const en = getDictionary("en");
   const { contact, social } = en.site;
   const lines = [
@@ -114,6 +121,7 @@ export function llmsText(full: boolean) {
     ...locales.map((l) => `- [${pt(getApplications().meta.title, l)}](${pageUrl(l, applicationsPath)}): ${pt(getApplications().meta.description, l)}`),
     ...locales.map((l) => `- [${pt(getAbout().meta.title, l)}](${pageUrl(l, aboutPath)}): ${pt(getAbout().meta.description, l)}`),
     ...locales.map((l) => `- [${pt(getContactPage().meta.title, l)}](${pageUrl(l, contactPath)}): ${pt(getContactPage().meta.description, l)}`),
+    ...(blog?.posts.length ? locales.map((l) => `- [${pt(getBlogPage().meta.title, l)}](${pageUrl(l, blogPath())}): ${pt(getBlogPage().meta.description, l)}`) : []),
     ...pageForms()
       .filter((f) => f.page.indexable)
       .flatMap((f) => locales.map((l) => `- [${pickL(f.page.title, l) || pickL(f.title, l)}](${pageUrl(l, formPath(f.slug))}): ${pickL(f.page.description, l) || pickL(f.intro, l) || "Request form"}`)),
@@ -126,6 +134,7 @@ export function llmsText(full: boolean) {
     `- LinkedIn: ${social.linkedin}`,
     ...contactLines(getContactPage(), "en"),
   ];
+  if (blog?.posts.length) lines.push("", "## Articles", ...locales.flatMap((l) => blogLines(blog, l, false)));
   if (!full) {
     lines.push("", "## Optional", `- [Full site text](${siteUrl}/llms-full.txt): every page of the site in each language`);
     return lines.join("\n") + "\n";
@@ -153,7 +162,7 @@ export function llmsText(full: boolean) {
       "",
       ...blockFacts(l),
       `### ${t.insights.eyebrow}`,
-      ...t.insights.articles.map((a) => `- ${a.title}: ${a.text}`),
+      ...(blog?.posts.some((p) => p.locale === l) ? blogLines(blog, l, true) : t.insights.articles.map((a) => `- ${a.title}: ${a.text}`)),
       "",
       `### ${t.productTube.title.join(" ")} (${pageUrl(l, productPaths.tube)})`,
       t.productTube.lead,

@@ -29,6 +29,41 @@
     }
   ],
   "paths": {
+    "/{locale}/blog/feed.xml": {
+      "get": {
+        "operationId": "siteBlogFeed",
+        "summary": "Journal RSS feed per language (the 30 newest articles)",
+        "description": "**Source:** `apps/web/app/[locale]/blog/feed.xml/route.ts`",
+        "tags": [
+          "Website"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "locale",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "fa",
+                "en",
+                "tr"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "RSS 2.0; refreshed with every publish."
+          },
+          "404": {
+            "description": "Unknown language."
+          }
+        },
+        "x-audience": "site"
+      }
+    },
     "/.well-known/security.txt": {
       "get": {
         "operationId": "siteSecurityTxt",
