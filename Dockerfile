@@ -7,6 +7,7 @@ ENV NEXT_TELEMETRY_DISABLED=1 CI=1
 RUN corepack enable
 # Manifests first, so dependency layers are cached until a lockfile or package.json changes.
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc turbo.json ./
+COPY scripts/hooks scripts/hooks
 COPY apps/web/package.json apps/web/
 COPY packages/config/package.json packages/config/
 COPY packages/schema/package.json packages/schema/
