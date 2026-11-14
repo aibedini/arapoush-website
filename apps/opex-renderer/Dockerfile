@@ -15,8 +15,11 @@ RUN pnpm --filter @arapoush/opex-renderer deploy --prod --legacy /out
 
 FROM node:22-alpine
 # Chromium from Alpine (security updates with the base image), fonts for the logo texture.
+# The crash-reporter handler needs a writable crashpad database, which the read-only container does
+# not have, so Chromium exits at launch. Rendering does not use crash reports: the handler is removed.
 RUN apk add --no-cache chromium nss freetype harfbuzz ttf-freefont font-noto tini \
-  && addgroup -S render && adduser -S render -G render
+  && addgroup -S render && adduser -S render -G render \
+  && rm -f /usr/lib/chromium/chrome_crashpad_handler
 WORKDIR /app
 ENV NODE_ENV=production CHROME_PATH=/usr/bin/chromium-browser
 COPY --from=build --chown=render:render /out ./
