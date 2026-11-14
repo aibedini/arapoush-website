@@ -105,6 +105,9 @@ services:
       args:
         OPEX_API_URL: http://opex-api:4000
         SITE_URL: https://${SITE_DOMAIN}
+    environment:
+      # Read at runtime by the middleware (CSP frame-src for the visual editor's page frame).
+      SITE_URL: https://${SITE_DOMAIN}
     read_only: true
     tmpfs: ["/tmp"]
     networks: [internal]
@@ -152,6 +155,9 @@ services:
   clamav:
     <<: *restart
     image: clamav/clamav:1.4
+    environment:
+      # Reload signatures in place: the default loads a second copy first (~1 GB more for a moment).
+      CLAMD_CONF_ConcurrentDatabaseReload: "no"
     volumes: [clamav_db:/var/lib/clamav]
     networks: [internal]
 

@@ -146,14 +146,21 @@ async function render(browser: Browser, job: Job) {
   }
 }
 
-async function main() {
-  const browser = await puppeteer.launch({
+/** Chromium closes after this long without a job; renders are rare, the idle browser holds ~300 MB. */
+const IDLE_CLOSE_MS = 2 * 60_000;
+
+const launch = () =>
+  puppeteer.launch({
     executablePath: CHROME,
     headless: true,
     // Software WebGL: the server has no GPU. Sandboxing stays on unless the container forbids it.
-    // The crash reporter needs a writable crashpad database, which the read-only container does not have.
     args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--disable-dev-shm-usage", "--disable-crash-reporter", ...(process.env.CHROME_NO_SANDBOX ? ["--no-sandbox"] : [])],
   });
+
+async function main() {
+  // The browser starts on the first job and closes when idle, so a quiet renderer uses only Node.
+  let browser: Browser | null = null;
+  let lastJob = 0;
   log("renderer ready", { opex: OPEX, chrome: CHROME });
   let stop = false;
   for (const s of ["SIGTERM", "SIGINT"] as const) process.on(s, () => (stop = true));
@@ -164,16 +171,25 @@ async function main() {
       job = r.status === 204 ? null : r.body;
       if (job) {
         log("claimed", { job: job.id, sizes: job.input.sizes.length });
+        browser ??= await launch();
         await render(browser, job);
+        lastJob = Date.now();
       }
     } catch (e) {
       log("error", { job: job?.id, error: String(e).slice(0, 500) });
       if (job) await api(`/v1/render/jobs/${job.id}/fail`, { method: "POST", body: JSON.stringify({ error: String(e).slice(0, 1900) }) }).catch(() => {});
+      // A crashed browser is not reused.
+      if (job && browser && !browser.connected) browser = null;
     }
     if (once) break;
+    if (!job && browser && Date.now() - lastJob > IDLE_CLOSE_MS) {
+      await browser.close().catch(() => {});
+      browser = null;
+      log("browser closed (idle)");
+    }
     if (!job) await wait(POLL_MS);
   }
-  await browser.close();
+  await browser?.close();
 }
 
 await main();

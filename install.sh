@@ -189,7 +189,12 @@ cmd_status() {
   local url; url="$(site_url)"
   local code; code="$(curl -sk -o /dev/null -w '%{http_code}' --max-time 10 "$url/fa" || true)"
   [ "$code" = 200 ] && echo "${G}●${N} Site $url/fa answers 200" || echo "${R}●${N} Site $url/fa answers $code"
-  if [ "$MODE" = full ]; then compose ps --format 'table {{.Service}}\t{{.State}}\t{{.Status}}'
+  if [ "$MODE" = full ]; then
+    compose ps --format 'table {{.Service}}\t{{.State}}\t{{.Status}}'
+    echo; echo "${B}Memory and CPU per service:${N}"
+    docker stats --no-stream --format 'table {{.Name}}\t{{.MemUsage}}\t{{.CPUPerc}}' $(compose ps -q) 2>/dev/null || true
+    echo; free -h | awk 'NR<=3'
+    echo; echo "${B}Docker disk use:${N}"; docker system df 2>/dev/null || true
   elif systemd; then systemctl --no-pager --lines=0 status arapoush caddy-arapoush 2>/dev/null | grep -E '●|Active:' || true
   else rc-service arapoush status 2>/dev/null || true; fi
   df -h "$APP_DIR" | tail -n1 | awk '{print "Disk: " $4 " free of " $2}'
@@ -330,6 +335,22 @@ full_install() {
   docker compose version >/dev/null 2>&1 || die "Docker with the compose plugin is required for MODE=full"
   have openssl || pkg_install openssl
 
+  # Swap: the stack (ClamAV ~1 GB, the builds ~1.5 GB) needs headroom on 2–4 GB servers.
+  local mem_mb swap_mb
+  mem_mb=$(awk '/MemTotal/ {print int($2/1024)}' /proc/meminfo); swap_mb=$(awk '/SwapTotal/ {print int($2/1024)}' /proc/meminfo)
+  if [ "${NO_SWAP:-0}" != "1" ] && [ "$mem_mb" -lt 6000 ] && [ "$swap_mb" -lt 1000 ] && [ ! -e /swapfile-arapoush ]; then
+    log "Memory ${mem_mb} MB without swap: adding a 2 GB swap file"
+    if (fallocate -l 2G /swapfile-arapoush 2>/dev/null || dd if=/dev/zero of=/swapfile-arapoush bs=1M count=2048 status=none) \
+       && chmod 600 /swapfile-arapoush && mkswap /swapfile-arapoush >/dev/null && swapon /swapfile-arapoush; then
+      grep -q swapfile-arapoush /etc/fstab || echo '/swapfile-arapoush none swap sw 0 0' >> /etc/fstab
+      # Use swap only under pressure, not for idle pages.
+      sysctl -q vm.swappiness=10 2>/dev/null || true
+      grep -q '^vm.swappiness' /etc/sysctl.conf 2>/dev/null || echo 'vm.swappiness=10' >> /etc/sysctl.conf
+    else
+      rm -f /swapfile-arapoush; warn "Could not add swap (container?)."
+    fi
+  fi
+
   # Source at the chosen release (or branch).
   if [ "$VERSION" = latest ]; then
     REF="$(git ls-remote --tags --refs "$REPO_URL" 'v*' | awk -F/ '{print $NF}' | sort -t. -k1.2,1n -k2,2n -k3,3n | tail -n1)"
@@ -394,6 +415,10 @@ full_install() {
     fi
     die "docker compose up failed. Logs: arapoush logs"
   fi
+  # Build layers are not needed once the images exist; they grow by gigabytes with every update.
+  # Keep ~3 GB so the next update still reuses the dependency layers.
+  docker builder prune -af --reserved-space 3GB >/dev/null 2>&1 || docker builder prune -af --keep-storage 3GB >/dev/null 2>&1 || true
+  docker image prune -f >/dev/null 2>&1 || true
   # The API runs as a non-root user: give it the backup and archive folders.
   compose run --rm --no-deps --user root --entrypoint sh opex-api -c 'chown -R opex /backups /archive' >/dev/null 2>&1 || true
 
