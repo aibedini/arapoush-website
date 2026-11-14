@@ -22,7 +22,11 @@ RUN apk add --no-cache tini && addgroup -S opex && adduser -S opex -G opex
 WORKDIR /app
 ENV NODE_ENV=production HOST=0.0.0.0 PORT=4000 DATA_DIR=/data MEDIA_DIR=/data/media
 COPY --from=build --chown=opex:opex /out ./
-RUN mkdir -p /data/media && chown -R opex:opex /data
+# @arapoush/schema ships TypeScript source. Node refuses to strip types under node_modules, so the
+# package is linked from its real folder (outside node_modules), as it is in the workspace.
+COPY --from=build --chown=opex:opex /repo/packages/schema ./packages/schema
+RUN rm -rf node_modules/@arapoush/schema && mkdir -p node_modules/@arapoush && ln -s ../../packages/schema node_modules/@arapoush/schema \
+  && mkdir -p /data/media && chown -R opex:opex /data
 USER opex
 VOLUME ["/data"]
 EXPOSE 4000
