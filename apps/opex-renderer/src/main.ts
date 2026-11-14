@@ -151,7 +151,8 @@ async function main() {
     executablePath: CHROME,
     headless: true,
     // Software WebGL: the server has no GPU. Sandboxing stays on unless the container forbids it.
-    args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--disable-dev-shm-usage", ...(process.env.CHROME_NO_SANDBOX ? ["--no-sandbox"] : [])],
+    // The crash reporter needs a writable crashpad database, which the read-only container does not have.
+    args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--disable-dev-shm-usage", "--disable-crash-reporter", ...(process.env.CHROME_NO_SANDBOX ? ["--no-sandbox"] : [])],
   });
   log("renderer ready", { opex: OPEX, chrome: CHROME });
   let stop = false;
