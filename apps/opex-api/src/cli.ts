@@ -11,6 +11,12 @@ import { verifyChain } from "./audit/audit.ts";
 import { COMMANDS } from "./commands.ts";
 
 const [cmd, ...args] = process.argv.slice(2);
+// The installer runs this before any configuration exists (it creates the secrets), so it needs
+// neither the config nor the database.
+if (cmd === "keys:generate") {
+  await COMMANDS[cmd]!(undefined as never, args);
+  process.exit(0);
+}
 const config = loadConfig();
 const db = await openDb({ url: config.DATABASE_URL, dataDir: config.DATA_DIR });
 try {
