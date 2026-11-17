@@ -182,9 +182,18 @@ export function Shell({ children }: { children: React.ReactNode }) {
             <span>کنسول اپراتور</span>
           </div>
           <nav className="nav" aria-label="بخش‌ها">
+            {me.mustChangePassword && (
+              <p className="small muted" role="note" style={{ padding: "0 10px 8px" }}>
+                برای باز شدن بقیهٔ بخش‌ها، اول در «حساب من» رمز موقت را عوض کنید.
+              </p>
+            )}
             {NAV.map((g) => {
-              const items = g.items.filter(
-                (n) => !n.perm || can(me, n.perm),
+              // A temporary password opens only the account page, so the menu shows only that link
+              // (other links would bounce straight back and look broken).
+              const items = g.items.filter((n) =>
+                me.mustChangePassword
+                  ? n.href === "/account"
+                  : !n.perm || can(me, n.perm),
               );
               if (!items.length) return null;
               return (

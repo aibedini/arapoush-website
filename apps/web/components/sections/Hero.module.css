@@ -459,3 +459,13 @@
     height: 34px;
   }
 }
+
+/* Only the first slide shows before the slideshow script runs (slow devices and connections, or no
+   JavaScript): the others stack in the same cell and would print over it. GSAP's inline
+   visibility/opacity takes over once it starts. */
+.hero [data-slide-copy]:not([data-index="0"]),
+.hero [data-slide-product]:not([data-index="0"]),
+.hero [data-slide-bg]:not([data-index="0"]) {
+  visibility: hidden;
+  opacity: 0;
+}

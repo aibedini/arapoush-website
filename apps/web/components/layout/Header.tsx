@@ -6,9 +6,6 @@ import { useEffect, useRef, useState } from "react";
 import RollText from "@/components/ui/RollText";
 import { Highlight, HighlightItem } from "@animate-ui/react/primitives/effects/highlight";
 import { Shine } from "@animate-ui/react/primitives/effects/shine";
-// GSAP loads on the first menu open, not with the page (it stays out of every page's startup JS).
-const motion = () => import("@/lib/animations/motion");
-const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 import { locales, localeMeta, type Dictionary, type Locale } from "@/lib/i18n";
 import { homeHref } from "@/lib/site";
 import { ArrowRight, ArrowRightCircle } from "@/components/ui/icons";
@@ -69,24 +66,16 @@ export default function Header({ t, locale, path = "", paths }: Props) {
 
   // Mobile/tablet menu: staggered reveal, scroll lock, Escape + focus containment.
   useEffect(() => {
+    // Opening and closing are pure CSS (data-open on the panel): the menu never waits on a script
+    // download or an animation frame, so it opens on slow phones and in background tabs too.
     const el = panel.current;
     if (!el) return;
-    const items = el.querySelectorAll("[data-menu-item]");
-    const reduce = reducedMotion();
     const html = document.documentElement;
 
     const prevOpen = wasOpen.current;
     wasOpen.current = open;
     if (open) {
       html.style.overflow = "hidden";
-      el.style.display = "flex";
-      if (!reduce)
-        void motion().then(({ gsap, ease, registerGsap }) => {
-          registerGsap();
-          gsap.fromTo(el, { clipPath: "inset(0% 0% 100% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.6, ease: ease.inOut });
-          // opacity (not autoAlpha) so links stay focusable while they animate in
-          gsap.fromTo(items, { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.05, delay: 0.18, ease: ease.out });
-        });
       el.querySelector<HTMLElement>("a, button")?.focus();
 
       const onKey = (e: KeyboardEvent) => {
@@ -110,11 +99,6 @@ export default function Header({ t, locale, path = "", paths }: Props) {
     if (!prevOpen) return;
     html.style.overflow = "";
     toggle.current?.focus();
-    if (reduce) el.style.display = "none";
-    else
-      void motion().then(({ gsap, ease }) => {
-        gsap.to(el, { clipPath: "inset(0% 0% 100% 0%)", duration: 0.5, ease: ease.inOut, onComplete: () => void (el.style.display = "none") });
-      });
   }, [open]);
 
   const close = () => setOpen(false);
@@ -177,7 +161,7 @@ export default function Header({ t, locale, path = "", paths }: Props) {
       </header>
 
       {/* Outside <header>: its backdrop-filter would otherwise trap this fixed panel. */}
-      <div ref={panel} id="mobile-menu" className={styles.panel} aria-hidden={!open}>
+      <div ref={panel} id="mobile-menu" className={styles.panel} data-open={open} aria-hidden={!open}>
         <nav aria-label={t.nav.mobile}>
           <ul>
             <Highlight controlledItems hover className={styles.menuPill} transition={glide}>

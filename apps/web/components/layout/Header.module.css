@@ -213,8 +213,51 @@
     gap: 32px;
     padding: calc(var(--header-h) + 24px) var(--gutter) 32px;
     background: var(--cream);
-    clip-path: inset(0% 0% 100% 0%);
     overflow-y: auto;
+    /* Closed: laid out but clipped away and hidden; visibility waits for the wipe to finish. */
+    display: flex;
+    visibility: hidden;
+    clip-path: inset(0% 0% 100% 0%);
+    transition:
+      clip-path 0.5s cubic-bezier(0.7, 0, 0.2, 1),
+      visibility 0s linear 0.5s;
+  }
+  .panel[data-open="true"] {
+    visibility: visible;
+    clip-path: inset(0% 0% 0% 0%);
+    transition:
+      clip-path 0.6s cubic-bezier(0.7, 0, 0.2, 1),
+      visibility 0s;
+  }
+  .panel [data-menu-item] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease;
+  }
+  .panel[data-open="true"] [data-menu-item] {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0.18s),
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0.18s);
+  }
+  /* Stagger: each link 50ms after the one before, the footer last. */
+  .panel li[data-menu-item]:nth-child(2) { --d: 0.23s; }
+  .panel li[data-menu-item]:nth-child(3) { --d: 0.28s; }
+  .panel li[data-menu-item]:nth-child(4) { --d: 0.33s; }
+  .panel li[data-menu-item]:nth-child(5) { --d: 0.38s; }
+  .panel li[data-menu-item]:nth-child(6) { --d: 0.43s; }
+  .panel li[data-menu-item]:nth-child(n + 7) { --d: 0.48s; }
+  .panel div[data-menu-item] { --d: 0.52s; }
+  @media (prefers-reduced-motion: reduce) {
+    .panel,
+    .panel[data-open="true"],
+    .panel [data-menu-item],
+    .panel[data-open="true"] [data-menu-item] {
+      transition: none;
+    }
   }
   .panel ul {
     display: flex;
