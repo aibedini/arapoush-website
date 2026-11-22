@@ -16,6 +16,10 @@ import { hasAnalytics, siteSettings } from "@/lib/settings";
 
 type Params = Promise<{ locale: string }>;
 
+// Safety net for a missed publish webhook: pages built from the snapshot (the image build cannot reach
+// OPEX) would otherwise stay static until the next deploy.
+export const revalidate = 3600;
+
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }

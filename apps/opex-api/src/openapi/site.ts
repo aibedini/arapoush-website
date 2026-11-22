@@ -59,7 +59,7 @@ export const SITE: Record<string, RouteContract> = {
     method: "POST",
     path: "/api/opex/revalidate",
     summary: "Webhook receiver: OPEX published something; refresh the pages",
-    description: "Verifies `OPEX-Signature` (HMAC-SHA256 with OPEX_WEBHOOK_SECRET over `t.body`, 5-minute window) and refuses a repeated event id, then revalidates the `opex` cache tag.",
+    description: "Verifies `OPEX-Signature` (HMAC-SHA256 with OPEX_WEBHOOK_SECRET over `t.body`, 5-minute window) and refuses a repeated event id, then revalidates the `opex` cache tag and every page under the root layout (pages built without OPEX carry no tag).",
     auth: "none",
     source: "apps/web/app/api/opex/revalidate/route.ts",
     headers: [{ name: "OPEX-Signature", required: true, description: "t=<unix>, v1=<hex HMAC>" }],

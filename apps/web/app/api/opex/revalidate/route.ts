@@ -1,4 +1,4 @@
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { replayCache, verifySignature } from "@/lib/content/webhook";
 
 /**
@@ -24,5 +24,8 @@ export async function POST(req: Request) {
   if (typeof event.id !== "string" || !fresh(event.id)) return new Response(null, { status: 409 });
   // One tag covers the bundle every page reads; global.site changes reach every page this way too.
   revalidateTag("opex");
+  // Pages prerendered while OPEX was off (the image build has no delivery token, so no fetch ran and the
+  // pages carry no `opex` tag) are only reached by path: refresh every page and route under the root layout.
+  revalidatePath("/", "layout");
   return new Response(null, { status: 204 });
 }
