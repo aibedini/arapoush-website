@@ -7508,7 +7508,7 @@
                 }
               }
             },
-            "description": "Verifies `OPEX-Signature` (HMAC-SHA256 with OPEX_WEBHOOK_SECRET over `t.body`, 5-minute window) and refuses a repeated event id, then revalidates the `opex` cache tag.\n\nSource: apps/web/app/api/opex/revalidate/route.ts"
+            "description": "Verifies `OPEX-Signature` (HMAC-SHA256 with OPEX_WEBHOOK_SECRET over `t.body`, 5-minute window) and refuses a repeated event id, then revalidates the `opex` cache tag and every page under the root layout (pages built without OPEX carry no tag).\n\nSource: apps/web/app/api/opex/revalidate/route.ts"
           }
         },
         {
