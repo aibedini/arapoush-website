@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowClockwise, ArrowCounterClockwise, ArrowDown, ArrowUp, Copy, DesktopTower, DeviceMobile, DeviceTablet, DotsSixVertical, Eye, EyeSlash, Plus, Question, Rows, TextAa, Image as ImageIcon, Megaphone, ListChecks, ArrowsVertical, Trash, UploadSimple, PaintBrush } from "@phosphor-icons/react";
 import { BLOCK_FIELDS, BLOCK_KINDS, BLOCK_PROPS, getAt, isBlockKind, newBlock, PAGE_LAYOUTS, SECTION_ENTRY, setAt, type BlockKind, type GroupField, type LayoutSection } from "@arapoush/schema";
+import { AiTranslateButton, type TranslateTarget } from "@/components/AiTranslate";
 import { api, ApiError } from "@/lib/api";
 import { canWrite, useMe } from "@/lib/hooks";
 import { num } from "@/lib/fa";
@@ -284,6 +285,14 @@ export default function Visual() {
     if (!d || !key) return null;
     return { title: def?.label ?? (key === "global.site" ? "سربرگ و پانویس" : "محتوای صفحه"), schema: d.schema, value: d.data, onChange: (v: Record<string, unknown>) => change(key, v, "whole") };
   })();
+  // AI translation of what the inspector shows: a block is one item of the layout list; a built-in section is its whole entry.
+  const translateTarget: TranslateTarget | null = (() => {
+    if (!selected) return null;
+    if (selSection && isBlockKind(selSection.type)) return L ? { kind: "entry", type: L.entry, scope: `${L.path}[id=${selSection.id}]` } : null;
+    const def = selSection ? sectionDef(selSection.type) : undefined;
+    const key = def ? def.entry : selected.entry;
+    return key ? { kind: "entry", type: key } : null;
+  })();
   // Inspector edits save after a pause (typing in a field is many changes).
   const [draftInspector, setDraftInspector] = useState<Record<string, unknown> | null>(null);
   useEffect(() => setDraftInspector(null), [selected?.section, selected?.entry]);
@@ -461,7 +470,23 @@ export default function Visual() {
             </div>
           ) : (
             <>
-              <h2>{inspector.title}</h2>
+              <div className="row" style={{ justifyContent: "space-between", marginBlockEnd: 8 }}>
+                <h2 style={{ margin: 0 }}>{inspector.title}</h2>
+                {edit && translateTarget && (
+                  <AiTranslateButton
+                    small
+                    label="ترجمه"
+                    title={`ترجمهٔ «${inspector.title}» با هوش مصنوعی`}
+                    target={translateTarget}
+                    beforeRun={flush}
+                    onDone={(r) => {
+                      if (!r.written) return;
+                      void load();
+                      reloadFrame();
+                    }}
+                  />
+                )}
+              </div>
               {selSection && (sectionDef(selSection.type)?.styles.length ?? 0) > 0 && (
                 <label className="stack" style={{ gap: 4, marginBlockEnd: 12 }}>
                   <span className="small" style={{ fontWeight: 600 }}>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BLOG_PRODUCTS, emptyTranslation, isLive, LOCALES, slugify, type BlogFaq, type BlogPostData, type BlogSource, type BlogTranslation, type Locale } from "@arapoush/schema";
+import { AiTranslateButton } from "@/components/AiTranslate";
 import { api, ApiError } from "@/lib/api";
 import { can, useAction, useApi, useMe } from "@/lib/hooks";
 import { ago, when } from "@/lib/fa";
@@ -192,6 +193,24 @@ export default function PostEditor() {
               ))}
             </div>
 
+            {ai && editable && LOCALES.some((l) => data.translations[l]?.title) && (
+              <div className="row" style={{ gap: 6 }}>
+                <AiTranslateButton
+                  small
+                  label="ترجمه به چند زبان"
+                  title="ترجمهٔ این مقاله با هوش مصنوعی"
+                  target={{ kind: "post", id }}
+                  beforeRun={thenSave}
+                  onDone={(r) => {
+                    if (!r.written) return;
+                    setData(null);
+                    post.reload();
+                    revs.reload();
+                  }}
+                />
+                <span className="small muted">ترجمه و ذخیرهٔ همهٔ زبان‌ها یکجا (در پیش‌نویس).</span>
+              </div>
+            )}
             {ai && editable && LOCALES.some((l) => l !== loc && data.translations[l]?.title) && (
               <div className="row" style={{ gap: 6 }}>
                 <span className="small muted">پیش‌نویس ترجمه با هوش مصنوعی از:</span>

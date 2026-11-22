@@ -13,6 +13,7 @@ import { Dialog, ErrorNote, Loading, PageHead } from "@/components/ui";
 import { CapPositions } from "@/components/CapPositions";
 import { RenderPanel } from "@/components/RenderPanel";
 import { PreviewFrames } from "@/components/PreviewFrames";
+import { AiTranslateButton } from "@/components/AiTranslate";
 
 type Change = { op: string; path: string; old?: unknown; new?: unknown };
 type EntryView = {
@@ -143,6 +144,15 @@ export default function EditEntry() {
   return (
     <>
       <PageHead title={types.data?.find((t) => t.key === key)?.label ?? key} sub={key}>
+        {writable && (
+          <AiTranslateButton
+            target={{ kind: "entry", type: key }}
+            title={`ترجمهٔ «${types.data?.find((t) => t.key === key)?.label ?? key}»`}
+            // Unsaved edits are saved first, so the translation starts from what is on screen.
+            beforeRun={dirty ? () => api(`/v1/manage/entries/${encodeURIComponent(key)}`, { method: "PUT", body: { data, base_revision_id: view.data?.draft?.id ?? null } }) : undefined}
+            onDone={(r) => r.written > 0 && refresh()}
+          />
+        )}
         {visualPage && (
           <Link className="btn" href={`/visual?page=${visualPage}`}>
             <PaintBrush size={16} aria-hidden /> ویرایش روی صفحه

@@ -30,6 +30,7 @@ import {
   GearSix,
   Database,
   Article,
+  Translate,
   type Icon,
 } from "@phosphor-icons/react";
 
@@ -57,6 +58,7 @@ const NAV: { group: string; items: Item[] }[] = [
       { href: "/blog", label: "بلاگ (مجله)", icon: Article, perm: "blog.read" },
       { href: "/visual", label: "ویرایشگر بصری", icon: PaintBrush, perm: "preview.use" },
       { href: "/content", label: "محتوا (فیلدها)", icon: TextAa, perm: "content.read" },
+      { href: "/translate", label: "ترجمه با هوش مصنوعی", icon: Translate, perm: "content.write" },
       { href: "/catalogue", label: "کاتالوگ تیوب", icon: Package, perm: "catalogue.write" },
       { href: "/forms", label: "فرم‌ها", icon: ListChecks, perm: "forms.read" },
       { href: "/media", label: "رسانه", icon: Images, perm: "media.read" },
