@@ -6,8 +6,25 @@ import sharp from "sharp";
  * or the client's Content-Type. Images are re-encoded (strips EXIF/GPS, normalises to sRGB, kills
  * polyglots); SVG and PDF are checked for active content.
  */
-export type Kind = "jpeg" | "png" | "webp" | "avif" | "gif" | "svg" | "pdf";
-export const MIME: Record<Kind, string> = { jpeg: "image/jpeg", png: "image/png", webp: "image/webp", avif: "image/avif", gif: "image/gif", svg: "image/svg+xml", pdf: "application/pdf" };
+export type Kind = "jpeg" | "png" | "webp" | "avif" | "gif" | "svg" | "pdf" | "mp4" | "webm" | "woff2" | "woff" | "ttf" | "otf";
+export const MIME: Record<Kind, string> = {
+  jpeg: "image/jpeg",
+  png: "image/png",
+  webp: "image/webp",
+  avif: "image/avif",
+  gif: "image/gif",
+  svg: "image/svg+xml",
+  pdf: "application/pdf",
+  mp4: "video/mp4",
+  webm: "video/webm",
+  woff2: "font/woff2",
+  woff: "font/woff",
+  ttf: "font/ttf",
+  otf: "font/otf",
+};
+export const RASTER: Kind[] = ["jpeg", "png", "webp", "avif", "gif"];
+/** Stored as uploaded after the type check: videos (slider backgrounds) and web fonts. */
+export const PASSTHROUGH: Kind[] = ["mp4", "webm", "woff2", "woff", "ttf", "otf"];
 
 export function sniff(buf: Buffer): Kind | null {
   const h = (s: number, e: number) => buf.subarray(s, e);
@@ -18,6 +35,14 @@ export function sniff(buf: Buffer): Kind | null {
   if (h(4, 12).toString("latin1") === "ftypavif") return "avif";
   if (h(0, 6).toString("latin1") === "GIF87a" || h(0, 6).toString("latin1") === "GIF89a") return "gif";
   if (h(0, 5).toString("latin1") === "%PDF-") return "pdf";
+  // ISO media (ftyp box); image brands (AVIF/HEIF) are not video.
+  if (h(4, 8).toString("latin1") === "ftyp" && /^(isom|iso[2-9]|mp4[12v]|avc1|dash|M4V |msnv|f4v )$/.test(h(8, 12).toString("latin1"))) return "mp4";
+  if (h(0, 4).equals(Buffer.from([0x1a, 0x45, 0xdf, 0xa3])) && buf.subarray(0, 64).toString("latin1").includes("webm")) return "webm";
+  const tag = h(0, 4).toString("latin1");
+  if (tag === "wOF2") return "woff2";
+  if (tag === "wOFF") return "woff";
+  if (tag === "OTTO") return "otf";
+  if (h(0, 4).equals(Buffer.from([0x00, 0x01, 0x00, 0x00])) || tag === "true") return "ttf";
   const head = buf.subarray(0, 2048).toString("utf8").trimStart().toLowerCase();
   if ((head.startsWith("<?xml") || head.startsWith("<svg")) && head.includes("<svg")) return "svg";
   return null;
@@ -38,16 +63,48 @@ export function checkPdf(buf: Buffer) {
   for (const k of ["/JavaScript", "/JS ", "/JS(", "/JS<", "/Launch", "/EmbeddedFile", "/RichMedia", "/XFA"]) if (s.includes(k)) throw new Rejected(`PDF contains ${k.trim()}`);
 }
 
-/** Re-encodes a raster image: WebP (or keeps GIF frames out), max 4096 px, metadata stripped. */
-export async function reencode(buf: Buffer) {
-  const img = sharp(buf, { limitInputPixels: 50_000_000, failOn: "error" }).rotate();
+/**
+ * How much an upload is compressed (the console asks; integrations that don't keep `standard`).
+ * - `original`: the uploaded format at full quality (lossless where the format allows), up to 8192 px.
+ * - `standard`: WebP 88, up to 4096 px (the long-standing default).
+ * - `balanced`: WebP 82, up to 2560 px.
+ * - `max`: WebP 68, up to 1920 px.
+ * Every mode re-encodes, so metadata (EXIF, GPS) is always stripped. Transparency (PNG, WebP) survives.
+ */
+export const COMPRESSION = ["original", "standard", "balanced", "max"] as const;
+export type Compression = (typeof COMPRESSION)[number];
+const LIMIT: Record<Compression, number> = { original: 8192, standard: 4096, balanced: 2560, max: 1920 };
+
+/** Re-encodes a raster image (metadata stripped, sRGB). Returns the stored bytes and their type. */
+export async function reencode(buf: Buffer, mode: Compression = "standard", kind?: Kind) {
+  const animated = kind === "gif" || kind === "webp";
+  const img = sharp(buf, { limitInputPixels: 50_000_000, failOn: "error", animated: mode === "original" && animated }).rotate();
   const meta = await img.metadata();
-  const out = await img
-    .resize({ width: 4096, height: 4096, fit: "inside", withoutEnlargement: true })
-    .toColorspace("srgb")
-    .webp({ quality: 88, effort: 4 })
-    .toBuffer({ resolveWithObject: true });
-  return { buf: out.data, width: out.info.width, height: out.info.height, sourceFormat: meta.format };
+  const size = LIMIT[mode];
+  const resized = img.resize({ width: size, height: size, fit: "inside", withoutEnlargement: true }).toColorspace("srgb");
+  let out: { data: Buffer; info: { width: number; height: number } };
+  let mime = "image/webp";
+  if (mode === "original" && kind === "jpeg") {
+    out = await resized.jpeg({ quality: 100, chromaSubsampling: "4:4:4", mozjpeg: true }).toBuffer({ resolveWithObject: true });
+    mime = "image/jpeg";
+  } else if (mode === "original" && kind === "png") {
+    out = await resized.png({ compressionLevel: 9 }).toBuffer({ resolveWithObject: true });
+    mime = "image/png";
+  } else if (mode === "original" && kind === "gif") {
+    out = await resized.gif().toBuffer({ resolveWithObject: true });
+    mime = "image/gif";
+  } else if (mode === "original" && kind === "avif") {
+    out = await resized.avif({ lossless: true }).toBuffer({ resolveWithObject: true });
+    mime = "image/avif";
+  } else if (mode === "original") {
+    out = await resized.webp({ lossless: true }).toBuffer({ resolveWithObject: true });
+  } else {
+    const quality = mode === "max" ? 68 : mode === "balanced" ? 82 : 88;
+    out = await resized.webp({ quality, alphaQuality: 90, effort: mode === "max" ? 6 : 4 }).toBuffer({ resolveWithObject: true });
+  }
+  // Animated sources report the full strip height; one frame is what pages lay out.
+  const height = meta.pages && meta.pages > 1 && meta.pageHeight ? Math.round((meta.pageHeight * out.info.width) / (meta.width ?? out.info.width)) : out.info.height;
+  return { buf: out.data, width: out.info.width, height, mime, sourceFormat: meta.format };
 }
 
 /** ClamAV INSTREAM scan. Returns "clean", "infected:<signature>", or throws when unreachable. */

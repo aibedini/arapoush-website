@@ -11,6 +11,8 @@ import {
   Bell,
   BookOpenText,
   PaintBrush,
+  Slideshow,
+  TextAUnderline,
   ClockCounterClockwise,
   GitPullRequest,
   Handshake,
@@ -57,6 +59,8 @@ const NAV: { group: string; items: Item[] }[] = [
     items: [
       { href: "/blog", label: "بلاگ (مجله)", icon: Article, perm: "blog.read" },
       { href: "/visual", label: "ویرایشگر بصری", icon: PaintBrush, perm: "preview.use" },
+      { href: "/slider", label: "اسلایدساز", icon: Slideshow, perm: "content.read" },
+      { href: "/fonts", label: "فونت‌ها", icon: TextAUnderline, perm: "content.read" },
       { href: "/content", label: "محتوا (فیلدها)", icon: TextAa, perm: "content.read" },
       { href: "/translate", label: "ترجمه با هوش مصنوعی", icon: Translate, perm: "content.write" },
       { href: "/catalogue", label: "کاتالوگ تیوب", icon: Package, perm: "catalogue.write" },

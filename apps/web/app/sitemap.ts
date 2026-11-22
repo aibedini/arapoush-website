@@ -24,7 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const about = getAbout();
   const src = (list: ({ src: string } | undefined | null)[]) => [...new Set(list.filter((x): x is { src: string } => !!x?.src).map((x) => x.src))];
   const pages = [
-    { path: "", types: ["page.home", "global."], images: src([media.hero.slides[0]?.product, ...media.products.cards.map((c) => c.image)]) },
+    { path: "", types: ["page.home", "global."], images: src([media.slider.slides[0]?.product?.image ?? media.hero.slides[0]?.product, ...media.products.cards.map((c) => c.image)]) },
     { path: productPaths.tube, types: ["product.tube", "global."], images: src([media.products.cards[0]?.image, media.site.ctaTube, tube.images?.hero ? { src: tube.images.hero.ltr } : null, ...tube.samples.map((x) => ({ src: x.image }))]) },
     { path: applicationsPath, types: ["page.applications", "global."], images: src([...apps.industries.items.map((x) => x.image), ...apps.projects.items.map((p) => p.image)]) },
     { path: printingPath, types: ["page.printing", "global."], images: src([media.printing.tubeGold, media.printing.tubeColour, media.printing.layers, ...printing.tech.items.map((m) => m.macro)]) },

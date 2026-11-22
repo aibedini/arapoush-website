@@ -51,6 +51,7 @@ Locally the tests use the installed Chrome. In CI they use Playwright's Chromium
 | console | `components/ClosureModels.stories.tsx` | review (fixtures), anchor suggestion, bulk queue matched by file name, approve all confident |
 | console | `components/catalogue/CatalogueManager.stories.tsx` | overview, closure fit and undo, shape sizes, id rename saved with its references |
 | console | `components/FieldEditor.stories.tsx` | localized text, all languages, list of items, choice |
+| console | `components/slider/fields.stories.tsx` | slider inspector fields: desktop, mobile override with reset, three languages |
 
 ## Conventions
 

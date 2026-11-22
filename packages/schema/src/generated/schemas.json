@@ -363,6 +363,153 @@
        "perLocale": true
       }
      }
+    },
+    "fonts": {
+     "kind": "group",
+     "label": "Fonts",
+     "fields": {
+      "families": {
+       "kind": "list",
+       "key": "key",
+       "max": 30,
+       "label": "Uploaded font families",
+       "of": {
+        "kind": "group",
+        "fields": {
+         "key": {
+          "kind": "text",
+          "localized": false,
+          "max": 40,
+          "required": true,
+          "label": "Key"
+         },
+         "name": {
+          "kind": "text",
+          "localized": false,
+          "max": 80,
+          "required": true,
+          "label": "Name"
+         },
+         "fallback": {
+          "kind": "enum",
+          "values": [
+           "sans",
+           "serif",
+           "mono"
+          ],
+          "label": "Fallback"
+         },
+         "files": {
+          "kind": "list",
+          "max": 12,
+          "label": "Files",
+          "of": {
+           "kind": "group",
+           "fields": {
+            "src": {
+             "kind": "file",
+             "formats": [
+              "woff2",
+              "woff",
+              "ttf",
+              "otf"
+             ],
+             "required": true,
+             "label": "File"
+            },
+            "weight": {
+             "kind": "number",
+             "integer": true,
+             "min": 100,
+             "max": 900,
+             "label": "Weight"
+            },
+            "style": {
+             "kind": "enum",
+             "values": [
+              "normal",
+              "italic"
+             ],
+             "label": "Style"
+            }
+           }
+          }
+         }
+        }
+       }
+      },
+      "locales": {
+       "kind": "group",
+       "label": "Per language",
+       "fields": {
+        "fa": {
+         "kind": "group",
+         "fields": {
+          "body": {
+           "kind": "text",
+           "localized": false,
+           "max": 40,
+           "label": "Text font"
+          },
+          "heading": {
+           "kind": "text",
+           "localized": false,
+           "max": 40,
+           "label": "Heading font"
+          }
+         },
+         "label": "fa"
+        },
+        "en": {
+         "kind": "group",
+         "fields": {
+          "body": {
+           "kind": "text",
+           "localized": false,
+           "max": 40,
+           "label": "Text font"
+          },
+          "heading": {
+           "kind": "text",
+           "localized": false,
+           "max": 40,
+           "label": "Heading font"
+          }
+         },
+         "label": "en"
+        },
+        "tr": {
+         "kind": "group",
+         "fields": {
+          "body": {
+           "kind": "text",
+           "localized": false,
+           "max": 40,
+           "label": "Text font"
+          },
+          "heading": {
+           "kind": "text",
+           "localized": false,
+           "max": 40,
+           "label": "Heading font"
+          }
+         },
+         "label": "tr"
+        }
+       }
+      },
+      "sections": {
+       "kind": "map",
+       "keyPattern": "^[A-Za-z][\\w-]{0,39}$",
+       "keyLabel": "Section",
+       "label": "Per section",
+       "of": {
+        "kind": "text",
+        "localized": false,
+        "max": 40
+       }
+      }
+     }
     }
    }
   }
@@ -628,6 +775,1303 @@
         }
        },
        "key": "id"
+      }
+     }
+    },
+    "slider": {
+     "kind": "group",
+     "label": "Slider",
+     "fields": {
+      "settings": {
+       "kind": "group",
+       "label": "Settings",
+       "fields": {
+        "transition": {
+         "kind": "enum",
+         "values": [
+          "wipe",
+          "fade",
+          "slide",
+          "zoom",
+          "circle",
+          "curtain",
+          "none"
+         ],
+         "label": "Transition"
+        },
+        "duration": {
+         "kind": "number",
+         "min": 0.2,
+         "max": 4,
+         "integer": false,
+         "label": "Transition time (s)"
+        },
+        "autoplay": {
+         "kind": "boolean",
+         "label": "Autoplay"
+        },
+        "interval": {
+         "kind": "number",
+         "min": 2,
+         "max": 60,
+         "integer": false,
+         "label": "Seconds per slide"
+        },
+        "pauseOnHover": {
+         "kind": "boolean",
+         "label": "Pause on hover"
+        },
+        "arrows": {
+         "kind": "boolean",
+         "label": "Arrows"
+        },
+        "numbers": {
+         "kind": "boolean",
+         "label": "Slide numbers"
+        }
+       }
+      },
+      "slides": {
+       "kind": "list",
+       "key": "key",
+       "max": 20,
+       "label": "Slides",
+       "of": {
+        "kind": "group",
+        "label": "Slide",
+        "fields": {
+         "key": {
+          "kind": "text",
+          "localized": false,
+          "max": 40,
+          "label": "Key",
+          "required": true
+         },
+         "name": {
+          "kind": "text",
+          "localized": false,
+          "max": 80,
+          "label": "Name"
+         },
+         "enabled": {
+          "kind": "boolean",
+          "label": "Shown"
+         },
+         "tone": {
+          "kind": "enum",
+          "values": [
+           "light",
+           "dark"
+          ],
+          "label": "Tone"
+         },
+         "transition": {
+          "kind": "enum",
+          "values": [
+           "inherit",
+           "wipe",
+           "fade",
+           "slide",
+           "zoom",
+           "circle",
+           "curtain",
+           "none"
+          ],
+          "label": "Transition"
+         },
+         "interval": {
+          "kind": "number",
+          "min": 0,
+          "max": 60,
+          "integer": false,
+          "label": "Seconds (0 = slider)"
+         },
+         "background": {
+          "kind": "group",
+          "label": "Background",
+          "fields": {
+           "imageRtl": {
+            "kind": "image",
+            "label": "Right-to-left image (Persian)"
+           },
+           "color": {
+            "kind": "text",
+            "localized": false,
+            "max": 40,
+            "label": "Colour"
+           },
+           "mirrorRtl": {
+            "kind": "boolean",
+            "label": "Mirror in right-to-left"
+           },
+           "kenBurns": {
+            "kind": "boolean",
+            "label": "Slow zoom (Ken Burns)"
+           },
+           "image": {
+            "kind": "image",
+            "label": "Image"
+           },
+           "video": {
+            "kind": "file",
+            "formats": [
+             "mp4",
+             "webm"
+            ],
+            "label": "Video (mp4/webm)"
+           },
+           "noVideo": {
+            "kind": "boolean",
+            "label": "No video on this device"
+           },
+           "focusX": {
+            "kind": "number",
+            "min": 0,
+            "max": 100,
+            "integer": false,
+            "label": "Focus across (%)"
+           },
+           "focusY": {
+            "kind": "number",
+            "min": 0,
+            "max": 100,
+            "integer": false,
+            "label": "Focus down (%)"
+           },
+           "overlay": {
+            "kind": "text",
+            "localized": false,
+            "max": 40,
+            "label": "Overlay colour"
+           },
+           "wash": {
+            "kind": "enum",
+            "values": [
+             "auto",
+             "light",
+             "dark",
+             "none"
+            ],
+            "label": "Wash behind the copy"
+           },
+           "tablet": {
+            "kind": "group",
+            "label": "Tablet",
+            "fields": {
+             "image": {
+              "kind": "image",
+              "label": "Image"
+             },
+             "video": {
+              "kind": "file",
+              "formats": [
+               "mp4",
+               "webm"
+              ],
+              "label": "Video (mp4/webm)"
+             },
+             "noVideo": {
+              "kind": "boolean",
+              "label": "No video on this device"
+             },
+             "focusX": {
+              "kind": "number",
+              "min": 0,
+              "max": 100,
+              "integer": false,
+              "label": "Focus across (%)"
+             },
+             "focusY": {
+              "kind": "number",
+              "min": 0,
+              "max": 100,
+              "integer": false,
+              "label": "Focus down (%)"
+             },
+             "overlay": {
+              "kind": "text",
+              "localized": false,
+              "max": 40,
+              "label": "Overlay colour"
+             },
+             "wash": {
+              "kind": "enum",
+              "values": [
+               "auto",
+               "light",
+               "dark",
+               "none"
+              ],
+              "label": "Wash behind the copy"
+             }
+            }
+           },
+           "mobile": {
+            "kind": "group",
+            "label": "Mobile",
+            "fields": {
+             "image": {
+              "kind": "image",
+              "label": "Image"
+             },
+             "video": {
+              "kind": "file",
+              "formats": [
+               "mp4",
+               "webm"
+              ],
+              "label": "Video (mp4/webm)"
+             },
+             "noVideo": {
+              "kind": "boolean",
+              "label": "No video on this device"
+             },
+             "focusX": {
+              "kind": "number",
+              "min": 0,
+              "max": 100,
+              "integer": false,
+              "label": "Focus across (%)"
+             },
+             "focusY": {
+              "kind": "number",
+              "min": 0,
+              "max": 100,
+              "integer": false,
+              "label": "Focus down (%)"
+             },
+             "overlay": {
+              "kind": "text",
+              "localized": false,
+              "max": 40,
+              "label": "Overlay colour"
+             },
+             "wash": {
+              "kind": "enum",
+              "values": [
+               "auto",
+               "light",
+               "dark",
+               "none"
+              ],
+              "label": "Wash behind the copy"
+             }
+            }
+           }
+          }
+         },
+         "copy": {
+          "kind": "group",
+          "label": "Copy",
+          "fields": {
+           "title": {
+            "kind": "text",
+            "localized": true,
+            "multiline": true,
+            "max": 200,
+            "label": "Title (a second line is muted)"
+           },
+           "lead": {
+            "kind": "text",
+            "localized": true,
+            "multiline": true,
+            "max": 400,
+            "label": "Lead"
+           },
+           "hidden": {
+            "kind": "boolean",
+            "label": "Hidden"
+           },
+           "dx": {
+            "kind": "number",
+            "min": -100,
+            "max": 100,
+            "integer": false,
+            "label": "Move across (% of width)"
+           },
+           "dy": {
+            "kind": "number",
+            "min": -100,
+            "max": 100,
+            "integer": false,
+            "label": "Move down (% of width)"
+           },
+           "z": {
+            "kind": "number",
+            "min": 0,
+            "max": 100,
+            "integer": true,
+            "label": "Stacking order"
+           },
+           "color": {
+            "kind": "text",
+            "localized": false,
+            "max": 40,
+            "label": "Title colour"
+           },
+           "mutedColor": {
+            "kind": "text",
+            "localized": false,
+            "max": 40,
+            "label": "Second line colour"
+           },
+           "leadColor": {
+            "kind": "text",
+            "localized": false,
+            "max": 40,
+            "label": "Lead colour"
+           },
+           "align": {
+            "kind": "enum",
+            "values": [
+             "start",
+             "center",
+             "end"
+            ],
+            "label": "Alignment"
+           },
+           "leadWidth": {
+            "kind": "number",
+            "min": 10,
+            "max": 100,
+            "integer": false,
+            "label": "Lead width (%)"
+           },
+           "font": {
+            "kind": "text",
+            "localized": false,
+            "max": 60,
+            "label": "Font"
+           },
+           "tablet": {
+            "kind": "group",
+            "label": "Tablet",
+            "fields": {
+             "hidden": {
+              "kind": "boolean",
+              "label": "Hidden"
+             },
+             "dx": {
+              "kind": "number",
+              "min": -100,
+              "max": 100,
+              "integer": false,
+              "label": "Move across (% of width)"
+             },
+             "dy": {
+              "kind": "number",
+              "min": -100,
+              "max": 100,
+              "integer": false,
+              "label": "Move down (% of width)"
+             },
+             "z": {
+              "kind": "number",
+              "min": 0,
+              "max": 100,
+              "integer": true,
+              "label": "Stacking order"
+             },
+             "color": {
+              "kind": "text",
+              "localized": false,
+              "max": 40,
+              "label": "Title colour"
+             },
+             "mutedColor": {
+              "kind": "text",
+              "localized": false,
+              "max": 40,
+              "label": "Second line colour"
+             },
+             "leadColor": {
+              "kind": "text",
+              "localized": false,
+              "max": 40,
+              "label": "Lead colour"
+             },
+             "align": {
+              "kind": "enum",
+              "values": [
+               "start",
+               "center",
+               "end"
+              ],
+              "label": "Alignment"
+             },
+             "leadWidth": {
+              "kind": "number",
+              "min": 10,
+              "max": 100,
+              "integer": false,
+              "label": "Lead width (%)"
+             },
+             "font": {
+              "kind": "text",
+              "localized": false,
+              "max": 60,
+              "label": "Font"
+             }
+            }
+           },
+           "mobile": {
+            "kind": "group",
+            "label": "Mobile",
+            "fields": {
+             "hidden": {
+              "kind": "boolean",
+              "label": "Hidden"
+             },
+             "dx": {
+              "kind": "number",
+              "min": -100,
+              "max": 100,
+              "integer": false,
+              "label": "Move across (% of width)"
+             },
+             "dy": {
+              "kind": "number",
+              "min": -100,
+              "max": 100,
+              "integer": false,
+              "label": "Move down (% of width)"
+             },
+             "z": {
+              "kind": "number",
+              "min": 0,
+              "max": 100,
+              "integer": true,
+              "label": "Stacking order"
+             },
+             "color": {
+              "kind": "text",
+              "localized": false,
+              "max": 40,
+              "label": "Title colour"
+             },
+             "mutedColor": {
+              "kind": "text",
+              "localized": false,
+              "max": 40,
+              "label": "Second line colour"
+             },
+             "leadColor": {
+              "kind": "text",
+              "localized": false,
+              "max": 40,
+              "label": "Lead colour"
+             },
+             "align": {
+              "kind": "enum",
+              "values": [
+               "start",
+               "center",
+               "end"
+              ],
+              "label": "Alignment"
+             },
+             "leadWidth": {
+              "kind": "number",
+              "min": 10,
+              "max": 100,
+              "integer": false,
+              "label": "Lead width (%)"
+             },
+             "font": {
+              "kind": "text",
+              "localized": false,
+              "max": 60,
+              "label": "Font"
+             }
+            }
+           }
+          }
+         },
+         "product": {
+          "kind": "group",
+          "label": "Product image",
+          "fields": {
+           "alt": {
+            "kind": "text",
+            "localized": true,
+            "multiline": false,
+            "max": 300,
+            "label": "Description (alt)"
+           },
+           "hidden": {
+            "kind": "boolean",
+            "label": "Hidden"
+           },
+           "dx": {
+            "kind": "number",
+            "min": -100,
+            "max": 100,
+            "integer": false,
+            "label": "Move across (% of width)"
+           },
+           "dy": {
+            "kind": "number",
+            "min": -100,
+            "max": 100,
+            "integer": false,
+            "label": "Move down (% of width)"
+           },
+           "z": {
+            "kind": "number",
+            "min": 0,
+            "max": 100,
+            "integer": true,
+            "label": "Stacking order"
+           },
+           "image": {
+            "kind": "image",
+            "label": "Image (transparent PNG or WebP)"
+           },
+           "scale": {
+            "kind": "number",
+            "min": 0.2,
+            "max": 3,
+            "integer": false,
+            "label": "Size (×)"
+           },
+           "tablet": {
+            "kind": "group",
+            "label": "Tablet",
+            "fields": {
+             "hidden": {
+              "kind": "boolean",
+              "label": "Hidden"
+             },
+             "dx": {
+              "kind": "number",
+              "min": -100,
+              "max": 100,
+              "integer": false,
+              "label": "Move across (% of width)"
+             },
+             "dy": {
+              "kind": "number",
+              "min": -100,
+              "max": 100,
+              "integer": false,
+              "label": "Move down (% of width)"
+             },
+             "z": {
+              "kind": "number",
+              "min": 0,
+              "max": 100,
+              "integer": true,
+              "label": "Stacking order"
+             },
+             "image": {
+              "kind": "image",
+              "label": "Image (transparent PNG or WebP)"
+             },
+             "scale": {
+              "kind": "number",
+              "min": 0.2,
+              "max": 3,
+              "integer": false,
+              "label": "Size (×)"
+             }
+            }
+           },
+           "mobile": {
+            "kind": "group",
+            "label": "Mobile",
+            "fields": {
+             "hidden": {
+              "kind": "boolean",
+              "label": "Hidden"
+             },
+             "dx": {
+              "kind": "number",
+              "min": -100,
+              "max": 100,
+              "integer": false,
+              "label": "Move across (% of width)"
+             },
+             "dy": {
+              "kind": "number",
+              "min": -100,
+              "max": 100,
+              "integer": false,
+              "label": "Move down (% of width)"
+             },
+             "z": {
+              "kind": "number",
+              "min": 0,
+              "max": 100,
+              "integer": true,
+              "label": "Stacking order"
+             },
+             "image": {
+              "kind": "image",
+              "label": "Image (transparent PNG or WebP)"
+             },
+             "scale": {
+              "kind": "number",
+              "min": 0.2,
+              "max": 3,
+              "integer": false,
+              "label": "Size (×)"
+             }
+            }
+           }
+          }
+         },
+         "ctas": {
+          "kind": "group",
+          "label": "Buttons",
+          "fields": {
+           "hidden": {
+            "kind": "boolean",
+            "label": "Hidden"
+           },
+           "dx": {
+            "kind": "number",
+            "min": -100,
+            "max": 100,
+            "integer": false,
+            "label": "Move across (% of width)"
+           },
+           "dy": {
+            "kind": "number",
+            "min": -100,
+            "max": 100,
+            "integer": false,
+            "label": "Move down (% of width)"
+           },
+           "z": {
+            "kind": "number",
+            "min": 0,
+            "max": 100,
+            "integer": true,
+            "label": "Stacking order"
+           },
+           "secondary": {
+            "kind": "boolean",
+            "label": "Show the second button"
+           },
+           "place": {
+            "kind": "enum",
+            "values": [
+             "below",
+             "top"
+            ],
+            "label": "Place"
+           },
+           "tablet": {
+            "kind": "group",
+            "label": "Tablet",
+            "fields": {
+             "hidden": {
+              "kind": "boolean",
+              "label": "Hidden"
+             },
+             "dx": {
+              "kind": "number",
+              "min": -100,
+              "max": 100,
+              "integer": false,
+              "label": "Move across (% of width)"
+             },
+             "dy": {
+              "kind": "number",
+              "min": -100,
+              "max": 100,
+              "integer": false,
+              "label": "Move down (% of width)"
+             },
+             "z": {
+              "kind": "number",
+              "min": 0,
+              "max": 100,
+              "integer": true,
+              "label": "Stacking order"
+             },
+             "secondary": {
+              "kind": "boolean",
+              "label": "Show the second button"
+             },
+             "place": {
+              "kind": "enum",
+              "values": [
+               "below",
+               "top"
+              ],
+              "label": "Place"
+             }
+            }
+           },
+           "mobile": {
+            "kind": "group",
+            "label": "Mobile",
+            "fields": {
+             "hidden": {
+              "kind": "boolean",
+              "label": "Hidden"
+             },
+             "dx": {
+              "kind": "number",
+              "min": -100,
+              "max": 100,
+              "integer": false,
+              "label": "Move across (% of width)"
+             },
+             "dy": {
+              "kind": "number",
+              "min": -100,
+              "max": 100,
+              "integer": false,
+              "label": "Move down (% of width)"
+             },
+             "z": {
+              "kind": "number",
+              "min": 0,
+              "max": 100,
+              "integer": true,
+              "label": "Stacking order"
+             },
+             "secondary": {
+              "kind": "boolean",
+              "label": "Show the second button"
+             },
+             "place": {
+              "kind": "enum",
+              "values": [
+               "below",
+               "top"
+              ],
+              "label": "Place"
+             }
+            }
+           }
+          }
+         },
+         "mark": {
+          "kind": "group",
+          "label": "Wordmark",
+          "fields": {
+           "hidden": {
+            "kind": "boolean",
+            "label": "Hidden"
+           },
+           "tablet": {
+            "kind": "group",
+            "label": "Tablet",
+            "fields": {
+             "hidden": {
+              "kind": "boolean",
+              "label": "Hidden"
+             }
+            }
+           },
+           "mobile": {
+            "kind": "group",
+            "label": "Mobile",
+            "fields": {
+             "hidden": {
+              "kind": "boolean",
+              "label": "Hidden"
+             }
+            }
+           }
+          }
+         },
+         "layers": {
+          "kind": "list",
+          "key": "key",
+          "max": 40,
+          "label": "Layers",
+          "of": {
+           "kind": "group",
+           "label": "Layer",
+           "fields": {
+            "key": {
+             "kind": "text",
+             "localized": false,
+             "max": 40,
+             "label": "Key",
+             "required": true
+            },
+            "kind": {
+             "kind": "enum",
+             "values": [
+              "text",
+              "image",
+              "button",
+              "shape"
+             ],
+             "label": "Kind",
+             "required": true
+            },
+            "name": {
+             "kind": "text",
+             "localized": false,
+             "max": 80,
+             "label": "Name"
+            },
+            "text": {
+             "kind": "text",
+             "localized": true,
+             "multiline": true,
+             "max": 2000,
+             "label": "Text"
+            },
+            "tag": {
+             "kind": "enum",
+             "values": [
+              "p",
+              "h2",
+              "h3",
+              "span"
+             ],
+             "label": "Tag"
+            },
+            "href": {
+             "kind": "url",
+             "label": "Link"
+            },
+            "alt": {
+             "kind": "text",
+             "localized": true,
+             "multiline": false,
+             "max": 300,
+             "label": "Description (alt)"
+            },
+            "animation": {
+             "kind": "group",
+             "label": "Entrance",
+             "fields": {
+              "type": {
+               "kind": "enum",
+               "values": [
+                "none",
+                "fade",
+                "up",
+                "down",
+                "start",
+                "end",
+                "zoom",
+                "mask"
+               ],
+               "label": "Animation"
+              },
+              "delay": {
+               "kind": "number",
+               "min": 0,
+               "max": 10,
+               "integer": false,
+               "label": "Delay (s)"
+              },
+              "duration": {
+               "kind": "number",
+               "min": 0.1,
+               "max": 5,
+               "integer": false,
+               "label": "Duration (s)"
+              }
+             }
+            },
+            "hidden": {
+             "kind": "boolean",
+             "label": "Hidden"
+            },
+            "x": {
+             "kind": "number",
+             "min": -50,
+             "max": 150,
+             "integer": false,
+             "label": "Across (%)"
+            },
+            "y": {
+             "kind": "number",
+             "min": -50,
+             "max": 150,
+             "integer": false,
+             "label": "Down (%)"
+            },
+            "anchor": {
+             "kind": "enum",
+             "values": [
+              "top-start",
+              "top-center",
+              "top-end",
+              "center-start",
+              "center",
+              "center-end",
+              "bottom-start",
+              "bottom-center",
+              "bottom-end"
+             ],
+             "label": "Anchor"
+            },
+            "width": {
+             "kind": "number",
+             "min": 0,
+             "max": 200,
+             "integer": false,
+             "label": "Width (% of slide)"
+            },
+            "z": {
+             "kind": "number",
+             "min": 0,
+             "max": 100,
+             "integer": true,
+             "label": "Stacking order"
+            },
+            "rotate": {
+             "kind": "number",
+             "min": -180,
+             "max": 180,
+             "integer": false,
+             "label": "Rotate (°)"
+            },
+            "opacity": {
+             "kind": "number",
+             "min": 0,
+             "max": 1,
+             "integer": false,
+             "label": "Opacity"
+            },
+            "color": {
+             "kind": "text",
+             "localized": false,
+             "max": 40,
+             "label": "Text colour"
+            },
+            "background": {
+             "kind": "text",
+             "localized": false,
+             "max": 40,
+             "label": "Background colour"
+            },
+            "fontSize": {
+             "kind": "number",
+             "min": 6,
+             "max": 400,
+             "integer": false,
+             "label": "Text size (px)"
+            },
+            "fontWeight": {
+             "kind": "number",
+             "min": 100,
+             "max": 900,
+             "integer": true,
+             "label": "Weight"
+            },
+            "lineHeight": {
+             "kind": "number",
+             "min": 0.6,
+             "max": 3,
+             "integer": false,
+             "label": "Line height"
+            },
+            "align": {
+             "kind": "enum",
+             "values": [
+              "start",
+              "center",
+              "end"
+             ],
+             "label": "Alignment"
+            },
+            "radius": {
+             "kind": "number",
+             "min": 0,
+             "max": 999,
+             "integer": false,
+             "label": "Corner radius (px)"
+            },
+            "padding": {
+             "kind": "number",
+             "min": 0,
+             "max": 200,
+             "integer": false,
+             "label": "Padding (px)"
+            },
+            "font": {
+             "kind": "text",
+             "localized": false,
+             "max": 60,
+             "label": "Font"
+            },
+            "image": {
+             "kind": "image",
+             "label": "Image"
+            },
+            "tablet": {
+             "kind": "group",
+             "label": "Tablet",
+             "fields": {
+              "hidden": {
+               "kind": "boolean",
+               "label": "Hidden"
+              },
+              "x": {
+               "kind": "number",
+               "min": -50,
+               "max": 150,
+               "integer": false,
+               "label": "Across (%)"
+              },
+              "y": {
+               "kind": "number",
+               "min": -50,
+               "max": 150,
+               "integer": false,
+               "label": "Down (%)"
+              },
+              "anchor": {
+               "kind": "enum",
+               "values": [
+                "top-start",
+                "top-center",
+                "top-end",
+                "center-start",
+                "center",
+                "center-end",
+                "bottom-start",
+                "bottom-center",
+                "bottom-end"
+               ],
+               "label": "Anchor"
+              },
+              "width": {
+               "kind": "number",
+               "min": 0,
+               "max": 200,
+               "integer": false,
+               "label": "Width (% of slide)"
+              },
+              "z": {
+               "kind": "number",
+               "min": 0,
+               "max": 100,
+               "integer": true,
+               "label": "Stacking order"
+              },
+              "rotate": {
+               "kind": "number",
+               "min": -180,
+               "max": 180,
+               "integer": false,
+               "label": "Rotate (°)"
+              },
+              "opacity": {
+               "kind": "number",
+               "min": 0,
+               "max": 1,
+               "integer": false,
+               "label": "Opacity"
+              },
+              "color": {
+               "kind": "text",
+               "localized": false,
+               "max": 40,
+               "label": "Text colour"
+              },
+              "background": {
+               "kind": "text",
+               "localized": false,
+               "max": 40,
+               "label": "Background colour"
+              },
+              "fontSize": {
+               "kind": "number",
+               "min": 6,
+               "max": 400,
+               "integer": false,
+               "label": "Text size (px)"
+              },
+              "fontWeight": {
+               "kind": "number",
+               "min": 100,
+               "max": 900,
+               "integer": true,
+               "label": "Weight"
+              },
+              "lineHeight": {
+               "kind": "number",
+               "min": 0.6,
+               "max": 3,
+               "integer": false,
+               "label": "Line height"
+              },
+              "align": {
+               "kind": "enum",
+               "values": [
+                "start",
+                "center",
+                "end"
+               ],
+               "label": "Alignment"
+              },
+              "radius": {
+               "kind": "number",
+               "min": 0,
+               "max": 999,
+               "integer": false,
+               "label": "Corner radius (px)"
+              },
+              "padding": {
+               "kind": "number",
+               "min": 0,
+               "max": 200,
+               "integer": false,
+               "label": "Padding (px)"
+              },
+              "font": {
+               "kind": "text",
+               "localized": false,
+               "max": 60,
+               "label": "Font"
+              },
+              "image": {
+               "kind": "image",
+               "label": "Image"
+              }
+             }
+            },
+            "mobile": {
+             "kind": "group",
+             "label": "Mobile",
+             "fields": {
+              "hidden": {
+               "kind": "boolean",
+               "label": "Hidden"
+              },
+              "x": {
+               "kind": "number",
+               "min": -50,
+               "max": 150,
+               "integer": false,
+               "label": "Across (%)"
+              },
+              "y": {
+               "kind": "number",
+               "min": -50,
+               "max": 150,
+               "integer": false,
+               "label": "Down (%)"
+              },
+              "anchor": {
+               "kind": "enum",
+               "values": [
+                "top-start",
+                "top-center",
+                "top-end",
+                "center-start",
+                "center",
+                "center-end",
+                "bottom-start",
+                "bottom-center",
+                "bottom-end"
+               ],
+               "label": "Anchor"
+              },
+              "width": {
+               "kind": "number",
+               "min": 0,
+               "max": 200,
+               "integer": false,
+               "label": "Width (% of slide)"
+              },
+              "z": {
+               "kind": "number",
+               "min": 0,
+               "max": 100,
+               "integer": true,
+               "label": "Stacking order"
+              },
+              "rotate": {
+               "kind": "number",
+               "min": -180,
+               "max": 180,
+               "integer": false,
+               "label": "Rotate (°)"
+              },
+              "opacity": {
+               "kind": "number",
+               "min": 0,
+               "max": 1,
+               "integer": false,
+               "label": "Opacity"
+              },
+              "color": {
+               "kind": "text",
+               "localized": false,
+               "max": 40,
+               "label": "Text colour"
+              },
+              "background": {
+               "kind": "text",
+               "localized": false,
+               "max": 40,
+               "label": "Background colour"
+              },
+              "fontSize": {
+               "kind": "number",
+               "min": 6,
+               "max": 400,
+               "integer": false,
+               "label": "Text size (px)"
+              },
+              "fontWeight": {
+               "kind": "number",
+               "min": 100,
+               "max": 900,
+               "integer": true,
+               "label": "Weight"
+              },
+              "lineHeight": {
+               "kind": "number",
+               "min": 0.6,
+               "max": 3,
+               "integer": false,
+               "label": "Line height"
+              },
+              "align": {
+               "kind": "enum",
+               "values": [
+                "start",
+                "center",
+                "end"
+               ],
+               "label": "Alignment"
+              },
+              "radius": {
+               "kind": "number",
+               "min": 0,
+               "max": 999,
+               "integer": false,
+               "label": "Corner radius (px)"
+              },
+              "padding": {
+               "kind": "number",
+               "min": 0,
+               "max": 200,
+               "integer": false,
+               "label": "Padding (px)"
+              },
+              "font": {
+               "kind": "text",
+               "localized": false,
+               "max": 60,
+               "label": "Font"
+              },
+              "image": {
+               "kind": "image",
+               "label": "Image"
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
       }
      }
     }

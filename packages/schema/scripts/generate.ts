@@ -15,6 +15,8 @@ import { applyOverrides } from "../src/overrides.ts";
 import type { ContentType, Field, GroupField, ListField, MapField } from "../src/fields.ts";
 import { COLOUR_IDS } from "../src/tubeChart.ts";
 import { BLOCK_KINDS, BLOCK_PROPS, SECTION_STYLES, SECTION_TYPES, TUBE_SECTIONS } from "../src/blocks.ts";
+import { SLIDER_FIELD } from "../src/slider.ts";
+import { FONTS_FIELD } from "../src/fonts.ts";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const web = path.resolve(here, "../../../apps/web");
@@ -312,6 +314,9 @@ function extend(key: string, g: GroupField): GroupField {
   if (key === "product.tube.catalogue") return tubeCatalogue(g);
   if (key === "page.applications") return applicationsPage(g);
   if (key === "product.tube.page") return tubePage(g);
+  // Slider builder and site fonts: not in the seed (entries without them read the designed defaults).
+  if (key === "page.home.hero") return { ...g, fields: { ...g.fields, slider: SLIDER_FIELD } };
+  if (key === "global.site") return { ...g, fields: { ...g.fields, fonts: FONTS_FIELD } };
   if (key !== "page.home.layout") return g;
   const sections = g.fields.sections as ListField;
   const item = sections.of as GroupField;

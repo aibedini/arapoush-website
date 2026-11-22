@@ -21,3 +21,5 @@ export * from "./systemForms.ts";
 export * from "./tubeChart.ts";
 export * from "./blog.ts";
 export * from "./translate.ts";
+export * from "./slider.ts";
+export * from "./fonts.ts";

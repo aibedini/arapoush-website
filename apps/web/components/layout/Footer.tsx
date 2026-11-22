@@ -17,7 +17,7 @@ export default function Footer({ t, locale }: { t: Dictionary; locale: string })
   const f = t.footer;
 
   return (
-    <footer className={styles.footer}>
+    <footer className={styles.footer} data-font-scope="footer">
       <div className={styles.brand} data-reveal>
         <Image src={t.media.site.logoWhite.src} alt={t.common.brand} width={t.media.site.logoWhite.width} height={t.media.site.logoWhite.height} className={styles.logo} sizes="200px" data-no-mirror style={{ height: "auto" }} />
         <p className={styles.tagline}>

@@ -1,8 +1,9 @@
-import { pickLocale } from "@arapoush/schema";
+import { pickLocale, type FontSettings } from "@arapoush/schema";
 import type { Locale } from "@/lib/i18n/config";
 import { entryOrSnapshot } from "./index";
 
 import type { Img } from "./pick";
+import { getFonts, getSlider, type HeroSlider } from "./slider";
 
 export type { Img };
 export { byId } from "./pick";
@@ -15,6 +16,10 @@ type WithId<T> = T & { id: string };
 export type Media = {
   site: { logo: Img; logoWhite: Img; og: Img; footerBg: Img; ctaBg: Img; ctaTube: Img };
   hero: { slides: WithId<{ tone: "light" | "dark"; background: Img; backgroundMobile?: Img; product?: Img }>[] };
+  /** The home slider (slider builder, or the designed slides read into its model). */
+  slider: HeroSlider;
+  /** Uploaded fonts and their per-language / per-section use. */
+  fonts?: FontSettings;
   products: { cards: WithId<{ image: Img }>[]; tablets: Img };
   applications: { items: WithId<{ image: Img }>[] };
   insights: { articles: WithId<{ image: Img }>[] };
@@ -37,6 +42,8 @@ export function getMedia(locale: Locale): Media {
       // A right-to-left variant of a background replaces it in Persian.
       slides: hero.slides.map(({ backgroundRtl, ...s }: HeroSlideRaw) => ({ ...s, background: locale === "fa" && backgroundRtl ? backgroundRtl : s.background })),
     },
+    slider: getSlider(locale),
+    fonts: getFonts(),
     products: images("page.home.products", locale),
     applications: images("page.home.applications", locale),
     insights: images("page.home.insights", locale),

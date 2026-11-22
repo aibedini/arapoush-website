@@ -6,7 +6,7 @@ import type { Deps } from "../app.ts";
 import { requireOperator } from "../auth/guards.ts";
 import { actorOf } from "../auth/principal.ts";
 import { badRequest, notFound } from "../http/problem.ts";
-import { ingest } from "./service.ts";
+import { ingest, MEDIA_EXT } from "./service.ts";
 
 export async function readUpload(req: FastifyRequest) {
   const file = await req.file();
@@ -25,8 +25,9 @@ export async function mediaModule(app: FastifyInstance, deps: Deps) {
   const tenant = config.TENANT;
 
   app.post("/v1/manage/media", { preHandler: requireOperator(deps, "operator"), config: { rateLimit: { max: 60, timeWindow: "1 hour" } } }, async (req) => {
+    const { compress } = MEDIA.upload.query!.parse(req.query);
     const { buf, name } = await readUpload(req);
-    return ingest(deps, { buf, name, actor: actorOf(req), request: req.info });
+    return ingest(deps, { buf, name, actor: actorOf(req), request: req.info, compress });
   });
 
   app.get("/v1/manage/media", { preHandler: requireOperator(deps) }, async (req) => {
@@ -52,7 +53,7 @@ export async function mediaModule(app: FastifyInstance, deps: Deps) {
   // Public, immutable media (ids never change content).
   app.get("/media/:file", { config: { rateLimit: { max: 3000, timeWindow: "1 minute" } } }, async (req, reply) => {
     const { file } = req.params as { file: string };
-    const m = /^(ast_[0-9A-Z]{26})\.(webp|svg|pdf|ai|glb)$/.exec(file);
+    const m = new RegExp(`^(ast_[0-9A-Z]{26})\\.(${MEDIA_EXT})$`).exec(file);
     if (!m) throw notFound("Media");
     const [a] = await db.q<{ mime: string; public: boolean; status: string }>(`SELECT mime, public, status FROM assets WHERE id = $1 AND tenant_id = $2`, [m[1], tenant]);
     if (!a || !a.public || a.status !== "clean") throw notFound("Media");
@@ -64,7 +65,7 @@ export async function mediaModule(app: FastifyInstance, deps: Deps) {
   // Operator preview of unpublished media.
   app.get("/v1/manage/media/:file/raw", { preHandler: requireOperator(deps) }, async (req, reply) => {
     const { file } = req.params as { file: string };
-    const m = /^(ast_[0-9A-Z]{26})\.(webp|svg|pdf|ai|glb)$/.exec(file);
+    const m = new RegExp(`^(ast_[0-9A-Z]{26})\\.(${MEDIA_EXT})$`).exec(file);
     if (!m) throw notFound("Media");
     const [a] = await db.q<{ mime: string; status: string }>(`SELECT mime, status FROM assets WHERE id = $1 AND tenant_id = $2`, [m[1], tenant]);
     const p = path.join(config.MEDIA_DIR, file);

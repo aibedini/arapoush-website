@@ -4825,6 +4825,13 @@
                 "v1",
                 "manage",
                 "media"
+              ],
+              "query": [
+                {
+                  "key": "compress",
+                  "value": "",
+                  "disabled": true
+                }
               ]
             },
             "body": {
@@ -4837,7 +4844,7 @@
                 }
               ]
             },
-            "description": "One file as multipart/form-data (max 25 MB). Raster images are re-encoded to WebP and stripped of metadata; SVG and PDF are checked for active content; with ClamAV configured every file is scanned. Identical files are de-duplicated.\n\nSource: media/routes.ts"
+            "description": "One file as multipart/form-data (max 25 MB). Raster images are re-encoded and stripped of metadata, compressed as `compress` asks (default `standard`: WebP 88); SVG and PDF are checked for active content; MP4/WebM videos and web fonts (WOFF2, WOFF, TTF, OTF) are stored as uploaded after a type check; with ClamAV configured every file is scanned. Identical files are de-duplicated.\n\nSource: media/routes.ts"
           }
         },
         {

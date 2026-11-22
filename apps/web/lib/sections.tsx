@@ -2,7 +2,7 @@ import type { ComponentType } from "react";
 import type { BlogCard } from "@/lib/blog";
 import { BLOCK_KINDS, isBlockKind, SECTION_ENTRY, type BlockKind, type BlockProps } from "@arapoush/schema";
 import type { Dictionary, Locale } from "@/lib/i18n";
-import Hero from "@/components/sections/Hero";
+import Hero from "@/components/sections/hero/HeroSection";
 import Products from "@/components/sections/Products";
 import Applications from "@/components/sections/Applications";
 import Insights from "@/components/sections/Insights";
@@ -62,6 +62,8 @@ export function Sections({ layout, edit = false, ...props }: SectionProps & { la
           const { Component } = sectionRegistry[s.type as SectionType];
           body = <Component {...props} />;
         }
+        // A section with its own font (OPEX → Fonts → per section); display: contents keeps the layout.
+        if (props.t.media.fonts?.sections?.[s.id]) body = <div data-font-scope={s.id} style={{ display: "contents" }}>{body}</div>;
         return (
           <EditScope key={s.id} on={edit} section={s.id} label={LABEL[s.type] ?? s.type} entry={block ? "page.home.layout" : SECTION_ENTRY[s.type as SectionType]} base={block ? `/sections[${index}]/props` : undefined}>
             {body}

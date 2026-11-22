@@ -135,7 +135,10 @@ export default function EditEntry() {
   const writable = canWrite(me);
   // Field search: top-level fields whose name or Persian label matches.
   const q = find.trim().toLowerCase();
-  const fields = Object.entries(v.schema.fields).filter(([k, f]) => !q || k.toLowerCase().includes(q) || faLabel(k, f.label).includes(find.trim()) || JSON.stringify(data[k] ?? "").toLowerCase().includes(q));
+  // The slider and the fonts have their own editors (/slider, /fonts).
+  const STUDIO: Record<string, [string, string, string]> = { "page.home.hero": ["slider", "/slider", "اسلایدها، لایه‌ها و ترنزیشن‌ها در اسلایدساز ویرایش می‌شوند."], "global.site": ["fonts", "/fonts", "فونت‌های سایت در صفحهٔ «فونت‌ها» مدیریت می‌شوند."] };
+  const studio = STUDIO[key];
+  const fields = Object.entries(v.schema.fields).filter(([k]) => k !== studio?.[0]).filter(([k, f]) => !q || k.toLowerCase().includes(q) || faLabel(k, f.label).includes(find.trim()) || JSON.stringify(data[k] ?? "").toLowerCase().includes(q));
   const changedCount = Object.keys(v.schema.fields).filter((k) => JSON.stringify(data[k]) !== JSON.stringify(orig[k])).length;
   const VISUAL: Record<string, string> = { "product.tube.page": "tube", "product.effervescent.page": "eff", "page.printing": "printing", "page.about": "about", "page.applications": "applications" };
   const visualPage = key.startsWith("page.home") ? "home" : (VISUAL[key] ?? null);
@@ -196,6 +199,14 @@ export default function EditEntry() {
       </div>
       <div className="editor">
         <div className="stack">
+        {studio && (
+          <div className="note row" role="note">
+            <span>{studio[2]}</span>
+            <Link className="btn sm primary" href={studio[1]}>
+              باز کردن
+            </Link>
+          </div>
+        )}
         {key === "product.effervescent.page" && (
           <>
             <RenderPanel canRender={me?.role === "super_admin"} onDone={refresh} />

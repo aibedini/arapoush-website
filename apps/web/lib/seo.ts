@@ -73,7 +73,7 @@ export function homeJsonLd(t: Dictionary, locale: Locale) {
         inLanguage: lang,
         isPartOf: { "@id": `${siteUrl}/#website` },
         about: { "@id": org },
-        primaryImageOfPage: `${siteUrl}${t.media.hero.slides[0]?.product?.src ?? t.media.site.og.src}`,
+        primaryImageOfPage: `${siteUrl}${t.media.slider.slides[0]?.product?.image?.src ?? t.media.hero.slides[0]?.product?.src ?? t.media.site.og.src}`,
       },
       {
         "@type": "ItemList",

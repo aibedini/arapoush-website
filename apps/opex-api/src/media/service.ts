@@ -4,14 +4,35 @@ import type { Deps } from "../app.ts";
 import { audit, type Actor, type RequestInfo } from "../audit/audit.ts";
 import { badRequest } from "../http/problem.ts";
 import { sha256, ulid } from "../ids.ts";
-import { checkPdf, checkSvg, clamScan, MIME, reencode, Rejected, sniff, type Kind } from "./inspect.ts";
+import { checkPdf, checkSvg, clamScan, MIME, PASSTHROUGH, reencode, Rejected, sniff, type Compression, type Kind } from "./inspect.ts";
 
 export type Asset = { id: string; url: string; mime: string; bytes: number; width: number | null; height: number | null; status: string; scan: string };
 
-const EXT: Partial<Record<Kind, string>> = { svg: "svg", pdf: "pdf" };
+/** File extension per stored type (the public URL ends with it). */
+const EXT_OF: Record<string, string> = {
+  "image/webp": "webp",
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/gif": "gif",
+  "image/avif": "avif",
+  "image/svg+xml": "svg",
+  "application/pdf": "pdf",
+  "model/gltf-binary": "glb",
+  "video/mp4": "mp4",
+  "video/webm": "webm",
+  "font/woff2": "woff2",
+  "font/woff": "woff",
+  "font/ttf": "ttf",
+  "font/otf": "otf",
+};
+/** Extensions the public and preview routes serve. */
+export const MEDIA_EXT = "webp|jpg|png|gif|avif|svg|pdf|ai|glb|mp4|webm|woff2|woff|ttf|otf";
 
-/** Stores an upload after inspection. Raster images are always re-encoded to WebP. */
-export async function ingest(deps: Deps, o: { buf: Buffer; name: string; actor: Actor; request: RequestInfo; allow?: Kind[] }): Promise<Asset> {
+/**
+ * Stores an upload after inspection. Raster images are re-encoded (`compress`: see inspect.ts;
+ * without it WebP 88 as before), SVG and PDF are checked, videos and fonts are kept as uploaded.
+ */
+export async function ingest(deps: Deps, o: { buf: Buffer; name: string; actor: Actor; request: RequestInfo; allow?: Kind[]; compress?: Compression }): Promise<Asset> {
   const { db, config } = deps;
   const tenant = config.TENANT;
   const reject = async (reason: string) => {
@@ -26,18 +47,19 @@ export async function ingest(deps: Deps, o: { buf: Buffer; name: string; actor: 
   let width: number | null = null;
   let height: number | null = null;
   let mime = MIME[kind];
-  let ext = EXT[kind] ?? "webp";
+  let ext = EXT_OF[mime]!;
   try {
     if (kind === "svg") checkSvg(o.buf.toString("utf8"));
     else if (kind === "pdf") {
       checkPdf(o.buf);
       if (/\.ai$/i.test(o.name)) ext = "ai";
-    } else {
-      const r = await reencode(o.buf);
+    } else if (!PASSTHROUGH.includes(kind)) {
+      const r = await reencode(o.buf, o.compress ?? "standard", kind);
       stored = r.buf;
       width = r.width;
       height = r.height;
-      mime = "image/webp";
+      mime = r.mime;
+      ext = EXT_OF[mime]!;
     }
   } catch (e) {
     throw await reject(e instanceof Rejected ? e.message : "File could not be processed");
@@ -70,4 +92,4 @@ export async function ingest(deps: Deps, o: { buf: Buffer; name: string; actor: 
   return { id, url: `/media/${id}.${ext}`, mime, bytes: stored.length, width, height, status: "clean", scan };
 }
 
-export const extOf = (mime: string) => (mime === "image/svg+xml" ? "svg" : mime === "application/pdf" ? "pdf" : mime === "model/gltf-binary" ? "glb" : "webp");
+export const extOf = (mime: string) => EXT_OF[mime] ?? "webp";

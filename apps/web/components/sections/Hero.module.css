@@ -10,6 +10,12 @@
   overflow: hidden;
   isolation: isolate;
   background: #efe7dd;
+  /* Slider-builder offsets are in % of the slider width (1cqw). */
+  container-type: inline-size;
+}
+/* Offsets and anchors follow the writing direction, like the rest of the composition. */
+:global([dir="rtl"]) .hero {
+  --flip: -1;
 }
 .hero[data-tone="dark"] {
   --hero-ink: #f5f6f9;
@@ -30,13 +36,31 @@
 .bg {
   overflow: hidden;
 }
-/* GSAP owns the <img> transform (and resets its `scale`), so RTL flips the wrapper. */
-:global([dir="rtl"]) .bg {
+/* GSAP owns the <img> transform (and resets its `scale`), and the slide wrapper's (slide
+   transitions), so RTL flips the layer between them. Artwork with its own RTL composition (label
+   text) turns mirroring off in the slider builder. */
+.bgMirror {
+  position: absolute;
+  inset: 0;
+  /* Without containment Chrome counts the mirrored layer's intro zoom as layout shift (CLS 0.23). */
+  contain: layout paint;
+}
+:global([dir="rtl"]) .bg[data-mirror] .bgMirror {
   scale: -1 1;
 }
-/* The packaging photograph has its own RTL composition; mirroring would reverse label text. */
-:global([dir="rtl"]) .bg[data-index="1"] {
-  scale: 1 1;
+.bgVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--ov, transparent);
+  pointer-events: none;
 }
 .bgImg {
   object-fit: cover;
@@ -47,7 +71,7 @@
 /* ── Signature wordmark ── */
 .markScroll {
   position: absolute;
-  z-index: 1;
+  z-index: 10;
   inset-inline-start: calc(8 * var(--u));
   top: calc(60 * var(--u));
   width: calc(1840 * var(--u));
@@ -55,9 +79,6 @@
   transform-origin: 50% 45%;
   pointer-events: none;
   transition: opacity 0.7s ease;
-}
-.hero[data-active="1"] .markScroll {
-  opacity: 0;
 }
 .mark {
   font-family: var(--font-mark);
@@ -85,7 +106,7 @@
 /* ── Products ── */
 .productsScroll {
   position: absolute;
-  z-index: 2;
+  z-index: 20;
   inset-inline-start: calc(902 * var(--u));
   top: calc(300 * var(--u));
   width: calc(1070 * var(--u));
@@ -97,6 +118,11 @@
   inset: 0;
   transform-origin: 45% 80%;
 }
+.productInner {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 70%;
+}
 .products img {
   width: 100%;
   height: 100%;
@@ -106,7 +132,7 @@
 /* ── Copy ── */
 .content {
   position: absolute;
-  z-index: 3;
+  z-index: 30;
   inset-inline-start: calc(48 * var(--u));
   /* Anchored above the slide controls (their offset + height + a gap), not from the top: on
      shorter windows a top offset pushed the buttons onto the slide counter. */
@@ -158,7 +184,7 @@
 /* ── Controls ── */
 .controls {
   position: absolute;
-  z-index: 3;
+  z-index: 40;
   inset-inline: calc(48 * var(--u));
   bottom: max(20px, calc(28 * var(--u)));
   display: flex;
@@ -286,13 +312,8 @@
     content: "";
     position: absolute;
     inset: 40% 0 0 0;
-    background: linear-gradient(180deg, rgba(246, 240, 233, 0) 0%, rgba(246, 240, 233, 0.72) 45%, rgba(246, 240, 233, 0.86) 100%);
-  }
-  .bg[data-index="2"]::after {
-    background: linear-gradient(180deg, rgba(10, 39, 71, 0) 0%, rgba(10, 39, 71, 0.6) 45%, rgba(10, 39, 71, 0.85) 100%);
-  }
-  .bg[data-index="1"]::after {
-    display: none;
+    /* The slider builder sets --wash per slide: by tone, or none. */
+    background: var(--wash, linear-gradient(180deg, rgba(246, 240, 233, 0) 0%, rgba(246, 240, 233, 0.72) 45%, rgba(246, 240, 233, 0.86) 100%));
   }
   .markScroll,
   :global([dir="rtl"]) .markScroll {
@@ -362,18 +383,12 @@
   .bgImg {
     object-position: 30% 50%;
   }
-  .bg[data-index="1"] .bgImg {
-    object-position: center bottom;
-  }
   .bg::after {
     inset: auto 0 0 0;
     height: 30%;
   }
   .mark {
     text-align: start;
-  }
-  .hero[data-active="1"] .markScroll {
-    display: none;
   }
   .productsScroll {
     position: absolute;
@@ -396,20 +411,6 @@
   .lead {
     max-width: 70%;
     font-size: 14px;
-  }
-  .hero[data-active="1"] .lead {
-    max-width: 78%;
-  }
-  .hero[data-active="1"] .ctas {
-    position: absolute;
-    top: clamp(180px, 50vw, 195px);
-    inset-inline-start: var(--gutter);
-  }
-  :global([lang="fa"]) .hero[data-active="1"] .ctas {
-    top: clamp(165px, 47vw, 185px);
-  }
-  .hero[data-active="1"] .story {
-    display: none;
   }
   .ctas {
     flex-direction: column;
@@ -463,9 +464,70 @@
 /* Only the first slide shows before the slideshow script runs (slow devices and connections, or no
    JavaScript): the others stack in the same cell and would print over it. GSAP's inline
    visibility/opacity takes over once it starts. */
+.hero [data-slide-layers]:not([data-index="0"]),
 .hero [data-slide-copy]:not([data-index="0"]),
 .hero [data-slide-product]:not([data-index="0"]),
 .hero [data-slide-bg]:not([data-index="0"]) {
   visibility: hidden;
   opacity: 0;
+}
+
+/* ── Free layers (slider builder): positioned by the per-slide CSS, animated on [data-anim] ── */
+.layers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.layer {
+  position: absolute;
+  top: 0;
+  inset-inline-start: 0;
+  pointer-events: auto;
+}
+.layerText {
+  margin: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.layerLink {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.layerBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 26px;
+  border-radius: 999px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: filter 0.24s ease, transform 0.24s ease;
+}
+.layerBtn:hover {
+  filter: brightness(1.08);
+}
+@media (hover: none) {
+  .layerBtn:active {
+    transform: scale(0.97);
+  }
+}
+.layerBtn:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+.layerImg {
+  display: block;
+  overflow: hidden;
+}
+.layerImg img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.layerShape {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
 }

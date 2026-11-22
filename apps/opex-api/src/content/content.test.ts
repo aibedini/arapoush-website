@@ -139,6 +139,46 @@ test("media: re-encoded on upload, private until published, active content rejec
   }
 });
 
+test("media: compression is the uploader's choice; videos and fonts are kept as uploaded", async () => {
+  const t = await testApp(env(), { seed: true });
+  try {
+    const op = await signIn(t.app, t, "operator");
+    const upload = (buf: Buffer, name: string, query = "") => {
+      const boundary = "----opex";
+      const payload = Buffer.concat([Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${name}"\r\nContent-Type: application/octet-stream\r\n\r\n`), buf, Buffer.from(`\r\n--${boundary}--\r\n`)]);
+      return t.app.inject({ method: "POST", url: `/v1/manage/media${query}`, headers: { ...as(op), "content-type": `multipart/form-data; boundary=${boundary}` }, payload });
+    };
+    // A transparent PNG stays PNG (and transparent) without compression, and becomes WebP with alpha when asked.
+    const png = await sharp({ create: { width: 64, height: 48, channels: 4, background: { r: 9, g: 38, b: 60, alpha: 0.4 } } }).png().toBuffer();
+    const original = (await upload(png, "cut-out.png", "?compress=original")).json();
+    assert.equal(original.mime, "image/png");
+    assert.match(original.url, /\.png$/);
+    const raw = await t.app.inject({ method: "GET", url: `/v1/manage/media/${original.id}.png/raw`, headers: { cookie: op.cookie } });
+    assert.equal(raw.statusCode, 200);
+    assert.equal((await sharp(raw.rawPayload).metadata()).hasAlpha, true);
+    const small = (await upload(png, "cut-out-2.png", "?compress=max")).json();
+    assert.equal(small.mime, "image/webp");
+    const webp = await t.app.inject({ method: "GET", url: `/v1/manage/media/${small.id}.webp/raw`, headers: { cookie: op.cookie } });
+    assert.equal((await sharp(webp.rawPayload).metadata()).hasAlpha, true, "transparency kept");
+    const big = await sharp({ create: { width: 3000, height: 1000, channels: 3, background: "#efe7dd" } }).jpeg().toBuffer();
+    assert.equal((await upload(big, "wide.jpg", "?compress=balanced")).json().width, 2560);
+    assert.equal((await upload(big, "wide-2.jpg", "?compress=nope")).statusCode, 400);
+
+    const mp4 = Buffer.concat([Buffer.from([0, 0, 0, 0x18]), Buffer.from("ftypisom"), Buffer.alloc(64)]);
+    const video = (await upload(mp4, "hero.mp4")).json();
+    assert.equal(video.mime, "video/mp4");
+    assert.match(video.url, /\.mp4$/);
+    const woff2 = Buffer.concat([Buffer.from("wOF2"), Buffer.alloc(64)]);
+    const font = (await upload(woff2, "yekan.woff2")).json();
+    assert.equal(font.mime, "font/woff2");
+    assert.match(font.url, /\.woff2$/);
+    const served = await t.app.inject({ method: "GET", url: `/v1/manage/media/${font.id}.woff2/raw`, headers: { cookie: op.cookie } });
+    assert.equal(served.headers["content-type"], "font/woff2");
+  } finally {
+    await t.close();
+  }
+});
+
 test("preview: the console gets a signed link; the site reads drafts only with it", async () => {
   const t = await testApp({ ...env(), SITE_URL: "https://site.test" }, { seed: true });
   try {

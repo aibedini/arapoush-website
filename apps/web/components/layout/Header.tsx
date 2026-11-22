@@ -106,7 +106,7 @@ export default function Header({ t, locale, path = "", paths }: Props) {
 
   return (
     <>
-      <header className={`${styles.header} ${scrolled ? styles.scrolled : ""} ${hidden && !open ? styles.hidden : ""}`} data-header>
+      <header className={`${styles.header} ${scrolled ? styles.scrolled : ""} ${hidden && !open ? styles.hidden : ""}`} data-header data-font-scope="header">
         <div className={styles.bar}>
           <a href={onHome ? "#top" : `/${locale}`} className={styles.logo} aria-label={t.common.brand} data-intro="nav">
             <Image src={t.media.site.logo.src} alt="" width={t.media.site.logo.width} height={t.media.site.logo.height} priority data-critical data-no-mirror sizes="(max-width: 1099px) 160px, 14vw" />

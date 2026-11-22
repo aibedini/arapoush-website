@@ -444,7 +444,7 @@
               "type": "string",
               "pattern": "^ast_[0-9A-Z]{26}\\.\\w+$"
             },
-            "description": "ast_….webp | .svg | .pdf | .ai | .glb (3D models)"
+            "description": "ast_….webp | .jpg | .png | .gif | .avif | .svg | .pdf | .ai | .glb (3D models) | .mp4 | .webm | .woff2 | .woff | .ttf | .otf"
           }
         ],
         "responses": {
@@ -21716,13 +21716,30 @@
       "post": {
         "operationId": "uploadMedia",
         "summary": "Upload a file to the media library",
-        "description": "One file as multipart/form-data (max 25 MB). Raster images are re-encoded to WebP and stripped of metadata; SVG and PDF are checked for active content; with ClamAV configured every file is scanned. Identical files are de-duplicated.\n\n**Permission:** `media.upload`; built-in roles with it by default: super_admin, operator, blog_author.\n\n**Rate limit:** 60 uploads per hour per IP.\n\n**Audit:** records `media.upload`, `media.rejected`.\n\n**Source:** `apps/opex-api/src/media/routes.ts`",
+        "description": "One file as multipart/form-data (max 25 MB). Raster images are re-encoded and stripped of metadata, compressed as `compress` asks (default `standard`: WebP 88); SVG and PDF are checked for active content; MP4/WebM videos and web fonts (WOFF2, WOFF, TTF, OTF) are stored as uploaded after a type check; with ClamAV configured every file is scanned. Identical files are de-duplicated.\n\n**Permission:** `media.upload`; built-in roles with it by default: super_admin, operator, blog_author.\n\n**Rate limit:** 60 uploads per hour per IP.\n\n**Audit:** records `media.upload`, `media.rejected`.\n\n**Source:** `apps/opex-api/src/media/routes.ts`",
         "tags": [
           "Media"
         ],
         "security": [
           {
             "session": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "compress",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "original",
+                "standard",
+                "balanced",
+                "max"
+              ]
+            },
+            "description": "Raster images only. original: the uploaded format at full quality (lossless PNG/WebP/AVIF, JPEG 100), up to 8192 px; standard (default): WebP 88, up to 4096 px; balanced: WebP 82, up to 2560 px; max: WebP 68, up to 1920 px. Transparency is kept."
           }
         ],
         "requestBody": {
@@ -21845,7 +21862,7 @@
               "type": "string",
               "pattern": "^ast_[0-9A-Z]{26}\\.\\w+$"
             },
-            "description": "ast_….webp | .svg | .pdf | .ai | .glb (3D models)"
+            "description": "ast_….webp | .jpg | .png | .gif | .avif | .svg | .pdf | .ai | .glb (3D models) | .mp4 | .webm | .woff2 | .woff | .ttf | .otf"
           }
         ],
         "responses": {

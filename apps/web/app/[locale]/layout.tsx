@@ -4,6 +4,8 @@ import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import { getDictionary, isLocale, localeMeta, locales } from "@/lib/i18n";
 import { languageAlternates, pageUrl } from "@/lib/seo";
+import { fontCss } from "@arapoush/schema";
+import { getFonts } from "@/lib/content/slider";
 import { siteUrl } from "@/lib/site";
 import "../globals.css";
 import { ensureContent } from "@/lib/content";
@@ -73,6 +75,9 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   const t = getDictionary(locale);
   const edit = await editMode();
   const settings = siteSettings();
+  // Uploaded fonts (OPEX → Site → Fonts): browsers only download a face that text on the page uses.
+  const fonts = getFonts();
+  const fontRules = fontCss(fonts, locale, (fonts?.families ?? []).map((f) => f.key));
 
   return (
     <html
@@ -90,6 +95,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
         />
       </head>
       <body>
+        {fontRules && <style dangerouslySetInnerHTML={{ __html: fontRules }} />}
         <a className="skip-link" href="#main">
           {t.common.skip}
         </a>
