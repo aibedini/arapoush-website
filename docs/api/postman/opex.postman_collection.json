@@ -7175,6 +7175,161 @@
       ]
     },
     {
+      "name": "Translation",
+      "item": [
+        {
+          "name": "Languages, whether AI translation is on, and how complete each page, post and blog list is per language",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/translate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "translate"
+              ]
+            },
+            "description": "Source: translate/routes.ts"
+          }
+        },
+        {
+          "name": "AI-translate blog categories, tags and authors (names, descriptions, roles, bios)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/translate/blog-taxonomy",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "translate",
+                "blog-taxonomy"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from\": \"fa\",\n  \"to\": [\n    \"fa\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Category slugs that are missing in a target are made from the translated name when free.\n\nSource: translate/routes.ts"
+          }
+        },
+        {
+          "name": "AI-translate a blog post into several languages; saved as a new draft revision",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/translate/blog/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "translate",
+                "blog",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from\": \"fa\",\n  \"to\": [\n    \"fa\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "A missing target gets a whole translation (title, slug, body, takeaways, FAQ, SEO). With `missing`, an existing target only gets its empty parts. New translations are switched on in the draft when `enable` is true; the post still needs publishing.\n\nSource: translate/routes.ts"
+          }
+        },
+        {
+          "name": "AI-translate a page, global or one of its sections into several languages; saved as a new draft",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/translate/entries/:type",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "translate",
+                "entries",
+                ":type"
+              ],
+              "variable": [
+                {
+                  "key": "type",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from\": \"fa\",\n  \"to\": [\n    \"fa\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Walks the entry's schema and translates every localized text (and image alt text) under `scope`. Locked fields are left alone. Edits made while the AI works are kept: a value is only written when its source text did not change meanwhile. Nothing is published.\n\nSource: translate/routes.ts"
+          }
+        }
+      ]
+    },
+    {
       "name": "Webhooks",
       "item": [
         {

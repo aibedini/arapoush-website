@@ -112,6 +112,10 @@
       "description": "Console sign-in (password, then authenticator), step-up, CSRF and sessions."
     },
     {
+      "name": "Translation",
+      "description": "AI translation of pages, sections, blog posts and blog lists into several languages at once, saved as drafts."
+    },
+    {
       "name": "Webhooks",
       "description": "Outgoing webhook deliveries and retries."
     }
@@ -164,6 +168,7 @@
         "SEO engine",
         "Settings",
         "Sign-in and sessions",
+        "Translation",
         "Webhooks"
       ]
     },
@@ -32954,6 +32959,976 @@
                   "title": "RATE_LIMITED",
                   "status": 429,
                   "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "manage"
+      }
+    },
+    "/v1/manage/translate": {
+      "get": {
+        "operationId": "translateOverview",
+        "summary": "Languages, whether AI translation is on, and how complete each page, post and blog list is per language",
+        "description": "**Permission:** `content.read`; built-in roles with it by default: super_admin, operator, auditor, viewer.\n\n**Source:** `apps/opex-api/src/translate/routes.ts`",
+        "tags": [
+          "Translation"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Coverage counts the values that have text in at least one language.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ai": {
+                      "type": "boolean"
+                    },
+                    "locales": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string",
+                            "enum": [
+                              "fa",
+                              "en",
+                              "tr"
+                            ]
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "native": {
+                            "type": "string"
+                          },
+                          "dir": {
+                            "type": "string",
+                            "enum": [
+                              "rtl",
+                              "ltr"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "code",
+                          "name",
+                          "native",
+                          "dir"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "entries": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "total": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "filled": {
+                            "type": "object",
+                            "propertyNames": {
+                              "type": "string"
+                            },
+                            "additionalProperties": {
+                              "type": "integer",
+                              "minimum": -9007199254740991,
+                              "maximum": 9007199254740991
+                            }
+                          },
+                          "unpublished": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "label",
+                          "total",
+                          "filled",
+                          "unpublished"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "posts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "locales": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "enum": [
+                                "fa",
+                                "en",
+                                "tr"
+                              ]
+                            },
+                            "description": "Languages with a title and a body."
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "title",
+                          "status",
+                          "locales"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "taxonomy": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "filled": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          }
+                        }
+                      },
+                      "required": [
+                        "total",
+                        "filled"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "ai",
+                    "locales",
+                    "entries",
+                    "posts",
+                    "taxonomy"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: No valid console session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `content.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NETWORK_DENIED",
+                  "status": 403,
+                  "code": "NETWORK_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "manage"
+      }
+    },
+    "/v1/manage/translate/blog-taxonomy": {
+      "post": {
+        "operationId": "translateBlogTaxonomy",
+        "summary": "AI-translate blog categories, tags and authors (names, descriptions, roles, bios)",
+        "description": "Category slugs that are missing in a target are made from the translated name when free.\n\n**Permission:** `blog.manage`; built-in roles with it by default: super_admin, operator.\n\n**Rate limit:** 30 per minute.\n\n**Audit:** records `blog.taxonomy.translate`.\n\n**Source:** `apps/opex-api/src/translate/routes.ts`",
+        "tags": [
+          "Translation"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "from": {
+                    "type": "string",
+                    "enum": [
+                      "fa",
+                      "en",
+                      "tr"
+                    ],
+                    "description": "The language to translate from (its text must exist)."
+                  },
+                  "to": {
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "fa",
+                        "en",
+                        "tr"
+                      ]
+                    },
+                    "description": "Target languages (several at once)."
+                  },
+                  "mode": {
+                    "default": "missing",
+                    "description": "`missing`: fill only empty values of each target. `all`: translate every value again, replacing what is there.",
+                    "type": "string",
+                    "enum": [
+                      "missing",
+                      "all"
+                    ]
+                  },
+                  "note": {
+                    "description": "Extra instructions for the translator (tone, terms to keep).",
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "dryRun": {
+                    "default": false,
+                    "description": "Count what would be translated without calling the AI or saving.",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "from",
+                  "to"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "What was translated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "segments": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Values sent for translation (summed over targets)."
+                    },
+                    "written": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Values written into the draft."
+                    },
+                    "perLocale": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      },
+                      "description": "Values written per target language."
+                    }
+                  },
+                  "required": [
+                    "segments",
+                    "written",
+                    "perLocale"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`SAME_LANGUAGE`: A target is the source language.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: No valid console session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `blog.manage` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NETWORK_DENIED",
+                  "status": 403,
+                  "code": "NETWORK_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 30 per minute.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "`AI_FAILED`: The AI service failed or declined; try again (nothing was saved).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "AI_FAILED",
+                  "status": 502,
+                  "code": "AI_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "`AI_OFF`: ANTHROPIC_API_KEY is not set on the server.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "AI_OFF",
+                  "status": 503,
+                  "code": "AI_OFF",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "manage"
+      }
+    },
+    "/v1/manage/translate/blog/{id}": {
+      "post": {
+        "operationId": "translatePost",
+        "summary": "AI-translate a blog post into several languages; saved as a new draft revision",
+        "description": "A missing target gets a whole translation (title, slug, body, takeaways, FAQ, SEO). With `missing`, an existing target only gets its empty parts. New translations are switched on in the draft when `enable` is true; the post still needs publishing.\n\n**Permission:** `blog.write`; built-in roles with it by default: super_admin, operator, blog_author.\n\n**Rate limit:** 30 per minute.\n\n**Audit:** records `blog.post.translate`.\n\n**Source:** `apps/opex-api/src/translate/routes.ts`",
+        "tags": [
+          "Translation"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 40
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "from": {
+                    "type": "string",
+                    "enum": [
+                      "fa",
+                      "en",
+                      "tr"
+                    ],
+                    "description": "The language to translate from (its text must exist)."
+                  },
+                  "to": {
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "fa",
+                        "en",
+                        "tr"
+                      ]
+                    },
+                    "description": "Target languages (several at once)."
+                  },
+                  "mode": {
+                    "default": "missing",
+                    "description": "`missing`: fill only empty values of each target. `all`: translate every value again, replacing what is there.",
+                    "type": "string",
+                    "enum": [
+                      "missing",
+                      "all"
+                    ]
+                  },
+                  "note": {
+                    "description": "Extra instructions for the translator (tone, terms to keep).",
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "dryRun": {
+                    "default": false,
+                    "description": "Count what would be translated without calling the AI or saving.",
+                    "type": "boolean"
+                  },
+                  "enable": {
+                    "default": true,
+                    "description": "Switch on languages this creates.",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "from",
+                  "to"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "What was translated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "segments": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Values sent for translation (summed over targets)."
+                    },
+                    "written": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Values written into the draft."
+                    },
+                    "perLocale": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      },
+                      "description": "Values written per target language."
+                    },
+                    "revisionId": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "segments",
+                    "written",
+                    "perLocale",
+                    "revisionId"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`SAME_LANGUAGE`: A target is the source language.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: No valid console session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `blog.write` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.\n\n`NOT_YOUR_POST`: Someone else's post and you lack blog.edit_others.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NETWORK_DENIED",
+                  "status": 403,
+                  "code": "NETWORK_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: No such post, or it has no text in the source language.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 30 per minute.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "`AI_FAILED`: The AI service failed or declined; try again (nothing was saved).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "AI_FAILED",
+                  "status": 502,
+                  "code": "AI_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "`AI_OFF`: ANTHROPIC_API_KEY is not set on the server.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "AI_OFF",
+                  "status": 503,
+                  "code": "AI_OFF",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "manage"
+      }
+    },
+    "/v1/manage/translate/entries/{type}": {
+      "post": {
+        "operationId": "translateEntry",
+        "summary": "AI-translate a page, global or one of its sections into several languages; saved as a new draft",
+        "description": "Walks the entry's schema and translates every localized text (and image alt text) under `scope`. Locked fields are left alone. Edits made while the AI works are kept: a value is only written when its source text did not change meanwhile. Nothing is published.\n\n**Permission:** `content.write`; built-in roles with it by default: super_admin, operator.\n\n**Rate limit:** 30 per minute.\n\n**Audit:** records `content.translate`, `content.revision.create`.\n\n**Source:** `apps/opex-api/src/translate/routes.ts`",
+        "tags": [
+          "Translation"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 80
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "from": {
+                    "type": "string",
+                    "enum": [
+                      "fa",
+                      "en",
+                      "tr"
+                    ],
+                    "description": "The language to translate from (its text must exist)."
+                  },
+                  "to": {
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "fa",
+                        "en",
+                        "tr"
+                      ]
+                    },
+                    "description": "Target languages (several at once)."
+                  },
+                  "mode": {
+                    "default": "missing",
+                    "description": "`missing`: fill only empty values of each target. `all`: translate every value again, replacing what is there.",
+                    "type": "string",
+                    "enum": [
+                      "missing",
+                      "all"
+                    ]
+                  },
+                  "note": {
+                    "description": "Extra instructions for the translator (tone, terms to keep).",
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "dryRun": {
+                    "default": false,
+                    "description": "Count what would be translated without calling the AI or saving.",
+                    "type": "boolean"
+                  },
+                  "scope": {
+                    "description": "Only values under this field path, e.g. /sections[id=hero] or /hero.",
+                    "type": "string",
+                    "maxLength": 300,
+                    "format": "starts_with",
+                    "pattern": "^\\/.*"
+                  }
+                },
+                "required": [
+                  "from",
+                  "to"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "What was translated; `revision` is null when nothing changed (or on a dry run).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "segments": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Values sent for translation (summed over targets)."
+                    },
+                    "written": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Values written into the draft."
+                    },
+                    "perLocale": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      },
+                      "description": "Values written per target language."
+                    },
+                    "revision": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "number": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "number"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "segments",
+                    "written",
+                    "perLocale",
+                    "revision"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`SAME_LANGUAGE`: A target is the source language.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: No valid console session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `content.write` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NETWORK_DENIED",
+                  "status": 403,
+                  "code": "NETWORK_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: Unknown content type or entry.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 30 per minute.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "`AI_FAILED`: The AI service failed or declined; try again (nothing was saved).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "AI_FAILED",
+                  "status": 502,
+                  "code": "AI_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "`AI_OFF`: ANTHROPIC_API_KEY is not set on the server.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "AI_OFF",
+                  "status": 503,
+                  "code": "AI_OFF",
                   "instance": "req_01J…"
                 }
               }

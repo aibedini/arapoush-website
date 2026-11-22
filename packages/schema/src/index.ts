@@ -20,3 +20,4 @@ export * from "./blocks.ts";
 export * from "./systemForms.ts";
 export * from "./tubeChart.ts";
 export * from "./blog.ts";
+export * from "./translate.ts";

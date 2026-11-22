@@ -40,7 +40,7 @@ const Env = z.object({
   CONSOLE_URL: z.string().url().default("http://localhost:3300"),
   /** Optional Cloudflare Turnstile secret: when set, forms must carry a valid token. */
   TURNSTILE_SECRET: z.string().optional(),
-  /** Blog AI translation drafts (Claude). Unset: the feature is off. */
+  /** AI translation (Claude): pages, sections, blog posts and lists (docs/opex/ai-translation.md). Unset: the feature is off. */
   ANTHROPIC_API_KEY: z.string().optional(),
   /** Public origin of the website, for draft preview links. */
   SITE_URL: z.string().url().default("http://localhost:3210"),

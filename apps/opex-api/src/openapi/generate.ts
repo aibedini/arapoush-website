@@ -73,6 +73,7 @@ const TAG_TEXT: Record<string, string> = {
   Render: "The 3D renderer service: claim jobs, upload images, finish.",
   Website: "Routes the website itself serves: form posts from browsers, the publish webhook, previews, llms.txt, sitemap, robots.",
   "Sign-in and sessions": "Console sign-in (password, then authenticator), step-up, CSRF and sessions.",
+  Translation: "AI translation of pages, sections, blog posts and blog lists into several languages at once, saved as drafts.",
   Webhooks: "Outgoing webhook deliveries and retries.",
 };
 

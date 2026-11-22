@@ -1,8 +1,5 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
-import Anthropic from "@anthropic-ai/sdk";
-import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
-import { z } from "zod";
-import { bodyText, commentsOpen, isLive, LOCALES, parseInline, type BlogBlock, type BlogPostData, type Locale } from "@arapoush/schema";
+import { bodyText, commentsOpen, isLive, LOCALES, parseInline, type BlogPostData, type Locale } from "@arapoush/schema";
 import type { Deps } from "../app.ts";
 import type { Config } from "../config.ts";
 import { audit, auditNow } from "../audit/audit.ts";
@@ -17,6 +14,8 @@ import { enqueueEmail, pii } from "../tickets/service.ts";
 import { BLOG_COMMUNITY, BLOG_EXTRA } from "./contract.ts";
 import { card, taxonomy } from "./delivery.ts";
 import { loadPost, loadRevision, notifySite } from "./service.ts";
+import { assertAi, translate } from "../translate/ai.ts";
+import { fromSegments, toSegments } from "../translate/blog.ts";
 
 type CommentRow = { id: string; post_id: string; locale: string; parent_id: string | null; name: string; email_enc: string | null; key_id: string | null; body: string; status: "pending" | "approved" | "spam" | "trash"; by_principal: string | null; created_at: Date };
 
@@ -317,101 +316,18 @@ export async function blogCommunityModule(app: FastifyInstance, deps: Deps) {
   });
 
   // ── AI translation draft (console) ──
-  const Segments = z.object({ segments: z.array(z.object({ key: z.string(), text: z.string() })) });
   app.post("/v1/manage/blog/posts/:id/translate", { preHandler: op, config: { rateLimit: { max: 10, timeWindow: "1 minute" } } }, async (req) => {
     const { id } = BLOG_EXTRA.translate.params.parse(req.params);
     const { from, to } = BLOG_EXTRA.translate.body.parse(req.body);
-    if (!config.ANTHROPIC_API_KEY) throw new Problem(503, "AI_OFF", "AI translation is not configured (ANTHROPIC_API_KEY)");
+    assertAi(config);
     const post = await loadPost(db.q, tenant, id);
     if (post.created_by !== req.principal!.id && !has(req, "blog.edit_others")) throw forbidden("NOT_YOUR_POST", "This post was written by someone else");
     const rev = post.draft_revision_id ? await loadRevision(db.q, id, post.draft_revision_id) : null;
     const src = rev?.data.translations[from];
     if (!src || !src.title) throw notFound("Source translation");
     const segs = toSegments(src);
-    const client = new Anthropic({ apiKey: config.ANTHROPIC_API_KEY, timeout: 120_000, maxRetries: 2 });
-    const NAMES: Record<Locale, string> = { fa: "Persian (Farsi)", en: "English", tr: "Turkish" };
-    let out: z.infer<typeof Segments> | null = null;
-    try {
-      const res = await client.beta.messages.parse({
-        model: "claude-opus-5-5",
-        max_tokens: 16000,
-        // A refused request is retried on a fallback model in the same call.
-        betas: ["server-side-fallback-2026-07-01"],
-        fallbacks: "default",
-        output_config: { effort: "medium", format: betaZodOutputFormat(Segments) },
-        system:
-          "You translate articles of Arapoush, a manufacturer of multi-layer plastic tubes and effervescent tablet tubes (packaging for cosmetics, pharma, hygiene and food). " +
-          "Translate each segment faithfully and naturally for search readers in the target language, using the industry's usual terms. " +
-          "Keep the inline markup exactly: **bold**, *italic*, [link text](url) - translate the link text, never the url. Keep numbers, units and brand names. " +
-          "Return every segment with its key unchanged.",
-        messages: [{ role: "user", content: `Translate from ${NAMES[from]} to ${NAMES[to]}.\n\n${JSON.stringify({ segments: segs })}` }],
-      });
-      if (res.stop_reason === "refusal" || res.stop_reason === "max_tokens") throw new Error(res.stop_reason);
-      out = res.parsed_output;
-    } catch (e) {
-      req.log.warn({ err: e instanceof Anthropic.APIError ? `${e.status} ${e.message}` : (e as Error).message }, "blog translation failed");
-      throw new Problem(502, "AI_FAILED", "The translation service did not answer; try again");
-    }
-    if (!out) throw new Problem(502, "AI_FAILED", "The translation came back incomplete; try again");
+    const out = await translate(config, req.log, { from, targets: [{ to, segments: segs }] });
     await auditNow(db, tenant, { action: "blog.post.translate", actor: actorOf(req), request: req.info, resource: { type: "blog_post", id, from, to, segments: segs.length } });
-    return fromSegments(src, new Map(out.segments.map((s) => [s.key, s.text])));
+    return fromSegments(src, out.get(to)!);
   });
-}
-
-type Tr = NonNullable<BlogPostData["translations"]["fa"]>;
-/** Every translatable string of a translation as key → text (links, images and kinds stay out). */
-function toSegments(t: Tr) {
-  const s: { key: string; text: string }[] = [];
-  const add = (key: string, text: string | undefined) => text?.trim() && s.push({ key, text });
-  add("title", t.title);
-  add("excerpt", t.excerpt);
-  add("seo.title", t.seo.title);
-  add("seo.description", t.seo.description);
-  add("seo.keyphrase", t.seo.keyphrase);
-  (t.keywords ?? []).forEach((k, i) => add(`keywords.${i}`, k));
-  t.keyTakeaways.forEach((k, i) => add(`takeaways.${i}`, k));
-  t.faq.forEach((f, i) => (add(`faq.${i}.q`, f.q), add(`faq.${i}.a`, f.a)));
-  for (const b of t.body) {
-    const k = `body.${b.id}`;
-    if (b.kind === "p" || b.kind === "h" || b.kind === "quote" || b.kind === "callout" || b.kind === "cta") add(`${k}.text`, b.text);
-    if (b.kind === "quote") add(`${k}.cite`, b.cite);
-    if (b.kind === "callout") add(`${k}.title`, b.title);
-    if (b.kind === "cta") add(`${k}.button`, b.button);
-    if (b.kind === "list") b.items.forEach((x, i) => add(`${k}.items.${i}`, x));
-    if (b.kind === "image") (add(`${k}.alt`, b.image.alt), add(`${k}.caption`, b.caption));
-    if (b.kind === "table") (b.head.forEach((x, i) => add(`${k}.head.${i}`, x)), b.rows.forEach((r, i) => r.forEach((x, j) => add(`${k}.rows.${i}.${j}`, x))), add(`${k}.caption`, b.caption));
-  }
-  return s;
-}
-function fromSegments(t: Tr, m: Map<string, string>) {
-  const g = (key: string, old: string) => m.get(key) ?? old;
-  const body: BlogBlock[] = t.body.map((b) => {
-    const k = `body.${b.id}`;
-    switch (b.kind) {
-      case "p":
-      case "h":
-        return { ...b, text: g(`${k}.text`, b.text) };
-      case "quote":
-        return { ...b, text: g(`${k}.text`, b.text), cite: b.cite ? g(`${k}.cite`, b.cite) : b.cite };
-      case "callout":
-        return { ...b, text: g(`${k}.text`, b.text), title: b.title ? g(`${k}.title`, b.title) : b.title };
-      case "cta":
-        return { ...b, text: g(`${k}.text`, b.text), button: g(`${k}.button`, b.button) };
-      case "list":
-        return { ...b, items: b.items.map((x, i) => g(`${k}.items.${i}`, x)) };
-      case "image":
-        return { ...b, image: { ...b.image, alt: b.image.alt ? g(`${k}.alt`, b.image.alt) : b.image.alt }, caption: b.caption ? g(`${k}.caption`, b.caption) : b.caption };
-      case "table":
-        return { ...b, head: b.head.map((x, i) => g(`${k}.head.${i}`, x)), rows: b.rows.map((r, i) => r.map((x, j) => g(`${k}.rows.${i}.${j}`, x))), caption: b.caption ? g(`${k}.caption`, b.caption) : b.caption };
-    }
-  });
-  return {
-    title: g("title", t.title),
-    excerpt: g("excerpt", t.excerpt),
-    body,
-    keyTakeaways: t.keyTakeaways.map((x, i) => g(`takeaways.${i}`, x)),
-    faq: t.faq.map((f, i) => ({ q: g(`faq.${i}.q`, f.q), a: g(`faq.${i}.a`, f.a) })),
-    seo: { title: t.seo.title ? g("seo.title", t.seo.title) : undefined, description: t.seo.description ? g("seo.description", t.seo.description) : undefined, keyphrase: t.seo.keyphrase ? g("seo.keyphrase", t.seo.keyphrase) : undefined },
-    keywords: (t.keywords ?? []).map((x, i) => g(`keywords.${i}`, x)),
-  };
 }
