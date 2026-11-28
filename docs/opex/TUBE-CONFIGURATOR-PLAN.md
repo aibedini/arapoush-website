@@ -8,6 +8,16 @@ After T5 (2026-11-13): the catalogue manager. Everything in the catalogue is edi
 (`/catalogue`): shapes and sizes, closures with their fits and colours, colours, prints, structures and
 samples. Excel is the bulk import, one tab of it. See OPEX-PLAN.md, "Catalogue manager".
 
+3D studio S1 (2026-11-28, see 3D-STUDIO-PLAN.md):
+- **Visitor's label:** the configurator takes the visitor's own artwork (JPG, PNG, WebP, SVG, PDF, or
+  Illustrator saved PDF-compatible). It is read in the browser with pdf.js (loaded only for PDF/AI) and
+  never uploaded. It replaces the print sample: on the front (size and height) or all the way round,
+  inside the printable zone (`LABEL_ZONE`), at the tube's real size.
+- **Console studio:** each factory model in Catalogue → 3D models opens a 3D studio before approval.
+  The model sits on a tube neck by the mounting being edited and follows every change. A half-section
+  shows whether the neck seats inside the cap; the site's cap finishes and a body colour can be tried,
+  and a PNG saved.
+
 T2.1 (2026-11-13): factory CAD in bulk.
 - Factory STEP files can be dropped together. Each is matched to a closure and diameter by name.
 - Each comes back with the mounting read off its geometry.

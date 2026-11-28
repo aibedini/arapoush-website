@@ -605,6 +605,13 @@ details.group:not([open]) > summary::before { transform: rotate(135deg); }
 .cm-drop { display: grid; justify-items: center; gap: 4px; padding: 24px 16px; border: 2px dashed var(--line-strong); border-radius: var(--radius); background: var(--surface-2); text-align: center; cursor: pointer; color: var(--text); }
 .cm-drop svg { color: var(--accent); }
 .cm-drop:hover, .cm-drop[data-drag] { border-color: var(--accent); background: var(--accent-soft); }
+/* 3D studio (catalogue → 3D models) */
+.studio { display: grid; gap: 12px; }
+.studio-stage { position: relative; aspect-ratio: 4 / 3; max-block-size: 520px; inline-size: 100%; border-radius: var(--radius); border: 1px solid var(--line); background: radial-gradient(circle at 50% 40%, var(--surface), var(--surface-2)); overflow: hidden; }
+.studio-stage canvas { display: block; inline-size: 100%; block-size: 100%; touch-action: none; }
+.studio-note { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: var(--muted); }
+.studio-tools { display: grid; gap: 10px; }
+.studio-tools .btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
 .cm-drop:has(:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
 .cm-queue td { vertical-align: middle; }
 .cm-queue select { min-block-size: 32px; padding: 3px 8px; }
