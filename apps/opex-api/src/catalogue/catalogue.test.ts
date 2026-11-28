@@ -209,6 +209,11 @@ test("parts library: bodies and closures of any line, named, mounted, approved i
     const ren = await t.app.inject({ method: "PUT", url: `${P}/${c.id}`, headers: as(op), payload: { category: "child-safe", name: { fa: "درب ایمن کودک", en: "Child-safe cap" } } });
     assert.equal(ren.statusCode, 200, ren.body);
     assert.equal(ren.json().category, "child-safe");
+    const look = { finish: "gloss", hex: "#1d4a72", meshes: [{ i: 0, finish: "metal", hex: "#c9ced3" }] };
+    const recol = await t.app.inject({ method: "PUT", url: `${P}/${c.id}`, headers: as(op), payload: { look } });
+    assert.equal(recol.statusCode, 200, recol.body);
+    assert.deepEqual(recol.json().look, look);
+    assert.equal((await t.app.inject({ method: "PUT", url: `${P}/${c.id}`, headers: as(op), payload: { look: { finish: "shiny", hex: "red" } } })).statusCode, 400);
 
     const entry = (await t.app.inject({ method: "GET", url: "/v1/manage/entries/product.parts", headers: { cookie: op.cookie } })).json();
     const base = entry.draft?.id ?? null;
@@ -230,6 +235,7 @@ test("parts library: bodies and closures of any line, named, mounted, approved i
     const spiral = draft.parts.find((p: { id: string }) => p.id === c.id);
     assert.equal(spiral.category, "child-safe");
     assert.equal(spiral.axis, "+X");
+    assert.equal(spiral.look.finish, "gloss", "the studio's colour and finish reach the site");
     assert.match(spiral.src, /^\/media\/ast_[0-9A-Z]{26}\.glb$/);
     assert.ok(draft.lines.some((l: { id: string }) => l.id === "jar"));
 

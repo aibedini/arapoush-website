@@ -32,6 +32,16 @@
     "fa": "پیشرفت مطالعه",
     "en": "Reading progress",
     "tr": "Okuma ilerlemesi"
+   },
+   "model3d": {
+    "fa": "مدل سه‌بعدی {name}",
+    "en": "3D model of {name}",
+    "tr": "{name} 3B modeli"
+   },
+   "model3dHint": {
+    "fa": "برای چرخاندن بکشید",
+    "en": "Drag to turn",
+    "tr": "Döndürmek için sürükleyin"
    }
   },
   "nav": {

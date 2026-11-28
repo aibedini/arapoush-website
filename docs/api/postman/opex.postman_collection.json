@@ -1943,7 +1943,7 @@
           }
         },
         {
-          "name": "Rename, recategorise or move a part to another line",
+          "name": "Rename, recategorise, recolour or move a part to another line",
           "request": {
             "method": "PUT",
             "header": [

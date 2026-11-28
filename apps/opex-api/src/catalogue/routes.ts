@@ -29,6 +29,7 @@ type ModelRow = {
   kind: "body" | "closure" | "insert";
   name: Loc | null;
   category: string | null;
+  look: unknown;
   shape_id: string | null;
   diameter: number | null;
   suggested: unknown;
@@ -65,7 +66,7 @@ const view = (r: ModelRow) => ({
 });
 const partView = (r: ModelRow) => {
   const { shape: _shape, diameter: _diameter, closure_id, ...rest } = view(r);
-  return { ...rest, line: r.line, kind: r.kind, name: r.name ?? null, category: r.category ?? null, closure_id: closure_id ?? null };
+  return { ...rest, line: r.line, kind: r.kind, name: r.name ?? null, category: r.category ?? null, look: r.look ?? null, closure_id: closure_id ?? null };
 };
 /** Parts library entry as the website reads it (`product.parts` → `parts`). */
 type PartsDoc = { lines?: { id: string; name: Loc }[]; parts?: Record<string, unknown>[]; [k: string]: unknown };
@@ -250,9 +251,9 @@ export async function catalogueModule(app: FastifyInstance, deps: Deps) {
       if (m.closure_id && ((body.line && body.line !== "tube") || (body.kind && body.kind !== "closure")))
         throw badRequest("VALIDATION_FAILED", "A tube closure stays a tube closure", { issues: [{ path: body.line ? "/line" : "/kind", code: "TUBE_CLOSURE", message: "Upload it again as a part of the other line" }] });
       const [u] = await q<ModelRow>(
-        `UPDATE cad_models SET line = COALESCE($2, line), kind = COALESCE($3, kind), name = COALESCE($4, name), category = CASE WHEN $5 THEN $6 ELSE category END,
+        `UPDATE cad_models SET line = COALESCE($2, line), kind = COALESCE($3, kind), name = COALESCE($4, name), category = CASE WHEN $5 THEN $6 ELSE category END, look = CASE WHEN $7 THEN $8::jsonb ELSE look END,
            status = CASE WHEN status = 'approved' AND closure_id IS NULL THEN 'needs_review' ELSE status END, updated_at = clock_timestamp() WHERE id = $1 RETURNING *`,
-        [m.id, body.line ?? null, body.kind ?? null, body.name ? JSON.stringify(body.name) : null, body.category !== undefined, body.category ?? null],
+        [m.id, body.line ?? null, body.kind ?? null, body.name ? JSON.stringify(body.name) : null, body.category !== undefined, body.category ?? null, body.look !== undefined, body.look ? JSON.stringify(body.look) : null],
       );
       await audit(q, tenant, { action: "cad.updated", actor: actorOf(req), request: req.info, resource: { type: "cad_model", id, line: u!.line, kind: u!.kind, changed: Object.keys(body) } });
       return partView(u!);
@@ -291,6 +292,7 @@ export async function catalogueModule(app: FastifyInstance, deps: Deps) {
         anchorMm: m.mounting.anchorMm,
         neckDiameterMm: m.mounting.neckDiameterMm,
         sizeMm: m.bbox.size,
+        ...(m.look ? { look: m.look } : {}),
       };
       next.parts = [...(next.parts ?? []).filter((p) => p.id !== m.id), part];
       if (!(next.lines ?? []).some((l) => l.id === m.line)) next.lines = [...(next.lines ?? []), { id: m.line, name: LINE_NAMES[m.line] ?? { fa: m.line, en: m.line, tr: m.line } }];

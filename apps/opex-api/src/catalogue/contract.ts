@@ -63,6 +63,12 @@ export const CadModel = z
     approved_at: z.string().nullable(),
   })
   .meta({ id: "CadModel" });
+export const FINISHES = ["matte", "gloss", "metal", "brushed", "clear", "glass"] as const;
+const Hex = z.string().regex(/^#[0-9a-fA-F]{6}$/);
+const Finish = z.object({ finish: z.enum(FINISHES), hex: Hex });
+export const PartLook = Finish.extend({
+  meshes: z.array(Finish.extend({ i: z.number().int().min(0).max(5000) })).max(500).optional().describe("Per-piece overrides, by the piece's order in the GLB."),
+}).meta({ id: "PartLook" });
 const Loc = z.object({ fa: z.string().max(120).optional(), en: z.string().max(120).optional(), tr: z.string().max(120).optional() });
 export const PART_KINDS = ["body", "closure", "insert"] as const;
 const LineId = z.string().regex(/^[a-z][a-z0-9-]{0,31}$/).describe("Product line id, e.g. `tube`, `effervescent`, `jar`.");
@@ -82,6 +88,7 @@ export const CadPart = z
     triangles: z.number(),
     parts: z.number(),
     simplified: z.boolean(),
+    look: PartLook.nullable().describe("Colour and finish chosen in the studio; the site shows the part this way."),
     mounting: Mounting.nullable().describe("Body: the neck, with `axis` pointing out of the opening and `anchorMm` at the neck top. Closure: as for tube closures."),
     suggested: Suggested.nullable(),
     created_at: z.string(),
@@ -93,6 +100,7 @@ const PartMeta = z.strictObject({
   kind: z.enum(PART_KINDS).optional(),
   name: Loc.optional(),
   category: z.string().max(60).nullable().optional().describe("Free grouping shown in the console and on the site (e.g. `spiral`, `child-safe`)."),
+  look: PartLook.nullable().optional(),
 });
 const ModelId = z.object({ id: z.string().max(40) });
 const NoModel = { status: 404, code: "NOT_FOUND", when: "No such model." };
@@ -270,7 +278,7 @@ export const CATALOGUE = {
     tags,
     auth: "session",
     role: "operator",
-    summary: "Rename, recategorise or move a part to another line",
+    summary: "Rename, recategorise, recolour or move a part to another line",
     description: "Changes the name, category, line or kind. An approved part goes back to review, so the site never shows a half-edited part. Tube closures (with a catalogue closure) keep line `tube` and kind `closure`.",
     params: ModelId,
     body: PartMeta,

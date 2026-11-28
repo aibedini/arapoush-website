@@ -15404,7 +15404,7 @@
     "/v1/manage/catalogue/parts/{id}": {
       "put": {
         "operationId": "updatePart",
-        "summary": "Rename, recategorise or move a part to another line",
+        "summary": "Rename, recategorise, recolour or move a part to another line",
         "description": "Changes the name, category, line or kind. An approved part goes back to review, so the site never shows a half-edited part. Tube closures (with a catalogue closure) keep line `tube` and kind `closure`.\n\n**Permission:** `catalogue.write`; built-in roles with it by default: super_admin, operator.\n\n**Audit:** records `cad.updated`.\n\n**Source:** `apps/opex-api/src/catalogue/routes.ts`",
         "tags": [
           "Catalogue"
@@ -15468,6 +15468,16 @@
                       {
                         "type": "string",
                         "maxLength": 60
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "look": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/PartLookInput"
                       },
                       {
                         "type": "null"
@@ -39152,6 +39162,17 @@
           "simplified": {
             "type": "boolean"
           },
+          "look": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PartLook"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Colour and finish chosen in the studio; the site shows the part this way."
+          },
           "mounting": {
             "anyOf": [
               {
@@ -39198,6 +39219,7 @@
           "triangles",
           "parts",
           "simplified",
+          "look",
           "mounting",
           "suggested",
           "created_at",
@@ -40122,6 +40144,126 @@
         "type": "string",
         "pattern": "^[a-z][a-z0-9_]{1,39}$",
         "description": "A built-in role (super_admin, operator, auditor, viewer) or the key of a custom role."
+      },
+      "PartLook": {
+        "type": "object",
+        "properties": {
+          "finish": {
+            "type": "string",
+            "enum": [
+              "matte",
+              "gloss",
+              "metal",
+              "brushed",
+              "clear",
+              "glass"
+            ]
+          },
+          "hex": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "meshes": {
+            "description": "Per-piece overrides, by the piece's order in the GLB.",
+            "maxItems": 500,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "finish": {
+                  "type": "string",
+                  "enum": [
+                    "matte",
+                    "gloss",
+                    "metal",
+                    "brushed",
+                    "clear",
+                    "glass"
+                  ]
+                },
+                "hex": {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}$"
+                },
+                "i": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 5000
+                }
+              },
+              "required": [
+                "finish",
+                "hex",
+                "i"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "finish",
+          "hex"
+        ],
+        "additionalProperties": false
+      },
+      "PartLookInput": {
+        "type": "object",
+        "properties": {
+          "finish": {
+            "type": "string",
+            "enum": [
+              "matte",
+              "gloss",
+              "metal",
+              "brushed",
+              "clear",
+              "glass"
+            ]
+          },
+          "hex": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "meshes": {
+            "description": "Per-piece overrides, by the piece's order in the GLB.",
+            "maxItems": 500,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "finish": {
+                  "type": "string",
+                  "enum": [
+                    "matte",
+                    "gloss",
+                    "metal",
+                    "brushed",
+                    "clear",
+                    "glass"
+                  ]
+                },
+                "hex": {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}$"
+                },
+                "i": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 5000
+                }
+              },
+              "required": [
+                "finish",
+                "hex",
+                "i"
+              ]
+            }
+          }
+        },
+        "required": [
+          "finish",
+          "hex"
+        ]
       },
       "PolicyDecision": {
         "type": "object",
