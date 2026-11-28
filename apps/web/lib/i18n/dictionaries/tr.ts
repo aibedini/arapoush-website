@@ -12,6 +12,8 @@ const tr: Dictionary = {
     brand: "Arapoush Gostar",
     loading: "Yükleniyor",
     progress: "Okuma ilerlemesi",
+    model3d: "{name} 3B modeli",
+    model3dHint: "Döndürmek için sürükleyin",
   },
   nav: {
     /** Menu label of the journal (added to the menu when OPEX content lacks it). */

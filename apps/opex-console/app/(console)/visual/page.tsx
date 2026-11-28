@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowClockwise, ArrowCounterClockwise, ArrowDown, ArrowUp, Copy, DesktopTower, DeviceMobile, DeviceTablet, DotsSixVertical, Eye, EyeSlash, Plus, Question, Rows, TextAa, Image as ImageIcon, Megaphone, ListChecks, ArrowsVertical, Trash, UploadSimple, PaintBrush } from "@phosphor-icons/react";
+import { ArrowClockwise, ArrowCounterClockwise, ArrowDown, ArrowUp, Copy, DesktopTower, DeviceMobile, DeviceTablet, DotsSixVertical, Eye, EyeSlash, Plus, Question, Rows, TextAa, Image as ImageIcon, Megaphone, ListChecks, ArrowsVertical, Trash, UploadSimple, PaintBrush, Cube } from "@phosphor-icons/react";
 import { BLOCK_FIELDS, BLOCK_KINDS, BLOCK_PROPS, getAt, isBlockKind, newBlock, PAGE_LAYOUTS, SECTION_ENTRY, setAt, type BlockKind, type GroupField, type LayoutSection } from "@arapoush/schema";
 import { AiTranslateButton, type TranslateTarget } from "@/components/AiTranslate";
 import { api, ApiError } from "@/lib/api";
@@ -31,6 +31,7 @@ const BLOCKS: Record<BlockKind, { label: string; text: string; icon: typeof Rows
   faq: { label: "پرسش‌های پرتکرار", text: "پرسش و پاسخ تاشو (برای گوگل هم)", icon: Question },
   form: { label: "فرم", text: "یکی از فرم‌های OPEX", icon: ListChecks },
   spacer: { label: "فاصله", text: "فضای خالی بین بخش‌ها", icon: ArrowsVertical },
+  product3d: { label: "محصول سه‌بعدی", text: "مدل سه‌بعدی از استودیو، عکس صنعتی یا هر دو", icon: Cube },
 };
 const WIDTHS = [
   { w: 390, icon: DeviceMobile, label: "موبایل" },

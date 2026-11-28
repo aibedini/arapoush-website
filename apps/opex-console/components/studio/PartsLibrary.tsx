@@ -298,6 +298,11 @@ function PartCard({ p, bodies, busy, draftId, run }: { p: Part; bodies: Part[]; 
           <a href={p.url} download={`${p.id}.glb`}>
             دریافت GLB
           </a>
+          {p.status === "approved" && (
+            <>
+              {" · "}شناسه برای بلوک «محصول سه‌بعدی»: <code dir="ltr">{p.id}</code>
+            </>
+          )}
         </p>
         {tubeClosure ? (
           <p className="note small">این درب به کاتالوگ تیوب وصل است؛ در «کاتالوگ تیوب ← مدل‌های سه‌بعدی» بررسی و تأیید کنید.</p>

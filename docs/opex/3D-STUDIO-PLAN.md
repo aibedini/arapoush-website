@@ -23,7 +23,9 @@ site. No photo-to-3D (ADR 0006): it guesses the parts a photo does not show.
   neck before approval, following the mounting fields live, with a half-section, the site's cap finishes,
   a body colour and a PNG snapshot.
 
-## S2: product lines and a parts library
+## S2: product lines and a parts library (built 2026-11-28)
+
+Built: migration 013, `/v1/manage/catalogue/parts` routes, the `product.parts` entry and the console page «استودیو سه‌بعدی» (`/studio`). A closure is previewed on a real body of its line.
 
 Today models belong to tube closures only. S2 makes them a library any product line can use.
 
@@ -37,7 +39,9 @@ Today models belong to tube closures only. S2 makes them a library any product l
 - **Console:** Catalogue → 3D models becomes a parts library with filters by line and kind, the
   bulk drop and name matching of T2.1, and the S1 studio showing a chosen body with a chosen closure.
 
-## S3: how a product is shown on the site
+## S3: how a product is shown on the site (first block built 2026-11-28)
+
+Built: the `product3d` page-builder block (body and closure ids from `product.parts`, display `both`, `model` or `photo`). Three.js loads when the block nears the screen, on idle.
 
 - Each product, and each sample, gets `display`: `3d`, `photo` (industrial photograph) or `both`
   (photo first, a "view in 3D" switch).

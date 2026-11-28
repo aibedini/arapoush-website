@@ -5,6 +5,8 @@ import { getForm } from "@/lib/content/forms";
 import OpexForm from "@/components/forms/LazyOpexForm";
 import RollText from "@/components/ui/RollText";
 import MaybeLink from "@/components/ui/MaybeLink";
+import { findPart } from "@/lib/parts";
+import PartViewer from "./PartViewer";
 import styles from "./Block.module.css";
 
 type Props = { kind: BlockKind; id: string; props: BlockProps; t: Dictionary; locale: Locale };
@@ -118,6 +120,39 @@ export default function Block({ kind, id, props: p, t, locale }: Props) {
           </div>
         </section>
       );
+    case "product3d": {
+      // The 3D studio's approved parts; without them (or with "photo") the photo stands alone.
+      const bodyPart = findPart(p.bodyPart);
+      const closurePart = findPart(p.closurePart);
+      const has3d = p.display !== "photo" && !!(bodyPart || closurePart);
+      const photo = p.display !== "model" && p.image?.src;
+      if (!has3d && !photo) return null;
+      const name = L(bodyPart?.name) || L(closurePart?.name) || title;
+      const mount = (x: typeof bodyPart) => (x ? { src: x.src, axis: x.axis, anchorMm: x.anchorMm } : null);
+      const viewer = has3d && <PartViewer body={mount(bodyPart)} closure={mount(closurePart)} label={t.common.model3d.replace("{name}", name)} hint={t.common.model3dHint} />;
+      const image = photo && (
+        <div className={styles.media}>
+          <Image src={p.image!.src} alt={L(p.image!.alt) || name} width={p.image!.width ?? 1200} height={p.image!.height ?? 1200} sizes={has3d ? "(max-width: 600px) 100vw, (max-width: 900px) 50vw, 25vw" : "(max-width: 900px) 100vw, 50vw"} />
+        </div>
+      );
+      return (
+        <section id={id} className={`${styles.block} ${tone}`} aria-labelledby={title ? titleId : undefined}>
+          <div className={`${styles.inner} ${styles.split}`} data-side={p.imageSide ?? "end"}>
+            <div className={styles.copy}>
+              {head}
+              <div className={styles.prose} data-reveal>
+                <Paragraphs text={L(p.body)} />
+              </div>
+              {button}
+            </div>
+            <div className={`${styles.media} ${viewer && image ? styles.pair : ""}`} data-reveal>
+              {viewer}
+              {image}
+            </div>
+          </div>
+        </section>
+      );
+    }
     case "form": {
       const form = p.form ? getForm(p.form) : undefined;
       if (!form) return null;

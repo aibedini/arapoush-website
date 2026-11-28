@@ -31,7 +31,7 @@ const FA: Record<string, string> = {
   "Button": "دکمه", "Button label": "متن دکمه", "Button link": "پیوند دکمه", "Questions": "پرسش‌ها", "Question": "پرسش", "Answer": "پاسخ", "Form address (slug)": "فرم (نشانی)",
   "Space": "اندازهٔ فاصله", "Sections": "بخش‌ها", "Section type": "نوع بخش",
 };
-const ENUM_FA: Record<string, string> = { start: "سمت شروع", end: "سمت پایان", light: "روشن", dark: "تیره", s: "کم", m: "متوسط", l: "زیاد", richText: "متن", imageText: "تصویر و متن", cta: "دعوت به اقدام", faq: "پرسش‌های پرتکرار", form: "فرم", spacer: "فاصله", hero: "اسلایدر", products: "محصولات", applications: "کاربردها", insights: "مقاله‌ها", partners: "مشتریان", certifications: "گواهینامه‌ها" };
+const ENUM_FA: Record<string, string> = { start: "سمت شروع", end: "سمت پایان", light: "روشن", dark: "تیره", s: "کم", m: "متوسط", l: "زیاد", richText: "متن", imageText: "تصویر و متن", cta: "دعوت به اقدام", faq: "پرسش‌های پرتکرار", form: "فرم", spacer: "فاصله", product3d: "محصول سه‌بعدی", both: "سه‌بعدی و عکس", model: "فقط سه‌بعدی", photo: "فقط عکس", hero: "اسلایدر", products: "محصولات", applications: "کاربردها", insights: "مقاله‌ها", partners: "مشتریان", certifications: "گواهینامه‌ها" };
 export const faLabel = (key: string, schemaLabel?: string) => (schemaLabel && FA[schemaLabel]) || FA[key] || schemaLabel || nice(key);
 
 /** Which language(s) the localized inputs show: one at a time keeps long forms readable. */
