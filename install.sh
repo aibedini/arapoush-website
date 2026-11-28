@@ -549,7 +549,7 @@ else
 fi
 SHA="$(git ls-remote "$REPO_URL" "refs/tags/$REF" "refs/heads/$REF" | awk 'NR==1 {print substr($1,1,7)}')"
 [ -n "$SHA" ] || die "No release or branch called '$REF' in $REPO_URL"
-RELEASE="$RELEASES/$REF-$SHA"
+RELEASE="$RELEASES/${REF//\//-}-$SHA"  # a branch like feat/x is one folder, not two
 PREVIOUS=""
 [ ! -L "$CURRENT" ] || PREVIOUS="$(readlink -f "$CURRENT")"
 
