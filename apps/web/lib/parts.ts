@@ -18,6 +18,8 @@ export type Part = {
   anchorMm: [number, number, number];
   neckDiameterMm: number;
   sizeMm: number[];
+  /** Colour and finish chosen in the studio (absent: the file's own colours). */
+  look?: import("@/components/sections/blocks/partScene").PartLook;
 };
 export type PartsLibrary = { lines: { id: string; name: Record<string, string> }[]; parts: Part[] };
 

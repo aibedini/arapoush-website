@@ -4,7 +4,20 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 
-export type Mounted = { src: string; axis: "+Y" | "-Y" | "+X" | "-X" | "+Z" | "-Z"; anchorMm: [number, number, number] };
+type Fin = "matte" | "gloss" | "metal" | "brushed" | "clear" | "glass";
+export type PartLook = { finish: Fin; hex: string; meshes?: { i: number; finish: Fin; hex: string }[] };
+export type Mounted = { src: string; axis: "+Y" | "-Y" | "+X" | "-X" | "+Z" | "-Z"; anchorMm: [number, number, number]; look?: PartLook };
+
+/** The console studio's finishes (opex-console `studioScene.ts` keeps the same table). */
+function finish(f: Fin, hex: string) {
+  const base = { color: new THREE.Color(hex), side: THREE.DoubleSide };
+  if (f === "matte") return new THREE.MeshPhysicalMaterial({ ...base, roughness: 0.75 });
+  if (f === "gloss") return new THREE.MeshPhysicalMaterial({ ...base, roughness: 0.12, clearcoat: 0.6, clearcoatRoughness: 0.1 });
+  if (f === "metal") return new THREE.MeshPhysicalMaterial({ ...base, roughness: 0.2, metalness: 1, clearcoat: 0.4 });
+  if (f === "brushed") return new THREE.MeshPhysicalMaterial({ ...base, roughness: 0.45, metalness: 1 });
+  if (f === "clear") return new THREE.MeshPhysicalMaterial({ ...base, roughness: 0.14, transmission: 0.9, thickness: 0.5, ior: 1.5, transparent: true, opacity: 0.95 });
+  return new THREE.MeshPhysicalMaterial({ ...base, roughness: 0.05, transmission: 1, thickness: 1, ior: 1.5, transparent: true, opacity: 0.4 });
+}
 
 const AXES = { "+Y": [0, 1, 0], "-Y": [0, -1, 0], "+X": [1, 0, 0], "-X": [-1, 0, 0], "+Z": [0, 0, 1], "-Z": [0, 0, -1] } as const;
 
@@ -46,6 +59,16 @@ export class PartScene {
   /** `up`: where the mount's axis should point in the scene (+Y for a body, −Y for a closure). */
   private async place(m: Mounted, up: THREE.Vector3) {
     const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(m.src);
+    if (m.look) {
+      let i = 0;
+      const look = m.look;
+      gltf.scene.traverse((o) => {
+        const mesh = o as THREE.Mesh;
+        if (!mesh.isMesh) return;
+        const own = look.meshes?.find((x) => x.i === i++);
+        mesh.material = own ? finish(own.finish, own.hex) : finish(look.finish, look.hex);
+      });
+    }
     const holder = new THREE.Group();
     gltf.scene.position.set(-m.anchorMm[0], -m.anchorMm[1], -m.anchorMm[2]);
     holder.add(gltf.scene);

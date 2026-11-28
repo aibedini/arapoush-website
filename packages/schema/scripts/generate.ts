@@ -338,6 +338,15 @@ function partsLibrary(g: GroupField): GroupField {
         anchorMm: { ...mm, label: "Anchor (mm)" },
         neckDiameterMm: { kind: "number", label: "Neck Ø (mm)" },
         sizeMm: { ...mm, label: "Size (mm)" },
+        look: {
+          kind: "group",
+          label: "Colour and finish (3D studio)",
+          fields: {
+            finish: { kind: "enum", values: ["matte", "gloss", "metal", "brushed", "clear", "glass"], label: "Finish" },
+            hex: { kind: "text", localized: false, label: "Colour (hex)" },
+            meshes: { kind: "list", label: "Per piece", of: { kind: "group", fields: { i: { kind: "number", integer: true, label: "Piece" }, finish: { kind: "enum", values: ["matte", "gloss", "metal", "brushed", "clear", "glass"], label: "Finish" }, hex: { kind: "text", localized: false, label: "Colour (hex)" } } } },
+          },
+        },
       },
     },
   };

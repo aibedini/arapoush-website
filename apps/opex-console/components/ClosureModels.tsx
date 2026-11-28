@@ -6,7 +6,8 @@ import { api, ApiError } from "@/lib/api";
 import { num } from "@/lib/fa";
 import { guessTarget } from "./catalogue/match";
 import { PreviewFrames } from "./PreviewFrames";
-import { ModelStudio } from "./studio/ModelStudio";
+import { LookPicker, ModelStudio } from "./studio/ModelStudio";
+import type { Look, Mount } from "./studio/studioScene";
 import { ErrorNote, Loading } from "./ui";
 
 type Axis = "+Y" | "-Y" | "+X" | "-X" | "+Z" | "-Z";
@@ -373,7 +374,7 @@ function ModelCard({ m, name, place, busy, draftId, run, onApproved, onPreview }
             <Cube size={18} aria-hidden /> {studio ? "بستن استودیو سه‌بعدی" : "استودیو سه‌بعدی: درب روی گلوی تیوب"}
           </button>
         </div>
-        {studio && <ModelStudio url={m.url} title={`${m.closure_id}${m.diameter != null ? `-${m.diameter}` : ""}`} tubeDiameter={m.diameter} mount={neck ? { axis, anchorMm: anchor, neckDiameterMm: Number(neck) } : null} />}
+        {studio && <ClosureStudio url={m.url} title={`${m.closure_id}${m.diameter != null ? `-${m.diameter}` : ""}`} badge={m.source_name} tubeDiameter={m.diameter} mount={neck ? { axis, anchorMm: anchor, neckDiameterMm: Number(neck) } : null} />}
         <fieldset className="stack" style={{ gap: 8, border: 0, padding: 0, margin: 0 }} disabled={m.status === "archived"}>
           <legend className="small" style={{ fontWeight: 600 }}>
             محل اتصال روی گلوی تیوب
@@ -425,6 +426,19 @@ function ModelCard({ m, name, place, busy, draftId, run, onApproved, onPreview }
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+/** The studio for a tube closure: the cap on a tube neck, with colours to try (the visitor picks the real one on the site). */
+function ClosureStudio({ url, title, badge, tubeDiameter, mount }: { url: string; title: string; badge: string; tubeDiameter?: number | null; mount: Mount | null }) {
+  const [look, setLook] = useState<Look | null>(null);
+  const [selected, setSelected] = useState<number | null>(null);
+  return (
+    <div className="wb-inline">
+      <ModelStudio url={url} title={title} badge={badge} tubeDiameter={tubeDiameter} mount={mount} look={look} onSelect={setSelected} />
+      <LookPicker key={selected ?? "all"} look={look} selected={selected} onChange={setLook} />
+      <p className="small muted">حلقهٔ نارنجی لبهٔ بالای گلوی تیوب است. درب همان‌طور که در سایت سوار می‌شود اینجا هم سوار شده: با محل اتصالی که پایین تنظیم می‌کنید، بدون کوچک و بزرگ شدن. با «برش نیم‌رخ» ببینید گلو درست داخل درب نشسته باشد.</p>
     </div>
   );
 }

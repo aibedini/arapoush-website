@@ -128,7 +128,7 @@ export default function Block({ kind, id, props: p, t, locale }: Props) {
       const photo = p.display !== "model" && p.image?.src;
       if (!has3d && !photo) return null;
       const name = L(bodyPart?.name) || L(closurePart?.name) || title;
-      const mount = (x: typeof bodyPart) => (x ? { src: x.src, axis: x.axis, anchorMm: x.anchorMm } : null);
+      const mount = (x: typeof bodyPart) => (x ? { src: x.src, axis: x.axis, anchorMm: x.anchorMm, ...(x.look ? { look: x.look } : {}) } : null);
       const viewer = has3d && <PartViewer body={mount(bodyPart)} closure={mount(closurePart)} label={t.common.model3d.replace("{name}", name)} hint={t.common.model3dHint} />;
       const image = photo && (
         <div className={styles.media}>
