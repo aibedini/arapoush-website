@@ -17,7 +17,8 @@
     "@phosphor-icons/react": "2.1.10",
     "next": "15.5.29",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "three": "0.180.0"
   },
   "devDependencies": {
     "@arapoush/config": "workspace:*",
@@ -29,6 +30,7 @@
     "@types/node": "22.15.29",
     "@types/react": "19.1.6",
     "@types/react-dom": "19.1.5",
+    "@types/three": "0.180.0",
     "@vitest/browser": "4.1.12",
     "@vitest/browser-playwright": "4.1.12",
     "eslint": "9.39.5",

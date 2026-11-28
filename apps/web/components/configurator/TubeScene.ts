@@ -29,6 +29,12 @@ export type SceneLook = {
   cap?: { kind: "solid" | "clear" | "metallic"; hex: string };
   body?: string;
   print?: { effect: "flat" | "halftone" | "raised" | "foil" | "combo"; foil?: string; artwork?: string };
+  /**
+   * The visitor's own label (an object URL read in the browser). It replaces the print sample.
+   * `wrap`: all the way round the printable zone; `front`: a patch on the front, `scale` its width as a
+   * share of the circumference and `y` its centre down the printable zone (0 = crimp end, 1 = shoulder).
+   */
+  label?: { src: string; mode: "wrap" | "front"; scale: number; y: number };
 };
 export type SceneSpec = { d: number; l: number; shape: ShapeModel; closure: ClosureModel; closureShape?: ClosureShape; closureModel?: ClosureModel3d; look?: SceneLook };
 export type SceneLabels = {
@@ -1051,8 +1057,36 @@ function artwork(cfg: SceneSpec, font: string) {
     return t;
   };
   const map = tex(cc, true)!;
+  // The visitor's label, at the tube's real size, inside the printable zone (clear of the crimp).
+  if (look.label) {
+    const label = look.label;
+    const img = new Image();
+    img.onload = () => {
+      x.fillStyle = bodyHex;
+      x.fillRect(0, 0, W, H);
+      const y0 = H * LABEL_ZONE[0];
+      const y1 = H * LABEL_ZONE[1];
+      const zone = y1 - y0;
+      x.save();
+      x.beginPath();
+      x.rect(0, y0, W, zone);
+      x.clip();
+      if (label.mode === "wrap") {
+        // Cover the zone: full circumference, cropped top and bottom if the artwork is taller.
+        const k = Math.max(W / img.width, zone / img.height);
+        x.drawImage(img, (W - img.width * k) / 2, y0 + (zone - img.height * k) / 2, img.width * k, img.height * k);
+      } else {
+        const w = W * THREE.MathUtils.clamp(label.scale, 0.05, 1);
+        const h = (w * img.height) / img.width;
+        const cy = y0 + zone * THREE.MathUtils.clamp(label.y, 0, 1);
+        x.drawImage(img, cx - w / 2, cy - h / 2, w, h);
+      }
+      x.restore();
+      map.needsUpdate = true;
+    };
+    img.src = label.src;
+  } else if (look.print?.artwork) {
   // An operator's sample artwork, centred on the front face over the body colour.
-  if (look.print?.artwork) {
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
@@ -1066,6 +1100,9 @@ function artwork(cfg: SceneSpec, font: string) {
   }
   return { map, pbr: tex(pbrCanvas?.[0]), bump: tex(bumpCanvas?.[0]) };
 }
+
+/** The printable zone down the canvas: below the crimp seal at the top, to just above the shoulder. */
+export const LABEL_ZONE: [number, number] = [0.1, 0.96];
 
 function sealMaterial(w: number, tint?: string) {
   const c = document.createElement("canvas");

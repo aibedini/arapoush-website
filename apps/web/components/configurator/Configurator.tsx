@@ -27,6 +27,8 @@ import {
   withShape,
 } from "@/lib/configurator/model";
 import ChipGroup from "./ChipGroup";
+import LabelField, { LABEL_DEFAULTS, type LabelOptions } from "./LabelField";
+import type { LabelArt } from "@/lib/configurator/label";
 import Viewer from "./Viewer";
 import { useTube } from "./TubeState";
 import chip from "@/components/product/Product.module.css";
@@ -46,6 +48,8 @@ export default function Configurator({ style = "viewerStart" }: Props) {
   const id = useId();
   const { cat, cfg, setCfg, spec, c, locale } = useTube();
   const [shared, setShared] = useState(false);
+  const [labelArt, setLabelArt] = useState<LabelArt | null>(null);
+  const [labelOpts, setLabelOpts] = useState<LabelOptions>(LABEL_DEFAULTS);
 
   const shape = shapeOf(cat, cfg.shape)!;
   const closure = closureOf(cat, cfg.closure)!;
@@ -70,7 +74,8 @@ export default function Configurator({ style = "viewerStart" }: Props) {
   const shapeKey = JSON.stringify([models.closureShape ?? null, models.closureModel ?? null]);
   // eslint-disable-next-line react-hooks/exhaustive-deps -- shapeKey stands for closureShape and closureModel by value
   const scene = useMemo(() => ({ d: cfg.d, l: cfg.l, shape: models.shape, closure: models.closure, closureShape: models.closureShape, closureModel: models.closureModel }), [cfg.d, cfg.l, models.shape, models.closure, shapeKey]);
-  const look = sceneLook(cat, cfg);
+  // The visitor's label replaces the print sample on the body.
+  const look = labelArt ? { ...sceneLook(cat, cfg), print: undefined, label: { src: labelArt.src, ...labelOpts } } : sceneLook(cat, cfg);
   const lookKey = JSON.stringify(look);
   // eslint-disable-next-line react-hooks/exhaustive-deps -- lookKey stands for look by value
   const sceneCfg = useMemo(() => ({ ...scene, look }), [scene, lookKey]);
@@ -244,6 +249,10 @@ export default function Configurator({ style = "viewerStart" }: Props) {
               </Field>
             )}
 
+            <Field id={`${id}-lb`} title={c.label}>
+              <LabelField id={`${id}-lb`} t={c} art={labelArt} options={labelOpts} onArt={setLabelArt} onOptions={setLabelOpts} />
+            </Field>
+
             {structures.length > 1 && (
               <Field id={`${id}-w`} title={c.specStructure}>
                 <ChipGroup
@@ -308,6 +317,12 @@ export default function Configurator({ style = "viewerStart" }: Props) {
                 <dt>{c.specPrint}</dt>
                 <dd>{printName}</dd>
               </div>
+              {labelArt && (
+                <div>
+                  <dt>{c.specLabel}</dt>
+                  <dd dir="auto">{labelArt.name}</dd>
+                </div>
+              )}
               {structure && (
                 <div>
                   <dt>{c.specStructure}</dt>

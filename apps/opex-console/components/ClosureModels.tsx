@@ -1,11 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { CheckCircle, CubeTransparent, Eye, MagicWand, Trash, UploadSimple } from "@phosphor-icons/react";
+import { CheckCircle, Cube, CubeTransparent, Eye, MagicWand, Trash, UploadSimple } from "@phosphor-icons/react";
 import { api, ApiError } from "@/lib/api";
 import { num } from "@/lib/fa";
 import { guessTarget } from "./catalogue/match";
 import { PreviewFrames } from "./PreviewFrames";
+import { ModelStudio } from "./studio/ModelStudio";
 import { ErrorNote, Loading } from "./ui";
 
 type Axis = "+Y" | "-Y" | "+X" | "-X" | "+Z" | "-Z";
@@ -318,6 +319,7 @@ function ModelCard({ m, name, place, busy, draftId, run, onApproved, onPreview }
   const [anchor, setAnchor] = useState<[number, number, number]>(start?.anchorMm ?? topCentre(m, start?.axis ?? "-Y"));
   const [neck, setNeck] = useState<number | "">(start?.neckDiameterMm ?? "");
   const [thread, setThread] = useState(m.mounting?.thread ?? "");
+  const [studio, setStudio] = useState(false);
   const st = STATUS[m.status];
   const s = m.suggested;
   const saved = !!m.mounting && m.mounting.axis === axis && m.mounting.anchorMm.every((v, i) => v === anchor[i]) && m.mounting.neckDiameterMm === neck && (m.mounting.thread ?? "") === thread;
@@ -366,6 +368,12 @@ function ModelCard({ m, name, place, busy, draftId, run, onApproved, onPreview }
         ) : (
           <p className="note warn small">دهانه‌ای در هندسه پیدا نشد (قطعهٔ توپر یا باز از دو طرف). محل اتصال را دستی تنظیم کنید.</p>
         )}
+        <div className="row">
+          <button type="button" className="btn" aria-expanded={studio} onClick={() => setStudio((v) => !v)}>
+            <Cube size={18} aria-hidden /> {studio ? "بستن استودیو سه‌بعدی" : "استودیو سه‌بعدی: درب روی گلوی تیوب"}
+          </button>
+        </div>
+        {studio && <ModelStudio url={m.url} title={`${m.closure_id}${m.diameter != null ? `-${m.diameter}` : ""}`} tubeDiameter={m.diameter} mount={neck ? { axis, anchorMm: anchor, neckDiameterMm: Number(neck) } : null} />}
         <fieldset className="stack" style={{ gap: 8, border: 0, padding: 0, margin: 0 }} disabled={m.status === "archived"}>
           <legend className="small" style={{ fontWeight: 600 }}>
             محل اتصال روی گلوی تیوب

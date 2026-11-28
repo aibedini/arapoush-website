@@ -69,16 +69,18 @@ trap 'die "Failed at line $LINENO: $BASH_COMMAND"' ERR
 have() { command -v "$1" >/dev/null 2>&1; }
 
 # Questions go to the terminal even under `curl | bash`; without one the default is used.
+# /dev/tty can exist and look readable with no controlling terminal (CI, cron, systemd), so try to open it.
+tty_ok() { [ "${NONINTERACTIVE:-0}" != 1 ] && { : < /dev/tty > /dev/tty; } 2>/dev/null; }
 ask() {
   local ans=""
-  if [ -r /dev/tty ] && [ -w /dev/tty ] && [ "${NONINTERACTIVE:-0}" != 1 ]; then
+  if tty_ok; then
     printf "%s [%s]: " "$1" "$2" > /dev/tty; IFS= read -r ans < /dev/tty || ans=""
   fi
   printf "%s" "${ans:-$2}"
 }
 
 # First install in a terminal with no options: ask what to install.
-if [ -z "$MODE" ] && [ ! -f "$CONF" ] && [ "${UNINSTALL:-0}" != 1 ] && [ -r /dev/tty ] && [ "${NONINTERACTIVE:-0}" != 1 ]; then
+if [ -z "$MODE" ] && [ ! -f "$CONF" ] && [ "${UNINSTALL:-0}" != 1 ] && tty_ok; then
   printf "
 %sArapoush installer%s
   1) Website only — fast, no database (content as built)
@@ -282,7 +284,7 @@ menu() {
 }
 
 case "${1:-}" in
-  "") if [ -t 0 ] || [ -r /dev/tty ]; then menu; else cmd_status; fi ;;
+  "") if [ -t 0 ] || tty_ok; then menu; else cmd_status; fi ;;
   update) shift; cmd_update "${1:-latest}" ;;
   check) cmd_check ;;
   status) cmd_status ;;
@@ -547,7 +549,7 @@ else
 fi
 SHA="$(git ls-remote "$REPO_URL" "refs/tags/$REF" "refs/heads/$REF" | awk 'NR==1 {print substr($1,1,7)}')"
 [ -n "$SHA" ] || die "No release or branch called '$REF' in $REPO_URL"
-RELEASE="$RELEASES/$REF-$SHA"
+RELEASE="$RELEASES/${REF//\//-}-$SHA"  # a branch like feat/x is one folder, not two
 PREVIOUS=""
 [ ! -L "$CURRENT" ] || PREVIOUS="$(readlink -f "$CURRENT")"
 
@@ -595,7 +597,7 @@ if [ -f pnpm-workspace.yaml ]; then
   pnpm_run() { "$NODE_DIR/npx" --yes "pnpm@$PNPM_VERSION" "$@"; }
   pnpm_run install --frozen-lockfile --reporter=silent --filter "@arapoush/web..."
   log "Building the site (SITE_URL=$SITE_URL) — this takes a few minutes"
-  NEXT_PUBLIC_SITE_URL="$SITE_URL" NODE_OPTIONS="--max-old-space-size=1536" pnpm_run --filter @arapoush/web build --reporter=silent
+  NEXT_PUBLIC_SITE_URL="$SITE_URL" NODE_OPTIONS="--max-old-space-size=1536" pnpm_run --reporter=silent --filter @arapoush/web build
   APP_SRC=apps/web
   SERVER_DIR=apps/web/.next/standalone/apps/web
 else
