@@ -1872,6 +1872,217 @@
       "name": "Catalogue",
       "item": [
         {
+          "name": "Parts library, newest first (tube closures included)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/catalogue/parts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "catalogue",
+                "parts"
+              ],
+              "query": [
+                {
+                  "key": "line",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "kind",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Source: catalogue/routes.ts"
+          }
+        },
+        {
+          "name": "Upload factory CAD for any product line (body, closure or insert)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/catalogue/parts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "catalogue",
+                "parts"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"line\": \"effervescent\",\n  \"kind\": \"closure\",\n  \"name\": {\n    \"fa\": \"درب فنری\",\n    \"en\": \"Spiral cap\"\n  },\n  \"category\": \"spiral\",\n  \"file_name\": \"eff-spiral-cap.step\",\n  \"data\": \"SVNPLTEwMzAzLTIx…\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "The 3D studio's parts library (S2). Converts STEP/STP or GLB like tube closures, and stores it as a part of a product line with its name and category. Bodies get a neck suggestion from the geometry too. Nothing reaches the website until an operator sets the mounting and approves it into `product.parts`. Tube closures keep their own route (`/v1/manage/catalogue/tube/models`).\n\nSource: catalogue/routes.ts"
+          }
+        },
+        {
+          "name": "Rename, recategorise or move a part to another line",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/catalogue/parts/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "catalogue",
+                "parts",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Changes the name, category, line or kind. An approved part goes back to review, so the site never shows a half-edited part. Tube closures (with a catalogue closure) keep line `tube` and kind `closure`.\n\nSource: catalogue/routes.ts"
+          }
+        },
+        {
+          "name": "Add the part to the site's parts library (saves a `product.parts` draft)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/catalogue/parts/:id/approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "catalogue",
+                "parts",
+                ":id",
+                "approve"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"base_revision_id\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Writes the part (GLB, mounting, size, name, category) into `product.parts` → `parts`, replacing the earlier version of the same part, and adds its line to `lines` if new. The website shows it after the draft is published. Tube closures are approved with the tube route instead.\n\nSource: catalogue/routes.ts"
+          }
+        },
+        {
+          "name": "Set a part's neck (body) or how it sits on a neck (closure)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrf}}",
+                "description": "Set automatically after the MFA sign-in request (or GET /v1/manage/auth/csrf)."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/manage/catalogue/parts/:id/mounting",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "manage",
+                "catalogue",
+                "parts",
+                ":id",
+                "mounting"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "null",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Required before approval; changing it on an approved part sends it back to review.\n\nSource: catalogue/routes.ts"
+          }
+        },
+        {
           "name": "Import Arapoush size charts into the tube catalogue",
           "request": {
             "method": "POST",

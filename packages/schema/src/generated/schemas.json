@@ -4004,6 +4004,114 @@
   }
  },
  {
+  "key": "product.parts",
+  "label": "Product parts library (3D studio)",
+  "singleton": true,
+  "version": 1,
+  "schema": {
+   "kind": "group",
+   "fields": {
+    "lines": {
+     "kind": "list",
+     "key": "id",
+     "label": "Product lines",
+     "of": {
+      "kind": "group",
+      "fields": {
+       "id": {
+        "kind": "text",
+        "localized": false,
+        "label": "Line id",
+        "locked": true
+       },
+       "name": {
+        "kind": "text",
+        "localized": true,
+        "label": "Name"
+       }
+      }
+     }
+    },
+    "parts": {
+     "kind": "list",
+     "key": "id",
+     "label": "Approved parts",
+     "locked": true,
+     "of": {
+      "kind": "group",
+      "fields": {
+       "id": {
+        "kind": "text",
+        "localized": false,
+        "label": "Part id",
+        "locked": true
+       },
+       "line": {
+        "kind": "text",
+        "localized": false,
+        "label": "Line"
+       },
+       "kind": {
+        "kind": "enum",
+        "values": [
+         "body",
+         "closure",
+         "insert"
+        ],
+        "label": "Kind"
+       },
+       "category": {
+        "kind": "text",
+        "localized": false,
+        "label": "Category"
+       },
+       "name": {
+        "kind": "text",
+        "localized": true,
+        "label": "Name"
+       },
+       "src": {
+        "kind": "text",
+        "localized": false,
+        "label": "GLB"
+       },
+       "axis": {
+        "kind": "enum",
+        "values": [
+         "+Y",
+         "-Y",
+         "+X",
+         "-X",
+         "+Z",
+         "-Z"
+        ],
+        "label": "Opening towards"
+       },
+       "anchorMm": {
+        "kind": "list",
+        "of": {
+         "kind": "number"
+        },
+        "label": "Anchor (mm)"
+       },
+       "neckDiameterMm": {
+        "kind": "number",
+        "label": "Neck Ø (mm)"
+       },
+       "sizeMm": {
+        "kind": "list",
+        "of": {
+         "kind": "number"
+        },
+        "label": "Size (mm)"
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ {
   "key": "product.effervescent.page",
   "label": "Product: effervescent tube",
   "singleton": true,

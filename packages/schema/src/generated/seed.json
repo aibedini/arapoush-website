@@ -3515,6 +3515,27 @@
    }
   ]
  },
+ "product.parts": {
+  "lines": [
+   {
+    "id": "tube",
+    "name": {
+     "fa": "تیوب چندلایه",
+     "en": "Multi-layer tube",
+     "tr": "Çok katmanlı tüp"
+    }
+   },
+   {
+    "id": "effervescent",
+    "name": {
+     "fa": "تیوب قرص جوشان",
+     "en": "Effervescent tube",
+     "tr": "Efervesan tüp"
+    }
+   }
+  ],
+  "parts": []
+ },
  "product.effervescent.page": {
   "productEff": {
    "meta": {

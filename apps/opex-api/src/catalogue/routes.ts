@@ -1,4 +1,4 @@
-import type { FastifyInstance } from "fastify";
+import type { FastifyInstance, FastifyRequest } from "fastify";
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import type { ChartCatalogue } from "@arapoush/schema";
@@ -18,11 +18,17 @@ import { CadRejected, sniffCad } from "./cad.ts";
 import { convertInWorker } from "./cadWorker.ts";
 
 export const TUBE_CATALOGUE = "product.tube.catalogue";
+export const PARTS = "product.parts";
 
 type Mount = { axis: string; anchorMm: [number, number, number]; neckDiameterMm: number; thread?: string };
+type Loc = { fa?: string; en?: string; tr?: string };
 type ModelRow = {
   id: string;
-  closure_id: string;
+  closure_id: string | null;
+  line: string;
+  kind: "body" | "closure" | "insert";
+  name: Loc | null;
+  category: string | null;
   shape_id: string | null;
   diameter: number | null;
   suggested: unknown;
@@ -57,6 +63,30 @@ const view = (r: ModelRow) => ({
   created_at: new Date(r.created_at).toISOString(),
   approved_at: r.approved_at ? new Date(r.approved_at).toISOString() : null,
 });
+const partView = (r: ModelRow) => {
+  const { shape: _shape, diameter: _diameter, closure_id, ...rest } = view(r);
+  return { ...rest, line: r.line, kind: r.kind, name: r.name ?? null, category: r.category ?? null, closure_id: closure_id ?? null };
+};
+/** Parts library entry as the website reads it (`product.parts` → `parts`). */
+type PartsDoc = { lines?: { id: string; name: Loc }[]; parts?: Record<string, unknown>[]; [k: string]: unknown };
+const LINE_NAMES: Record<string, Loc> = {
+  tube: { fa: "تیوب چندلایه", en: "Multi-layer tube", tr: "Çok katmanlı tüp" },
+  effervescent: { fa: "تیوب قرص جوشان", en: "Effervescent tube", tr: "Efervesan tüp" },
+};
+
+/**
+ * A body's neck from the opening the geometry shows: the axis points out of the opening and the
+ * anchor is the neck top (the mouth), where a closure's anchor meets it. The pit finder returns the
+ * pit's floor for caps; for a body that is the inside of its base, so move it to the mouth.
+ */
+export function bodyNeck(s: { axis: string; anchorMm: number[]; neckDiameterMm: number } | null, bbox: { min: number[]; max: number[] }) {
+  if (!s) return s;
+  const i = { X: 0, Y: 1, Z: 2 }[s.axis[1] as "X" | "Y" | "Z"];
+  const a = [...s.anchorMm] as [number, number, number];
+  // A cap's axis points from its ceiling towards its opening; a body's mouth is at the far end too.
+  a[i] = s.axis[0] === "+" ? bbox.max[i]! : bbox.min[i]!;
+  return { ...s, anchorMm: a.map((v) => Math.round(v * 100) / 100) as [number, number, number] };
+}
 
 /**
  * Tube catalogue tools (T1). The size-chart import previews against the current draft and, when
@@ -80,6 +110,35 @@ export async function catalogueModule(app: FastifyInstance, deps: Deps) {
     return m;
   };
 
+  /** Converts and stores one factory file; shared by tube closures and the parts library. */
+  const convertAndStore = async (req: FastifyRequest, bytes: Uint8Array, o: { name: string; unit: "mm" | "m"; resource: Record<string, unknown> }) => {
+    const reject = async (reason: string) => {
+      await db.tx((q) => audit(q, tenant, { action: "cad.rejected", result: "failure", actor: actorOf(req), request: req.info, resource: { ...o.resource, name: o.name.slice(0, 200), bytes: bytes.length }, reason }));
+      return badRequest("CAD_REJECTED", reason);
+    };
+    const kind = sniffCad(bytes);
+    if (!kind) throw await reject("Not a STEP (.step/.stp) or GLB file");
+    let r;
+    try {
+      r = await convertInWorker(bytes, { unit: o.unit });
+    } catch (e) {
+      throw await reject(e instanceof CadRejected ? e.message : "The file could not be converted");
+    }
+    const glbHash = sha256(Buffer.from(r.glb));
+    const [same] = await db.q<{ id: string }>(`SELECT id FROM assets WHERE tenant_id = $1 AND sha256 = $2`, [tenant, glbHash]);
+    const assetId = same?.id ?? ulid("ast_");
+    if (!same) {
+      mkdirSync(config.MEDIA_DIR, { recursive: true });
+      writeFileSync(path.join(config.MEDIA_DIR, `${assetId}.glb`), r.glb, { mode: 0o640 });
+    }
+    /** The asset row; call inside the transaction that records the model. */
+    const record = async (q: Q) => {
+      if (!same)
+        await q(`INSERT INTO assets (id, tenant_id, sha256, mime, bytes, original_name, status, scan, uploaded_by) VALUES ($1,$2,$3,'model/gltf-binary',$4,$5,'clean','converted',$6)`, [assetId, tenant, glbHash, r.glb.length, o.name.slice(0, 200), actorOf(req).id]);
+    };
+    return { kind, r, assetId, record, sourceHash: sha256(Buffer.from(bytes)) };
+  };
+
   // Factory CAD → web model (T2). Conversion runs in a worker; the result waits for review.
   app.post("/v1/manage/catalogue/tube/models", { preHandler: write, bodyLimit: 40 * 1024 * 1024, config: { rateLimit: { max: 20, timeWindow: "10 minutes" } } }, async (req, reply) => {
     const body = CATALOGUE.uploadModel.body.parse(req.body);
@@ -89,41 +148,15 @@ export async function catalogueModule(app: FastifyInstance, deps: Deps) {
     if (body.shape !== undefined && !data.shapes?.find((s) => s.id === body.shape)?.sizes?.[String(body.diameter)])
       throw badRequest("VALIDATION_FAILED", "That shape does not offer this diameter", { issues: [{ path: "/diameter", code: "UNKNOWN", message: `${body.shape} has no Ø${body.diameter}` }] });
     const bytes = new Uint8Array(Buffer.from(body.data, "base64"));
-    const reject = async (reason: string) => {
-      await db.tx((q) => audit(q, tenant, { action: "cad.rejected", result: "failure", actor: actorOf(req), request: req.info, resource: { closure: body.closure, name: body.name.slice(0, 200), bytes: bytes.length }, reason }));
-      return badRequest("CAD_REJECTED", reason);
-    };
-    const kind = sniffCad(bytes);
-    if (!kind) throw await reject("Not a STEP (.step/.stp) or GLB file");
-    let r;
-    try {
-      r = await convertInWorker(bytes, { unit: body.unit });
-    } catch (e) {
-      throw await reject(e instanceof CadRejected ? e.message : "The file could not be converted");
-    }
     // The same file uploaded again (another diameter, a duplicate) shares the stored GLB.
-    const glbHash = sha256(Buffer.from(r.glb));
-    const [same] = await db.q<{ id: string }>(`SELECT id FROM assets WHERE tenant_id = $1 AND sha256 = $2`, [tenant, glbHash]);
-    const assetId = same?.id ?? ulid("ast_");
-    if (!same) {
-      mkdirSync(config.MEDIA_DIR, { recursive: true });
-      writeFileSync(path.join(config.MEDIA_DIR, `${assetId}.glb`), r.glb, { mode: 0o640 });
-    }
+    const { kind, r, assetId, record, sourceHash } = await convertAndStore(req, bytes, { name: body.name, unit: body.unit, resource: { closure: body.closure } });
     const id = ulid("cad_");
     const actor = actorOf(req);
     const row = await db.tx(async (q) => {
-      if (!same)
-        await q(`INSERT INTO assets (id, tenant_id, sha256, mime, bytes, original_name, status, scan, uploaded_by) VALUES ($1,$2,$3,'model/gltf-binary',$4,$5,'clean','converted',$6)`, [
-          assetId,
-          tenant,
-          glbHash,
-          r.glb.length,
-          body.name.slice(0, 200),
-          actor.id,
-        ]);
+      await record(q);
       const [m] = await q<ModelRow>(
         `INSERT INTO cad_models (id, tenant_id, closure_id, shape_id, diameter, source_name, source_kind, source_sha256, asset_id, bbox, triangles, parts, simplified, suggested, created_by) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) RETURNING *`,
-        [id, tenant, body.closure, body.shape ?? null, body.diameter ?? null, body.name.slice(0, 200), kind, sha256(Buffer.from(bytes)), assetId, JSON.stringify(r.bbox), r.triangles, r.parts, r.simplified, r.suggested ? JSON.stringify(r.suggested) : null, actor.id],
+        [id, tenant, body.closure, body.shape ?? null, body.diameter ?? null, body.name.slice(0, 200), kind, sourceHash, assetId, JSON.stringify(r.bbox), r.triangles, r.parts, r.simplified, r.suggested ? JSON.stringify(r.suggested) : null, actor.id],
       );
       await audit(q, tenant, { action: "cad.uploaded", actor, request: req.info, resource: { type: "cad_model", id, closure: body.closure, shape: body.shape, diameter: body.diameter, kind, bytes: bytes.length, glb_bytes: r.glb.length, triangles: r.triangles, suggested: r.suggested?.confidence ?? null } });
       return m!;
@@ -133,7 +166,7 @@ export async function catalogueModule(app: FastifyInstance, deps: Deps) {
 
   app.get("/v1/manage/catalogue/tube/models", { preHandler: read }, async (req) => {
     const { closure } = CATALOGUE.listModels.query.parse(req.query);
-    const rows = await db.q<ModelRow>(`SELECT * FROM cad_models WHERE tenant_id = $1 AND ($2::text IS NULL OR closure_id = $2) ORDER BY created_at DESC LIMIT 200`, [tenant, closure ?? null]);
+    const rows = await db.q<ModelRow>(`SELECT * FROM cad_models WHERE tenant_id = $1 AND closure_id IS NOT NULL AND ($2::text IS NULL OR closure_id = $2) ORDER BY created_at DESC LIMIT 200`, [tenant, closure ?? null]);
     return rows.map(view);
   });
 
@@ -173,6 +206,98 @@ export async function catalogueModule(app: FastifyInstance, deps: Deps) {
       const [u] = await q<ModelRow>(`UPDATE cad_models SET status = 'approved', approved_by = $2, approved_at = clock_timestamp(), updated_at = clock_timestamp() WHERE id = $1 RETURNING *`, [m.id, actorOf(req).id]);
       await audit(q, tenant, { action: "cad.approved", actor: actorOf(req), request: req.info, resource: { type: "cad_model", id, closure: m.closure_id, revision: saved.revision.id } });
       return { model: view(u!), revision: { id: saved.revision.id, number: saved.revision.number } };
+    });
+  });
+
+  // ---- Parts library (S2): bodies, closures and inserts of every product line ----
+  const partsDraft = async (q: Q, lock = false) => {
+    const e = await getEntry(q, tenant, PARTS, "main", lock);
+    const data = (e.draft_revision_id ? (await getRevision(q, e.draft_revision_id)).data : {}) as PartsDoc;
+    return { e, data };
+  };
+
+  app.post("/v1/manage/catalogue/parts", { preHandler: write, bodyLimit: 40 * 1024 * 1024, config: { rateLimit: { max: 20, timeWindow: "10 minutes" } } }, async (req, reply) => {
+    const body = CATALOGUE.uploadPart.body.parse(req.body);
+    const bytes = new Uint8Array(Buffer.from(body.data, "base64"));
+    const { kind, r, assetId, record, sourceHash } = await convertAndStore(req, bytes, { name: body.file_name, unit: body.unit, resource: { line: body.line, kind: body.kind } });
+    // A body's neck is its mouth: the pit finder sees the inside of the base, so move it to the opening.
+    const suggested = body.kind === "body" && r.suggested ? { ...r.suggested, ...bodyNeck(r.suggested, r.bbox) } : r.suggested;
+    const id = ulid("cad_");
+    const actor = actorOf(req);
+    const row = await db.tx(async (q) => {
+      await record(q);
+      const [m] = await q<ModelRow>(
+        `INSERT INTO cad_models (id, tenant_id, closure_id, line, kind, name, category, source_name, source_kind, source_sha256, asset_id, bbox, triangles, parts, simplified, suggested, created_by) VALUES ($1,$2,NULL,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16) RETURNING *`,
+        [id, tenant, body.line, body.kind, body.name ? JSON.stringify(body.name) : null, body.category ?? null, body.file_name.slice(0, 200), kind, sourceHash, assetId, JSON.stringify(r.bbox), r.triangles, r.parts, r.simplified, suggested ? JSON.stringify(suggested) : null, actor.id],
+      );
+      await audit(q, tenant, { action: "cad.uploaded", actor, request: req.info, resource: { type: "cad_model", id, line: body.line, kind: body.kind, source: kind, bytes: bytes.length, glb_bytes: r.glb.length, triangles: r.triangles } });
+      return m!;
+    });
+    return reply.code(201).send(partView(row));
+  });
+
+  app.get("/v1/manage/catalogue/parts", { preHandler: read }, async (req) => {
+    const { line, kind } = CATALOGUE.listParts.query.parse(req.query);
+    const rows = await db.q<ModelRow>(`SELECT * FROM cad_models WHERE tenant_id = $1 AND status <> 'archived' AND ($2::text IS NULL OR line = $2) AND ($3::text IS NULL OR kind = $3) ORDER BY created_at DESC LIMIT 300`, [tenant, line ?? null, kind ?? null]);
+    return rows.map(partView);
+  });
+
+  app.put("/v1/manage/catalogue/parts/:id", { preHandler: write }, async (req) => {
+    const { id } = CATALOGUE.updatePart.params.parse(req.params);
+    const body = CATALOGUE.updatePart.body.parse(req.body);
+    return db.tx(async (q) => {
+      const m = await modelOrThrow(q, id);
+      if (m.closure_id && ((body.line && body.line !== "tube") || (body.kind && body.kind !== "closure")))
+        throw badRequest("VALIDATION_FAILED", "A tube closure stays a tube closure", { issues: [{ path: body.line ? "/line" : "/kind", code: "TUBE_CLOSURE", message: "Upload it again as a part of the other line" }] });
+      const [u] = await q<ModelRow>(
+        `UPDATE cad_models SET line = COALESCE($2, line), kind = COALESCE($3, kind), name = COALESCE($4, name), category = CASE WHEN $5 THEN $6 ELSE category END,
+           status = CASE WHEN status = 'approved' AND closure_id IS NULL THEN 'needs_review' ELSE status END, updated_at = clock_timestamp() WHERE id = $1 RETURNING *`,
+        [m.id, body.line ?? null, body.kind ?? null, body.name ? JSON.stringify(body.name) : null, body.category !== undefined, body.category ?? null],
+      );
+      await audit(q, tenant, { action: "cad.updated", actor: actorOf(req), request: req.info, resource: { type: "cad_model", id, line: u!.line, kind: u!.kind, changed: Object.keys(body) } });
+      return partView(u!);
+    });
+  });
+
+  app.put("/v1/manage/catalogue/parts/:id/mounting", { preHandler: write }, async (req) => {
+    const { id } = CATALOGUE.mountPart.params.parse(req.params);
+    const mounting = CATALOGUE.mountPart.body.parse(req.body);
+    return db.tx(async (q) => {
+      const m = await modelOrThrow(q, id);
+      const [u] = await q<ModelRow>(`UPDATE cad_models SET mounting = $2, status = CASE WHEN status = 'approved' THEN 'needs_review' ELSE status END, updated_at = clock_timestamp() WHERE id = $1 RETURNING *`, [m.id, JSON.stringify(mounting)]);
+      await audit(q, tenant, { action: "cad.mounting", actor: actorOf(req), request: req.info, resource: { type: "cad_model", id, line: m.line, kind: m.kind, mounting } });
+      return partView(u!);
+    });
+  });
+
+  app.post("/v1/manage/catalogue/parts/:id/approve", { preHandler: write }, async (req) => {
+    const { id } = CATALOGUE.approvePart.params.parse(req.params);
+    const body = CATALOGUE.approvePart.body.parse(req.body);
+    return db.tx(async (q) => {
+      const m = await modelOrThrow(q, id);
+      if (m.closure_id) throw badRequest("TUBE_CLOSURE", "Approve tube closures from the tube catalogue's 3D models");
+      if (!m.mounting) throw badRequest("MOUNTING_REQUIRED", "Set the mounting first: axis, anchor point and neck diameter");
+      const { e, data } = await partsDraft(q, true);
+      if ((body.base_revision_id ?? null) !== e.draft_revision_id) throw new Problem(412, "CONFLICT_BASE_REVISION", "The parts library changed; reload", { current: e.draft_revision_id });
+      const next = structuredClone(data);
+      const part = {
+        id: m.id,
+        line: m.line,
+        kind: m.kind,
+        ...(m.category ? { category: m.category } : {}),
+        name: m.name ?? { fa: m.source_name, en: m.source_name, tr: m.source_name },
+        src: `/media/${m.asset_id}.glb`,
+        axis: m.mounting.axis,
+        anchorMm: m.mounting.anchorMm,
+        neckDiameterMm: m.mounting.neckDiameterMm,
+        sizeMm: m.bbox.size,
+      };
+      next.parts = [...(next.parts ?? []).filter((p) => p.id !== m.id), part];
+      if (!(next.lines ?? []).some((l) => l.id === m.line)) next.lines = [...(next.lines ?? []), { id: m.line, name: LINE_NAMES[m.line] ?? { fa: m.line, en: m.line, tr: m.line } }];
+      const saved = await saveDraft(q, tenant, { typeKey: PARTS, data: next, baseRevisionId: e.draft_revision_id, actor: actorOf(req), request: req.info, note: `3D ${m.kind} for ${m.line}: ${m.source_name}` });
+      const [u] = await q<ModelRow>(`UPDATE cad_models SET status = 'approved', approved_by = $2, approved_at = clock_timestamp(), updated_at = clock_timestamp() WHERE id = $1 RETURNING *`, [m.id, actorOf(req).id]);
+      await audit(q, tenant, { action: "cad.approved", actor: actorOf(req), request: req.info, resource: { type: "cad_model", id, line: m.line, kind: m.kind, revision: saved.revision.id } });
+      return { part: partView(u!), revision: { id: saved.revision.id, number: saved.revision.number } };
     });
   });
 

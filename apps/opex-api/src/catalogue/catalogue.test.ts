@@ -170,3 +170,86 @@ test("closure models: STEP converted to GLB, reviewed, mounted, approved into th
     await t.close();
   }
 });
+
+test("parts library: bodies and closures of any line, named, mounted, approved into product.parts", async () => {
+  const t = await testApp({ DELIVERY_TOKEN: "test-delivery-token-0123456789abcdef", MEDIA_DIR: mkdtempSync(path.join(tmpdir(), "opex-media-")) }, { seed: true });
+  try {
+    const op = await signIn(t.app, t, "operator");
+    const P = "/v1/manage/catalogue/parts";
+    const step = readFileSync(new URL("../../../../node_modules/occt-import-js/test/testfiles/conical-surface/conical-surface.step", import.meta.url)).toString("base64");
+
+    const bad = await t.app.inject({ method: "POST", url: P, headers: as(op), payload: { line: "Not A Line", kind: "body", file_name: "x.step", data: step } });
+    assert.equal(bad.statusCode, 400);
+    const junk = await t.app.inject({ method: "POST", url: P, headers: as(op), payload: { line: "jar", kind: "body", file_name: "x.step", data: Buffer.from("nope").toString("base64") } });
+    assert.equal(junk.json().code, "CAD_REJECTED");
+
+    const cap = await t.app.inject({ method: "POST", url: P, headers: as(op), payload: { line: "effervescent", kind: "closure", name: { fa: "درب فنری", en: "Spiral cap" }, category: "spiral", file_name: "spiral.step", data: step } });
+    assert.equal(cap.statusCode, 201, cap.body);
+    const c = cap.json();
+    assert.equal(c.line, "effervescent");
+    assert.equal(c.kind, "closure");
+    assert.equal(c.closure_id, null);
+    assert.equal(c.name.fa, "درب فنری");
+    assert.equal(c.status, "needs_review");
+
+    const body = await t.app.inject({ method: "POST", url: P, headers: as(op), payload: { line: "jar", kind: "body", file_name: "jar.step", data: step } });
+    assert.equal(body.statusCode, 201, body.body);
+    const b = body.json();
+    if (b.suggested) {
+      // A body's neck sits at the mouth: a face of the bounding box along its axis.
+      const i = { X: 0, Y: 1, Z: 2 }[b.suggested.axis[1] as "X"];
+      const face = b.suggested.axis[0] === "+" ? b.bbox.max[i] : b.bbox.min[i];
+      assert.ok(Math.abs(b.suggested.anchorMm[i] - face) < 0.01);
+    }
+
+    const list = (await t.app.inject({ method: "GET", url: `${P}?line=effervescent`, headers: { cookie: op.cookie } })).json();
+    assert.deepEqual(list.map((x: { id: string }) => x.id), [c.id]);
+    assert.equal((await t.app.inject({ method: "GET", url: `${P}?kind=body`, headers: { cookie: op.cookie } })).json()[0].id, b.id);
+
+    const ren = await t.app.inject({ method: "PUT", url: `${P}/${c.id}`, headers: as(op), payload: { category: "child-safe", name: { fa: "درب ایمن کودک", en: "Child-safe cap" } } });
+    assert.equal(ren.statusCode, 200, ren.body);
+    assert.equal(ren.json().category, "child-safe");
+
+    const entry = (await t.app.inject({ method: "GET", url: "/v1/manage/entries/product.parts", headers: { cookie: op.cookie } })).json();
+    const base = entry.draft?.id ?? null;
+    const early = await t.app.inject({ method: "POST", url: `${P}/${c.id}/approve`, headers: as(op), payload: { base_revision_id: base } });
+    assert.equal(early.json().code, "MOUNTING_REQUIRED");
+
+    const mounting = { axis: "+X", anchorMm: [0, 0, 0], neckDiameterMm: 27 };
+    assert.equal((await t.app.inject({ method: "PUT", url: `${P}/${c.id}/mounting`, headers: as(op), payload: mounting })).statusCode, 200);
+    assert.equal((await t.app.inject({ method: "POST", url: `${P}/${c.id}/approve`, headers: as(op), payload: { base_revision_id: "rev_stale" } })).statusCode, 412);
+    const ok = await t.app.inject({ method: "POST", url: `${P}/${c.id}/approve`, headers: as(op), payload: { base_revision_id: base } });
+    assert.equal(ok.statusCode, 200, ok.body);
+    assert.equal(ok.json().part.status, "approved");
+
+    // The body, approved into a line the library did not have yet.
+    assert.equal((await t.app.inject({ method: "PUT", url: `${P}/${b.id}/mounting`, headers: as(op), payload: { axis: "+Y", anchorMm: [0, 10, 0], neckDiameterMm: 27 } })).statusCode, 200);
+    const ok2 = await t.app.inject({ method: "POST", url: `${P}/${b.id}/approve`, headers: as(op), payload: { base_revision_id: ok.json().revision.id } });
+    assert.equal(ok2.statusCode, 200, ok2.body);
+    const draft = (await t.app.inject({ method: "GET", url: "/v1/manage/entries/product.parts", headers: { cookie: op.cookie } })).json().draft.data;
+    const spiral = draft.parts.find((p: { id: string }) => p.id === c.id);
+    assert.equal(spiral.category, "child-safe");
+    assert.equal(spiral.axis, "+X");
+    assert.match(spiral.src, /^\/media\/ast_[0-9A-Z]{26}\.glb$/);
+    assert.ok(draft.lines.some((l: { id: string }) => l.id === "jar"));
+
+    // Editing an approved part sends it back to review; approving again replaces it, never duplicates.
+    assert.equal((await t.app.inject({ method: "PUT", url: `${P}/${c.id}`, headers: as(op), payload: { category: "spiral" } })).json().status, "needs_review");
+    const again = await t.app.inject({ method: "POST", url: `${P}/${c.id}/approve`, headers: as(op), payload: { base_revision_id: ok2.json().revision.id } });
+    assert.equal(again.statusCode, 200, again.body);
+    const d2 = (await t.app.inject({ method: "GET", url: "/v1/manage/entries/product.parts", headers: { cookie: op.cookie } })).json().draft.data;
+    assert.equal(d2.parts.filter((p: { id: string }) => p.id === c.id).length, 1);
+
+    // Tube closures stay on the tube route and its catalogue.
+    const tube = (await t.app.inject({ method: "POST", url: "/v1/manage/catalogue/tube/models", headers: as(op), payload: { closure: "conical", name: "conical.step", data: step } })).json();
+    assert.equal((await t.app.inject({ method: "PUT", url: `${P}/${tube.id}`, headers: as(op), payload: { line: "jar" } })).json().code, "VALIDATION_FAILED");
+    assert.equal((await t.app.inject({ method: "POST", url: `${P}/${tube.id}/approve`, headers: as(op), payload: { base_revision_id: null } })).json().code, "TUBE_CLOSURE");
+    const tubeList = (await t.app.inject({ method: "GET", url: "/v1/manage/catalogue/tube/models", headers: { cookie: op.cookie } })).json();
+    assert.ok(tubeList.every((x: { closure_id: string | null }) => x.closure_id), "other lines' parts are not tube models");
+
+    const viewer = await signIn(t.app, t, "viewer");
+    assert.equal((await t.app.inject({ method: "POST", url: P, headers: as(viewer), payload: { line: "jar", kind: "body", file_name: "x.step", data: step } })).statusCode, 403);
+  } finally {
+    await t.close();
+  }
+});

@@ -15109,6 +15109,790 @@
         "x-audience": "manage"
       }
     },
+    "/v1/manage/catalogue/parts": {
+      "get": {
+        "operationId": "listParts",
+        "summary": "Parts library, newest first (tube closures included)",
+        "description": "**Permission:** `catalogue.read`; built-in roles with it by default: super_admin, operator, auditor, viewer.\n\n**Source:** `apps/opex-api/src/catalogue/routes.ts`",
+        "tags": [
+          "Catalogue"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "line",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 32
+            }
+          },
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "body",
+                "closure",
+                "insert"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Parts.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CadPart"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: No valid console session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`ROLE_DENIED`: The caller lacks the `catalogue.read` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NETWORK_DENIED",
+                  "status": 403,
+                  "code": "NETWORK_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "manage"
+      },
+      "post": {
+        "operationId": "uploadPart",
+        "summary": "Upload factory CAD for any product line (body, closure or insert)",
+        "description": "The 3D studio's parts library (S2). Converts STEP/STP or GLB like tube closures, and stores it as a part of a product line with its name and category. Bodies get a neck suggestion from the geometry too. Nothing reaches the website until an operator sets the mounting and approves it into `product.parts`. Tube closures keep their own route (`/v1/manage/catalogue/tube/models`).\n\n**Permission:** `catalogue.write`; built-in roles with it by default: super_admin, operator.\n\n**Audit:** records `cad.uploaded`, `cad.rejected`.\n\n**Source:** `apps/opex-api/src/catalogue/routes.ts`",
+        "tags": [
+          "Catalogue"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "line": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]{0,31}$",
+                    "description": "Product line id, e.g. `tube`, `effervescent`, `jar`."
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "body",
+                      "closure",
+                      "insert"
+                    ]
+                  },
+                  "name": {
+                    "type": "object",
+                    "properties": {
+                      "fa": {
+                        "type": "string",
+                        "maxLength": 120
+                      },
+                      "en": {
+                        "type": "string",
+                        "maxLength": 120
+                      },
+                      "tr": {
+                        "type": "string",
+                        "maxLength": 120
+                      }
+                    }
+                  },
+                  "category": {
+                    "type": "string",
+                    "maxLength": 60
+                  },
+                  "file_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "data": {
+                    "type": "string",
+                    "maxLength": 35000000,
+                    "description": "The file, base64."
+                  },
+                  "unit": {
+                    "default": "m",
+                    "description": "GLB only: what one unit in the file means.",
+                    "type": "string",
+                    "enum": [
+                      "mm",
+                      "m"
+                    ]
+                  }
+                },
+                "required": [
+                  "line",
+                  "kind",
+                  "file_name",
+                  "data"
+                ],
+                "additionalProperties": false
+              },
+              "example": {
+                "line": "effervescent",
+                "kind": "closure",
+                "name": {
+                  "fa": "درب فنری",
+                  "en": "Spiral cap"
+                },
+                "category": "spiral",
+                "file_name": "eff-spiral-cap.step",
+                "data": "SVNPLTEwMzAzLTIx…"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Converted; needs review.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CadPart"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`CAD_REJECTED`: Not STEP/GLB, unreadable, empty, too large, too many triangles or too slow (`detail` says which).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: No valid console session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `catalogue.write` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NETWORK_DENIED",
+                  "status": 403,
+                  "code": "NETWORK_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "manage"
+      }
+    },
+    "/v1/manage/catalogue/parts/{id}": {
+      "put": {
+        "operationId": "updatePart",
+        "summary": "Rename, recategorise or move a part to another line",
+        "description": "Changes the name, category, line or kind. An approved part goes back to review, so the site never shows a half-edited part. Tube closures (with a catalogue closure) keep line `tube` and kind `closure`.\n\n**Permission:** `catalogue.write`; built-in roles with it by default: super_admin, operator.\n\n**Audit:** records `cad.updated`.\n\n**Source:** `apps/opex-api/src/catalogue/routes.ts`",
+        "tags": [
+          "Catalogue"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 40
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "line": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]{0,31}$",
+                    "description": "Product line id, e.g. `tube`, `effervescent`, `jar`."
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "body",
+                      "closure",
+                      "insert"
+                    ]
+                  },
+                  "name": {
+                    "type": "object",
+                    "properties": {
+                      "fa": {
+                        "type": "string",
+                        "maxLength": 120
+                      },
+                      "en": {
+                        "type": "string",
+                        "maxLength": 120
+                      },
+                      "tr": {
+                        "type": "string",
+                        "maxLength": 120
+                      }
+                    }
+                  },
+                  "category": {
+                    "description": "Free grouping shown in the console and on the site (e.g. `spiral`, `child-safe`).",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 60
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CadPart"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field. Or: A tube closure cannot change line or kind.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: No valid console session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `catalogue.write` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NETWORK_DENIED",
+                  "status": 403,
+                  "code": "NETWORK_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: No such model.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "manage"
+      }
+    },
+    "/v1/manage/catalogue/parts/{id}/approve": {
+      "post": {
+        "operationId": "approvePart",
+        "summary": "Add the part to the site's parts library (saves a `product.parts` draft)",
+        "description": "Writes the part (GLB, mounting, size, name, category) into `product.parts` → `parts`, replacing the earlier version of the same part, and adds its line to `lines` if new. The website shows it after the draft is published. Tube closures are approved with the tube route instead.\n\n**Permission:** `catalogue.approve`; built-in roles with it by default: super_admin, operator.\n\n**Audit:** records `cad.approved`, `content.revision.create`.\n\n**Source:** `apps/opex-api/src/catalogue/routes.ts`",
+        "tags": [
+          "Catalogue"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 40
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "base_revision_id": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 40
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "description": "The `product.parts` draft you are looking at."
+                  }
+                },
+                "required": [
+                  "base_revision_id"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Approved; draft saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "part": {
+                      "$ref": "#/components/schemas/CadPart"
+                    },
+                    "revision": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "number": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "number"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "part",
+                    "revision"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.\n\n`MOUNTING_REQUIRED`: Set the mounting first: a part is never placed by guess.\n\n`TUBE_CLOSURE`: A tube closure: approve it with `/v1/manage/catalogue/tube/models/:id/approve`.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: No valid console session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `catalogue.approve` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NETWORK_DENIED",
+                  "status": 403,
+                  "code": "NETWORK_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: No such model.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "`CONFLICT_BASE_REVISION`: The parts draft changed; reload.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "CONFLICT_BASE_REVISION",
+                  "status": 412,
+                  "code": "CONFLICT_BASE_REVISION",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "manage"
+      }
+    },
+    "/v1/manage/catalogue/parts/{id}/mounting": {
+      "put": {
+        "operationId": "setPartMounting",
+        "summary": "Set a part's neck (body) or how it sits on a neck (closure)",
+        "description": "Required before approval; changing it on an approved part sends it back to review.\n\n**Permission:** `catalogue.write`; built-in roles with it by default: super_admin, operator.\n\n**Audit:** records `cad.mounting`.\n\n**Source:** `apps/opex-api/src/catalogue/routes.ts`",
+        "tags": [
+          "Catalogue"
+        ],
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 40
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Mounting"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CadPart"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`VALIDATION_FAILED`: The request does not match the schema; `issues` lists each field.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "VALIDATION_FAILED",
+                  "status": 400,
+                  "code": "VALIDATION_FAILED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHENTICATED`: No valid console session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "UNAUTHENTICATED",
+                  "status": 401,
+                  "code": "UNAUTHENTICATED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`NETWORK_DENIED`: The caller's network is not in CONSOLE_ALLOWED_CIDRS.\n\n`CSRF`: Missing or wrong X-CSRF-Token.\n\n`ROLE_DENIED`: The caller lacks the `catalogue.write` permission (role + own additions − removals).\n\n`PASSWORD_CHANGE_REQUIRED`: Signed in with a temporary password: change it (POST /v1/manage/auth/password) first.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NETWORK_DENIED",
+                  "status": 403,
+                  "code": "NETWORK_DENIED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`: No such model.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "NOT_FOUND",
+                  "status": 404,
+                  "code": "NOT_FOUND",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED`: More than 600 requests per minute from one IP.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                },
+                "example": {
+                  "title": "RATE_LIMITED",
+                  "status": 429,
+                  "code": "RATE_LIMITED",
+                  "instance": "req_01J…"
+                }
+              }
+            }
+          }
+        },
+        "x-audience": "manage"
+      }
+    },
     "/v1/manage/catalogue/tube/import": {
       "post": {
         "operationId": "importTubeCharts",
@@ -38236,6 +39020,176 @@
           "closure_id",
           "shape",
           "diameter",
+          "source_name",
+          "source_kind",
+          "status",
+          "url",
+          "bbox",
+          "triangles",
+          "parts",
+          "simplified",
+          "mounting",
+          "suggested",
+          "created_at",
+          "approved_at"
+        ],
+        "additionalProperties": false
+      },
+      "CadPart": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "line": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "body",
+              "closure",
+              "insert"
+            ],
+            "description": "body: the container; closure: what closes it; insert: anything inside (a desiccant chamber, a nozzle insert)."
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "fa": {
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "en": {
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "tr": {
+                    "type": "string",
+                    "maxLength": 120
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "closure_id": {
+            "description": "Tube closures only: the catalogue closure.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "source_name": {
+            "type": "string"
+          },
+          "source_kind": {
+            "type": "string",
+            "enum": [
+              "step",
+              "glb"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "needs_review",
+              "approved",
+              "archived"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "description": "The converted GLB (console preview path until published)."
+          },
+          "bbox": {
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "max": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "size": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              }
+            },
+            "required": [
+              "min",
+              "max",
+              "size"
+            ],
+            "additionalProperties": false,
+            "description": "Millimetres."
+          },
+          "triangles": {
+            "type": "number"
+          },
+          "parts": {
+            "type": "number"
+          },
+          "simplified": {
+            "type": "boolean"
+          },
+          "mounting": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Mounting"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Body: the neck, with `axis` pointing out of the opening and `anchorMm` at the neck top. Closure: as for tube closures."
+          },
+          "suggested": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SuggestedMounting"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "approved_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "line",
+          "kind",
+          "name",
+          "category",
+          "closure_id",
           "source_name",
           "source_kind",
           "status",
