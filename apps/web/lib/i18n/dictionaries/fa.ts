@@ -12,6 +12,8 @@ const fa: Dictionary = {
     brand: "آراپوش گستر",
     loading: "در حال بارگذاری",
     progress: "پیشرفت مطالعه",
+    model3d: "مدل سه‌بعدی {name}",
+    model3dHint: "برای چرخاندن بکشید",
   },
   nav: {
     /** Menu label of the journal (added to the menu when OPEX content lacks it). */

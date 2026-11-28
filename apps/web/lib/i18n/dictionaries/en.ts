@@ -12,6 +12,8 @@ const en = {
     brand: "Arapoush Gostar",
     loading: "Loading",
     progress: "Reading progress",
+    model3d: "3D model of {name}",
+    model3dHint: "Drag to turn",
   },
   nav: {
     /** Menu label of the journal (added to the menu when OPEX content lacks it). */

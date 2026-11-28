@@ -56,3 +56,8 @@ export const Faq: Story = {
 };
 
 export const Spacer: Story = { args: { kind: "spacer", props: { size: "m" } } };
+
+/** Product in 3D (3D studio parts) with an industrial photo; without approved parts the photo stands alone. */
+export const Product3dPhoto: Story = {
+  args: { kind: "product3d", props: { title: { fa: "تیوب قرص جوشان", en: "Effervescent tube" }, body, display: "both", bodyPart: "missing", image: { src: "/images/journal-2.webp", width: 960, height: 1199, alt: { fa: "تیوب قرص جوشان", en: "Effervescent tube" } } } },
+};

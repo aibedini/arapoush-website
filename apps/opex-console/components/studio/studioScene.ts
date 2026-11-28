@@ -41,6 +41,11 @@ export class StudioScene {
   private holder = new THREE.Group();
   private tube = new THREE.Group();
   private model: THREE.Object3D | null = null;
+  /** S2: a real body from the parts library, in place of the drawn tube stub. */
+  private baseHolder = new THREE.Group();
+  private base: THREE.Object3D | null = null;
+  private baseMount: Mount | null = null;
+  private baseMaterials = new Map<THREE.Mesh, THREE.Material | THREE.Material[]>();
   private cadMaterials = new Map<THREE.Mesh, THREE.Material | THREE.Material[]>();
   private clip = new THREE.Plane(new THREE.Vector3(0, 0, -1), 0);
   private mount: Mount | null = null;
@@ -64,7 +69,7 @@ export class StudioScene {
     key.position.set(-60, 100, 80);
     const rim = new THREE.DirectionalLight(0xcfe2ff, 1.2);
     rim.position.set(70, 40, -80);
-    this.scene.add(key, rim, new THREE.HemisphereLight(0xffffff, 0xc9d4de, 0.4), this.holder, this.tube);
+    this.scene.add(key, rim, new THREE.HemisphereLight(0xffffff, 0xc9d4de, 0.4), this.holder, this.tube, this.baseHolder);
     this.controls = new OrbitControls(this.camera, canvas);
     this.controls.enableDamping = true;
     this.controls.zoomToCursor = true;
@@ -74,7 +79,42 @@ export class StudioScene {
     this.resize();
   }
 
-  async load(url: string) {
+  /**
+   * A body to seat the closure on: its mount's axis points out of the opening and its anchor is the
+   * neck top, so it stands below y = 0 exactly where the closure's anchor sits. Null removes it.
+   */
+  async loadBase(url: string | null, mount: Mount | null) {
+    this.baseMount = mount;
+    if (this.base) this.baseHolder.remove(this.base);
+    this.base = null;
+    this.baseMaterials.clear();
+    if (url) {
+      const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(url);
+      if (this.disposed) return;
+      this.base = gltf.scene;
+      gltf.scene.traverse((o) => {
+        const m = o as THREE.Mesh;
+        if (m.isMesh) this.baseMaterials.set(m, m.material);
+      });
+      this.baseHolder.add(gltf.scene);
+    }
+    this.apply();
+    this.frame();
+  }
+
+  setBaseMount(mount: Mount | null) {
+    this.baseMount = mount;
+    this.apply();
+  }
+
+  async load(url: string | null) {
+    if (!url) {
+      if (this.model) this.holder.remove(this.model);
+      this.model = null;
+      this.cadMaterials.clear();
+      this.apply();
+      return;
+    }
     const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(url);
     if (this.disposed) return;
     if (this.model) this.holder.remove(this.model);
@@ -109,6 +149,13 @@ export class StudioScene {
       const chosen = finishMaterial(this.look.finish, this.look.hex);
       for (const [mesh, cad] of this.cadMaterials) mesh.material = chosen ?? cad;
     }
+    if (this.base) {
+      const [bx, by, bz] = this.baseMount?.anchorMm ?? [0, 0, 0];
+      this.base.position.set(-bx, -by, -bz);
+      this.baseHolder.quaternion.setFromUnitVectors(AXES[this.baseMount?.axis ?? "+Y"], new THREE.Vector3(0, 1, 0));
+      const mat = this.look.finish === "cad" ? null : new THREE.MeshPhysicalMaterial({ color: new THREE.Color(this.look.bodyHex), roughness: 0.42, clearcoat: 0.25 });
+      for (const [mesh, cad] of this.baseMaterials) mesh.material = mat ?? cad;
+    }
     this.buildTube();
     this.setClipping();
     this.invalidate();
@@ -117,6 +164,18 @@ export class StudioScene {
   /** Neck (thread length), shoulder and the start of the body, below the neck top at y = 0. */
   private buildTube() {
     this.tube.clear();
+    const ring = (d: number) => {
+      const t = new THREE.Mesh(new THREE.TorusGeometry(d / 2, Math.max(0.15, d * 0.01), 8, 96), new THREE.MeshBasicMaterial({ color: 0xe8893a }));
+      t.rotation.x = Math.PI / 2;
+      return t;
+    };
+    if (this.base) {
+      // The real body is shown; only mark its neck top.
+      const d = this.baseMount?.neckDiameterMm;
+      if (d) this.tube.add(ring(d));
+      this.baseHolder.visible = this.look.body;
+      return;
+    }
     if (!this.look.body || !this.mount?.neckDiameterMm) return;
     const rn = this.mount.neckDiameterMm / 2;
     const rb = Math.max(rn * 1.2, this.tubeDiameter / 2);
@@ -132,9 +191,7 @@ export class StudioScene {
     ];
     const mat = new THREE.MeshPhysicalMaterial({ color: new THREE.Color(this.look.bodyHex), roughness: 0.42, clearcoat: 0.25, side: THREE.DoubleSide });
     const body = new THREE.Mesh(new THREE.LatheGeometry(pts, 96), mat);
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(rn, Math.max(0.15, rn * 0.02), 8, 96), new THREE.MeshBasicMaterial({ color: 0xe8893a }));
-    ring.rotation.x = Math.PI / 2;
-    this.tube.add(body, ring);
+    this.tube.add(body, ring(rn * 2));
   }
 
   private setClipping() {
@@ -156,6 +213,7 @@ export class StudioScene {
     const box = new THREE.Box3();
     if (this.model) box.expandByObject(this.holder);
     if (this.tube.children.length) box.expandByObject(this.tube);
+    if (this.base && this.baseHolder.visible) box.expandByObject(this.baseHolder);
     if (box.isEmpty()) return;
     const size = box.getSize(new THREE.Vector3());
     const centre = box.getCenter(new THREE.Vector3());

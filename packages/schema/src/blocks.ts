@@ -6,7 +6,7 @@ import type { GroupField } from "./fields.ts";
  * only the fields of the selected kind (BLOCK_FIELDS).
  */
 export const SECTION_TYPES = ["hero", "products", "applications", "insights", "partners", "certifications"] as const;
-export const BLOCK_KINDS = ["richText", "imageText", "cta", "faq", "form", "spacer"] as const;
+export const BLOCK_KINDS = ["richText", "imageText", "cta", "faq", "form", "spacer", "product3d"] as const;
 export type SectionType = (typeof SECTION_TYPES)[number];
 export type BlockKind = (typeof BLOCK_KINDS)[number];
 export const isBlockKind = (t: string): t is BlockKind => (BLOCK_KINDS as readonly string[]).includes(t);
@@ -37,6 +37,9 @@ export const BLOCK_PROPS: GroupField = {
     items: { kind: "list", label: "Questions", max: 30, of: { kind: "group", fields: { q: L("Question", false, 300), a: L("Answer", true, 3000) } } },
     form: { kind: "text", localized: false, max: 40, label: "Form address (slug)" },
     size: { kind: "enum", values: ["s", "m", "l"], label: "Space" },
+    display: { kind: "enum", values: ["both", "model", "photo"], label: "Show (3D, industrial photo or both)" },
+    bodyPart: { kind: "text", localized: false, max: 40, label: "Body (part id from the 3D studio)" },
+    closurePart: { kind: "text", localized: false, max: 40, label: "Closure (part id from the 3D studio)" },
   },
 };
 
@@ -48,6 +51,7 @@ export const BLOCK_FIELDS: Record<BlockKind, (keyof typeof BLOCK_PROPS.fields)[]
   faq: ["eyebrow", "title", "items"],
   form: ["eyebrow", "title", "body", "form", "tone"],
   spacer: ["size"],
+  product3d: ["eyebrow", "title", "body", "display", "bodyPart", "closurePart", "image", "imageSide", "button", "tone"],
 };
 
 export type L10n = Partial<Record<"fa" | "en" | "tr", string>>;
@@ -62,6 +66,10 @@ export type BlockProps = {
   items?: { q?: L10n; a?: L10n }[];
   form?: string;
   size?: "s" | "m" | "l";
+  /** product3d: what the visitor sees; parts are `product.parts` ids. */
+  display?: "both" | "model" | "photo";
+  bodyPart?: string;
+  closurePart?: string;
 };
 /** `type` is a built-in section of its page or a block kind; `style` picks a variant of a built-in section. */
 export type LayoutSection = { id: string; type: SectionType | BlockKind | (string & {}); enabled: boolean; style?: string; props?: BlockProps };
@@ -75,6 +83,7 @@ export function newBlock(kind: BlockKind, id: string): LayoutSection {
     faq: { title: { fa: "پرسش‌های پرتکرار", en: "Frequently asked questions" }, items: [{ q: { fa: "پرسش", en: "Question" }, a: { fa: "پاسخ", en: "Answer" } }] },
     form: { title: { fa: "با ما در تماس باشید", en: "Get in touch" }, form: "contact", tone: "light" },
     spacer: { size: "m" },
+    product3d: { title: { fa: "محصول را از هر زاویه ببینید", en: "See the product from every side" }, body: { fa: "مدل سه‌بعدی از فایل صنعتی خود قطعه.", en: "A 3D model made from the part's own factory file." }, display: "both", imageSide: "end", tone: "light" },
   };
   return { id, type: kind, enabled: true, props: base[kind] };
 }

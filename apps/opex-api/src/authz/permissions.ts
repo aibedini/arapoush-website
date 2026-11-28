@@ -163,6 +163,11 @@ export const ROUTE_PERMISSIONS: Record<string, Permission> = {
   "PUT /v1/manage/catalogue/tube/models/:id/mounting": "catalogue.write",
   "POST /v1/manage/catalogue/tube/models/:id/approve": "catalogue.approve",
   "POST /v1/manage/catalogue/tube/import": "catalogue.import",
+  "POST /v1/manage/catalogue/parts": "catalogue.write",
+  "GET /v1/manage/catalogue/parts": "catalogue.read",
+  "PUT /v1/manage/catalogue/parts/:id": "catalogue.write",
+  "PUT /v1/manage/catalogue/parts/:id/mounting": "catalogue.write",
+  "POST /v1/manage/catalogue/parts/:id/approve": "catalogue.approve",
   "POST /v1/manage/render": "render.run",
   "GET /v1/manage/render/jobs": "render.read",
   // Forms

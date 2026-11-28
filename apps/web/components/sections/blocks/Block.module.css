@@ -144,3 +144,53 @@
     transition: none;
   }
 }
+
+/* product3d: the 3D studio's model, an industrial photo, or both side by side. */
+.viewer {
+  position: relative;
+  aspect-ratio: 1;
+  inline-size: 100%;
+  border-radius: max(12px, calc(20 * var(--u)));
+  background: radial-gradient(circle at 50% 42%, #fff, #e9edf1);
+  overflow: hidden;
+}
+.dark .viewer {
+  background: radial-gradient(circle at 50% 42%, #2a4a6c, #12273f);
+}
+.viewer canvas {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  touch-action: pan-y;
+  cursor: grab;
+}
+.viewer canvas:active {
+  cursor: grabbing;
+}
+.viewerHint {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 12px;
+  margin: 0;
+  text-align: center;
+  font: 500 13px/1.4 var(--font-sans);
+  color: #5b6570;
+  pointer-events: none;
+}
+.dark .viewerHint {
+  color: rgba(245, 244, 244, 0.78);
+}
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: max(12px, calc(20 * var(--u)));
+}
+.pair .media img {
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+@media (max-width: 600px) {
+  .pair {
+    grid-template-columns: 1fr;
+  }
+}

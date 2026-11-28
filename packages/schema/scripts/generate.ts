@@ -155,6 +155,11 @@ const defs: Def[] = [
     data: (({ images: _images, ...rest }) => rest)(json("content/products/multi-layer-tube.json")),
   },
   {
+    key: "product.parts",
+    label: "Product parts library (3D studio)",
+    data: json("content/products/parts.json"),
+  },
+  {
     key: "product.effervescent.page",
     label: "Product: effervescent tube",
     data: { ...dict("productEff"), data: json("content/products/effervescent-tube.json") },
@@ -310,8 +315,38 @@ function applicationsPage(g: GroupField): GroupField {
   return g;
 }
 
+/** 3D studio parts (S2): written by approving a factory model, never typed by hand. */
+function partsLibrary(g: GroupField): GroupField {
+  const mm: Field = { kind: "list", of: { kind: "number" } };
+  const name: Field = { kind: "text", localized: true, label: "Name" };
+  g.fields.lines = { kind: "list", key: "id", label: "Product lines", of: { kind: "group", fields: { id: { kind: "text", localized: false, label: "Line id" }, name } } };
+  g.fields.parts = {
+    kind: "list",
+    key: "id",
+    label: "Approved parts",
+    locked: true,
+    of: {
+      kind: "group",
+      fields: {
+        id: { kind: "text", localized: false, label: "Part id" },
+        line: { kind: "text", localized: false, label: "Line" },
+        kind: { kind: "enum", values: ["body", "closure", "insert"], label: "Kind" },
+        category: { kind: "text", localized: false, label: "Category" },
+        name,
+        src: { kind: "text", localized: false, label: "GLB" },
+        axis: { kind: "enum", values: ["+Y", "-Y", "+X", "-X", "+Z", "-Z"], label: "Opening towards" },
+        anchorMm: { ...mm, label: "Anchor (mm)" },
+        neckDiameterMm: { kind: "number", label: "Neck Ø (mm)" },
+        sizeMm: { ...mm, label: "Size (mm)" },
+      },
+    },
+  };
+  return g;
+}
+
 function extend(key: string, g: GroupField): GroupField {
   if (key === "product.tube.catalogue") return tubeCatalogue(g);
+  if (key === "product.parts") return partsLibrary(g);
   if (key === "page.applications") return applicationsPage(g);
   if (key === "product.tube.page") return tubePage(g);
   // Slider builder and site fonts: not in the seed (entries without them read the designed defaults).

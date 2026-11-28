@@ -18,13 +18,13 @@ const FINISHES: { id: Finish; fa: string }[] = [
  * sits inside the cap, the site's cap finishes and a lift to see the neck. Three.js loads only when
  * the studio is opened.
  */
-export function ModelStudio({ url, mount, tubeDiameter, title }: { url: string; mount: Mount | null; tubeDiameter?: number | null; title: string }) {
+export function ModelStudio({ url, mount, tubeDiameter, title, base }: { url: string | null; mount: Mount | null; tubeDiameter?: number | null; title: string; base?: { url: string; mount: Mount | null } | null }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const scene = useRef<StudioScene | null>(null);
   const [state, setState] = useState<"loading" | "ready" | "failed">("loading");
   const [look, setLook] = useState<StudioLook>({ finish: "cad", hex: "#1d4a72", bodyHex: "#f4f6f8", section: false, lift: false, body: true });
-  const latest = useRef({ mount, tubeDiameter, look });
-  latest.current = { mount, tubeDiameter, look };
+  const latest = useRef({ mount, tubeDiameter, look, base });
+  latest.current = { mount, tubeDiameter, look, base };
 
   useEffect(() => {
     let s: StudioScene | null = null;
@@ -49,6 +49,17 @@ export function ModelStudio({ url, mount, tubeDiameter, title }: { url: string; 
       scene.current = null;
     };
   }, [url]);
+
+  // A different body, or none: load it into the running scene.
+  const baseUrl = base?.url ?? null;
+  const ready = state === "ready";
+  useEffect(() => {
+    if (ready) void scene.current?.loadBase(baseUrl, latest.current.base?.mount ?? null);
+  }, [baseUrl, ready]);
+  const baseMountKey = JSON.stringify(base?.mount ?? null);
+  useEffect(() => {
+    scene.current?.setBaseMount(latest.current.base?.mount ?? null);
+  }, [baseMountKey]);
 
   const mountKey = JSON.stringify(mount);
   useEffect(() => {
@@ -86,7 +97,7 @@ export function ModelStudio({ url, mount, tubeDiameter, title }: { url: string; 
             بلند کردن درب
           </button>
           <button type="button" className="btn sm" aria-pressed={look.body} onClick={() => toggle("body")}>
-            گلو و بدنهٔ تیوب
+            {base ? "نمایش بدنه" : "گلو و بدنهٔ تیوب"}
           </button>
           <button type="button" className="btn sm ghost" disabled={state !== "ready"} onClick={() => scene.current?.frame()}>
             نمای اولیه

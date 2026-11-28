@@ -1,12 +1,14 @@
 import type { Decorator, Preview } from "@storybook/nextjs-vite";
 import { fa, latin } from "../app/fonts";
 import { MeContext, type Me } from "../lib/hooks";
+// The API's built-in roles, so a story's operator has exactly the permissions a real one has.
+import { BUILTIN_ROLES } from "../../opex-api/src/authz/permissions";
 import "../app/globals.css";
 
 /** The console is Persian (RTL). Stories render as a signed-in operator; pick the role in the toolbar. */
-const me: Me = { id: "prn_demo", display: "Sara Karimi", role: "operator", stepUpValid: false };
+const me: Me = { id: "prn_demo", display: "Sara Karimi", role: "operator", stepUpValid: false, permissions: [] };
 const withShell: Decorator = (Story, ctx) => (
-  <MeContext.Provider value={{ ...me, role: (ctx.globals.role ?? "operator") as Me["role"] }}>
+  <MeContext.Provider value={{ ...me, role: (ctx.globals.role ?? "operator") as Me["role"], permissions: BUILTIN_ROLES[(ctx.globals.role as string) ?? "operator"]?.permissions ?? [] }}>
     <div lang="fa" dir="rtl" className={`${fa.variable} ${latin.variable}`} style={{ padding: 24, background: "var(--bg)", minHeight: "100vh" }}>
       <Story />
     </div>
