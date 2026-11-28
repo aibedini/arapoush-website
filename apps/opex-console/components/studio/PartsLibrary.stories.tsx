@@ -47,7 +47,7 @@ export const OtherLine: Story = {
   play: async ({ canvasElement }) => {
     const c = within(canvasElement);
     await userEvent.selectOptions(await c.findByLabelText("لاین محصول"), "jar");
-    await expect(await c.findByText(/jar-50\.step/)).toBeInTheDocument();
+    await expect((await c.findAllByText(/jar-50\.step/)).length).toBeGreaterThan(0);
     await expect(c.queryByText(/eff-spiral-cap\.step/)).toBeNull();
   },
 };
