@@ -1653,6 +1653,86 @@
      "en": "A sample of the print style on your tube; your own artwork replaces it.",
      "tr": "Tüpünüzde baskı stilinin bir örneği; kendi tasarımınız onun yerini alır."
     },
+    "label": {
+     "fa": "طرح شما روی تیوپ",
+     "en": "Your artwork on the tube",
+     "tr": "Tüp üzerinde tasarımınız"
+    },
+    "labelUpload": {
+     "fa": "انتخاب فایل طرح",
+     "en": "Choose artwork file",
+     "tr": "Tasarım dosyası seçin"
+    },
+    "labelReplace": {
+     "fa": "فایل دیگر",
+     "en": "Another file",
+     "tr": "Başka dosya"
+    },
+    "labelRemove": {
+     "fa": "برداشتن طرح",
+     "en": "Remove artwork",
+     "tr": "Tasarımı kaldır"
+    },
+    "labelHint": {
+     "fa": "لیبل یا طرح خود را بگذارید تا روی همین تیوپ با اندازهٔ واقعی ببینید: JPG، PNG، SVG، PDF یا AI.",
+     "en": "Add your label or artwork to see it on this tube at its real size: JPG, PNG, SVG, PDF or AI.",
+     "tr": "Etiketinizi veya tasarımınızı ekleyin, bu tüp üzerinde gerçek boyutunda görün: JPG, PNG, SVG, PDF veya AI."
+    },
+    "labelReading": {
+     "fa": "در حال خواندن…",
+     "en": "Reading…",
+     "tr": "Okunuyor…"
+    },
+    "labelWrap": {
+     "fa": "دور تا دور",
+     "en": "All the way round",
+     "tr": "Tüm çevre"
+    },
+    "labelFront": {
+     "fa": "روی جلو",
+     "en": "On the front",
+     "tr": "Ön yüzde"
+    },
+    "labelSize": {
+     "fa": "اندازه",
+     "en": "Size",
+     "tr": "Boyut"
+    },
+    "labelPosition": {
+     "fa": "جای عمودی",
+     "en": "Height",
+     "tr": "Yükseklik"
+    },
+    "labelPrivacy": {
+     "fa": "فایل فقط در مرورگر خودتان نمایش داده می‌شود و جایی فرستاده نمی‌شود. برای استعلام قیمت، همین فایل را در فرم پایین پیوست کنید.",
+     "en": "The file is shown only in your browser and is not sent anywhere. For a quote, attach the same file in the form below.",
+     "tr": "Dosya yalnızca tarayıcınızda gösterilir ve hiçbir yere gönderilmez. Fiyat teklifi için aynı dosyayı aşağıdaki forma ekleyin."
+    },
+    "labelErrType": {
+     "fa": "این نوع فایل خوانده نمی‌شود. JPG، PNG، WebP، SVG، PDF یا AI بفرستید.",
+     "en": "This file type can't be read. Send JPG, PNG, WebP, SVG, PDF or AI.",
+     "tr": "Bu dosya türü okunamıyor. JPG, PNG, WebP, SVG, PDF veya AI gönderin."
+    },
+    "labelErrSize": {
+     "fa": "فایل بزرگ‌تر از ۴۰ مگابایت است. نسخهٔ سبک‌تری بفرستید.",
+     "en": "The file is larger than 40 MB. Send a lighter version.",
+     "tr": "Dosya 40 MB'den büyük. Daha hafif bir sürüm gönderin."
+    },
+    "labelErrAi": {
+     "fa": "این فایل AI بدون سازگاری PDF ذخیره شده. در Illustrator با تیک «Create PDF Compatible File» دوباره ذخیره کنید یا PDF بگیرید.",
+     "en": "This AI file was saved without PDF compatibility. Save it again in Illustrator with \"Create PDF Compatible File\" ticked, or export a PDF.",
+     "tr": "Bu AI dosyası PDF uyumluluğu olmadan kaydedilmiş. Illustrator'da \"Create PDF Compatible File\" işaretli olarak yeniden kaydedin veya PDF alın."
+    },
+    "labelErrRead": {
+     "fa": "فایل خوانده نشد. یک نسخهٔ PNG یا PDF از آن امتحان کنید.",
+     "en": "The file couldn't be read. Try a PNG or PDF version of it.",
+     "tr": "Dosya okunamadı. PNG veya PDF sürümünü deneyin."
+    },
+    "specLabel": {
+     "fa": "طرح",
+     "en": "Artwork",
+     "tr": "Tasarım"
+    },
     "specColour": {
      "fa": "رنگ درب",
      "en": "Cap colour",

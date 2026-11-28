@@ -2873,6 +2873,86 @@
          "localized": true,
          "multiline": false
         },
+        "label": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "labelUpload": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "labelReplace": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "labelRemove": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "labelHint": {
+         "kind": "text",
+         "localized": true,
+         "multiline": true
+        },
+        "labelReading": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "labelWrap": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "labelFront": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "labelSize": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "labelPosition": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "labelPrivacy": {
+         "kind": "text",
+         "localized": true,
+         "multiline": true
+        },
+        "labelErrType": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "labelErrSize": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "labelErrAi": {
+         "kind": "text",
+         "localized": true,
+         "multiline": true
+        },
+        "labelErrRead": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
+        "specLabel": {
+         "kind": "text",
+         "localized": true,
+         "multiline": false
+        },
         "specColour": {
          "kind": "text",
          "localized": true,
