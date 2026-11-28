@@ -597,7 +597,7 @@ if [ -f pnpm-workspace.yaml ]; then
   pnpm_run() { "$NODE_DIR/npx" --yes "pnpm@$PNPM_VERSION" "$@"; }
   pnpm_run install --frozen-lockfile --reporter=silent --filter "@arapoush/web..."
   log "Building the site (SITE_URL=$SITE_URL) — this takes a few minutes"
-  NEXT_PUBLIC_SITE_URL="$SITE_URL" NODE_OPTIONS="--max-old-space-size=1536" pnpm_run --filter @arapoush/web build --reporter=silent
+  NEXT_PUBLIC_SITE_URL="$SITE_URL" NODE_OPTIONS="--max-old-space-size=1536" pnpm_run --reporter=silent --filter @arapoush/web build
   APP_SRC=apps/web
   SERVER_DIR=apps/web/.next/standalone/apps/web
 else
